@@ -1,0 +1,29 @@
+<cfg name="Tickets">
+   <parameters>
+      <add name="RequesterFullName" label="User" prompt="true" value="*" />
+      <add name="Status" prompt="true" value="*" multiple="true" />
+      <add name="Priority" prompt="true" value="*" />
+   </parameters>
+   <connections>
+      <add name="input" provider="sqlserver" server="localhost" database="TflServiceDesk" />
+   </connections>
+   <entities>
+      <add name="ServiceDeskStar" label="Tickets" page="1" size="10">
+         <filter>
+            <add field="RequesterFullName" value="@[RequesterFullName]" type="search" />
+            <add field="Status" value="@[Status]" type="facet" />
+            <add field="Priority" value="@[Priority]" type="facet" />
+         </filter>
+         <fields>
+            <add name="WorkOrderId" output="false" type="int" />
+            <add name="Link" raw="true" length="255" t='format(<a href="{Link}">#{WorkOrderId}</a>)' />
+            <add name="Priority" />
+            <add name="Status" />
+            <add name="CreateDate" label="Created" type="datetime" format="yyyy-MM-dd" />
+            <add name="Title" />
+            <add name="RequesterFullName" label="User" />
+            <add name="OwnerFullName" label="Tech" />
+         </fields>
+      </add>
+   </entities>
+</cfg>

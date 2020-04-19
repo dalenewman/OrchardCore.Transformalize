@@ -1,0 +1,11 @@
+[
+  { "DataMigrationClass": "OrchardCore.Users.Migrations", "Version": 3 },
+  {
+    "DataMigrationClass": "OrchardCore.ContentManagement.Records.Migrations",
+    "Version": 5
+  },
+  { "DataMigrationClass": "OrchardCore.Contents.Migrations", "Version": 1 },
+  { "DataMigrationClass": "OrchardCore.Liquid.Migrations", "Version": 1 },
+  { "DataMigrationClass": "OrchardCore.Alias.Migrations", "Version": 1 },
+  { "DataMigrationClass": "OrchardCore.Title.Migrations", "Version": 2 }
+]

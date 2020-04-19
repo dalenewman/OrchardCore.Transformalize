@@ -1,0 +1,13 @@
+<cfg name="Migrations" read-only="true">
+   <connections>
+      <add name="input" provider="json" file="migrations.json" />
+   </connections>
+   <entities>
+      <add name="x">
+         <fields>
+            <add name="DataMigrationClass" length="128" />
+            <add name="Version" type="int" />
+         </fields>
+      </add>
+   </entities>
+</cfg>

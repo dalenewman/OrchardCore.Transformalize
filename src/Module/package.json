@@ -1,0 +1,7 @@
+{
+  "name": "orchardcore.transformalize",
+  "version": "0.6.28",
+  "dependencies": {
+    "codemirror": "5.52.2"
+  }
+}
