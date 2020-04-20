@@ -15,15 +15,19 @@
    </ItemGroup>
 
    <ItemGroup>
+      <PackageReference Include="Flurl" Version="2.8.2" />
       <PackageReference Include="OrchardCore.Alias" Version="1.0.0-rc1-10004" />
       <PackageReference Include="OrchardCore.ContentManagement" Version="1.0.0-rc1-10004" />
+      <PackageReference Include="OrchardCore.Contents" Version="1.0.0-rc1-10004" />
       <PackageReference Include="OrchardCore.DisplayManagement" Version="1.0.0-rc1-10004" />
       <PackageReference Include="OrchardCore.Module.Targets" Version="1.0.0-rc1-10004" />
       <PackageReference Include="OrchardCore.ResourceManagement" Version="1.0.0-rc1-10004" />
-   </ItemGroup>
-
-   <ItemGroup>
-      <Folder Include="Services\" />
+      <PackageReference Include="Transformalize" Version="0.6.28-beta" />
+      <PackageReference Include="Transformalize.Container.Autofac" Version="0.6.28-beta" />
+      <PackageReference Include="Transformalize.Provider.Ado" Version="0.6.30-beta" />
+      <PackageReference Include="Transformalize.Provider.Ado.Autofac" Version="0.6.30-beta" />
+      <PackageReference Include="Transformalize.Provider.PostgreSql.Autofac" Version="0.6.28-beta" />
+      <PackageReference Include="Transformalize.Provider.SqlServer.Autofac" Version="0.6.28-beta" />
    </ItemGroup>
 
 </Project>

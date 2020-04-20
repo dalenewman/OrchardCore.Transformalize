@@ -10,9 +10,12 @@ using OrchardCore.ResourceManagement;
 using Fluid;
 using OrchardCore.Data.Migration;
 using OrchardCore.ContentManagement.Display.ContentDisplay;
-using OrchardCore.ContentManagement.Display;
 using Module.Drivers;
 using Module.ViewModels;
+using Module.Services.Contracts;
+using Module.Services;
+using Module.Handlers;
+using OrchardCore.ContentManagement.Handlers;
 
 namespace Module {
    public class Startup : StartupBase {
@@ -26,13 +29,17 @@ namespace Module {
 
          services.AddSession();
 
+         services.AddScoped<ILinkService, LinkService>();
+         services.AddScoped<ISortService, SortService>();
+
          services.AddScoped<IDataMigration, Migrations>();
          services.AddScoped<IResourceManifestProvider, ResourceManifest>();
 
          services.AddContentField<TransformalizeArrangementField>(); // UseDisplayDriver in dev branch
          services.AddScoped<IContentFieldDisplayDriver, TransformalizeArrangementFieldDisplayDriver>();
          services.AddContentPart<TransformalizeArrangementPart>();
-         
+
+         services.AddScoped<IContentHandler, TransformalizeHandler>();
 
       }
 
@@ -40,7 +47,7 @@ namespace Module {
 
          routes.MapAreaControllerRoute(
              name: "Transformalize.Report.Index",
-             areaName: "OrchardCore.Transformalize",
+             areaName: "Module",
              pattern: "report/{ContentItemId}",
              defaults: new { controller = "Report", action = "Index" }
          );
