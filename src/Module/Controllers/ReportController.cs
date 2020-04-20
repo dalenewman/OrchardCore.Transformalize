@@ -1,7 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Autofac;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Localization;
 using Microsoft.Extensions.Localization;
@@ -10,13 +9,8 @@ using OrchardCore.DisplayManagement.Notify;
 using Module.Models;
 using Module.Services.Contracts;
 using Module.ViewModels;
-using Transformalize.Configuration;
-using Transformalize.Containers.Autofac;
 using Transformalize.Contracts;
 using Transformalize.Logging;
-using Transformalize.Providers.Ado.Autofac;
-using Transformalize.Providers.PostgreSql.Autofac;
-using Transformalize.Providers.SqlServer.Autofac;
 
 namespace Module.Controllers {
    public class ReportController : BaseController {
@@ -24,11 +18,24 @@ namespace Module.Controllers {
       private readonly IContentAliasManager _aliasManager;
       private readonly ISortService _sortService;
       private readonly INotifier _notifier;
-      public ReportController(IContentManager contentManager, IContentAliasManager aliasManager, IStringLocalizer<BaseController> stringLocalizer, IHtmlLocalizer<BaseController> htmlLocalizer, ISortService sortService, INotifier notifier) : base(stringLocalizer, htmlLocalizer) {
+      private readonly IReportLoadService _reportLoadService;
+      private readonly IReportRunService _reportRunService;
+
+      public ReportController(
+         IContentManager contentManager, 
+         IContentAliasManager aliasManager,
+         IReportLoadService reportLoadService,
+         IReportRunService reportRunService,
+         IStringLocalizer<BaseController> stringLocalizer, 
+         IHtmlLocalizer<BaseController> htmlLocalizer, 
+         ISortService sortService, 
+         INotifier notifier) : base(stringLocalizer, htmlLocalizer) {
          _contentManager = contentManager;
          _aliasManager = aliasManager;
          _sortService = sortService;
          _notifier = notifier;
+         _reportLoadService = reportLoadService;
+         _reportRunService = reportRunService;
       }
 
 
@@ -53,7 +60,7 @@ namespace Module.Controllers {
             var parameters = GetParameters();
             GetStickyParameters(part.ContentItem.ContentItemId, parameters);
 
-            var process = new ConfigurationContainer().CreateScope(part.Arrangement.Arrangement, logger, parameters).Resolve<Process>();
+            var process = _reportLoadService.Load(part.Arrangement.Arrangement, parameters, logger);
 
             if (process.Errors().Any()) {
                process.Log = logger.Log;
@@ -80,7 +87,7 @@ namespace Module.Controllers {
 
             try {
                // todo: have these modules come from dependency injection
-               new Container(new AdoProviderModule(), new SqlServerModule(), new PostgreSqlModule()).CreateScope(process, logger).Resolve<IProcessController>().Execute();
+               _reportRunService.Run(process, logger);
                if (process.Errors().Any()) {
                   process.Status = 500;
                   process.Message = "Error";

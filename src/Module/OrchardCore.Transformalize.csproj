@@ -6,7 +6,7 @@
       <IsPackable>true</IsPackable>
       <Version>0.6.28-beta</Version>
       <PackageVersion>0.6.28-beta</PackageVersion>
-      <AssemblyName>Module</AssemblyName>
+      <AssemblyName>OrchardCore.Transformalize</AssemblyName>
       <RootNamespace>Module</RootNamespace>
    </PropertyGroup>
 
@@ -22,8 +22,8 @@
       <PackageReference Include="OrchardCore.DisplayManagement" Version="1.0.0-rc1-10004" />
       <PackageReference Include="OrchardCore.Module.Targets" Version="1.0.0-rc1-10004" />
       <PackageReference Include="OrchardCore.ResourceManagement" Version="1.0.0-rc1-10004" />
-      <PackageReference Include="Transformalize" Version="0.6.28-beta" />
-      <PackageReference Include="Transformalize.Container.Autofac" Version="0.6.28-beta" />
+      <PackageReference Include="Transformalize" Version="0.6.29-beta" />
+      <PackageReference Include="Transformalize.Container.Autofac" Version="0.6.30-beta" />
       <PackageReference Include="Transformalize.Provider.Ado" Version="0.6.30-beta" />
       <PackageReference Include="Transformalize.Provider.Ado.Autofac" Version="0.6.30-beta" />
       <PackageReference Include="Transformalize.Provider.PostgreSql.Autofac" Version="0.6.28-beta" />

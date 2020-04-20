@@ -4,7 +4,6 @@
 @using Module.Services.Contracts
 @using Module
 @using Microsoft.AspNetCore.Authorization
-@using Microsoft.AspNetCore.Http.Extensions
 @model ReportViewModel
 
 @{
@@ -20,11 +19,10 @@
 
     var allFields = entity.GetAllFields().Where(f => !f.System).ToArray();
     var hasCoordinates = allFields.Any(f => f.Alias.StartsWith("lat", StringComparison.OrdinalIgnoreCase)) && allFields.Any(f => f.Alias.StartsWith("lon", StringComparison.OrdinalIgnoreCase));
-    // var orchard = WorkContext.Resolve<IOrchardServices>();
 
     var linkService = Context.RequestServices.GetService<ILinkService>();
     var exportCsvLink = linkService.Create(Context.Request, Context.Session, Model.Item.ContentItemId, Url.Action("Index", "Export", new { ContentItemId = Model.Item.ContentItemId }), "csv", true);
-    var exportXlsxLink = linkService.Create(Context.Request, Context.Session, Model.Item.ContentItemId, Url.Action("Index", "Export", new { ContentItemId = Model.Item.ContentItemId }), "xlsx", true);
+    // var exportXlsxLink = linkService.Create(Context.Request, Context.Session, Model.Item.ContentItemId, Url.Action("Index", "Export", new { ContentItemId = Model.Item.ContentItemId }), "xlsx", true);
     var exportJsonLink = linkService.Create(Context.Request, Context.Session, Model.Item.ContentItemId, Url.Action("Index", "Export", new { ContentItemId = Model.Item.ContentItemId }), "json", true);
 
     var views = new List<PipelineViewModel>();
@@ -34,14 +32,14 @@
 }
 
 <div class="row">
-    <div class="col-md-3 float-left">
-        <div class="btn-group" role="group">
+    <div class="col-md-3">
+        <div class="btn-group float-left" role="group">
             @if (entity.Name != "Missing Entity") {
                 <button id="id_submit" type="submit" title="Search / Refresh" class="btn btn-primary btn-sm">
                     <span class="fas fa-search"></span>
                 </button>
 
-                <button title="Clear the Parameters" type="button" class="btn btn-info btn-sm clear-button">Clear</button>
+                <button id="id_clear" title="Clear the Parameters" type="button" class="btn btn-info btn-sm">Clear</button>
 
                 if (hasActions) {
                     <div class="btn-group">
@@ -96,8 +94,8 @@
         }
     </div>
 
-    <div class="col-md-3 float-right">
-        <div class="btn-group" role="group">
+    <div class="col-md-3">
+        <div class="btn-group float-right" role="group">
 
             @if (entity.Name != "Missing Entity") {
 
@@ -198,7 +196,7 @@
                     <div class="dropdown-menu">
                         <a class="dropdown-item" href="@exportCsvLink" title="save to csv file">CSV</a>
                         <a class="dropdown-item" href="@exportJsonLink" title="save to json file">JSON</a>
-                        <a class="dropdown-item" href="@exportXlsxLink" title="save to excel file">XLSX</a>
+                        @*<a class="dropdown-item" href="@exportXlsxLink" title="save to excel file">XLSX</a>*@
                         @{
                             if (hasCoordinates) {
                                 var exportGeoJsonLink = linkService.Create(Context.Request, Context.Session, Model.Item.ContentItemId, Url.Action("Index", "Export", new { ContentItemId = Model.Item.ContentItemId }), "geojson", true);

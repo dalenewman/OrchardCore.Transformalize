@@ -7,7 +7,6 @@ using Transformalize.Configuration;
 namespace Module.ViewModels {
    public class ReportViewModel {
 
-      private Parameter[] _activeParameters;
       private Dictionary<string, Parameter> _parameterLookup;
       private Dictionary<string, Parameter> _inlines;
       private Process _process;
@@ -27,7 +26,6 @@ namespace Module.ViewModels {
 
          set {
             _process = value;
-            _activeParameters = null;
             _topParameters = null;
             _inlines = null;
          }
@@ -38,10 +36,6 @@ namespace Module.ViewModels {
       public ReportViewModel(Process process, ContentItem item) {
          Process = process;
          Item = item;
-      }
-
-      public Parameter[] ActiveParameters {
-         get { return _activeParameters ?? (_activeParameters = Process.Parameters.ToArray()); }
       }
 
       public Dictionary<string, Parameter> InlineParameters {
@@ -58,7 +52,7 @@ namespace Module.ViewModels {
 
          _inlines = new Dictionary<string, Parameter>();
          _topParameters = new HashSet<string>();
-         foreach (var parameter in ActiveParameters.Where(p => p.Prompt)) {
+         foreach (var parameter in Process.Parameters.Where(p => p.Prompt)) {
             TopParameters.Add(parameter.Name);
          }
 
@@ -103,7 +97,7 @@ namespace Module.ViewModels {
             }
 
             _parameterLookup = new Dictionary<string, Parameter>();
-            foreach (var parameter in ActiveParameters) {
+            foreach (var parameter in Process.Parameters) {
                _parameterLookup[parameter.Name] = parameter;
             }
 

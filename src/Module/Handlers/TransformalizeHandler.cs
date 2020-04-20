@@ -13,7 +13,7 @@ namespace Module.Handlers {
                // unfortunately this doesn't work for auto routes
                if (metadata.DisplayRouteValues != null) {
                   metadata.DisplayRouteValues.Remove("Area");
-                  metadata.DisplayRouteValues.Add("Area", "Module");
+                  metadata.DisplayRouteValues.Add("Area", Common.ModuleName);
                   metadata.DisplayRouteValues.Remove("Controller");
                   metadata.DisplayRouteValues.Add("Controller", "Report");
                   metadata.DisplayRouteValues.Remove("Action");

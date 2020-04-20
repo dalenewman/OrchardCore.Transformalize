@@ -31,6 +31,8 @@ namespace Module {
 
          services.AddScoped<ILinkService, LinkService>();
          services.AddScoped<ISortService, SortService>();
+         services.AddScoped<IReportLoadService, ReportLoadService>();
+         services.AddScoped<IReportRunService, ReportRunService>();
 
          services.AddScoped<IDataMigration, Migrations>();
          services.AddScoped<IResourceManifestProvider, ResourceManifest>();
@@ -47,7 +49,7 @@ namespace Module {
 
          routes.MapAreaControllerRoute(
              name: "Transformalize.Report.Index",
-             areaName: "Module",
+             areaName: Common.ModuleName,
              pattern: "report/{ContentItemId}",
              defaults: new { controller = "Report", action = "Index" }
          );
