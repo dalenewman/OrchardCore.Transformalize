@@ -424,7 +424,7 @@
        $("#id_report select").on("changed.bs.select", function (e, clickedIndex, isSelected, previousValue) {
             lastFilter = this.name;
             controls.setPage(1);
-            if (!this.multiple) {
+            if (!this.multiple || $(this).val().length === 0) {
                 controls.submit(1);
             }
         });

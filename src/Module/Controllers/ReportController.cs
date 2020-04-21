@@ -14,8 +14,7 @@ using Transformalize.Logging;
 
 namespace Module.Controllers {
    public class ReportController : BaseController {
-      private readonly IContentManager _contentManager;
-      private readonly IContentAliasManager _aliasManager;
+
       private readonly ISortService _sortService;
       private readonly INotifier _notifier;
       private readonly IReportLoadService _reportLoadService;
@@ -23,15 +22,13 @@ namespace Module.Controllers {
 
       public ReportController(
          IContentManager contentManager, 
-         IContentAliasManager aliasManager,
+         IContentAliasManager contentAliasManager,
          IReportLoadService reportLoadService,
          IReportRunService reportRunService,
          IStringLocalizer<BaseController> stringLocalizer, 
          IHtmlLocalizer<BaseController> htmlLocalizer, 
          ISortService sortService, 
-         INotifier notifier) : base(stringLocalizer, htmlLocalizer) {
-         _contentManager = contentManager;
-         _aliasManager = aliasManager;
+         INotifier notifier) : base(contentManager, contentAliasManager, stringLocalizer, htmlLocalizer) {
          _sortService = sortService;
          _notifier = notifier;
          _reportLoadService = reportLoadService;
@@ -41,15 +38,10 @@ namespace Module.Controllers {
 
       [HttpGet]
       public async Task<ActionResult> Index(string contentItemId) {
-         var contentItem = await _contentManager.GetAsync(contentItemId);
 
-         if (contentItem == null) {
-            var id = await _aliasManager.GetContentItemIdAsync("alias:" + contentItemId);
-            if (id == null) {
-               return NotFound();
-            } else {
-               contentItem = await _contentManager.GetAsync(id);
-            }
+         var contentItem = await GetByIdOrAliasAsync(contentItemId);
+         if(contentItem == null) {
+            return NotFound();
          }
 
          var part = contentItem.As<TransformalizeArrangementPart>();

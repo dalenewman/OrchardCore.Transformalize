@@ -1,5 +1,5 @@
 using Autofac;
-using Module.Services.ArrangementModifiers;
+using Module.Services.Modifiers;
 using Module.Services.Contracts;
 using System.Collections.Generic;
 using Transformalize.Configuration;

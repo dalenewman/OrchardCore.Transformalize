@@ -5,6 +5,7 @@ using System.IO;
 namespace Module {
    public static class Common {
 
+      public const int IdLength = 26;
       public const string ExcelContentType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
       public const string ModuleName = "OrchardCore.Transformalize";
       public const string ModuleGroupName = "OrchardCore.Transformalize";

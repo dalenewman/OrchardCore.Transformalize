@@ -2,13 +2,14 @@
 using Cfg.Net.Contracts;
 using Cfg.Net.Parsers;
 
-namespace Module.Services.ArrangementModifiers {
+namespace Module.Services.Modifiers {
 
    /// <summary>
    /// This creates parameters and filters for every field marked with parameter facet or search
    /// </summary>
    public class ReportParameterModifier : ICustomizer {
 
+      private HashSet<object> _triggers = new HashSet<object> { "facet", "facets", "search" };
       public ReportParameterModifier() {
       }
 
@@ -27,14 +28,19 @@ namespace Module.Services.ArrangementModifiers {
 
                if (field.TryAttribute("parameter", out var parameter)) {
 
-                  if ((parameter.Value.Equals("facet") || parameter.Value.Equals("search")) && field.TryAttribute("name", out var name)) {
+                  if (_triggers.Contains(parameter.Value) && field.TryAttribute("name", out var name)) {
+
+                     var multiple = parameter.Value.Equals("facets");
 
                      if (!parameterSet.Keys.Contains(name.Value.ToString())) {
-
+                       
                         var p = new Node("add");
                         p.Attributes.Add(new NodeAttribute("name", name.Value));
                         p.Attributes.Add(new NodeAttribute("value", "*"));
                         p.Attributes.Add(new NodeAttribute("prompt", "true"));
+                        if (multiple) {
+                           p.Attributes.Add(new NodeAttribute("multiple", "true"));
+                        }
                         
                         if(field.TryAttribute("label", out var label)) {
                            p.Attributes.Add(new NodeAttribute("label", label.Value));
@@ -48,7 +54,7 @@ namespace Module.Services.ArrangementModifiers {
                         var f = new Node("add");
                         f.Attributes.Add(new NodeAttribute("field", name.Value));
                         f.Attributes.Add(new NodeAttribute("value", $"@[{name.Value}]"));
-                        f.Attributes.Add(new NodeAttribute("type", parameter.Value));
+                        f.Attributes.Add(new NodeAttribute("type", multiple ? "facet" : parameter.Value));
 
                         filterSet.Collection.SubNodes.Add(f);
                      }

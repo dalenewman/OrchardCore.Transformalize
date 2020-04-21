@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using Cfg.Net.Contracts;
 
-namespace Module.Services.ArrangementModifiers {
+namespace Module.Services.Modifiers {
    public class Node : INode {
 
       private Dictionary<string, IAttribute> _attributes;

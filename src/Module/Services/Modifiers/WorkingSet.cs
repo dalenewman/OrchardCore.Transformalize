@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Cfg.Net.Contracts;
 
-namespace Module.Services.ArrangementModifiers {
+namespace Module.Services.Modifiers {
    /// <summary>
    /// Gets/Creates Keys and Collection for a given node, collection name, and key (attribute) name
    /// </summary>

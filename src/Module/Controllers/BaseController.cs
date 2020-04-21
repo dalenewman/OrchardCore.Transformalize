@@ -8,18 +8,41 @@ using Microsoft.Extensions.Localization;
 using OrchardCore.DisplayManagement.Notify;
 using System.ComponentModel;
 using Transformalize.Configuration;
+using OrchardCore.ContentManagement;
+using System.Threading.Tasks;
 
 namespace Module.Controllers {
    public class BaseController : Controller {
       public readonly IStringLocalizer<BaseController> S;
       public readonly IHtmlLocalizer<BaseController> H;
 
+      public IContentManager ContentManager { get; set; }
+      public IContentAliasManager ContentAliasManager { get; set; }
+
       public BaseController(
-          IStringLocalizer<BaseController> stringLocalizer,
-          IHtmlLocalizer<BaseController> htmlLocalizer
-          ) {
+         IContentManager contentManager,
+         IContentAliasManager contentAliasManager,
+         IStringLocalizer<BaseController> stringLocalizer,
+         IHtmlLocalizer<BaseController> htmlLocalizer
+      ) {
+         ContentManager = contentManager;
+         ContentAliasManager = contentAliasManager;
          S = stringLocalizer;
          H = htmlLocalizer;
+      }
+
+      public async Task<ContentItem> GetByIdOrAliasAsync(string idOrAlias) {
+         ContentItem contentItem = null;
+         if (idOrAlias.Length == Common.IdLength) {
+            contentItem = await ContentManager.GetAsync(idOrAlias);
+         }
+         if (contentItem == null) {
+            var id = await ContentAliasManager.GetContentItemIdAsync("alias:" + idOrAlias);
+            if (id != null) {
+               contentItem = await ContentManager.GetAsync(id);
+            }
+         }
+         return contentItem;
       }
 
       public bool IsMissingRequiredParameters(List<global::Transformalize.Configuration.Parameter> parameters, INotifier notifier) {

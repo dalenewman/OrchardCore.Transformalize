@@ -4,21 +4,15 @@ using System.Linq;
 using Cfg.Net.Contracts;
 using Cfg.Net.Parsers;
 
-namespace Module.Services.ArrangementModifiers {
+namespace Module.Services.Modifiers {
 
    /// <summary>
    /// This creates parameters for every input field
+   /// TODO: Use the WorkingSet(s) to simplify code
    /// </summary>
    public class FormParameterModifier : ICustomizer {
-      private readonly ICustomizer _after;
 
-      public FormParameterModifier(ICustomizer after) {
-         _after = after;
-      }
-
-      public void Customize(string collection, INode node, IDictionary<string, string> parameters, ILogger logger) {
-         _after.Customize(collection, node, parameters, logger);
-      }
+      public void Customize(string collection, INode node, IDictionary<string, string> parameters, ILogger logger) { }
 
       public void Customize(INode root, IDictionary<string, string> parameters, ILogger logger) {
 
@@ -86,12 +80,7 @@ namespace Module.Services.ArrangementModifiers {
                   }
                }
             }
-
          }
-
-
-         _after.Customize(root, parameters, logger);
       }
    }
-
 }
