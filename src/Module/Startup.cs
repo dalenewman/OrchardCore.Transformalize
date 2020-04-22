@@ -16,6 +16,7 @@ using Module.Services.Contracts;
 using Module.Services;
 using Module.Handlers;
 using OrchardCore.ContentManagement.Handlers;
+using Microsoft.AspNetCore.Http;
 
 namespace Module {
    public class Startup : StartupBase {
@@ -28,9 +29,11 @@ namespace Module {
       public override void ConfigureServices(IServiceCollection services) {
 
          services.AddSession();
+         services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 
          services.AddScoped<ILinkService, LinkService>();
          services.AddScoped<ISortService, SortService>();
+         services.AddScoped<IStickyParameterService, StickyParameterService>();
          services.AddScoped<IReportLoadService, ReportLoadService>();
          services.AddScoped<IReportRunService, ReportRunService>();
 
@@ -42,7 +45,6 @@ namespace Module {
          services.AddContentPart<TransformalizeArrangementPart>();
 
          services.AddScoped<IContentHandler, TransformalizeHandler>();
-
       }
 
       public override void Configure(IApplicationBuilder builder, IEndpointRouteBuilder routes, IServiceProvider serviceProvider) {
@@ -52,6 +54,13 @@ namespace Module {
              areaName: Common.ModuleName,
              pattern: "report/{ContentItemId}",
              defaults: new { controller = "Report", action = "Index" }
+         );
+
+         routes.MapAreaControllerRoute(
+             name: "Transformalize.Export.Index",
+             areaName: Common.ModuleName,
+             pattern: "export/{ContentItemId}",
+             defaults: new { controller = "Export", action = "Index" }
          );
 
          builder.UseSession();

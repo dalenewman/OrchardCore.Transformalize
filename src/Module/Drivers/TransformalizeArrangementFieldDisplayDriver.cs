@@ -18,7 +18,8 @@ namespace Module.Drivers {
       }
 
       public override IDisplayResult Display(TransformalizeArrangementField field, BuildFieldDisplayContext context) {
-         return Initialize<DisplayTransformalizeArrangementFieldViewModel>(GetDisplayShapeType(context), model => {
+         var shapeType = GetDisplayShapeType(context);
+         return Initialize<DisplayTransformalizeArrangementFieldViewModel>(shapeType, model => {
             model.Field = field;
             model.Part = context.ContentPart;
             model.PartFieldDefinition = context.PartFieldDefinition;

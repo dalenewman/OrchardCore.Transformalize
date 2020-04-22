@@ -5,6 +5,6 @@ using Transformalize.Contracts;
 
 namespace Module.Services.Contracts {
    public interface IReportRunService {
-      void Run(Process process, IPipelineLogger logger);
+      Task RunAsync(Process process, IPipelineLogger logger);
    }
 }

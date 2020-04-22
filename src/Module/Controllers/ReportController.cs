@@ -19,6 +19,7 @@ namespace Module.Controllers {
       private readonly INotifier _notifier;
       private readonly IReportLoadService _reportLoadService;
       private readonly IReportRunService _reportRunService;
+      private readonly IStickyParameterService _stickyParameterService;
 
       public ReportController(
          IContentManager contentManager, 
@@ -27,12 +28,14 @@ namespace Module.Controllers {
          IReportRunService reportRunService,
          IStringLocalizer<BaseController> stringLocalizer, 
          IHtmlLocalizer<BaseController> htmlLocalizer, 
-         ISortService sortService, 
+         ISortService sortService,
+         IStickyParameterService stickyParameterService,
          INotifier notifier) : base(contentManager, contentAliasManager, stringLocalizer, htmlLocalizer) {
          _sortService = sortService;
          _notifier = notifier;
          _reportLoadService = reportLoadService;
          _reportRunService = reportRunService;
+         _stickyParameterService = stickyParameterService;
       }
 
 
@@ -50,7 +53,7 @@ namespace Module.Controllers {
          if (part != null) {
 
             var parameters = GetParameters();
-            GetStickyParameters(part.ContentItem.ContentItemId, parameters);
+            _stickyParameterService.GetStickyParameters(part.ContentItem.ContentItemId, parameters);
 
             var process = _reportLoadService.Load(part.Arrangement.Arrangement, parameters, logger);
 
@@ -61,11 +64,11 @@ namespace Module.Controllers {
 
             process.Mode = "report";
             process.ReadOnly = true;
-            SetStickyParameters(contentItem.ContentItemId, process.Parameters);
+            _stickyParameterService.SetStickyParameters(contentItem.ContentItemId, process.Parameters);
 
             var sizes = new List<int>();
             sizes.AddRange(new int[] { 20, 50, 100 });  //todo: put in report controller content type
-            var stickySize = GetStickyParameter(contentItem.ContentItemId, "size", () => sizes.Min());
+            var stickySize = _stickyParameterService.GetStickyParameter(contentItem.ContentItemId, "size", () => sizes.Min());
 
             SetPageSize(process, parameters, sizes.Min(), stickySize, sizes.Max());
 
@@ -79,7 +82,7 @@ namespace Module.Controllers {
 
             try {
                // todo: have these modules come from dependency injection
-               _reportRunService.Run(process, logger);
+               await _reportRunService.RunAsync(process, logger);
                if (process.Errors().Any()) {
                   process.Status = 500;
                   process.Message = "Error";

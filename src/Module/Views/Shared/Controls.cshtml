@@ -21,9 +21,9 @@
     var hasCoordinates = allFields.Any(f => f.Alias.StartsWith("lat", StringComparison.OrdinalIgnoreCase)) && allFields.Any(f => f.Alias.StartsWith("lon", StringComparison.OrdinalIgnoreCase));
 
     var linkService = Context.RequestServices.GetService<ILinkService>();
-    var exportCsvLink = linkService.Create(Context.Request, Context.Session, Model.Item.ContentItemId, Url.Action("Index", "Export", new { ContentItemId = Model.Item.ContentItemId }), "csv", true);
+    var exportCsvLink = linkService.Create(Model.Item.ContentItemId, Url.Action("Index", "Export", new { ContentItemId = Model.Item.ContentItemId }), "csv", true);
     // var exportXlsxLink = linkService.Create(Context.Request, Context.Session, Model.Item.ContentItemId, Url.Action("Index", "Export", new { ContentItemId = Model.Item.ContentItemId }), "xlsx", true);
-    var exportJsonLink = linkService.Create(Context.Request, Context.Session, Model.Item.ContentItemId, Url.Action("Index", "Export", new { ContentItemId = Model.Item.ContentItemId }), "json", true);
+    var exportJsonLink = linkService.Create(Model.Item.ContentItemId, Url.Action("Index", "Export", new { ContentItemId = Model.Item.ContentItemId }), "json", true);
 
     var views = new List<PipelineViewModel>();
 
@@ -199,8 +199,8 @@
                         @*<a class="dropdown-item" href="@exportXlsxLink" title="save to excel file">XLSX</a>*@
                         @{
                             if (hasCoordinates) {
-                                var exportGeoJsonLink = linkService.Create(Context.Request, Context.Session, Model.Item.ContentItemId, Url.Action("Index", "Export", new { ContentItemId = Model.Item.ContentItemId }), "geojson", true);
-                                var exportKmlLink = linkService.Create(Context.Request, Context.Session, Model.Item.ContentItemId, Url.Action("Index", "Export", new { ContentItemId = Model.Item.ContentItemId }), "kml", true);
+                                var exportGeoJsonLink = linkService.Create(Model.Item.ContentItemId, Url.Action("Index", "Export", new { ContentItemId = Model.Item.ContentItemId }), "geojson", true);
+                                var exportKmlLink = linkService.Create(Model.Item.ContentItemId, Url.Action("Index", "Export", new { ContentItemId = Model.Item.ContentItemId }), "kml", true);
                                 <a class="dropdown-item" href="@exportGeoJsonLink" title="save to geojson file">GEOJSON</a>
                                 <a class="dropdown-item" href="@exportKmlLink" title="save to kml file">KML</a>
                             }

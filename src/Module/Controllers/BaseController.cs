@@ -1,12 +1,10 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Localization;
 using Microsoft.Extensions.Localization;
 using OrchardCore.DisplayManagement.Notify;
-using System.ComponentModel;
 using Transformalize.Configuration;
 using OrchardCore.ContentManagement;
 using System.Threading.Tasks;
@@ -45,7 +43,7 @@ namespace Module.Controllers {
          return contentItem;
       }
 
-      public bool IsMissingRequiredParameters(List<global::Transformalize.Configuration.Parameter> parameters, INotifier notifier) {
+      public bool IsMissingRequiredParameters(List<Parameter> parameters, INotifier notifier) {
 
          var hasRequiredParameters = true;
          foreach (var parameter in parameters.Where(p => p.Required)) {
@@ -66,40 +64,6 @@ namespace Module.Controllers {
          }
 
          return !hasRequiredParameters;
-      }
-
-      public void SetStickyParameters(string contentItemId, List<global::Transformalize.Configuration.Parameter> parameters) {
-         foreach (var parameter in parameters.Where(p => p.Sticky)) {
-            var key = contentItemId + parameter.Name;
-            if (string.IsNullOrEmpty(Request.Query[parameter.Name].ToString())) {
-               if (HttpContext.Session.GetString(key) != null) {
-                  parameter.Value = HttpContext.Session.GetString(key);
-               }
-            } else {  // A parameter is set
-               var value = Request.Query[parameter.Name].ToString();
-               if (HttpContext.Session.GetString(key) == null) {
-                  HttpContext.Session.SetString(key, value);  // for the next time
-                  parameter.Value = value; // for now
-               } else {
-                  if (HttpContext.Session.GetString(key) != value) {
-                     HttpContext.Session.SetString(key, value); // for the next time
-                     parameter.Value = value; // for now
-                  }
-               }
-            }
-         }
-      }
-
-      public void GetStickyParameters(string contentItemId, IDictionary<string, string> parameters) {
-         var prefix = contentItemId;
-         foreach (string key in HttpContext.Session.Keys) {
-            if (key.StartsWith(prefix)) {
-               var name = key.Substring(prefix.Length);
-               if (!parameters.ContainsKey(name) && HttpContext.Session.GetString(key) != null) {
-                  parameters[name] = HttpContext.Session.GetString(key);
-               }
-            }
-         }
       }
 
       public IDictionary<string, string> GetParameters() {
@@ -155,55 +119,6 @@ namespace Module.Controllers {
          }
 
       }
-
-      public T GetStickyParameter<T>(string contentItemId, string name, Func<T> defaultValue) where T : IConvertible {
-
-         var tc = TypeDescriptor.GetConverter(typeof(T));
-
-         var key = contentItemId + name;
-
-         if (Request.Query[name].ToString() != null) {
-            try {
-               var queryValue = (T)tc.ConvertFromString(Request.Query[name].ToString());
-               if (queryValue != null) {
-                  if (!queryValue.Equals((T)tc.ConvertFromString(HttpContext.Session.GetString(key)))) {
-                     HttpContext.Session.SetString(key, tc.ConvertToString(queryValue));
-                  }
-
-                  return queryValue;
-               }
-            } catch (Exception) {
-               // Logger.Error(exception.Message);
-            }
-         }
-
-         if (Request.HasFormContentType && Request.Form[name].ToString() != null) {
-            try {
-               var formValue = (T)tc.ConvertFromString(Request.Form[name]);
-               if (formValue != null) {
-                  if (!formValue.Equals(tc.ConvertFromString(HttpContext.Session.GetString(key)))) {
-                     HttpContext.Session.SetString(key, tc.ConvertToString(formValue));
-                  }
-
-                  return formValue;
-               }
-            } catch (Exception) {
-               // Logger.Error(exception.Message);
-            }
-         }
-
-         if (HttpContext.Session.GetString(key) != null) {
-            return (T)tc.ConvertFromString(HttpContext.Session.GetString(key));
-         }
-
-         var value = defaultValue();
-         HttpContext.Session.SetString(key, value.ToString());
-         return value;
-
-      }
-
-
-
 
    }
 }
