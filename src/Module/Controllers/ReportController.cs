@@ -11,6 +11,8 @@ using Module.Services.Contracts;
 using Module.ViewModels;
 using Transformalize.Contracts;
 using Transformalize.Logging;
+using Etch.OrchardCore.ContentPermissions.Services;
+using Etch.OrchardCore.ContentPermissions.Models;
 
 namespace Module.Controllers {
    public class ReportController : BaseController {
@@ -20,6 +22,7 @@ namespace Module.Controllers {
       private readonly IReportLoadService _reportLoadService;
       private readonly IReportRunService _reportRunService;
       private readonly IStickyParameterService _stickyParameterService;
+      private readonly IContentPermissionsService _contentPermissionsService;
 
       public ReportController(
          IContentManager contentManager, 
@@ -30,12 +33,14 @@ namespace Module.Controllers {
          IHtmlLocalizer<BaseController> htmlLocalizer, 
          ISortService sortService,
          IStickyParameterService stickyParameterService,
+         IContentPermissionsService contentPermissionsService,
          INotifier notifier) : base(contentManager, contentAliasManager, stringLocalizer, htmlLocalizer) {
          _sortService = sortService;
          _notifier = notifier;
          _reportLoadService = reportLoadService;
          _reportRunService = reportRunService;
          _stickyParameterService = stickyParameterService;
+         _contentPermissionsService = contentPermissionsService;
       }
 
 
@@ -47,8 +52,16 @@ namespace Module.Controllers {
             return NotFound();
          }
 
-         var part = contentItem.As<TransformalizeArrangementPart>();
          var logger = new MemoryLogger(LogLevel.Info);
+
+         var cpPart = contentItem.As<ContentPermissionsPart>();
+         if(cpPart != null && cpPart.Enabled) {
+            if (!_contentPermissionsService.CanAccess(cpPart)) {
+               return View("Error", GetErrorModel(contentItem,"Access Denied."));
+            }
+         }
+
+         var part = contentItem.As<TransformalizeArrangementPart>();
 
          if (part != null) {
 

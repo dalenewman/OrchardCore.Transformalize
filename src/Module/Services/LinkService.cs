@@ -8,8 +8,11 @@ using Microsoft.AspNetCore.Http.Extensions;
 namespace Module.Services {
    public class LinkService : ILinkService {
       private readonly IHttpContextAccessor _contextAccessor;
-      public LinkService(IHttpContextAccessor contextAccessor) {
+      private readonly IStickyParameterService _stickyParameterService;
+
+      public LinkService(IHttpContextAccessor contextAccessor, IStickyParameterService stickyParameterService) {
          _contextAccessor = contextAccessor;
+         _stickyParameterService = stickyParameterService;
       }
 
       public HtmlString Create(string contentItemId, string actionUrl, string type, bool everything) {
@@ -21,7 +24,7 @@ namespace Module.Services {
             url.SetQueryParam("page", 0);
          } else {
             if (_contextAccessor.HttpContext.Request.Query["size"].ToString() == null) {
-               // url.SetQueryParam("size", Common.GetStickyParameter(request, session, contentItemId, "size", () => 20));
+               url.SetQueryParam("size", _stickyParameterService.GetStickyParameter(contentItemId, "size", () => 20));
             }
          }
 

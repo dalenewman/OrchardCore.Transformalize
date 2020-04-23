@@ -8,12 +8,15 @@ using OrchardCore.DisplayManagement.Notify;
 using Transformalize.Configuration;
 using OrchardCore.ContentManagement;
 using System.Threading.Tasks;
+using Module.ViewModels;
+using Transformalize.Logging;
+using Transformalize.Contracts;
 
 namespace Module.Controllers {
    public class BaseController : Controller {
       public readonly IStringLocalizer<BaseController> S;
       public readonly IHtmlLocalizer<BaseController> H;
-
+      
       public IContentManager ContentManager { get; set; }
       public IContentAliasManager ContentAliasManager { get; set; }
 
@@ -120,5 +123,8 @@ namespace Module.Controllers {
 
       }
 
+      public ReportViewModel GetErrorModel(ContentItem contentItem, string message) {
+         return new ReportViewModel(new Process() { Name = "Error", Log = new List<LogEntry>(1) { new LogEntry(LogLevel.Error, null, message) } }, contentItem);
+      }
    }
 }

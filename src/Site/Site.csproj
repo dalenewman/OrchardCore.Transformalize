@@ -19,6 +19,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Etch.OrchardCore.ContentPermissions\Etch.OrchardCore.ContentPermissions.csproj" />
     <ProjectReference Include="..\Module\OrchardCore.Transformalize.csproj" />
   </ItemGroup>
 

@@ -10,8 +10,10 @@ using Transformalize.Contracts;
 using Transformalize.Providers.Ado.Autofac;
 using Transformalize.Providers.Bogus.Autofac;
 using Transformalize.Providers.CsvHelper.Autofac;
+using Transformalize.Providers.Elasticsearch.Autofac;
 using Transformalize.Providers.PostgreSql.Autofac;
 using Transformalize.Providers.SqlServer.Autofac;
+using Transformalize.Transforms.Jint.Autofac;
 
 namespace Module.Services {
    public class ReportRunService : IReportRunService {
@@ -34,15 +36,24 @@ namespace Module.Services {
          if (ado) {
             container.AddModule(new AdoProviderModule());
          }
+
          if (providers.Contains("sqlserver")) {
             container.AddModule(new SqlServerModule());
          }
+
          if (providers.Contains("postgresql")) {
             container.AddModule(new PostgreSqlModule());
          }
+
          if (providers.Contains("file")) {
             container.AddModule(new CsvHelperProviderModule(_contextAccessor.HttpContext.Response.Body));
          }
+
+         if (providers.Contains("elasticsearch")) {
+            container.AddModule(new ElasticsearchModule());
+         }
+
+         container.AddModule(new JintTransformModule());
 
          await container.CreateScope(process, logger).Resolve<IProcessController>().ExecuteAsync();
 

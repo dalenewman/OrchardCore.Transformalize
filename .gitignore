@@ -353,3 +353,4 @@ MigrationBackup/
 .ionide/
 
 App_Data/
+Etch.OrchardCore.ContentPermissions/
