@@ -11,8 +11,8 @@ using Module.Services.Contracts;
 using Module.ViewModels;
 using Transformalize.Contracts;
 using Transformalize.Logging;
-using Etch.OrchardCore.ContentPermissions.Services;
 using Etch.OrchardCore.ContentPermissions.Models;
+using Module.Services;
 
 namespace Module.Controllers {
    public class ReportController : BaseController {
@@ -42,7 +42,6 @@ namespace Module.Controllers {
          _stickyParameterService = stickyParameterService;
          _contentPermissionsService = contentPermissionsService;
       }
-
 
       [HttpGet]
       public async Task<ActionResult> Index(string contentItemId) {

@@ -45,6 +45,7 @@ namespace Module {
          services.AddContentPart<TransformalizeArrangementPart>();
 
          services.AddScoped<IContentHandler, TransformalizeHandler>();
+         services.AddScoped<IContentPermissionsService, ContentPermissionsService>();
       }
 
       public override void Configure(IApplicationBuilder builder, IEndpointRouteBuilder routes, IServiceProvider serviceProvider) {

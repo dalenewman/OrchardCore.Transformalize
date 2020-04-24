@@ -13,8 +13,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		README.md = README.md
 	EndProjectSection
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Etch.OrchardCore.ContentPermissions", "src\Etch.OrchardCore.ContentPermissions\Etch.OrchardCore.ContentPermissions.csproj", "{DD28E61E-5D12-4F26-88FC-5C8FDA18D144}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -29,10 +27,6 @@ Global
 		{5BA3B356-E332-4D38-9B74-A031620ED4CA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5BA3B356-E332-4D38-9B74-A031620ED4CA}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5BA3B356-E332-4D38-9B74-A031620ED4CA}.Release|Any CPU.Build.0 = Release|Any CPU
-		{DD28E61E-5D12-4F26-88FC-5C8FDA18D144}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{DD28E61E-5D12-4F26-88FC-5C8FDA18D144}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{DD28E61E-5D12-4F26-88FC-5C8FDA18D144}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{DD28E61E-5D12-4F26-88FC-5C8FDA18D144}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
