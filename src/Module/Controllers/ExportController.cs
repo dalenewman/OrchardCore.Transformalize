@@ -48,7 +48,7 @@ namespace Module.Controllers {
             return NotFound();
          }
 
-         var part = contentItem.As<TransformalizeArrangementPart>();
+         var part = contentItem.As<TransformalizeReportPart>();
 
          var logger = new MemoryLogger(LogLevel.Error);
 

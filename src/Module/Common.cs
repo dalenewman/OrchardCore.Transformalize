@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Reflection.Metadata;
 
 namespace Module {
    public static class Common {
@@ -24,6 +25,8 @@ namespace Module {
       public const string AllTag = "All";
       public const string TagFilterName = "tagFilter";
       public const string BatchValueFieldName = "BatchValue";
+      public const string SettingsGroupId = "Transformalize";
+      public const string CodeMirrorVersion = "5.52.2";
 
       public static string CacheKey(int id, string feature) {
          return ModuleName + "." + feature + "." + id;

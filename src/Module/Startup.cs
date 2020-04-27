@@ -17,6 +17,11 @@ using Module.Services;
 using Module.Handlers;
 using OrchardCore.ContentManagement.Handlers;
 using Microsoft.AspNetCore.Http;
+using OrchardCore.DisplayManagement.Handlers;
+using OrchardCore.Settings;
+using OrchardCore.Navigation;
+using OrchardCore.Security.Permissions;
+using Module.Navigation;
 
 namespace Module {
    public class Startup : StartupBase {
@@ -42,10 +47,15 @@ namespace Module {
 
          services.AddContentField<TransformalizeArrangementField>(); // UseDisplayDriver in dev branch
          services.AddScoped<IContentFieldDisplayDriver, TransformalizeArrangementFieldDisplayDriver>();
-         services.AddContentPart<TransformalizeArrangementPart>();
+         services.AddContentPart<TransformalizeReportPart>();
 
          services.AddScoped<IContentHandler, TransformalizeHandler>();
-         services.AddScoped<IContentPermissionsService, ContentPermissionsService>();
+
+         // Transforamlize Settings
+         services.AddScoped<IDisplayDriver<ISite>, TransformalizeSettingsDisplayDriver>();
+         services.AddScoped<IPermissionProvider, Permissions>();
+         services.AddScoped<INavigationProvider, TransformalizeSettingsAdminMenu>();
+
       }
 
       public override void Configure(IApplicationBuilder builder, IEndpointRouteBuilder routes, IServiceProvider serviceProvider) {

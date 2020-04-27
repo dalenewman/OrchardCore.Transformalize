@@ -14,11 +14,9 @@ namespace Module {
 
       public int Create() {
 
-         _contentDefinitionManager.AlterPartDefinition("TransformalizeArrangementPart", part => part
-             .WithDisplayName("Transformalize Arrangement Part")
-             .WithDescription("Provides a field and custom editor for arrangements.")
-             .Attachable()
-             .Reusable()
+         _contentDefinitionManager.AlterPartDefinition("TransformalizeReportPart", part => part
+             .WithDisplayName("Transformalize Report Part")
+             .WithDescription("Provides fields for Transformalize Report content type")
              .WithField("Arrangement", field => field
                  .OfType(nameof(TransformalizeArrangementField))
                  .WithDisplayName("Arrangement")
@@ -35,7 +33,7 @@ namespace Module {
                     Pattern = "{{ ContentItem | title | slugify }}"
                  })
              )
-             .WithPart("TransformalizeArrangementPart", part => part.WithPosition("03"))
+             .WithPart("TransformalizeReportPart", part => part.WithPosition("03"))
              .WithPart("CommonPart", part => part.WithPosition("04"))
          );
 

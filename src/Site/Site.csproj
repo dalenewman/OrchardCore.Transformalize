@@ -14,7 +14,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Etch.OrchardCore.ContentPermissions" Version="0.1.2-rc1" />
+    <PackageReference Include="Etch.OrchardCore.ContentPermissions" Version="0.2.0-rc1" />
     <PackageReference Include="OrchardCore.Logging.NLog" Version="1.0.0-rc1-10004" />
     <PackageReference Include="OrchardCore.Application.Cms.Targets" Version="1.0.0-rc1-10004" />
   </ItemGroup>

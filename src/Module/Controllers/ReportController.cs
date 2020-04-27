@@ -12,7 +12,7 @@ using Module.ViewModels;
 using Transformalize.Contracts;
 using Transformalize.Logging;
 using Etch.OrchardCore.ContentPermissions.Models;
-using Module.Services;
+using Etch.OrchardCore.ContentPermissions.Services;
 
 namespace Module.Controllers {
    public class ReportController : BaseController {
@@ -56,11 +56,11 @@ namespace Module.Controllers {
          var cpPart = contentItem.As<ContentPermissionsPart>();
          if(cpPart != null && cpPart.Enabled) {
             if (!_contentPermissionsService.CanAccess(cpPart)) {
-               return View("Error", GetErrorModel(contentItem,"Access Denied."));
+               return View("Log", GetErrorModel(contentItem,"Access Denied."));
             }
          }
 
-         var part = contentItem.As<TransformalizeArrangementPart>();
+         var part = contentItem.As<TransformalizeReportPart>();
 
          if (part != null) {
 
@@ -71,7 +71,7 @@ namespace Module.Controllers {
 
             if (process.Errors().Any()) {
                process.Log = logger.Log;
-               return View("Error", new ReportViewModel(process, contentItem));
+               return View("Log", new ReportViewModel(process, contentItem));
             }
 
             process.Mode = "report";
@@ -93,13 +93,12 @@ namespace Module.Controllers {
             }
 
             try {
-               // todo: have these modules come from dependency injection
                await _reportRunService.RunAsync(process, logger);
-               if (process.Errors().Any()) {
+               if (logger.Log.Any(l=>l.LogLevel == LogLevel.Error)) {
                   process.Status = 500;
                   process.Message = "Error";
                   process.Log = logger.Log;
-                  return View("Error", new ReportViewModel(process, contentItem));
+                  return View("Log", new ReportViewModel(process, contentItem));
                }
                process.Status = 200;
                process.Message = "Ok";
@@ -108,10 +107,15 @@ namespace Module.Controllers {
                process.Message = ex.Message;
                process.Log.Add(new LogEntry(LogLevel.Error, null, ex.Message));
                process.Log.AddRange(logger.Log);
-               return View("Error", new ReportViewModel(process, contentItem));
+               return View("Log", new ReportViewModel(process, contentItem));
             }
 
-            return View(new ReportViewModel(process, contentItem));
+            if(Request.Query["log"].ToString() == "1") {
+               process.Log = logger.Log;
+               return View("Log", new ReportViewModel(process, contentItem));
+            } else {
+               return View(new ReportViewModel(process, contentItem));
+            }            
 
          }
 

@@ -13,11 +13,13 @@ using Transformalize.Providers.Ado.Autofac;
 using Transformalize.Providers.Bogus.Autofac;
 using Transformalize.Providers.CsvHelper.Autofac;
 using Transformalize.Providers.Elasticsearch.Autofac;
+using Transformalize.Providers.Json.Autofac;
 using Transformalize.Providers.PostgreSql.Autofac;
 using Transformalize.Providers.Sqlite.Autofac;
 using Transformalize.Providers.SqlServer.Autofac;
 
 using Transformalize.Transforms.Jint.Autofac;
+using Transformalize.Transforms.Json.Autofac;
 
 namespace Module.Services {
    public class ReportRunService : IReportRunService {
@@ -40,9 +42,11 @@ namespace Module.Services {
          if (providers.Contains("sqlite")) { container.AddModule(new SqliteModule()); }
          if (providers.Contains("file")) { container.AddModule(new CsvHelperProviderModule(_contextAccessor.HttpContext.Response.Body)); }
          if (providers.Contains("elasticsearch")) { container.AddModule(new ElasticsearchModule()); }
+         if (providers.Contains("json")) { container.AddModule(new JsonProviderModule(_contextAccessor.HttpContext.Response.Body)); }
 
          // transforms
          container.AddModule(new JintTransformModule());
+         container.AddModule(new JsonTransformModule());
 
          await container.CreateScope(process, logger).Resolve<IProcessController>().ExecuteAsync();
 
