@@ -21,19 +21,19 @@ Converted to .NET Standard, Modified for Orchard Core, etc.
 - <strike>Jint</strike>, should tap into Orchard Core's service
 - <strike>JSON</strike>
 - Razor
-- Humanize
+- <strike>Humanize</strike>
 - Liquid / Fluid, should tap into Orchard Core's service
 
 #### Web Features
 
 - <strike>Code Mirror XML Editor</strike>
 - Reporting (about 50%)
+- Batches / Bulk Actions (be able to select report results for a bulk action, which is a task (etl))
 - Tasks (ETL Jobs), Schedule? Background?
 - <strike>CSV Extract</strike>, no more sync writes to stream
 - <strike>JSON Extract</strike>, no more sync writes to stream
-- Batches / Bulk Actions
 - Forms (simple one page forms with transforms / validators)
-- OpenId Connect / OAuth secured API to tasks
+
 Caution:  This currently relies on Nuget packages
 that are not yet published so don't bother trying
 to get it running on your environment yet.

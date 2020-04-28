@@ -7,6 +7,7 @@ using Transformalize.Containers.Autofac;
 using Transformalize.Contracts;
 using Transformalize.Transforms.Jint.Autofac;
 using Transformalize.Transforms.Json.Autofac;
+using Transformalize.Transforms.Humanizer.Autofac;
 
 namespace Module.Services {
    public class ReportLoadService : IReportLoadService {
@@ -21,6 +22,7 @@ namespace Module.Services {
          // external transforms register their short-hand here
          container.AddModule(new JintTransformModule());
          container.AddModule(new JsonTransformModule());
+         container.AddModule(new HumanizeModule());
          
          return container.CreateScope(arrangement, logger, parameters).Resolve<Process>();
       }

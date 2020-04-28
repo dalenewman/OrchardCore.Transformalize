@@ -17,7 +17,7 @@ using Transformalize.Providers.Json.Autofac;
 using Transformalize.Providers.PostgreSql.Autofac;
 using Transformalize.Providers.Sqlite.Autofac;
 using Transformalize.Providers.SqlServer.Autofac;
-
+using Transformalize.Transforms.Humanizer.Autofac;
 using Transformalize.Transforms.Jint.Autofac;
 using Transformalize.Transforms.Json.Autofac;
 
@@ -47,6 +47,7 @@ namespace Module.Services {
          // transforms
          container.AddModule(new JintTransformModule());
          container.AddModule(new JsonTransformModule());
+         container.AddModule(new HumanizeModule());
 
          await container.CreateScope(process, logger).Resolve<IProcessController>().ExecuteAsync();
 
