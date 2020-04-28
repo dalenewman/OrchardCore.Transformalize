@@ -12,6 +12,8 @@ Orchard Core 1.0.0-rc1 Nuget packages.
 - <strike>CSV</strike>
 - <strike>Bogus</strike>
 - SOLR
+- GeoJson
+- KML
 
 #### Transforms
 - <strike>Jint</strike>
@@ -26,9 +28,11 @@ Orchard Core 1.0.0-rc1 Nuget packages.
 - Reporting (about 50%)
 - Batches / Bulk Actions (be able to select report results for a bulk action, which is a task (etl))
 - Tasks (ETL Jobs), Schedule? Background?
-- <strike>CSV Extract</strike>, no more sync writes to stream
-- <strike>JSON Extract</strike>, no more sync writes to stream
-- Forms (simple one page forms with transforms / validators)
+- <strike>CSV Extract</strike>
+- <strike>JSON Extract</strike>
+- Forms (simple forms with transforms / validators)
+- Map(Box) view
+- Calendar view
 
 #### Caution
 This currently relies on Nuget packages

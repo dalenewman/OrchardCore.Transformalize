@@ -41,6 +41,7 @@ namespace Module {
          services.AddScoped<IStickyParameterService, StickyParameterService>();
          services.AddScoped<IReportLoadService, ReportLoadService>();
          services.AddScoped<IReportRunService, ReportRunService>();
+         services.AddScoped<IReportService, ReportService>();
 
          services.AddScoped<IDataMigration, Migrations>();
          services.AddScoped<IResourceManifestProvider, ResourceManifest>();
@@ -68,10 +69,17 @@ namespace Module {
          );
 
          routes.MapAreaControllerRoute(
-             name: "Transformalize.Export.Index",
+             name: "Transformalize.Csv.Index",
              areaName: Common.ModuleName,
-             pattern: "export/{ContentItemId}",
-             defaults: new { controller = "Export", action = "Index" }
+             pattern: "csv/{ContentItemId}",
+             defaults: new { controller = "Csv", action = "Index" }
+         );
+
+         routes.MapAreaControllerRoute(
+             name: "Transformalize.Json.Index",
+             areaName: Common.ModuleName,
+             pattern: "json/{ContentItemId}",
+             defaults: new { controller = "Json", action = "Index" }
          );
 
          builder.UseSession();

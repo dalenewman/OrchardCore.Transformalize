@@ -15,9 +15,9 @@ namespace Module.Services {
          _stickyParameterService = stickyParameterService;
       }
 
-      public HtmlString Create(string contentItemId, string actionUrl, string type, bool everything) {
+      public HtmlString Create(string contentItemId, string actionUrl, bool everything) {
 
-         var url = RemoveNoiseFromUrl(_contextAccessor.HttpContext.Request.GetDisplayUrl().SetQueryParam("output", type));
+         var url = RemoveNoiseFromUrl(_contextAccessor.HttpContext.Request.GetDisplayUrl());
          url.Path = actionUrl;
 
          if (everything) {
@@ -28,13 +28,7 @@ namespace Module.Services {
             }
          }
 
-         switch (type) {
-            case "report":
-               url.RemoveQueryParam("output");
-               return new HtmlString(url);
-            default:
-               return new HtmlString(url.SetQueryParam("output", type).ToString());
-         }
+         return new HtmlString(url);
 
       }
 

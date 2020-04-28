@@ -107,7 +107,7 @@
 
       @foreach (var entity in Model.Process.Entities) {
 
-         var fields = firstEntity.GetAllOutputFields().Where(f => !f.System && f.Alias != Common.BatchValueFieldName).ToArray();
+         var fields = firstEntity.GetAllOutputFields().Where(f => !f.System).ToArray();
          var isSortable = fields.Any(f => f.Sortable == "true");
 
          <div class="row" style="padding-top: 2px;">
