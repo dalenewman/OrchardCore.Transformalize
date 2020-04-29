@@ -7,7 +7,7 @@ Orchard Core 1.0.0-rc1 Nuget packages.
 - <strike>SQL Server</strike>
 - <strike>PostgreSQL</strike>
 - <strike>SQLite</strike>
-- MySql
+- <strike>MySql</strike>
 - <strike>JSON</strike>
 - <strike>CSV</strike>
 - <strike>Bogus</strike>
@@ -25,14 +25,15 @@ Orchard Core 1.0.0-rc1 Nuget packages.
 
 #### Web Features
 - <strike>Code Mirror XML Editor</strike>
-- Reporting (about 50%)
+- Reporting
 - Batches / Bulk Actions (be able to select report results for a bulk action, which is a task (etl))
 - Tasks (ETL Jobs), Schedule? Background?
 - <strike>CSV Extract</strike>
 - <strike>JSON Extract</strike>
 - Forms (simple forms with transforms / validators)
-- Map(Box) view
-- Calendar view
+- Map(Box) report view
+- Calendar report view
+- Add Mini Profiler into providers, operations (transforms, validators)
 
 #### Caution
 This currently relies on Nuget packages

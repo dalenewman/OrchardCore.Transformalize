@@ -12,6 +12,7 @@ using OrchardCore.Modules.Manifest;
         "OrchardCore.Contents",
         "OrchardCore.Title",
         "Etch.OrchardCore.ContentPermissions",
+        "OrchardCore.MiniProfiler",
         "OrchardCore.Alias" // using alias until autoroute works for custom content item controllers
     }
 )]

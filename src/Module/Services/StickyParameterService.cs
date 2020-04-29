@@ -20,7 +20,7 @@ namespace Module.Services {
 
          var key = contentItemId + name;
 
-         if (_context.Request.Query[name].ToString() != null) {
+         if (!string.IsNullOrEmpty(_context.Request.Query[name].ToString())) {
             try {
                var queryValue = (T)tc.ConvertFromString(_context.Request.Query[name].ToString());
                if (queryValue != null) {

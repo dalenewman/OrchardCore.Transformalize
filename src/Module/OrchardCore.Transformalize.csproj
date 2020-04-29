@@ -21,16 +21,18 @@
       <PackageReference Include="OrchardCore.ContentManagement" Version="1.0.0-rc1-10004" />
       <PackageReference Include="OrchardCore.Contents" Version="1.0.0-rc1-10004" />
       <PackageReference Include="OrchardCore.DisplayManagement" Version="1.0.0-rc1-10004" />
+      <PackageReference Include="OrchardCore.MiniProfiler" Version="1.0.0-rc1-10004" />
       <PackageReference Include="OrchardCore.Module.Targets" Version="1.0.0-rc1-10004" />
       <PackageReference Include="OrchardCore.ResourceManagement" Version="1.0.0-rc1-10004" />
       <PackageReference Include="OrchardCore.Title" Version="1.0.0-rc1-10004" />
-      <PackageReference Include="Transformalize" Version="0.7.2.3-beta" />
+      <PackageReference Include="Transformalize" Version="0.7.2.4-beta" />
       <PackageReference Include="Transformalize.Container.Autofac" Version="0.6.31-beta" />
       <PackageReference Include="Transformalize.Provider.Ado.Autofac" Version="0.6.31.1-beta" />
       <PackageReference Include="Transformalize.Provider.Bogus.Autofac" Version="0.6.29-beta" />
       <PackageReference Include="Transformalize.Provider.CsvHelper.Autofac" Version="0.6.31-beta" />
       <PackageReference Include="Transformalize.Provider.Elasticsearch.Autofac" Version="0.6.28-beta" />
       <PackageReference Include="Transformalize.Provider.Json.Autofac" Version="0.6.29-beta" />
+      <PackageReference Include="Transformalize.Provider.MySql.Autofac" Version="0.6.31-beta" />
       <PackageReference Include="Transformalize.Provider.PostgreSql.Autofac" Version="0.6.28-beta" />
       <PackageReference Include="Transformalize.Provider.Sqlite.Autofac" Version="0.6.31-beta" />
       <PackageReference Include="Transformalize.Provider.SqlServer.Autofac" Version="0.6.28-beta" />

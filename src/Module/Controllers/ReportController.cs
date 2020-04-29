@@ -17,7 +17,7 @@ namespace Module.Controllers {
 
       public ReportController(
          IStickyParameterService stickyParameterService,
-         IReportService reportService
+         IReportService reportService         
       ) {
          _stickyParameterService = stickyParameterService;
          _reportService = reportService;
@@ -51,8 +51,10 @@ namespace Module.Controllers {
                return View("Log", new ReportViewModel(process, contentItem));
             }
 
-            process.Mode = "report";
-            process.ReadOnly = true;
+            foreach(var connection in process.Connections) {
+               connection.Buffer = true;
+            }
+
             _stickyParameterService.SetStickyParameters(contentItem.ContentItemId, process.Parameters);
 
             var sizes = new List<int>();

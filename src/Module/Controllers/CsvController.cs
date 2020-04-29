@@ -69,17 +69,14 @@ namespace Module.Controllers {
 
       private void ConvertToExport(Process process, string fileName) {
 
-         process.ReadOnly = true;
-
          var o = process.Output();
-
-         Response.ContentType = "application/csv";
          o.Stream = true;
          o.Provider = "file";
          o.Delimiter = ",";
          o.TextQualifier = "\"";
          o.File = fileName + ".csv";
 
+         Response.ContentType = "application/csv";
          Response.Headers.Add("content-disposition", "attachment; filename=" + o.File);
 
          // common

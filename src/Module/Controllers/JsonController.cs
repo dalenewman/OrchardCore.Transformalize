@@ -69,15 +69,12 @@ namespace Module.Controllers {
 
       private void ConvertToExport(Process process, string fileName) {
 
-         process.ReadOnly = true;
-
          var o = process.Output();
-
-         Response.ContentType = "application/json";
          o.Stream = true;
          o.Provider = "json";
          o.File = fileName + ".json";
 
+         Response.ContentType = "application/json";
          Response.Headers.Add("content-disposition", "attachment; filename=" + o.File);
 
          // common

@@ -1,6 +1,7 @@
 using Autofac;
 using Microsoft.AspNetCore.Http;
 using Module.Services.Contracts;
+using StackExchange.Profiling;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -14,6 +15,7 @@ using Transformalize.Providers.Bogus.Autofac;
 using Transformalize.Providers.CsvHelper.Autofac;
 using Transformalize.Providers.Elasticsearch.Autofac;
 using Transformalize.Providers.Json.Autofac;
+using Transformalize.Providers.MySql.Autofac;
 using Transformalize.Providers.PostgreSql.Autofac;
 using Transformalize.Providers.Sqlite.Autofac;
 using Transformalize.Providers.SqlServer.Autofac;
@@ -31,25 +33,37 @@ namespace Module.Services {
 
       public async Task RunAsync(Process process, IPipelineLogger logger) {
 
-         var providers = new HashSet<string>(process.Connections.Select(c => c.Provider));
+         var profiler = MiniProfiler.Current;
+
          var container = new Container();
 
-         // providers
-         container.AddModule(new AdoProviderModule());
-         if (providers.Contains("bogus")) { container.AddModule(new BogusModule()); }
-         if (providers.Contains("sqlserver")) { container.AddModule(new SqlServerModule()); }
-         if (providers.Contains("postgresql")) { container.AddModule(new PostgreSqlModule()); }
-         if (providers.Contains("sqlite")) { container.AddModule(new SqliteModule()); }
-         if (providers.Contains("file")) { container.AddModule(new CsvHelperProviderModule(_contextAccessor.HttpContext.Response.Body)); }
-         if (providers.Contains("elasticsearch")) { container.AddModule(new ElasticsearchModule()); }
-         if (providers.Contains("json")) { container.AddModule(new JsonProviderModule(_contextAccessor.HttpContext.Response.Body)); }
+         IProcessController controller;
 
-         // transforms
-         container.AddModule(new JintTransformModule());
-         container.AddModule(new JsonTransformModule());
-         container.AddModule(new HumanizeModule());
+         using (profiler.Step("Run.Prepare")) {
+            var providers = new HashSet<string>(process.Connections.Select(c => c.Provider));
 
-         await container.CreateScope(process, logger).Resolve<IProcessController>().ExecuteAsync();
+            // providers
+            container.AddModule(new AdoProviderModule());
+            if (providers.Contains("bogus")) { container.AddModule(new BogusModule()); }
+            if (providers.Contains("sqlserver")) { container.AddModule(new SqlServerModule()); }
+            if (providers.Contains("postgresql")) { container.AddModule(new PostgreSqlModule()); }
+            if (providers.Contains("sqlite")) { container.AddModule(new SqliteModule()); }
+            if (providers.Contains("mysql")) { container.AddModule(new MySqlModule()); }
+            if (providers.Contains("file")) { container.AddModule(new CsvHelperProviderModule(_contextAccessor.HttpContext.Response.Body)); }
+            if (providers.Contains("elasticsearch")) { container.AddModule(new ElasticsearchModule()); }
+            if (providers.Contains("json")) { container.AddModule(new JsonProviderModule(_contextAccessor.HttpContext.Response.Body)); }
+
+            // transforms
+            container.AddModule(new JintTransformModule());
+            container.AddModule(new JsonTransformModule());
+            container.AddModule(new HumanizeModule());
+
+            controller = container.CreateScope(process, logger).Resolve<IProcessController>();
+         }
+
+         using (profiler.Step("Run.Execute")) {
+            await controller.ExecuteAsync();
+         }
 
          return;
 
