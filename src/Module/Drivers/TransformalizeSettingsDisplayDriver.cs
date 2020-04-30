@@ -15,6 +15,8 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using OrchardCore.DisplayManagement.Handlers;
 using OrchardCore.Contents;
+using Transformalize.Configuration;
+using System.Linq;
 
 namespace Module.Drivers {
    public class TransformalizeSettingsDisplayDriver : SectionDisplayDriver<ISite, TransformalizeSettings> {
@@ -51,12 +53,27 @@ namespace Module.Drivers {
                return null;
             }
 
-            // Update the view model and the model as usual.
+            // this gets what's coming from the editor into model
             var model = new TransformalizeSettingsViewModel();
-
             await context.Updater.TryUpdateModelAsync(model, Prefix);
 
-            settings.CommonArrangement = model.CommonArrangement;
+            // validate the arrangement if supplied
+            if (string.IsNullOrWhiteSpace(model.CommonArrangement)) {
+               settings.CommonArrangement = model.CommonArrangement;
+            } else {
+               try {
+                  var process = new Process(model.CommonArrangement);
+                  if (process.Errors().Any()) {
+                     foreach (var error in process.Errors()) {
+                        context.Updater.ModelState.AddModelError(Prefix, error);
+                     }
+                  } else {
+                     settings.CommonArrangement = model.CommonArrangement;
+                  }
+               } catch (Exception ex) {
+                  context.Updater.ModelState.AddModelError(Prefix, ex.Message);
+               }
+            }
          }
 
          return await EditAsync(settings, context);
@@ -65,7 +82,7 @@ namespace Module.Drivers {
       private async Task<bool> IsAuthorizedToManageTransformalizeSettingsAsync() {
          var user = _hca.HttpContext?.User;
 
-         return user != null && await _authorizationService.AuthorizeAsync(user, Permissions.ManageTransformalizeSettings );
+         return user != null && await _authorizationService.AuthorizeAsync(user, Permissions.ManageTransformalizeSettings);
       }
 
    }

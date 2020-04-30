@@ -3,6 +3,7 @@
   "version": "0.6.28",
   "dependencies": {
     "codemirror": "5.52.2",
-    "bootstrap-select": "1.13.12"
+    "bootstrap-select": "1.13.12",
+    "prismjs": "1.20.0"
   }
 }

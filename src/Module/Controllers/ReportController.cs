@@ -12,14 +12,11 @@ using Transformalize.Logging;
 namespace Module.Controllers {
    public class ReportController : Controller {
 
-      private readonly IStickyParameterService _stickyParameterService;
       private readonly IReportService _reportService;
 
       public ReportController(
-         IStickyParameterService stickyParameterService,
          IReportService reportService         
       ) {
-         _stickyParameterService = stickyParameterService;
          _reportService = reportService;
       }
 
@@ -41,30 +38,11 @@ namespace Module.Controllers {
 
          if (part != null) {
 
-            var parameters = _reportService.GetParameters();
-            _stickyParameterService.GetStickyParameters(part.ContentItem.ContentItemId, parameters);
-
-            var process = _reportService.Load(part.Arrangement.Arrangement, parameters, logger);
+            var process = _reportService.Load(contentItem, part.Arrangement.Arrangement, logger);
 
             if (process.Errors().Any()) {
                process.Log = logger.Log;
                return View("Log", new ReportViewModel(process, contentItem));
-            }
-
-            foreach(var connection in process.Connections) {
-               connection.Buffer = true;
-            }
-
-            _stickyParameterService.SetStickyParameters(contentItem.ContentItemId, process.Parameters);
-
-            var sizes = new List<int>();
-            sizes.AddRange(new int[] { 20, 50, 100 });  //todo: put in report controller content type
-            var stickySize = _stickyParameterService.GetStickyParameter(contentItem.ContentItemId, "size", () => sizes.Min());
-
-            _reportService.SetPageSize(process, parameters, sizes.Min(), stickySize, sizes.Max());
-
-            if (parameters.ContainsKey("sort") && parameters["sort"] != null) {
-               _reportService.AddSortToEntity(process.Entities.First(), parameters["sort"]);
             }
 
             if (_reportService.IsMissingRequiredParameters(process.Parameters)) {
@@ -98,7 +76,7 @@ namespace Module.Controllers {
 
          }
 
-         return new ContentResult() { ContentType = "text/plain", Content = string.Join("\r\n", logger.Log.Select(le => le.ToString())) };
+         return View("Log", _reportService.GetErrorModel(contentItem, $"Unable to handle content type: {contentItem.ContentType}."));
       }
 
 

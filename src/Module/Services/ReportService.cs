@@ -25,7 +25,6 @@ namespace Module.Services {
       private readonly IReportLoadService _reportLoadService;
       private readonly IReportRunService _reportRunService;
       private readonly IContentPermissionsService _contentPermissionsService;
-      private readonly ISortService _sortService;
 
       public ReportService(
          IContentManager contentManager,
@@ -35,8 +34,7 @@ namespace Module.Services {
          INotifier notifier,
          IHttpContextAccessor contextAccessor,
          IHtmlLocalizer<ReportService> htmlLocalizer,
-         IContentPermissionsService contentPermissionsService,
-         ISortService sortService
+         IContentPermissionsService contentPermissionsService
       ) {
          _contentManager = contentManager;
          _aliasManager = aliasManager;
@@ -46,7 +44,6 @@ namespace Module.Services {
          _reportLoadService = reportLoadService;
          _reportRunService = reportRunService;
          _contentPermissionsService = contentPermissionsService;
-         _sortService = sortService;
       }
 
       public async Task<ContentItem> GetByIdOrAliasAsync(string idOrAlias) {
@@ -84,68 +81,18 @@ namespace Module.Services {
          }
 
          return !hasRequiredParameters;
-      }
-
-      public IDictionary<string, string> GetParameters() {
-
-         var parameters = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
-         if (_contextAccessor.HttpContext.Request != null) {
-            if (_contextAccessor.HttpContext.Request.QueryString != null) {
-               foreach (var key in _contextAccessor.HttpContext.Request.Query.Keys) {
-                  parameters[key] = _contextAccessor.HttpContext.Request.Query[key].ToString();
-               }
-            }
-            if (_contextAccessor.HttpContext.Request.HasFormContentType) {
-               foreach (var key in _contextAccessor.HttpContext.Request.Form.Keys) {
-                  if (!_contextAccessor.HttpContext.Request.Form[key].ToString().Equals("__requestverificationtoken", StringComparison.OrdinalIgnoreCase)) {
-                     parameters[key] = _contextAccessor.HttpContext.Request.Form[key];
-                  }
-               }
-            }
-         }
-
-         return parameters;
-      }
-
-      public void SetPageSize(Process process, IDictionary<string, string> parameters, int min, int stickySize, int max) {
-
-         foreach (var entity in process.Entities) {
-            if (entity.Page <= 0) {
-               continue;  // This entity isn't intended to be paged
-            }
-
-            // parse out a page number
-            int page;
-            if (parameters.ContainsKey("page")) {
-               if (!int.TryParse(parameters["page"], out page)) {
-                  page = 1;
-               }
-            } else {
-               page = 1;
-            }
-
-            entity.Page = page;
-
-            var size = stickySize;
-            if (parameters.ContainsKey("size")) {
-               int.TryParse(parameters["size"], out size);
-            }
-
-            if (size == 0 && min > 0) {
-               size = min;
-            }
-            entity.Size = max > 0 && size > max ? max : size;
-
-         }
-
-      }
+      } 
 
       public ReportViewModel GetErrorModel(ContentItem contentItem, string message) {
          return new ReportViewModel(new Process() { Name = "Error", Log = new List<LogEntry>(1) { new LogEntry(LogLevel.Error, null, message) } }, contentItem);
       }
 
-      public Process Load(string arrangement, IDictionary<string, string> parameters, IPipelineLogger logger) {
-         return _reportLoadService.Load(arrangement, parameters, logger);
+      public Process LoadForExport(string arrangement, IPipelineLogger logger) {
+         return _reportLoadService.LoadForExport(arrangement, logger);
+      }
+
+      public Process Load(ContentItem contentItem, string arrangement, IPipelineLogger logger) {
+         return _reportLoadService.Load(contentItem, arrangement, logger);
       }
 
       public async Task RunAsync(Process process, IPipelineLogger logger) {
@@ -153,47 +100,9 @@ namespace Module.Services {
          return;
       }
 
-      public void ConfineData(Process process, IDictionary<string, string> required) {
-
-         foreach (var entity in process.Entities) {
-            var all = entity.GetAllFields().ToArray();
-            var dependencies = new HashSet<Field>();
-            foreach (var field in all) {
-               if (required.ContainsKey(field.Alias)) {
-                  dependencies.Add(field);
-                  field.Output = true;
-                  if (!required[field.Alias].Equals(field.Alias, StringComparison.OrdinalIgnoreCase)) {
-                     field.Alias = required[field.Alias];
-                  }
-               } else if (field.Property) {
-                  dependencies.Add(field);
-                  field.Output = true;
-               }
-            }
-            // optimize download if it's not a manually written query
-            if (entity.Query == string.Empty) {
-               foreach (var field in entity.FindRequiredFields(dependencies, process.Maps)) {
-                  dependencies.Add(field);
-               }
-               foreach (var unnecessary in all.Except(dependencies)) {
-                  unnecessary.Input = false;
-                  unnecessary.Output = false;
-                  unnecessary.Transforms.Clear();
-               }
-            }
-         }
-      }
-
       public bool CanAccess(ContentItem contentItem) {
          return _contentPermissionsService.CanAccess(contentItem);
       }
 
-      public Direction Sort(int fieldNumber, string expression) {
-         return _sortService.Sort(fieldNumber, expression);
-      }
-
-      public void AddSortToEntity(Entity entity, string expression) {
-         _sortService.AddSortToEntity(entity, expression);
-      }
    }
 }

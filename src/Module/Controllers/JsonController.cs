@@ -42,21 +42,13 @@ namespace Module.Controllers {
 
          if (part != null) {
 
-            var parameters = _reportService.GetParameters();
-
-            var process = _reportService.Load(part.Arrangement.Arrangement, parameters, logger);
+            var process = _reportService.LoadForExport(part.Arrangement.Arrangement, logger);
 
             if (process.Errors().Any()) {
                return Problem();
             }
 
             ConvertToExport(process, _slugService.Slugify(contentItem.As<TitlePart>().Title));
-
-            _reportService.SetPageSize(process, parameters, 0, 0, process.Connections.First().Provider == "bogus" ? 100 : 0);
-
-            if (parameters.ContainsKey("sort") && parameters["sort"] != null) {
-               _reportService.AddSortToEntity(process.Entities.First(), parameters["sort"]);
-            }
 
             await _reportService.RunAsync(process, logger);
 
@@ -77,16 +69,6 @@ namespace Module.Controllers {
          Response.ContentType = "application/json";
          Response.Headers.Add("content-disposition", "attachment; filename=" + o.File);
 
-         // common
-         foreach (var entity in process.Entities) {
-
-            foreach (var field in entity.GetAllFields()) {
-               if (field.System) {
-                  field.Output = false;
-               }
-               field.Output = field.Output && field.Export == "defer" || field.Export == "true";
-            }
-         }
       }
 
    }

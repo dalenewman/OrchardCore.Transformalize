@@ -19,6 +19,7 @@ using Transformalize.Providers.MySql.Autofac;
 using Transformalize.Providers.PostgreSql.Autofac;
 using Transformalize.Providers.Sqlite.Autofac;
 using Transformalize.Providers.SqlServer.Autofac;
+using Transformalize.Transforms.Html;
 using Transformalize.Transforms.Humanizer.Autofac;
 using Transformalize.Transforms.Jint.Autofac;
 using Transformalize.Transforms.Json.Autofac;
@@ -57,6 +58,11 @@ namespace Module.Services {
             container.AddModule(new JintTransformModule());
             container.AddModule(new JsonTransformModule());
             container.AddModule(new HumanizeModule());
+
+            container.AddTransform((c) => new HtmlEncodeTransform(c), new HtmlEncodeTransform().GetSignatures());
+            container.AddTransform((c) => new HtmlDecodeTransform(c), new HtmlDecodeTransform().GetSignatures());
+            container.AddTransform((c) => new UrlEncodeTransform(c), new UrlEncodeTransform().GetSignatures());
+            container.AddTransform((c) => new UrlDecodeTransform(c), new UrlDecodeTransform().GetSignatures());
 
             controller = container.CreateScope(process, logger).Resolve<IProcessController>();
          }

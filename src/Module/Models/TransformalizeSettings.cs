@@ -1,5 +1,4 @@
-using OrchardCore.ContentManagement;
-using Module.Fields;
+using Transformalize.ConfigurationFacade;
 
 namespace Module.Models {
    public class TransformalizeSettings {

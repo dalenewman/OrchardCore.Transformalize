@@ -41,7 +41,9 @@ namespace Module {
          services.AddScoped<IStickyParameterService, StickyParameterService>();
          services.AddScoped<IReportLoadService, ReportLoadService>();
          services.AddScoped<IReportRunService, ReportRunService>();
+         services.AddScoped<IParameterService, ParameterService>();
          services.AddScoped<IReportService, ReportService>();
+         services.AddScoped<ISettingsService, SettingsService>();
 
          services.AddScoped<IDataMigration, Migrations>();
          services.AddScoped<IResourceManifestProvider, ResourceManifest>();
@@ -62,21 +64,21 @@ namespace Module {
       public override void Configure(IApplicationBuilder builder, IEndpointRouteBuilder routes, IServiceProvider serviceProvider) {
 
          routes.MapAreaControllerRoute(
-             name: "Transformalize.Report.Index",
+             name: "Transformalize.Report",
              areaName: Common.ModuleName,
              pattern: "report/{ContentItemId}",
              defaults: new { controller = "Report", action = "Index" }
          );
 
          routes.MapAreaControllerRoute(
-             name: "Transformalize.Csv.Index",
+             name: "Transformalize.Csv",
              areaName: Common.ModuleName,
              pattern: "csv/{ContentItemId}",
              defaults: new { controller = "Csv", action = "Index" }
          );
 
          routes.MapAreaControllerRoute(
-             name: "Transformalize.Json.Index",
+             name: "Transformalize.Json",
              areaName: Common.ModuleName,
              pattern: "json/{ContentItemId}",
              defaults: new { controller = "Json", action = "Index" }

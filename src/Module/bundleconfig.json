@@ -1,0 +1,14 @@
+[
+  {
+    "outputFileName": "wwwroot/Styles/prismjs/prism.min.css",
+    "inputFiles": [
+      "wwwroot/Styles/prismjs/prism.css"
+    ]
+  },
+  {
+    "outputFileName": "wwwroot/Scripts/prismjs/prism.min.js",
+    "inputFiles": [
+      "wwwroot/Scripts/prismjs/prism.js"
+    ]
+  }
+]

@@ -39,7 +39,7 @@ namespace Module.Drivers {
 
       public override async Task<IDisplayResult> UpdateAsync(TransformalizeArrangementField field, IUpdateModel updater, UpdateFieldEditorContext context) {
          if (await updater.TryUpdateModelAsync(field, Prefix, f => f.Arrangement)) {
-            if (String.IsNullOrWhiteSpace(field.Arrangement)) {
+            if (string.IsNullOrWhiteSpace(field.Arrangement)) {
                updater.ModelState.AddModelError(Prefix, S["A value is required for {0}.", context.PartFieldDefinition.DisplayName()]);
             }
          }
