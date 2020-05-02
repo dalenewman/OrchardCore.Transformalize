@@ -12,7 +12,6 @@ using StackExchange.Profiling;
 using OrchardCore.ContentManagement;
 using System.Linq;
 using System;
-using Transformalize.Transforms.Html;
 
 namespace Module.Services {
    public class ReportLoadService : IReportLoadService {
@@ -107,11 +106,6 @@ namespace Module.Services {
             container.AddModule(new JintTransformModule());
             container.AddModule(new JsonTransformModule());
             container.AddModule(new HumanizeModule());
-
-            container.AddTransform((c) => new HtmlEncodeTransform(c), new HtmlEncodeTransform().GetSignatures());
-            container.AddTransform((c) => new HtmlDecodeTransform(c), new HtmlDecodeTransform().GetSignatures());
-            container.AddTransform((c) => new UrlEncodeTransform(c), new UrlEncodeTransform().GetSignatures());
-            container.AddTransform((c) => new UrlDecodeTransform(c), new UrlDecodeTransform().GetSignatures());
 
             process = container.CreateScope(arrangement, logger, _parameters).Resolve<Process>();
             process.Mode = "report";

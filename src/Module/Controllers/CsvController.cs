@@ -48,7 +48,16 @@ namespace Module.Controllers {
                return Problem();
             }
 
-            ConvertToExport(process, _slugService.Slugify(contentItem.As<TitlePart>().Title));
+            var o = process.Output();
+            o.Stream = true;
+            o.Provider = "file";
+            o.Delimiter = ",";
+            o.TextQualifier = "\"";
+            o.File = _slugService.Slugify(contentItem.As<TitlePart>().Title) + ".csv";
+
+            Response.ContentType = "application/csv";
+            Response.Headers.Add("content-disposition", "attachment; filename=" + o.File);
+
 
             await _reportService.RunAsync(process, logger);
 
@@ -58,21 +67,6 @@ namespace Module.Controllers {
 
          return Problem();
       }
-
-      private void ConvertToExport(Process process, string fileName) {
-
-         var o = process.Output();
-         o.Stream = true;
-         o.Provider = "file";
-         o.Delimiter = ",";
-         o.TextQualifier = "\"";
-         o.File = fileName + ".csv";
-
-         Response.ContentType = "application/csv";
-         Response.Headers.Add("content-disposition", "attachment; filename=" + o.File);
-      }
-
-
 
    }
 }
