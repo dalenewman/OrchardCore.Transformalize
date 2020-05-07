@@ -1,4 +1,5 @@
 using System.Threading.Tasks;
+using OrchardCore.Alias.Models;
 using OrchardCore.ContentManagement;
 using OrchardCore.ContentManagement.Handlers;
 
@@ -17,6 +18,8 @@ namespace Module.Handlers {
                   metadata.DisplayRouteValues.Add("Controller", "Report");
                   metadata.DisplayRouteValues.Remove("Action");
                   metadata.DisplayRouteValues.Add("Action", "Index");
+                  metadata.DisplayRouteValues.Remove("ContentItemId");
+                  metadata.DisplayRouteValues.Add("ContentItemId", context.ContentItem.As<AliasPart>().Alias);
                }
                return Task.CompletedTask;
             });

@@ -2,6 +2,19 @@ An effort to put [Transformalize](https://github.com/dalenewman/Transformalize)
 in [Orchard Core](https://github.com/OrchardCMS/OrchardCore).  Currently targets 
 Orchard Core 1.0.0-rc1 Nuget packages.
 
+#### Features
+- <strike>Code Mirror XML Editor</strike>
+- Reporting
+   - <strike>Sortable, Filterable Table</strike>
+   - <strike>CSV Extract</strike>
+   - <strike>JSON Extract</strike>
+   - Map(Box) view
+   - Calendar view
+- Batches / Bulk Actions
+  - Tasks (ETL Jobs) for running batches, etc
+  - Forms for accepting parameters for batches
+- <strike>Add Mini Profiler into ADO providers</strike>
+
 ### Providers
 - <strike>Elasticsearch</strike>
 - <strike>SQL Server</strike>
@@ -14,6 +27,7 @@ Orchard Core 1.0.0-rc1 Nuget packages.
 - SOLR
 - GeoJson
 - KML
+- Lucene
 
 #### Transforms
 - <strike>Jint</strike>
@@ -23,19 +37,7 @@ Orchard Core 1.0.0-rc1 Nuget packages.
 - Liquid / Fluid
 - eval (NReco.LambdaParser)
 
-#### Web Features
-- <strike>Code Mirror XML Editor</strike>
-- Reporting
-- Batches / Bulk Actions (be able to select report results for a bulk action, which is a task (etl))
-- Tasks (ETL Jobs), Schedule? Background?
-- <strike>CSV Extract</strike>
-- <strike>JSON Extract</strike>
-- Forms (simple forms with transforms / validators)
-- Map(Box) report view
-- Calendar report view
-- Add Mini Profiler into providers, operations (transforms, validators)
-
 #### Caution
 This currently relies on Nuget packages
-that are not yet published so don't bother trying
-to get it running on your environment yet.
+that are not yet published.  Will post them 
+to myget feed soon.

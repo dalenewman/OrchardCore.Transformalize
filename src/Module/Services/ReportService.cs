@@ -12,6 +12,7 @@ using Module.ViewModels;
 using Transformalize.Logging;
 using Transformalize.Contracts;
 using Etch.OrchardCore.ContentPermissions.Services;
+using Cfg.Net.Contracts;
 
 namespace Module.Services {
 
@@ -91,8 +92,8 @@ namespace Module.Services {
          return _reportLoadService.LoadForExport(arrangement, logger);
       }
 
-      public Process Load(ContentItem contentItem, string arrangement, IPipelineLogger logger) {
-         return _reportLoadService.Load(contentItem, arrangement, logger);
+      public Process Load(ContentItem contentItem, string arrangement, IPipelineLogger logger, ISerializer serializer = null) {
+         return _reportLoadService.Load(contentItem, arrangement, logger, serializer);
       }
 
       public async Task RunAsync(Process process, IPipelineLogger logger) {

@@ -12,6 +12,7 @@ using StackExchange.Profiling;
 using OrchardCore.ContentManagement;
 using System.Linq;
 using System;
+using Cfg.Net.Contracts;
 
 namespace Module.Services {
    public class ReportLoadService : IReportLoadService {
@@ -69,11 +70,11 @@ namespace Module.Services {
       /// <param name="arrangement"></param>
       /// <param name="logger"></param>
       /// <returns></returns>
-      public Process Load(ContentItem contentItem, string arrangement, IPipelineLogger logger) {
+      public Process Load(ContentItem contentItem, string arrangement, IPipelineLogger logger, ISerializer serializer = null) {
 
          _stickyParameterService.GetStickyParameters(contentItem.ContentItemId, _parameters);
 
-         var process = LoadInternal(arrangement, logger);
+         var process = LoadInternal(arrangement, logger, serializer);
 
          _stickyParameterService.SetStickyParameters(contentItem.ContentItemId, process.Parameters);
 
@@ -91,7 +92,7 @@ namespace Module.Services {
          return process;
       }
 
-      private Process LoadInternal(string arrangement, IPipelineLogger logger) {
+      private Process LoadInternal(string arrangement, IPipelineLogger logger, ISerializer serializer = null) {
 
          Process process;
 
@@ -100,7 +101,11 @@ namespace Module.Services {
             var container = new ConfigurationContainer();
 
             // configuration customizers
-            container.AddCustomizer(new ReportParameterModifier());
+            container.AddDependency(new ReportParameterModifier());
+
+            if (serializer != null) {
+               container.AddDependency(serializer);
+            }
 
             // external transforms register their short-hand here
             container.AddModule(new JintTransformModule());

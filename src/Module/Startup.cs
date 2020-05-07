@@ -64,24 +64,31 @@ namespace Module {
       public override void Configure(IApplicationBuilder builder, IEndpointRouteBuilder routes, IServiceProvider serviceProvider) {
 
          routes.MapAreaControllerRoute(
-             name: "Transformalize.Report",
+             name: null,
              areaName: Common.ModuleName,
              pattern: "report/{ContentItemId}",
              defaults: new { controller = "Report", action = "Index" }
          );
 
          routes.MapAreaControllerRoute(
-             name: "Transformalize.Csv",
+             name: null,
              areaName: Common.ModuleName,
-             pattern: "csv/{ContentItemId}",
-             defaults: new { controller = "Csv", action = "Index" }
+             pattern: "report/{type}/{ContentItemId}",
+             defaults: new { controller = "Report", action = "Run", type = "json" }
          );
 
          routes.MapAreaControllerRoute(
-             name: "Transformalize.Json",
+             name: null,
              areaName: Common.ModuleName,
-             pattern: "json/{ContentItemId}",
-             defaults: new { controller = "Json", action = "Index" }
+             pattern: "report/download/csv/{ContentItemId}",
+             defaults: new { controller = "Report", action = "Csv" }
+         );
+
+         routes.MapAreaControllerRoute(
+            name: null,
+             areaName: Common.ModuleName,
+             pattern: "report/download/json/{ContentItemId}",
+             defaults: new { controller = "Report", action = "Json" }
          );
 
          builder.UseSession();
