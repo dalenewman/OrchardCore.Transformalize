@@ -5,7 +5,7 @@ Orchard Core 1.0.0-rc1 Nuget packages.
 #### Features
 - <strike>Code Mirror XML Editor</strike>
 - Reporting
-   - <strike>Sortable, Filterable Table</strike>
+   - <strike>Sortable, Filterable Table with pagination</strike>
    - <strike>CSV Extract</strike>
    - <strike>JSON Extract</strike>
    - Map(Box) view
