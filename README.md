@@ -38,6 +38,5 @@ Orchard Core 1.0.0-rc1 Nuget packages.
 - eval (NReco.LambdaParser)
 
 #### Caution
-This currently relies on Nuget packages
-that are not yet published.  Will post them 
-to myget feed soon.
+This currently relies on packages on myget feed: 
+https://www.myget.org/F/transformalize/api/v3/index.json
