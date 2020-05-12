@@ -23,4 +23,8 @@
     <ProjectReference Include="..\Module\OrchardCore.Transformalize.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ResolvedFileToPublish Remove="App_Data\northwind.db" />
+  </ItemGroup>
+
 </Project>
