@@ -25,11 +25,13 @@ module for [Orchard Core](https://github.com/OrchardCMS/OrchardCore).
 ), [Lambda Parser](https://github.com/dalenewman/Transformalize.Transform.LambdaParser)
 
 #### Development Environment
-- Visual Studio 2019 with .NET Core cross-platform development workload
+- Visual Studio 2019 with ASP.NET Core related workloads:
+  - ASP.NET and Web Development
+  - .NET Core Cross-Platform Development
 - Add nuget package source https://www.myget.org/F/transformalize/api/v3/index.json
 - Set the Site as the startup project and run.
-- Goto Dashboard > Configuration > Features, search for Transformalize and enable it.
-- Optionally, goto Dashboard > Configuration > Recipies, search for Transformalize and run the recipe to create Northwind and Bogus sample reports.
+- Enable Transformalize in Dashboard > Configuration > Features
+- Optionally run recipe in Dashboard > Configuration > Recipes
 
 ---
 
