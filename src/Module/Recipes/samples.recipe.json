@@ -1,0 +1,51 @@
+{
+   "name": "Transformalize.Samples",
+   "displayName": "Transformalize Samples",
+   "description": "Transformalize based content type samples",
+   "author": "Dale Newman",
+   "website": "https://github.com/dalenewman/Transformalize",
+   "version": "0.7.6",
+   "issetuprecipe": false,
+   "tags": [ "reporting", "etl" ],
+   "steps": [
+      {
+         "name": "content",
+         "Data": [
+            {
+               "ContentItemId": "4pmp0jz2vmbpq6c3bwj6kkr24c",
+               "ContentItemVersionId": "4har5sbw64zmh3f6p7g7tdq6cw",
+               "ContentType": "TransformalizeReport",
+               "DisplayText": "Northwind",
+               "Latest": true,
+               "Published": true,
+               "ModifiedUtc": "2020-05-13T04:56:52.451026Z",
+               "PublishedUtc": "2020-05-13T04:56:52.4899396Z",
+               "CreatedUtc": "2020-05-12T02:25:52.236414Z",
+               "Owner": "dalenewman",
+               "Author": "dalenewman",
+               "TitlePart": { "Title": "Northwind" },
+               "AliasPart": { "Alias": "northwind" },
+               "TransformalizeReportPart": { "Arrangement": { "Arrangement": "<cfg name=\"NorthWind\">\r\n  <connections>\r\n    <add name=\"input\" provider=\"sqlite\" file=\"App_Data\\northwind.db\" />\r\n  </connections>\r\n  <entities>\r\n    <add name=\"NorthWindFlat\" alias=\"NorthWind\" page=\"1\" size=\"20\" sortable=\"true\" >\r\n      <fields>\r\n        <add name=\"OrderYear\" type=\"long\" label=\"Year\" parameter=\"facet\" />\r\n        <add name=\"OrderMonthSortable\" label=\"Month\" parameter=\"facet\" />\r\n        <add name=\"OrderDaySortable\" label=\"Date\" parameter=\"facet\" />\r\n        <add name=\"CompanyName\" label=\"Sold To\" parameter=\"search\" />\r\n        <add name=\"ProductName\" label=\"Product\" parameter=\"search\" />\r\n        <add name=\"CategoryName\" label=\"Category\" parameter=\"facets\" />\r\n        <add name=\"SuppliersCompanyName\" label=\"Supplier\" parameter=\"facet\" />\r\n        <add name=\"Quantity\" type=\"int\" />\r\n        <add name=\"UnitPrice\" label=\"Unit Price\" type=\"decimal\" format=\"#,###.00\" />\r\n        <add name=\"Revenue\" type=\"decimal\" format=\"$#,###,###.00\" />\r\n      </fields>\r\n    </add>\r\n  </entities>\r\n</cfg>" } },
+               "CommonPart": {}
+            },
+            {
+               "ContentItemId": "4cs7p76jvxcfw6vfwmeyefbrcn",
+               "ContentItemVersionId": "4j8qhqj0jhe5cvy9f89xb9efnt",
+               "ContentType": "TransformalizeReport",
+               "DisplayText": "Bogus",
+               "Latest": true,
+               "Published": true,
+               "ModifiedUtc": "2020-05-13T04:31:05.6552682Z",
+               "PublishedUtc": "2020-05-13T04:31:05.6715047Z",
+               "CreatedUtc": "2020-05-09T23:46:36.3844014Z",
+               "Owner": "dalenewman",
+               "Author": "dalenewman",
+               "TitlePart": { "Title": "Bogus" },
+               "AliasPart": { "Alias": "bogus" },
+               "TransformalizeReportPart": { "Arrangement": { "Arrangement": "<cfg name=\"bogus\">\r\n  <connections>\r\n    <add name=\"input\" provider=\"bogus\" />\r\n  </connections>\r\n  <entities>\r\n    <add name=\"Sample\" label=\"Bogus Sample\" page=\"1\" sortable=\"false\">\r\n      <fields>\r\n        <add name=\"Identity\" type=\"int\" />\r\n        <add name=\"FirstName\" label=\"First Name\" output=\"false\" />\r\n        <add name=\"LastName\" label=\"Last Name\" output=\"false\" />\r\n        <add input=\"false\" name=\"Name\" t=\"format({FirstName} {LastName})\" />\r\n        <add name=\"Email\" t='lower().format(<a href=\"mailto:{Email}\">{Email}</a>)' raw=\"true\" />\r\n        <add name=\"Recent\" type=\"datetime\" output=\"false\" />\r\n      </fields>\r\n      <calculated-fields>\r\n        <add name=\"Last Seen\" t=\"copy(Recent).timeAgo()\" />\r\n      </calculated-fields>\r\n    </add>\r\n  </entities>\r\n</cfg>" } },
+               "CommonPart": {}
+            }
+         ]
+      }
+   ]
+}

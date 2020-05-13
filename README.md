@@ -27,13 +27,16 @@ module for [Orchard Core](https://github.com/OrchardCMS/OrchardCore).
 #### Development Environment
 - Visual Studio 2019 with .NET Core cross-platform development workload
 - Add nuget package source https://www.myget.org/F/transformalize/api/v3/index.json
-- Set the Site as the startup project.
-- Goto the Dashboard > Configuration > Features, search for Transformalize and enable it.
+- Set the Site as the startup project and run.
+- Goto Dashboard > Configuration > Features, search for Transformalize and enable it.
+- Optionally, goto Dashboard > Configuration > Recipies, search for Transformalize and run the recipe to create Northwind and Bogus sample reports.
 
 ---
 
-Using [Transformalize](https://github.com/dalenewman/Transformalize) for reporting means you 
-read from one entity.  The [bogus](https://github.com/dalenewman/Transformalize.Provider.Bogus) provider 
-(see below) is fun to play with if you don't have any data sources. 
+Using [Transformalize](https://github.com/dalenewman/Transformalize) for reporting basically means you 
+read from one entity and do not specify an output.  The [bogus](https://github.com/dalenewman/Transformalize.Provider.Bogus) provider 
+(see below) is fun to play with if you don't have any data sources.  To find out 
+more about the providers, click on the links above.  Also, be sure to read 
+the main [Transformalize](https://github.com/dalenewman/Transformalize) read me page.
 
 ![bogus report](bogus.gif)

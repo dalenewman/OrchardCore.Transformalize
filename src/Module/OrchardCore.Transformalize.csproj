@@ -54,4 +54,10 @@
      <None Include="bundleconfig.json" />
    </ItemGroup>
 
+   <ItemGroup>
+     <EmbeddedResource Update="Recipes\samples.recipe.json">
+       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+     </EmbeddedResource>
+   </ItemGroup>
+
 </Project>
