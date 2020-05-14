@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -12,7 +11,7 @@ using Module.ViewModels;
 using Transformalize.Logging;
 using Transformalize.Contracts;
 using Etch.OrchardCore.ContentPermissions.Services;
-using Cfg.Net.Contracts;
+using Module.Models;
 
 namespace Module.Services {
 
@@ -23,15 +22,15 @@ namespace Module.Services {
       private readonly IContentAliasManager _aliasManager;
       private readonly INotifier _notifier;
       private readonly IHtmlLocalizer<ReportService> H;
-      private readonly IReportLoadService _reportLoadService;
-      private readonly IReportRunService _reportRunService;
+      private readonly IArrangementLoadService _loadService;
+      private readonly IArrangementRunService _runService;
       private readonly IContentPermissionsService _contentPermissionsService;
 
       public ReportService(
          IContentManager contentManager,
          IContentAliasManager aliasManager,
-         IReportLoadService reportLoadService,
-         IReportRunService reportRunService,
+         IArrangementLoadService loadService,
+         IArrangementRunService runService,
          INotifier notifier,
          IHttpContextAccessor contextAccessor,
          IHtmlLocalizer<ReportService> htmlLocalizer,
@@ -42,8 +41,8 @@ namespace Module.Services {
          _notifier = notifier;
          _contextAccessor = contextAccessor;
          H = htmlLocalizer;
-         _reportLoadService = reportLoadService;
-         _reportRunService = reportRunService;
+         _loadService = loadService;
+         _runService = runService;
          _contentPermissionsService = contentPermissionsService;
       }
 
@@ -88,17 +87,16 @@ namespace Module.Services {
          return new ReportViewModel(new Process() { Name = "Error", Log = new List<LogEntry>(1) { new LogEntry(LogLevel.Error, null, message) } }, contentItem);
       }
 
-      public Process LoadForExport(string arrangement, IPipelineLogger logger) {
-         return _reportLoadService.LoadForExport(arrangement, logger);
+      public Process LoadForExport(ContentItem contentItem, IPipelineLogger logger) {
+         return _loadService.LoadForExport(contentItem, logger);
       }
 
-      public Process Load(ContentItem contentItem, string arrangement, IPipelineLogger logger, ISerializer serializer = null) {
-         return _reportLoadService.Load(contentItem, arrangement, logger, serializer);
+      public Process LoadForReport(ContentItem contentItem, IPipelineLogger logger, string format = null) {
+         return _loadService.LoadForReport(contentItem, logger, format);
       }
 
       public async Task RunAsync(Process process, IPipelineLogger logger) {
-         await _reportRunService.RunAsync(process, logger);
-         return;
+         await _runService.RunAsync(process, logger);
       }
 
       public bool CanAccess(ContentItem contentItem) {

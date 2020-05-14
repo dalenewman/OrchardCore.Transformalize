@@ -13,17 +13,20 @@ using OrchardCore.ContentManagement;
 using System.Linq;
 using System;
 using Cfg.Net.Contracts;
+using Transformalize.Validate.Jint.Autofac;
+using Module.Models;
+using Cfg.Net.Serializers;
+using Transformalize.Logging;
 
 namespace Module.Services {
-   public class ReportLoadService : IReportLoadService {
+   public class ArrangementLoadService : IArrangementLoadService {
 
       private readonly IStickyParameterService _stickyParameterService;
-      private readonly int[] _pageSizes = new int[] { 20, 50, 100 };
       private readonly IDictionary<string, string> _parameters;
       private readonly ISortService _sortService;
       private readonly ISettingsService _settings;
 
-      public ReportLoadService(
+      public ArrangementLoadService(
          IParameterService parameterService,
          IStickyParameterService stickyParameterService,
          ISortService sortService,
@@ -35,17 +38,22 @@ namespace Module.Services {
          _settings = settings;
       }
 
-      /// <summary>
-      /// load the arrangement into an exporting process
-      /// </summary>
-      /// <param name="arrangement"></param>
-      /// <param name="logger"></param>
-      /// <returns></returns>
-      public Process LoadForExport(string arrangement, IPipelineLogger logger) {
+      public Process LoadForExport(ContentItem contentItem, IPipelineLogger logger) {
 
-         var process = LoadInternal(arrangement, logger);
-         var size = process.Connections.First().Provider == "bogus" ? _pageSizes.Max() : 0;
-         EnforcePageSize(process, _parameters, size, size, size);
+         if (!TryGetPart(contentItem, out var part)) {
+            return new Process() { Status = 500, Message = $"Content item is not compatible with Transformalize." };
+         }
+
+         var process = LoadInternal(part.Arrangement.Arrangement, logger);
+
+         process.Mode = "report";
+         process.ReadOnly = true;
+
+         if (part.PageSizes.Enabled()) {
+            var size = process.Connections.First().Provider == "bogus" ? _settings.GetPageSizes(part).Max() : 0;
+            EnforcePageSize(process, _parameters, size, size, size);
+         }
+
          if (_parameters.ContainsKey("sort") && _parameters["sort"] != null) {
             _sortService.AddSortToEntity(process.Entities.First(), _parameters["sort"]);
          }
@@ -63,24 +71,27 @@ namespace Module.Services {
          return process;
       }
 
-      /// <summary>
-      /// load the arrangement into a reporting process
-      /// </summary>
-      /// <param name="contentItem"></param>
-      /// <param name="arrangement"></param>
-      /// <param name="logger"></param>
-      /// <returns></returns>
-      public Process Load(ContentItem contentItem, string arrangement, IPipelineLogger logger, ISerializer serializer = null) {
+      public Process LoadForReport(ContentItem contentItem, IPipelineLogger logger, string format = null) {
+
+         if (!TryGetPart(contentItem, out var part)) {
+            return new Process() { Status = 500, Message = $"Content item is not compatible with Transformalize." };
+         }
 
          _stickyParameterService.GetStickyParameters(contentItem.ContentItemId, _parameters);
 
-         var process = LoadInternal(arrangement, logger, serializer);
+         var process = LoadInternal(part.Arrangement.Arrangement, logger, format == "json" ? new JsonSerializer() : null);
+
+         process.Mode = "report";
+         process.ReadOnly = true;
 
          _stickyParameterService.SetStickyParameters(contentItem.ContentItemId, process.Parameters);
+         
 
-         var stickySize = _stickyParameterService.GetStickyParameter(contentItem.ContentItemId, "size", () => _pageSizes.Min());
-
-         EnforcePageSize(process, _parameters, _pageSizes.Min(), stickySize, _pageSizes.Max());
+         if (part.PageSizes.Enabled()) {
+            var pageSizes = _settings.GetPageSizes(part);
+            var stickySize = _stickyParameterService.GetStickyParameter(contentItem.ContentItemId, "size", () => pageSizes.Min());
+            EnforcePageSize(process, _parameters, pageSizes.Min(), stickySize, pageSizes.Max());
+         }         
 
          if (_parameters.ContainsKey("sort") && _parameters["sort"] != null) {
             _sortService.AddSortToEntity(process.Entities.First(), _parameters["sort"]);
@@ -89,6 +100,17 @@ namespace Module.Services {
          foreach (var connection in process.Connections) {
             connection.Buffer = true;
          }
+         return process;
+      }
+
+      public Process LoadForTask(ContentItem contentItem, IPipelineLogger logger, string format = null) {
+
+         if (!TryGetPart(contentItem, out var part)) {
+            return new Process() { Status = 500, Message = $"Content item is not compatible with Transformalize." };
+         }
+
+         var process = LoadInternal(part.Arrangement.Arrangement, logger, format == "json" ? new JsonSerializer() : null);
+
          return process;
       }
 
@@ -112,12 +134,25 @@ namespace Module.Services {
             container.AddModule(new JsonTransformModule());
             container.AddModule(new HumanizeModule());
 
+            // extrenal validators register their short-hand here
+            container.AddModule(new JintValidateModule());
+
             process = container.CreateScope(arrangement, logger, _parameters).Resolve<Process>();
-            process.Mode = "report";
-            process.ReadOnly = true;
+
          }
 
          ApplyCommonSettings(process);
+
+         if (process.Errors().Any() || logger is MemoryLogger m && m.Log.Any(l => l.LogLevel == LogLevel.Error)) {
+            if(logger is MemoryLogger ml) {
+               process.Log.AddRange(ml.Log);
+            }
+            process.Status = 500;
+            process.Message = "Process has errors.";
+         } else {
+            process.Status = 200;
+            process.Message = "Ok";
+         }
 
          return process;
       }
@@ -133,10 +168,6 @@ namespace Module.Services {
       private void EnforcePageSize(Process process, IDictionary<string, string> parameters, int min, int chosen, int max) {
 
          foreach (var entity in process.Entities) {
-            if (entity.Page <= 0) {
-               continue;  // This entity isn't intended to be paged
-            }
-
             // parse out a page number
             int page;
             if (parameters.ContainsKey("page")) {
@@ -215,6 +246,11 @@ namespace Module.Services {
                }
             }
          }
+      }
+
+      private bool TryGetPart(ContentItem contentItem, out TransformalizeReportPart part) {
+         part = contentItem.As<TransformalizeReportPart>();
+         return part != null;
       }
 
    }

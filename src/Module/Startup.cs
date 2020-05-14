@@ -29,6 +29,8 @@ namespace Module {
       public Startup() {
          TemplateContext.GlobalMemberAccessStrategy.Register<TransformalizeArrangementField>();
          TemplateContext.GlobalMemberAccessStrategy.Register<DisplayTransformalizeArrangementFieldViewModel>();
+         TemplateContext.GlobalMemberAccessStrategy.Register<PageSizesField>();
+         TemplateContext.GlobalMemberAccessStrategy.Register<DisplayPageSizesFieldViewModel>();
       }
 
       public override void ConfigureServices(IServiceCollection services) {
@@ -39,8 +41,8 @@ namespace Module {
          services.AddScoped<ILinkService, LinkService>();
          services.AddScoped<ISortService, SortService>();
          services.AddScoped<IStickyParameterService, StickyParameterService>();
-         services.AddScoped<IReportLoadService, ReportLoadService>();
-         services.AddScoped<IReportRunService, ReportRunService>();
+         services.AddScoped<IArrangementLoadService, ArrangementLoadService>();
+         services.AddScoped<IArrangementRunService, ArrangementRunService>();
          services.AddScoped<IParameterService, ParameterService>();
          services.AddScoped<IReportService, ReportService>();
          services.AddScoped<ISettingsService, SettingsService>();
@@ -50,11 +52,13 @@ namespace Module {
 
          services.AddContentField<TransformalizeArrangementField>(); // UseDisplayDriver in dev branch
          services.AddScoped<IContentFieldDisplayDriver, TransformalizeArrangementFieldDisplayDriver>();
+         services.AddContentField<PageSizesField>(); // UseDisplayDriver in dev branch
+         services.AddScoped<IContentFieldDisplayDriver, PageSizesFieldDisplayDriver>();
          services.AddContentPart<TransformalizeReportPart>();
 
          services.AddScoped<IContentHandler, TransformalizeHandler>();
 
-         // Transforamlize Settings
+         // Transformalize Settings
          services.AddScoped<IDisplayDriver<ISite>, TransformalizeSettingsDisplayDriver>();
          services.AddScoped<IPermissionProvider, Permissions>();
          services.AddScoped<INavigationProvider, TransformalizeSettingsAdminMenu>();
@@ -73,22 +77,22 @@ namespace Module {
          routes.MapAreaControllerRoute(
              name: null,
              areaName: Common.ModuleName,
-             pattern: "report/{type}/{ContentItemId}",
-             defaults: new { controller = "Report", action = "Run", type = "json" }
+             pattern: "report/{format}/{ContentItemId}",
+             defaults: new { controller = "Report", action = "Run", format = "json" }
          );
 
          routes.MapAreaControllerRoute(
              name: null,
              areaName: Common.ModuleName,
              pattern: "report/download/csv/{ContentItemId}",
-             defaults: new { controller = "Report", action = "Csv" }
+             defaults: new { controller = "Report", action = "SaveAsCsv" }
          );
 
          routes.MapAreaControllerRoute(
             name: null,
              areaName: Common.ModuleName,
              pattern: "report/download/json/{ContentItemId}",
-             defaults: new { controller = "Report", action = "Json" }
+             defaults: new { controller = "Report", action = "SaveAsJson" }
          );
 
          builder.UseSession();

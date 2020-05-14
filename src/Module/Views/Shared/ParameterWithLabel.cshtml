@@ -1,12 +1,15 @@
 @model ParameterViewModel
 @{
-    var warning = Model.Parameter.Required && (string.IsNullOrEmpty(Context.Request.Query[Model.Parameter.Name]) || Context.Request.Query[Model.Parameter.Name].ToString() == "*");
+   var warning = Model.Parameter.Required && (string.IsNullOrEmpty(Context.Request.Query[Model.Parameter.Name].ToString()) || Context.Request.Query[Model.Parameter.Name].ToString() == "*");
 }
-<div class="form-group form-group-sm @(warning ? "has-warning" : string.Empty)" title="@(warning ? Model.Parameter.Label + " is required." : string.Empty)" required="@Model.Parameter.Required">
-    <label class="sr-only" for="@Model.Parameter.Name">@Model.Parameter.Label</label>
-    <div class="input-group input-group-sm" style="padding-top: 2px;">
-        <span class="input-group-addon">@Model.Parameter.Label</span>
-        @Html.Partial("Parameter", Model)
-    </div>
+<div class="p-1 form-group form-group-sm @(warning ? "has-warning" : string.Empty)" title="@(warning ? Model.Parameter.Label + " is required." : string.Empty)" required="@Model.Parameter.Required">
+   <label class="sr-only" for="@Model.Parameter.Name">@Model.Parameter.Label</label>
+   <div class="input-group input-group-sm">
+      <div class="input-group-prepend">
+         <span class="input-group-text">@Model.Parameter.Label</span>
+      </div>
+      @Html.Partial("Parameter", Model)
+   </div>
 </div>
+
 

@@ -26,18 +26,30 @@ namespace Module {
          _contentDefinitionManager.AlterTypeDefinition("TransformalizeReport", builder => builder
              .Creatable()
              .Listable()
-             .WithPart("TitlePart", part => part.WithPosition("01"))
+             .WithPart("TitlePart", part => part.WithPosition("1"))
              .WithPart("AliasPart", part => part
-                 .WithPosition("02")
+                 .WithPosition("2")
                  .WithSettings(new AliasPartSettings {
                     Pattern = "{{ ContentItem | title | slugify }}"
                  })
              )
-             .WithPart("TransformalizeReportPart", part => part.WithPosition("03"))
-             .WithPart("CommonPart", part => part.WithPosition("04"))
+             .WithPart("TransformalizeReportPart", part => part.WithPosition("3"))
+             .WithPart("CommonPart", part => part.WithPosition("4"))
          );
 
          return 1;
       }
+
+      public int UpdateFrom1() {
+         _contentDefinitionManager.AlterPartDefinition("TransformalizeReportPart", part => part
+             .WithField("PageSizes", field => field
+                 .OfType(nameof(PageSizesField))
+                 .WithDisplayName("Page Sizes")
+             )
+         );
+
+         return 2;
+      }
+
    }
 }

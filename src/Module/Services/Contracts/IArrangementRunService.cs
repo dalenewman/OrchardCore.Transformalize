@@ -4,7 +4,7 @@ using Transformalize.Configuration;
 using Transformalize.Contracts;
 
 namespace Module.Services.Contracts {
-   public interface IReportRunService {
+   public interface IArrangementRunService {
       Task RunAsync(Process process, IPipelineLogger logger);
    }
 }

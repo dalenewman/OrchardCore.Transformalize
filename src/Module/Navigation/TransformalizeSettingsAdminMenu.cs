@@ -21,11 +21,10 @@ namespace Module.Navigation {
          builder.Add(T["Transformalize"], configuration => configuration
             .AddClass("tfl").Id("tfl")
              .Add(T["Settings"], settings => settings
-                 .Add(T["Common"], T["Common"], common => common
-                     .Action("Index", "Admin", new { area = "OrchardCore.Settings", groupId = Common.SettingsGroupId })
-                     .Permission(Permissions.ManageTransformalizeSettings)
-                     .LocalNav()
-                 )));
+                  .Action("Index", "Admin", new { area = "OrchardCore.Settings", groupId = Common.SettingsGroupId })
+                  .Permission(Permissions.ManageTransformalizeSettings)
+                  .LocalNav()
+               ));
 
          return Task.CompletedTask;
       }

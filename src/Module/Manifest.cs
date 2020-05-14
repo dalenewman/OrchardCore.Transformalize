@@ -6,7 +6,7 @@ using OrchardCore.Modules.Manifest;
     Website = "https://github.com/dalenewman/Transformalize",
     Version = "0.7.6",
     Description = "Transformalize",
-    Category = "Content",
+    Category = "Reporting",
     Dependencies = new[]{
         "OrchardCore.Users",
         "OrchardCore.Contents",

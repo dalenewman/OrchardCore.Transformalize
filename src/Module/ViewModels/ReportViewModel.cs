@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Module.Models;
 using OrchardCore.ContentManagement;
 using Transformalize.Configuration;
 
@@ -32,10 +33,12 @@ namespace Module.ViewModels {
       }
 
       public ContentItem Item { get; set; }
+      public TransformalizeReportPart Part { get; set;}
 
       public ReportViewModel(Process process, ContentItem item) {
          Process = process;
          Item = item;
+         Part = item.As<TransformalizeReportPart>();
       }
 
       public Dictionary<string, Parameter> InlineParameters {

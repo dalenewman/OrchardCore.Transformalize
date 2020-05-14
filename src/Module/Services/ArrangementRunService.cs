@@ -11,6 +11,7 @@ using System.Threading.Tasks;
 using Transformalize.Configuration;
 using Transformalize.Containers.Autofac;
 using Transformalize.Contracts;
+using Transformalize.Logging;
 using Transformalize.Providers.Ado;
 using Transformalize.Providers.Ado.Autofac;
 using Transformalize.Providers.Bogus.Autofac;
@@ -28,12 +29,13 @@ using Transformalize.Providers.SqlServer.Autofac;
 using Transformalize.Transforms.Humanizer.Autofac;
 using Transformalize.Transforms.Jint.Autofac;
 using Transformalize.Transforms.Json.Autofac;
+using Transformalize.Validate.Jint.Autofac;
 
 namespace Module.Services {
-   public class ReportRunService : IReportRunService {
+   public class ArrangementRunService : IArrangementRunService {
       private readonly IHttpContextAccessor _contextAccessor;
 
-      public ReportRunService(IHttpContextAccessor contextAccessor) {
+      public ArrangementRunService(IHttpContextAccessor contextAccessor) {
          _contextAccessor = contextAccessor;
       }
 
@@ -71,11 +73,25 @@ namespace Module.Services {
             container.AddModule(new JsonTransformModule());
             container.AddModule(new HumanizeModule());
 
+            // validators
+            container.AddModule(new JintValidateModule());
+
             controller = container.CreateScope(process, logger).Resolve<IProcessController>();
          }
 
          using (profiler.Step("Run.Execute")) {
             await controller.ExecuteAsync();
+         }
+
+         if (process.Errors().Any() || logger is MemoryLogger m && m.Log.Any(l => l.LogLevel == LogLevel.Error)) {
+            if (logger is MemoryLogger ml) {
+               process.Log.AddRange(ml.Log);
+            }
+            process.Status = 500;
+            process.Message = "Process has errors.";
+         } else {
+            process.Status = 200;
+            process.Message = "Ok";
          }
 
          return;

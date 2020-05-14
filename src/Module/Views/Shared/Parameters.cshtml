@@ -1,16 +1,14 @@
 @model ReportViewModel
-<div id="id-parameters" class="row">
-    <div class="col-md-12">
-        @if (Model.EnableInlineParameters) {
-            foreach (var parameter in Model.Process.Parameters.Where(p => p.Prompt)) {
-                if (Model.TopParameters.Contains(parameter.Name)) {
-                    @Html.Partial("ParameterWithLabel", new ParameterViewModel { Maps = Model.Process.Maps, Parameter = parameter })
-                }
-            }
-        } else {
-            foreach (var parameter in Model.Process.Parameters.Where(p => p.Prompt)) {
-                @Html.Partial("ParameterWithLabel", new ParameterViewModel { Maps = Model.Process.Maps, Parameter = parameter })
-            }
-        }
-    </div>
+<div id="id-parameters" class="row" style="padding-left: 11px;">
+   @if (Model.EnableInlineParameters) {
+      foreach (var parameter in Model.Process.Parameters.Where(p => p.Prompt)) {
+         if (Model.TopParameters.Contains(parameter.Name)) {
+            @Html.Partial("ParameterWithLabel", new ParameterViewModel { Maps = Model.Process.Maps, Parameter = parameter })
+         }
+      }
+   } else {
+      foreach (var parameter in Model.Process.Parameters.Where(p => p.Prompt)) {
+         @Html.Partial("ParameterWithLabel", new ParameterViewModel { Maps = Model.Process.Maps, Parameter = parameter })
+      }
+   }
 </div>
