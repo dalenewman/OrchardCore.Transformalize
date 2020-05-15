@@ -47,10 +47,6 @@
    </ItemGroup>
 
    <ItemGroup>
-     <Folder Include="Transforms\" />
-   </ItemGroup>
-
-   <ItemGroup>
      <None Include="bundleconfig.json" />
    </ItemGroup>
 

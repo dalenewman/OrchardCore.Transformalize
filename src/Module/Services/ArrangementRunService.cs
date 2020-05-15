@@ -1,6 +1,7 @@
 using Autofac;
 using Microsoft.AspNetCore.Http;
 using Module.Services.Contracts;
+using Module.Transforms;
 using StackExchange.Profiling;
 using System.Collections.Generic;
 using System.Data;
@@ -33,10 +34,10 @@ using Transformalize.Validate.Jint.Autofac;
 
 namespace Module.Services {
    public class ArrangementRunService : IArrangementRunService {
-      private readonly IHttpContextAccessor _contextAccessor;
+      private readonly IHttpContextAccessor _httpContext;
 
       public ArrangementRunService(IHttpContextAccessor contextAccessor) {
-         _contextAccessor = contextAccessor;
+         _httpContext = contextAccessor;
       }
 
       public async Task RunAsync(Process process, IPipelineLogger logger) {
@@ -61,14 +62,17 @@ namespace Module.Services {
             if (providers.Contains("sqlite")) { container.AddModule(new SqliteModule() { ConnectionFactory = (c) => new ProfiledConnectionFactory(new SqliteConnectionFactory(c)) }); }
             if (providers.Contains("mysql")) { container.AddModule(new MySqlModule() { ConnectionFactory = (c) => new ProfiledConnectionFactory(new MySqlConnectionFactory(c)) }); }
 
-            if (providers.Contains("file")) { container.AddModule(new CsvHelperProviderModule(_contextAccessor.HttpContext.Response.Body)); }
-            if (providers.Contains("json")) { container.AddModule(new JsonProviderModule(_contextAccessor.HttpContext.Response.Body)); }
+            if (providers.Contains("file")) { container.AddModule(new CsvHelperProviderModule(_httpContext.HttpContext.Response.Body)); }
+            if (providers.Contains("json")) { container.AddModule(new JsonProviderModule(_httpContext.HttpContext.Response.Body)); }
 
             if (providers.Contains("elasticsearch")) { container.AddModule(new ElasticsearchModule()); }
             // solr
             // lucene
 
             // transforms
+            container.AddTransform((c) => new UsernameTransform(_httpContext, c), new UsernameTransform().GetSignatures());
+
+            // external transforms
             container.AddModule(new JintTransformModule());
             container.AddModule(new JsonTransformModule());
             container.AddModule(new HumanizeModule());

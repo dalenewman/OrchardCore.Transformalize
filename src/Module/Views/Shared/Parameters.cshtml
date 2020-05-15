@@ -1,5 +1,5 @@
 @model ReportViewModel
-<div id="id-parameters" class="row" style="padding-left: 11px;">
+<div id="id-parameters" class="form-row">
    @if (Model.EnableInlineParameters) {
       foreach (var parameter in Model.Process.Parameters.Where(p => p.Prompt)) {
          if (Model.TopParameters.Contains(parameter.Name)) {

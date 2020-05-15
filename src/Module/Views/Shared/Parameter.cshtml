@@ -45,6 +45,7 @@
       if (string.IsNullOrEmpty(Model.Parameter.Map)) {
          <input class="form-control form-control-sm"
                 name="@Model.Parameter.Name"
+                type="text"
                 required="@Model.Parameter.Required"
                 value="@requestedValue"
                 placeholder="@Model.Parameter.Label"

@@ -51,5 +51,32 @@ namespace Module {
          return 2;
       }
 
+      public int UpdateFrom2() {
+
+         _contentDefinitionManager.AlterPartDefinition("TransformalizeTaskPart", part => part
+             .WithDisplayName("Transformalize Task Part")
+             .WithDescription("Provides fields for Transformalize Task content type")
+             .WithField("Arrangement", field => field
+                 .OfType(nameof(TransformalizeArrangementField))
+                 .WithDisplayName("Arrangement")
+             )
+         );
+
+         _contentDefinitionManager.AlterTypeDefinition("TransformalizeTask", builder => builder
+             .Creatable()
+             .Listable()
+             .WithPart("TitlePart", part => part.WithPosition("1"))
+             .WithPart("AliasPart", part => part
+                 .WithPosition("2")
+                 .WithSettings(new AliasPartSettings {
+                    Pattern = "{{ ContentItem | title | slugify }}"
+                 })
+             )
+             .WithPart("TransformalizeTaskPart", part => part.WithPosition("3"))
+             .WithPart("CommonPart", part => part.WithPosition("4"))
+         );
+         return 3;
+      }
+
    }
 }

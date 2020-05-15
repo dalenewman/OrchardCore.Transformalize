@@ -8,6 +8,8 @@ using Transformalize.Logging;
 using OrchardCore.Liquid;
 using OrchardCore.Title.Models;
 using Transformalize.Context;
+using Transformalize.Configuration;
+using System.Collections.Generic;
 
 namespace Module.Controllers {
    public class ReportController : Controller {
@@ -34,7 +36,7 @@ namespace Module.Controllers {
          var logger = new MemoryLogger(LogLevel.Info);
 
          if (!_reportService.CanAccess(contentItem)) {
-            return View("Log", _reportService.GetErrorModel(contentItem, "Access Denied."));
+            return View("Log", GetErrorModel(contentItem, "Access Denied."));
          }
 
          var process = _reportService.LoadForReport(contentItem, logger);
@@ -180,6 +182,10 @@ namespace Module.Controllers {
 
          return new EmptyResult();
 
+      }
+
+      public ReportViewModel GetErrorModel(ContentItem contentItem, string message) {
+         return new ReportViewModel(new Process() { Name = "Error", Log = new List<LogEntry>(1) { new LogEntry(LogLevel.Error, null, message) } }, contentItem);
       }
 
 

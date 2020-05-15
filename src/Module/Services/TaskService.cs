@@ -1,26 +1,21 @@
+﻿using Module.Services.Contracts;
+using OrchardCore.ContentManagement;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Module.Services.Contracts;
-using OrchardCore.ContentManagement;
 using Transformalize.Configuration;
 using Transformalize.Contracts;
 
 namespace Module.Services {
+   public class TaskService : ITaskService {
 
-   public class ReportService : IReportService {
-
+      private readonly IArrangementService _arrangementService;
       private readonly IArrangementLoadService _loadService;
       private readonly IArrangementRunService _runService;
-      private readonly IArrangementService _arrangementService;
 
-      public ReportService(
-         IArrangementLoadService loadService,
-         IArrangementRunService runService,
-         IArrangementService arrangementService
-      ) {
+      public TaskService(IArrangementService arrangementService, IArrangementLoadService loadService, IArrangementRunService runService) {
+         _arrangementService = arrangementService;
          _loadService = loadService;
          _runService = runService;
-         _arrangementService = arrangementService;      
       }
 
       public bool CanAccess(ContentItem contentItem) {
@@ -35,17 +30,12 @@ namespace Module.Services {
          return _arrangementService.IsMissingRequiredParameters(parameters);
       }
 
-      public Process LoadForExport(ContentItem contentItem, IPipelineLogger logger) {
-         return _loadService.LoadForExport(contentItem, logger);
-      }
-
-      public Process LoadForReport(ContentItem contentItem, IPipelineLogger logger, string format = null) {
-         return _loadService.LoadForReport(contentItem, logger, format);
+      public Process LoadForTask(ContentItem contentItem, IPipelineLogger logger, string format = null) {
+         return _loadService.LoadForTask(contentItem, logger, format);
       }
 
       public async Task RunAsync(Process process, IPipelineLogger logger) {
          await _runService.RunAsync(process, logger);
       }
-
    }
 }

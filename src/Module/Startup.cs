@@ -41,10 +41,12 @@ namespace Module {
          services.AddScoped<ILinkService, LinkService>();
          services.AddScoped<ISortService, SortService>();
          services.AddScoped<IStickyParameterService, StickyParameterService>();
+         services.AddScoped<IArrangementService, ArrangementService>();
          services.AddScoped<IArrangementLoadService, ArrangementLoadService>();
          services.AddScoped<IArrangementRunService, ArrangementRunService>();
          services.AddScoped<IParameterService, ParameterService>();
          services.AddScoped<IReportService, ReportService>();
+         services.AddScoped<ITaskService, TaskService>();
          services.AddScoped<ISettingsService, SettingsService>();
 
          services.AddScoped<IDataMigration, Migrations>();
@@ -55,6 +57,7 @@ namespace Module {
          services.AddContentField<PageSizesField>(); // UseDisplayDriver in dev branch
          services.AddScoped<IContentFieldDisplayDriver, PageSizesFieldDisplayDriver>();
          services.AddContentPart<TransformalizeReportPart>();
+         services.AddContentPart<TransformalizeTaskPart>();
 
          services.AddScoped<IContentHandler, TransformalizeHandler>();
 
@@ -93,6 +96,20 @@ namespace Module {
              areaName: Common.ModuleName,
              pattern: "report/download/json/{ContentItemId}",
              defaults: new { controller = "Report", action = "SaveAsJson" }
+         );
+
+         routes.MapAreaControllerRoute(
+             name: null,
+             areaName: Common.ModuleName,
+             pattern: "task/{ContentItemId}",
+             defaults: new { controller = "Task", action = "Index" }
+         );
+
+         routes.MapAreaControllerRoute(
+             name: null,
+             areaName: Common.ModuleName,
+             pattern: "task/{format}/{ContentItemId}",
+             defaults: new { controller = "Task", action = "Run", format = "json" }
          );
 
          builder.UseSession();

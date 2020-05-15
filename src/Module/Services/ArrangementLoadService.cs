@@ -17,6 +17,9 @@ using Transformalize.Validate.Jint.Autofac;
 using Module.Models;
 using Cfg.Net.Serializers;
 using Transformalize.Logging;
+using Module.Transforms;
+using Microsoft.AspNetCore.Http;
+using Transformalize.Context;
 
 namespace Module.Services {
    public class ArrangementLoadService : IArrangementLoadService {
@@ -25,22 +28,25 @@ namespace Module.Services {
       private readonly IDictionary<string, string> _parameters;
       private readonly ISortService _sortService;
       private readonly ISettingsService _settings;
+      private readonly IHttpContextAccessor _httpContext;
 
       public ArrangementLoadService(
          IParameterService parameterService,
          IStickyParameterService stickyParameterService,
          ISortService sortService,
-         ISettingsService settings
+         ISettingsService settings,
+         IHttpContextAccessor httpContext
       ) {
          _stickyParameterService = stickyParameterService;
          _parameters = parameterService.GetParameters();
          _sortService = sortService;
          _settings = settings;
+         _httpContext = httpContext;
       }
 
       public Process LoadForExport(ContentItem contentItem, IPipelineLogger logger) {
 
-         if (!TryGetPart(contentItem, out var part)) {
+         if (!TryGetReportPart(contentItem, out var part)) {
             return new Process() { Status = 500, Message = $"Content item is not compatible with Transformalize." };
          }
 
@@ -73,7 +79,7 @@ namespace Module.Services {
 
       public Process LoadForReport(ContentItem contentItem, IPipelineLogger logger, string format = null) {
 
-         if (!TryGetPart(contentItem, out var part)) {
+         if (!TryGetReportPart(contentItem, out var part)) {
             return new Process() { Status = 500, Message = $"Content item is not compatible with Transformalize." };
          }
 
@@ -105,8 +111,8 @@ namespace Module.Services {
 
       public Process LoadForTask(ContentItem contentItem, IPipelineLogger logger, string format = null) {
 
-         if (!TryGetPart(contentItem, out var part)) {
-            return new Process() { Status = 500, Message = $"Content item is not compatible with Transformalize." };
+         if (!TryGetTaskPart(contentItem, out var part)) {
+            return new Process() { Status = 500, Message = "Error" };
          }
 
          var process = LoadInternal(part.Arrangement.Arrangement, logger, format == "json" ? new JsonSerializer() : null);
@@ -128,6 +134,9 @@ namespace Module.Services {
             if (serializer != null) {
                container.AddDependency(serializer);
             }
+
+            // transforms
+            container.AddTransform((c) => new UsernameTransform(_httpContext, c), new UsernameTransform().GetSignatures());
 
             // external transforms register their short-hand here
             container.AddModule(new JintTransformModule());
@@ -248,8 +257,13 @@ namespace Module.Services {
          }
       }
 
-      private bool TryGetPart(ContentItem contentItem, out TransformalizeReportPart part) {
+      private bool TryGetReportPart(ContentItem contentItem, out TransformalizeReportPart part) {
          part = contentItem.As<TransformalizeReportPart>();
+         return part != null;
+      }
+
+      private bool TryGetTaskPart(ContentItem contentItem, out TransformalizeTaskPart part) {
+         part = contentItem.As<TransformalizeTaskPart>();
          return part != null;
       }
 
