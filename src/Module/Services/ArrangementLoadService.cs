@@ -19,7 +19,6 @@ using Cfg.Net.Serializers;
 using Transformalize.Logging;
 using Module.Transforms;
 using Microsoft.AspNetCore.Http;
-using Transformalize.Context;
 
 namespace Module.Services {
    public class ArrangementLoadService : IArrangementLoadService {
@@ -29,19 +28,22 @@ namespace Module.Services {
       private readonly ISortService _sortService;
       private readonly ISettingsService _settings;
       private readonly IHttpContextAccessor _httpContext;
+      private readonly IConfigurationContainer _configurationContainer;
 
       public ArrangementLoadService(
          IParameterService parameterService,
          IStickyParameterService stickyParameterService,
          ISortService sortService,
          ISettingsService settings,
-         IHttpContextAccessor httpContext
+         IHttpContextAccessor httpContext,
+         IConfigurationContainer configurationContainer
       ) {
          _stickyParameterService = stickyParameterService;
          _parameters = parameterService.GetParameters();
          _sortService = sortService;
          _settings = settings;
          _httpContext = httpContext;
+         _configurationContainer = configurationContainer;
       }
 
       public Process LoadForExport(ContentItem contentItem, IPipelineLogger logger) {
@@ -125,29 +127,8 @@ namespace Module.Services {
          Process process;
 
          using (MiniProfiler.Current.Step("Load")) {
-
-            var container = new ConfigurationContainer();
-
-            // configuration customizers
-            container.AddDependency(new ReportParameterModifier());
-
-            if (serializer != null) {
-               container.AddDependency(serializer);
-            }
-
-            // transforms
-            container.AddTransform((c) => new UsernameTransform(_httpContext, c), new UsernameTransform().GetSignatures());
-
-            // external transforms register their short-hand here
-            container.AddModule(new JintTransformModule());
-            container.AddModule(new JsonTransformModule());
-            container.AddModule(new HumanizeModule());
-
-            // extrenal validators register their short-hand here
-            container.AddModule(new JintValidateModule());
-
-            process = container.CreateScope(arrangement, logger, _parameters).Resolve<Process>();
-
+            _configurationContainer.Serializer = serializer;
+            process = _configurationContainer.CreateScope(arrangement, logger, _parameters).Resolve<Process>();
          }
 
          ApplyCommonSettings(process);

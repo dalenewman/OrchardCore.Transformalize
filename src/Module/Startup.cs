@@ -38,6 +38,7 @@ namespace Module {
          services.AddSession();
          services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 
+         // transformalize services
          services.AddScoped<ILinkService, LinkService>();
          services.AddScoped<ISortService, SortService>();
          services.AddScoped<IStickyParameterService, StickyParameterService>();
@@ -48,22 +49,27 @@ namespace Module {
          services.AddScoped<IReportService, ReportService>();
          services.AddScoped<ITaskService, TaskService>();
          services.AddScoped<ISettingsService, SettingsService>();
+         services.AddScoped<IConfigurationContainer, OrchardConfigurationContainer>();
+         services.AddScoped<IContainer, OrchardContainer>();
 
+         // orchard cms services
          services.AddScoped<IDataMigration, Migrations>();
+         services.AddScoped<IPermissionProvider, Permissions>();
          services.AddScoped<IResourceManifestProvider, ResourceManifest>();
+         services.AddScoped<IContentHandler, TransformalizeHandler>();
 
+         // fields
          services.AddContentField<TransformalizeArrangementField>(); // UseDisplayDriver in dev branch
          services.AddScoped<IContentFieldDisplayDriver, TransformalizeArrangementFieldDisplayDriver>();
          services.AddContentField<PageSizesField>(); // UseDisplayDriver in dev branch
          services.AddScoped<IContentFieldDisplayDriver, PageSizesFieldDisplayDriver>();
+
+         // parts
          services.AddContentPart<TransformalizeReportPart>();
          services.AddContentPart<TransformalizeTaskPart>();
 
-         services.AddScoped<IContentHandler, TransformalizeHandler>();
-
-         // Transformalize Settings
+         // settings
          services.AddScoped<IDisplayDriver<ISite>, TransformalizeSettingsDisplayDriver>();
-         services.AddScoped<IPermissionProvider, Permissions>();
          services.AddScoped<INavigationProvider, TransformalizeSettingsAdminMenu>();
 
       }
