@@ -10,7 +10,6 @@
 @{
 
    var hasParameters = Model.Process.Parameters.Any(p => p.Prompt);
-   var hasActions = Model.Process.Actions.Any(a => !a.Before && !a.After && !string.IsNullOrEmpty(a.Description) && !a.Description.StartsWith("Batch", StringComparison.OrdinalIgnoreCase));
    var entity = Model.Process.Entities.FirstOrDefault() ?? new Entity { Name = "Missing Entity" };
 
    var settings = Context.RequestServices.GetService<ISettingsService>();
@@ -45,20 +44,16 @@
 
             <button id="id_clear" title="Clear the Parameters" type="button" class="btn btn-info btn-sm">Clear</button>
 
-            if (hasActions) {
-               <div class="btn-group">
-                  <button type="button" class="btn btn-sm btn-danger">Action</button>
-                  <button type="button" class="btn btn-sm btn-danger dropdown-toggle" data-toggle="dropdown">
-                     <span class="caret"></span>
-                     <span class="sr-only">Toggle Dropdown</span>
+            if (Model.Part.BulkActions.Value) {
+               <div class="btn-group btn-group-sm" role="group" aria-label="bulk actions drop down">
+                  <button id="idActionDropdown" type="button" class="btn btn-sm btn-danger dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                     Action
                   </button>
-                  <ul class="dropdown-menu" role="menu">
-                     @foreach (var action in Model.Process.Actions.Where(a => !a.Before && !a.After && !string.IsNullOrEmpty(a.Description) && !a.Description.StartsWith("Batch", StringComparison.OrdinalIgnoreCase))) {
-                        <li>
-                           <a class="bulk-action-link" rel="@action.Description" href="javascript:bulkAction(1,'@action.Description',@action.Id);">@action.Description</a>
-                        </li>
+                  <div class="dropdown-menu" aria-labelledby="idActionDropdown">
+                     @foreach (var action in Model.Process.Actions.Where(a => !string.IsNullOrEmpty(a.Name))) {
+                        <a class="bulk-action-link dropdown-item" rel="@action.Description" href="javascript:bulkAction(1, '@action.Name');">@action.Description</a>
                      }
-                  </ul>
+                  </div>
                </div>
             }
          }

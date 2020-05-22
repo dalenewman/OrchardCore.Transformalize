@@ -3,7 +3,7 @@
    <PropertyGroup>
       <TargetFramework>netcoreapp3.0</TargetFramework>
       <AddRazorSupportForMvc>true</AddRazorSupportForMvc>
-      <Version>0.7.7-beta</Version>
+      <Version>0.7.8-beta</Version>
       <AssemblyName>OrchardCore.Transformalize</AssemblyName>
       <RootNamespace>Module</RootNamespace>
    </PropertyGroup>
@@ -20,6 +20,7 @@
       <PackageReference Include="Etch.OrchardCore.ContentPermissions" Version="0.2.0-rc1" />
       <PackageReference Include="Flurl" Version="2.8.2" />
       <PackageReference Include="OrchardCore.Alias" Version="1.0.0-rc1-10004" />
+      <PackageReference Include="OrchardCore.ContentFields" Version="1.0.0-rc1-10004" />
       <PackageReference Include="OrchardCore.ContentManagement" Version="1.0.0-rc1-10004" />
       <PackageReference Include="OrchardCore.Contents" Version="1.0.0-rc1-10004" />
       <PackageReference Include="OrchardCore.DisplayManagement" Version="1.0.0-rc1-10004" />
@@ -27,6 +28,7 @@
       <PackageReference Include="OrchardCore.Module.Targets" Version="1.0.0-rc1-10004" />
       <PackageReference Include="OrchardCore.ResourceManagement" Version="1.0.0-rc1-10004" />
       <PackageReference Include="OrchardCore.Title" Version="1.0.0-rc1-10004" />
+      <PackageReference Include="OrchardCore.Users.Core" Version="1.0.0-rc1-10004" />
       <PackageReference Include="Transformalize" Version="0.7.7-beta" />
       <PackageReference Include="Transformalize.Container.Autofac" Version="0.7.6-beta" />
       <PackageReference Include="Transformalize.Provider.Ado.Autofac" Version="0.7.9-beta" />

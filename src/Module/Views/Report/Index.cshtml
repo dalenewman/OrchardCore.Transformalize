@@ -15,6 +15,7 @@
 <script asp-name="bootstrap-select" version="1.13.12" at="Foot"></script>
 <script asp-name="prism" version="1.20.0" at="Foot"></script>
 <script asp-name="prism-markup" version="1.20.0" at="Foot"></script>
+<script asp-name="block-ui" version="2.70.0" at="Foot"></script>
 
 <style asp-name="jQuery-ui"></style>
 <style asp-name="bootstrap-select" version="1.13.12"></style>
@@ -84,6 +85,10 @@
       padding: 0;
    }
 
+   td > div > input[type="checkbox"] {
+      margin-top: 7px !important;
+   }
+
    @foreach (var script in Model.Process.Scripts.Where(s => s.Global && s.Language == "css" && string.IsNullOrEmpty(s.File))) {
    <text>/* @script.Name css script */</text>
    @Html.Raw(script.Content)
@@ -118,15 +123,13 @@
                <table id="id_table_@entity.Sequence" class="table table-sm table-hover table-striped tablesorter">
                   <thead>
                      <tr class="action-row">
-                        @*@if (hasActions) {
-                               <td>
-                                   <div class="checkbox">
-                                       <label>
-                                           <input title="Select the entire search result" id="select-all" type="checkbox" class="bulk-action" name="select-all" placeholder="Select the entire search result">
-                                       </label>
-                                   </div>
-                               </td>
-                           }*@
+                        @if (Model.Part.BulkActions.Value) {
+                           <th>
+                              <div class="checkbox form-check">
+                                 <input title="Select the entire search result" id="select-all" type="checkbox" class="bulk-action form-check-input" name="select-all" placeholder="Select the entire search result">
+                              </div>
+                           </th>
+                           }
                         @foreach (var field in fields) {
                            <th title="@field.Name">@field.Label</th>
                         }
@@ -134,9 +137,9 @@
                      @if (isSortable) {
                         var expression = Context.Request.Query["sort"].ToString() ?? string.Empty;
                         <tr class="tablesorter-ignoreRow">
-                           @*@if (hasActions) {
-                                  <td class="sorter">&nbsp;</td>
-                              }*@
+                           @if (Model.Part.BulkActions.Value) {
+                              <td class="sorter">&nbsp;</td>
+                           }
                            @for (var i = 0; i < fields.Length; i++) {
                               var field = fields[i];
                               var number = i + 1;
@@ -159,9 +162,9 @@
                      }
                      @if (Model.InlineParameters.Any()) {
                         <tr class="tablesorter-ignoreRow">
-                           @*@if (hasActions) {
-                                  <td class="sorter">&nbsp;</td>
-                              }*@
+                           @if (Model.Part.BulkActions.Value) {
+                              <td class="sorter">&nbsp;</td>
+                           }
                            @foreach (var field in fields) {
                               <td style="padding-left: 3px;">
                                  @if (Model.InlineParameters.ContainsKey(field.Alias)) {
@@ -176,20 +179,19 @@
                   <tbody>
                      @foreach (var row in entity.Rows) {
                         <tr>
-                           @*@if (hasActions) {
-                                  <td>
-                                      <div class="checkbox">
-                                          <label>
-                                              <input title="Select this row"
-                                                     type="checkbox"
-                                                     class="bulk-action shift-select"
-                                                     name="row"
-                                                     value="@(row[Common.BatchValueFieldName])"
-                                                     placeholder="Select Record">
-                                          </label>
-                                      </div>
-                                  </td>
-                              }*@
+                           @if (Model.Part.BulkActions.Value) {
+                                 <td>
+                                    <div class="checkbox form-check">
+                                          @*value must be replaced with bulk action value field, @(row[Model.Part.BulkActionValueField.Text])*@
+                                          <input title="Select this row"
+                                                type="checkbox"
+                                                class="bulk-action shift-select form-check-input"
+                                                name="row"
+                                                value="todo"
+                                                placeholder="Select Record">
+                                    </div>
+                                 </td>
+                              }
 
                            @foreach (var field in fields) {
                               <td>
@@ -250,16 +252,7 @@
                                        if (field.Raw) {
                                           @Html.Raw(row[field.Alias])
                                        } else {
-                                          @*if (Model.Part.ClipTextAt > 0) {
-                                                 var value = row[field.Alias].ToString().Trim();
-                                                 if (value.Length > Model.Part.ClipTextAt + 3) {
-                                                     <div class="comment">@value</div>
-                                                 } else {
-                                                     @value
-                                                 }
-                                             } else {*@
                                           @row[field.Alias]
-                                          //}
                                        }
 
                                        break;
@@ -346,30 +339,29 @@
       }
    }
 
-   function bulkAction(page,description,id) {
+   function bulkAction(page,name) {
       var length = $('.bulk-action:checked').length;
       if (length > 0) {
-            $.blockUI({
-         message: null,
-                css: {
-            border: 'none',
-                    padding: '15px',
-                    backgroundColor: '#000',
-                    '-webkit-border-radius': '10px',
-                    '-moz-border-radius': '10px',
-                    opacity: .5,
-                    color: '#fff',
-                    baseZ: 1021
-                }
+         $.blockUI({
+            message: null,
+            css: {
+               border: 'none',
+               padding: '15px',
+               backgroundColor: '#000',
+               '-webkit-border-radius': '10px',
+               '-moz-border-radius': '10px',
+               opacity: .5,
+               color: '#fff',
+               baseZ: 1021
+            }
          });
          var $form = $('#id_report');
-            $form.attr('method', 'POST');
-            $form.attr('action', '@(Url.Action("Index", "Action", new { ContentItemId = Model.Item.ContentItemId }))');
-            $form.append('<input type="hidden" name="__RequestVerificationToken" value="@(Html.AntiForgeryToken())" />');
-            $form.append('<input type="hidden" name="action" value="'+description+'" />');
-            $form.append('<input type="hidden" name="actionId" value="'+id+'" />');
-            $form.append('<input type="hidden" name="count" value="'+controls.bulkActionLength+'" />');
-            $('#id_output').val("batch");
+         $form.attr('method', 'POST');
+         $form.attr('action', '@(Url.Action("Index", "BulkAction", new { ContentItemId = Model.Item.ContentItemId }))');
+         $form.append('@(Html.AntiForgeryToken())');
+         $form.append('<input type="hidden" name="ActionName" value="'+name+'" />');
+         $form.append('<input type="hidden" name="ActionCount" value="'+controls.bulkActionLength+'" />');
+         $('#id_output').val("batch");
          controls.submit(page);
       }
    }
@@ -381,13 +373,11 @@
          var link = $(this);
          var len = (all ? "All" : $('#select-all:checked').length > 0 ? length - 1 : length);
          controls.bulkActionLength =  len;
-         link.html(link.attr('rel') + '&nbsp;&nbsp;<span class="badge">' + len + "</span>");
+         link.html(link.attr('rel') + ' <span class="badge badge-dark">' + len + "</span>");
       });
    }
 
     $(document).ready(function () {
-
-       @*$(".comment").shorten({showChars: @Model.Part.ClipTextAt});*@
 
       var cleared = "_Cleared";
       var lastFilter;
@@ -543,10 +533,6 @@
         });
 
     });
-
-   //$(document).ready(function() {
-   //   SyntaxHighlighter.all();
-   //});
 
    @foreach (var script in Model.Process.Scripts.Where(s => s.Global && string.IsNullOrEmpty(s.File) && s.Language == "js")) {
       <text>/* @script.Name */</text>

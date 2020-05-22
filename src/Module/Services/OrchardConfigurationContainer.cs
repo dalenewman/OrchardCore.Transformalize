@@ -21,8 +21,10 @@ using Cfg.Net.Contracts;
 using Cfg.Net.Environment;
 using Cfg.Net.Reader;
 using Cfg.Net.Shorthand;
+using Microsoft.AspNetCore.Http;
 using Module.Services.Modifiers;
 using Module.Transforms;
+using OrchardCore.Users.Services;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -48,8 +50,17 @@ namespace Module.Services {
 
       private readonly HashSet<string> _methods = new HashSet<string>();
       private readonly ShorthandRoot _shortHand = new ShorthandRoot();
+      private readonly IUserService _userService;
+      private readonly IHttpContextAccessor _httpContext;
 
       public ISerializer Serializer { get; set; }
+
+      public OrchardConfigurationContainer(
+                  IHttpContextAccessor httpContext,
+         IUserService userService) {
+         _userService = userService;
+         _httpContext = httpContext;
+      }
 
       public ILifetimeScope CreateScope(string cfg, IPipelineLogger logger, IDictionary<string, string> parameters = null) {
 
@@ -68,7 +79,9 @@ namespace Module.Services {
          // register short-hand for t attribute
          var tm = new TransformModule(new Process { Name = "TransformShorthand" }, _methods, _shortHand, logger);
          // adding additional transforms here
-         tm.AddTransform(new TransformHolder((c) => new UsernameTransform(), new UsernameTransform().GetSignatures()));
+         tm.AddTransform(new TransformHolder((c) => new UsernameTransform(_httpContext, c), new UsernameTransform().GetSignatures()));
+         tm.AddTransform(new TransformHolder((c) => new UserIdTransform(_httpContext, _userService, c), new UserIdTransform().GetSignatures()));
+         tm.AddTransform(new TransformHolder((c) => new UserEmailTransform(_httpContext, _userService, c), new UserEmailTransform().GetSignatures()));
          builder.RegisterModule(tm);
 
          // register short-hand for v attribute

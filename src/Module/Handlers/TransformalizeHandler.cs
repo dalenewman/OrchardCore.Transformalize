@@ -7,7 +7,8 @@ namespace Module.Handlers {
    public class TransformalizeHandler : ContentHandlerBase {
 
       public override Task GetContentItemAspectAsync(ContentItemAspectContext context) {
-         // just changes the view link
+
+         // change the view links to goto custom controllers
 
          switch (context.ContentItem.ContentType) {
             case "TransformalizeReport":

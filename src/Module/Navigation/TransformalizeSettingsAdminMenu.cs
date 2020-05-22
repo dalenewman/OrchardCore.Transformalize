@@ -19,12 +19,14 @@ namespace Module.Navigation {
          }
 
          builder.Add(T["Transformalize"], configuration => configuration
-            .AddClass("tfl").Id("tfl")
-             .Add(T["Settings"], settings => settings
-                  .Action("Index", "Admin", new { area = "OrchardCore.Settings", groupId = Common.SettingsGroupId })
-                  .Permission(Permissions.ManageTransformalizeSettings)
-                  .LocalNav()
-               ));
+            .Id("tfl")
+            .AddClass("tfl")
+            .Add(T["Settings"], settings => settings
+               .Action("Index", "Admin", new { area = "OrchardCore.Settings", groupId = Common.SettingsGroupId })
+               .Permission(Permissions.ManageTransformalizeSettings)
+               .LocalNav()
+            )
+         );
 
          return Task.CompletedTask;
       }

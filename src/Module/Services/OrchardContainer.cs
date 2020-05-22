@@ -24,7 +24,6 @@ using Module.Transforms;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Transformalize.Actions;
 using Transformalize.Containers.Autofac;
 using Transformalize.Containers.Autofac.Modules;
 using Transformalize.Context;
@@ -52,8 +51,7 @@ using Transformalize.Providers.SqlServer.Autofac;
 using LogTransform = Transformalize.Transforms.System.LogTransform;
 using Process = Transformalize.Configuration.Process;
 using System.Data;
-using Microsoft.Extensions.DependencyInjection;
-using Module.Services.Contracts;
+using OrchardCore.Users.Services;
 
 namespace Module.Services {
 
@@ -62,14 +60,17 @@ namespace Module.Services {
       private readonly HashSet<string> _methods = new HashSet<string>();
       private readonly ShorthandRoot _shortHand = new ShorthandRoot();
       private readonly IHttpContextAccessor _httpContext;
+      private readonly IUserService _userService;
       private readonly IServiceProvider _serviceProvider;
       private readonly HashSet<string> _adoProviders = new HashSet<string>() { "sqlserver", "postgresql", "sqlite", "mysql" };
 
       public OrchardContainer(
-         IHttpContextAccessor httpContext, 
+         IHttpContextAccessor httpContext,
+         IUserService userService,
          IServiceProvider serviceProvider
       ) {
          _httpContext = httpContext;
+         _userService = userService;
          _serviceProvider = serviceProvider;
       }
 
@@ -85,6 +86,8 @@ namespace Module.Services {
          var tm = new TransformModule(process, _methods, _shortHand, logger);
          // adding additional transforms here
          tm.AddTransform(new TransformHolder((c) => new UsernameTransform(_httpContext, c), new UsernameTransform().GetSignatures()));
+         tm.AddTransform(new TransformHolder((c) => new UserIdTransform(_httpContext, _userService, c), new UserIdTransform().GetSignatures()));
+         tm.AddTransform(new TransformHolder((c) => new UserEmailTransform(_httpContext, _userService, c), new UserEmailTransform().GetSignatures()));
          builder.RegisterModule(tm);
 
          // register short-hand for v attribute, allowing for additional validators

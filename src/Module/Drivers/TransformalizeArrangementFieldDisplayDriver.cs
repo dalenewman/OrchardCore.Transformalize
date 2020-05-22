@@ -10,13 +10,24 @@ using Module.Fields;
 using Transformalize.Configuration;
 using System.Linq;
 using System;
+using Module.Models;
+using Module.Services;
+using Transformalize.Logging;
+using Transformalize.Contracts;
+using System.Collections.Generic;
+using Autofac;
 
 namespace Module.Drivers {
    public class TransformalizeArrangementFieldDisplayDriver : ContentFieldDisplayDriver<TransformalizeArrangementField> {
       private readonly IStringLocalizer S;
+      private readonly IConfigurationContainer _container;
 
-      public TransformalizeArrangementFieldDisplayDriver(IStringLocalizer<TransformalizeArrangementFieldDisplayDriver> localizer) {
+      public TransformalizeArrangementFieldDisplayDriver(
+         IStringLocalizer<TransformalizeArrangementFieldDisplayDriver> localizer,
+         IConfigurationContainer container
+      ) {
          S = localizer;
+         _container = container;
       }
 
       public override IDisplayResult Display(TransformalizeArrangementField field, BuildFieldDisplayContext context) {
@@ -48,10 +59,16 @@ namespace Module.Drivers {
                updater.ModelState.AddModelError(Prefix, S["A value is required for {0}.", displayName]);
             } else {
                try {
-                  var process = new Process(field.Arrangement);
+                  var logger = new MemoryLogger(LogLevel.Error);
+                  var process = _container.CreateScope(field.Arrangement, logger, new Dictionary<string, string>()).Resolve<Process>();
                   if (process.Errors().Any()) {
                      foreach (var error in process.Errors()) {
                         updater.ModelState.AddModelError(Prefix, S[error]);
+                     }
+                  }
+                  if(context.ContentPart is TransformalizeReportPart) {
+                     if (!process.Entities.Any()) {
+                        updater.ModelState.AddModelError(Prefix, S["Please define an entity in {0}.", displayName]);
                      }
                   }
                } catch (Exception ex) {

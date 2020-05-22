@@ -8,7 +8,7 @@ using Transformalize.Transforms;
 namespace Module.Transforms {
    public class UsernameTransform : BaseTransform {
 
-      private readonly IHttpContextAccessor _httpContext;
+      private readonly string _username = string.Empty;
 
       public UsernameTransform(IHttpContextAccessor httpContext = null, IContext context = null) : base(context, "string") {
          if (IsMissingContext()) {
@@ -21,22 +21,15 @@ namespace Module.Transforms {
          
          if (httpContext == null) {
             Run = false;
-            Context.Error("Username transform requires an instance of IHttpContextAccessor");
+            Context.Error($"{nameof(UsernameTransform)} requires an instance of IHttpContextAccessor");
          } else {
-            _httpContext = httpContext;
+            _username = httpContext.HttpContext.User?.Identity?.Name ?? "Anonymous";
          }
-
       }
+
       public override IRow Operate(IRow row) {
-         throw new NotImplementedException();
-      }
-
-      public override IEnumerable<IRow> Operate(IEnumerable<IRow> rows) {
-         var userName = _httpContext.HttpContext.User?.Identity?.Name ?? "Anonymous";
-         foreach (var row in rows) {
-            row[Context.Field] = userName;
-            yield return row;
-         }
+         row[Context.Field] = _username;
+         return row;
       }
 
       public override IEnumerable<OperationSignature> GetSignatures() {

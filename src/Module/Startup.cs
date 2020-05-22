@@ -79,43 +79,50 @@ namespace Module {
          routes.MapAreaControllerRoute(
              name: null,
              areaName: Common.ModuleName,
-             pattern: "report/{ContentItemId}",
+             pattern: "t/report/{ContentItemId}",
              defaults: new { controller = "Report", action = "Index" }
          );
 
          routes.MapAreaControllerRoute(
              name: null,
              areaName: Common.ModuleName,
-             pattern: "report/{format}/{ContentItemId}",
+             pattern: "t/report/{format}/{ContentItemId}",
              defaults: new { controller = "Report", action = "Run", format = "json" }
          );
 
          routes.MapAreaControllerRoute(
              name: null,
              areaName: Common.ModuleName,
-             pattern: "report/download/csv/{ContentItemId}",
+             pattern: "t/report/download/csv/{ContentItemId}",
              defaults: new { controller = "Report", action = "SaveAsCsv" }
          );
 
          routes.MapAreaControllerRoute(
             name: null,
              areaName: Common.ModuleName,
-             pattern: "report/download/json/{ContentItemId}",
+             pattern: "t/report/download/json/{ContentItemId}",
              defaults: new { controller = "Report", action = "SaveAsJson" }
          );
 
          routes.MapAreaControllerRoute(
              name: null,
              areaName: Common.ModuleName,
-             pattern: "task/{ContentItemId}",
+             pattern: "t/task/{ContentItemId}",
              defaults: new { controller = "Task", action = "Index" }
          );
 
          routes.MapAreaControllerRoute(
              name: null,
              areaName: Common.ModuleName,
-             pattern: "task/{format}/{ContentItemId}",
+             pattern: "t/task/{format}/{ContentItemId}",
              defaults: new { controller = "Task", action = "Run", format = "json" }
+         );
+
+         routes.MapAreaControllerRoute(
+             name: null,
+             areaName: Common.ModuleName,
+             pattern: "t/action/{ContentItemId}",
+             defaults: new { controller = "BulkAction", action = "Index" }
          );
 
          builder.UseSession();

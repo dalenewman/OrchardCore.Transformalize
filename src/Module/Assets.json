@@ -177,6 +177,12 @@
          "node_modules/prismjs/components/prism-sql.js"
       ],
       "output": "wwwroot/Scripts/prismjs/components/prism-sql.js"
+   },
+   {
+      "inputs": [
+         "node_modules/block-ui/jquery.blockUI.js"
+      ],
+      "output": "wwwroot/Scripts/jquery.blockUI.js"
    }
 
 ]

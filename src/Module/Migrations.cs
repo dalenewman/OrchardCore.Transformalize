@@ -3,6 +3,8 @@ using OrchardCore.ContentManagement.Metadata;
 using OrchardCore.ContentManagement.Metadata.Settings;
 using OrchardCore.Data.Migration;
 using Module.Fields;
+using OrchardCore.ContentFields.Fields;
+using OrchardCore.ContentFields.Settings;
 
 namespace Module {
    public class Migrations : DataMigration {
@@ -76,6 +78,23 @@ namespace Module {
              .WithPart("CommonPart", part => part.WithPosition("4"))
          );
          return 3;
+      }
+
+      public int UpdateFrom3() {
+         _contentDefinitionManager.AlterPartDefinition("TransformalizeReportPart", part => part
+             .WithField("BulkActions", field => field
+                 .OfType(nameof(BooleanField))
+                 .WithDisplayName("Bulk Actions")
+                 .WithSettings(new BooleanFieldSettings { 
+                     DefaultValue = false, 
+                     Hint = "Allow user to select one, many, or all records for a bulk action?",
+                     Label = "Bulk Actions" 
+                  }
+                 )
+              )
+         );
+
+         return 4;
       }
 
    }

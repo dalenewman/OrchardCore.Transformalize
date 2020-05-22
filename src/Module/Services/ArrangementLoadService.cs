@@ -1,24 +1,17 @@
 using Autofac;
-using Module.Services.Modifiers;
 using Module.Services.Contracts;
 using System.Collections.Generic;
 using Transformalize.Configuration;
-using Transformalize.Containers.Autofac;
 using Transformalize.Contracts;
-using Transformalize.Transforms.Jint.Autofac;
-using Transformalize.Transforms.Json.Autofac;
-using Transformalize.Transforms.Humanizer.Autofac;
 using StackExchange.Profiling;
 using OrchardCore.ContentManagement;
 using System.Linq;
 using System;
 using Cfg.Net.Contracts;
-using Transformalize.Validate.Jint.Autofac;
 using Module.Models;
 using Cfg.Net.Serializers;
 using Transformalize.Logging;
-using Module.Transforms;
-using Microsoft.AspNetCore.Http;
+using Transformalize.Context;
 
 namespace Module.Services {
    public class ArrangementLoadService : IArrangementLoadService {
@@ -27,7 +20,6 @@ namespace Module.Services {
       private readonly IDictionary<string, string> _parameters;
       private readonly ISortService _sortService;
       private readonly ISettingsService _settings;
-      private readonly IHttpContextAccessor _httpContext;
       private readonly IConfigurationContainer _configurationContainer;
 
       public ArrangementLoadService(
@@ -35,21 +27,19 @@ namespace Module.Services {
          IStickyParameterService stickyParameterService,
          ISortService sortService,
          ISettingsService settings,
-         IHttpContextAccessor httpContext,
          IConfigurationContainer configurationContainer
       ) {
          _stickyParameterService = stickyParameterService;
          _parameters = parameterService.GetParameters();
          _sortService = sortService;
          _settings = settings;
-         _httpContext = httpContext;
          _configurationContainer = configurationContainer;
       }
 
       public Process LoadForExport(ContentItem contentItem, IPipelineLogger logger) {
 
          if (!TryGetReportPart(contentItem, out var part)) {
-            return new Process() { Status = 500, Message = $"Content item is not compatible with Transformalize." };
+            return new Process { Status = 500, Message = "Error", Log = new List<LogEntry>() { new LogEntry(LogLevel.Error, null, $"LoadForExport can't load {contentItem.ContentType}.") } };
          }
 
          var process = LoadInternal(part.Arrangement.Arrangement, logger);
@@ -66,8 +56,8 @@ namespace Module.Services {
             _sortService.AddSortToEntity(process.Entities.First(), _parameters["sort"]);
          }
 
+         // modify entities for output/export differences
          foreach (var entity in process.Entities) {
-
             foreach (var field in entity.GetAllFields()) {
                if (field.System) {
                   field.Output = false;
@@ -76,13 +66,19 @@ namespace Module.Services {
             }
          }
 
+         // disable actions
+         foreach(var action in process.Actions) {
+            action.Before = false;
+            action.After = false;
+         }
+
          return process;
       }
 
       public Process LoadForReport(ContentItem contentItem, IPipelineLogger logger, string format = null) {
 
          if (!TryGetReportPart(contentItem, out var part)) {
-            return new Process() { Status = 500, Message = $"Content item is not compatible with Transformalize." };
+            return new Process { Status = 500, Message = "Error", Log = new List<LogEntry>() { new LogEntry(LogLevel.Error, null, $"LoadForReport can't load {contentItem.ContentType}.") } };
          }
 
          _stickyParameterService.GetStickyParameters(contentItem.ContentItemId, _parameters);
@@ -94,30 +90,39 @@ namespace Module.Services {
 
          _stickyParameterService.SetStickyParameters(contentItem.ContentItemId, process.Parameters);
          
-
          if (part.PageSizes.Enabled()) {
             var pageSizes = _settings.GetPageSizes(part);
+            
             var stickySize = _stickyParameterService.GetStickyParameter(contentItem.ContentItemId, "size", () => pageSizes.Min());
             EnforcePageSize(process, _parameters, pageSizes.Min(), stickySize, pageSizes.Max());
-         }         
+
+            // modify connections to buffer (load page completely before processing)
+            foreach (var connection in process.Connections) {
+               connection.Buffer = true;
+            }
+         }
 
          if (_parameters.ContainsKey("sort") && _parameters["sort"] != null) {
             _sortService.AddSortToEntity(process.Entities.First(), _parameters["sort"]);
          }
 
-         foreach (var connection in process.Connections) {
-            connection.Buffer = true;
+         // disable actions
+         foreach (var action in process.Actions) {
+            action.Before = false;
+            action.After = false;
          }
          return process;
       }
 
       public Process LoadForTask(ContentItem contentItem, IPipelineLogger logger, string format = null) {
 
+         Process process;
+
          if (!TryGetTaskPart(contentItem, out var part)) {
-            return new Process() { Status = 500, Message = "Error" };
+            return new Process { Status = 500, Message = "Error", Log = new List<LogEntry>() { new LogEntry(LogLevel.Error,null, $"LoadForTask can't load {contentItem.ContentType}.") } };
          }
 
-         var process = LoadInternal(part.Arrangement.Arrangement, logger, format == "json" ? new JsonSerializer() : null);
+         process = LoadInternal(part.Arrangement.Arrangement, logger, format == "json" ? new JsonSerializer() : null);
 
          return process;
       }

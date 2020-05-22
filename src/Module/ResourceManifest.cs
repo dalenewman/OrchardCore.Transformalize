@@ -29,13 +29,13 @@ namespace Module {
              .SetCdnIntegrity("sha256-Lfk8z6WUsBN6YiCaMpH6bxBHyRqkPK4O2QbQHFNUS40=", "sha256-yhHPVEbMcHCb0TOtv6Leq8f3VEVe3+Ot0oCy83K+jvs=")
              .SetVersion("5.52.2");
 
-         /* Full Screen */
+         /* Full Screen (not working correctly) */
          manifest
-                .DefineScript("codemirror-addon-display-fullscreen")
-                .SetUrl($"~/{Common.ModuleName}/Scripts/codemirror/addon/display/fullscreen.min.js", $"~/{Common.ModuleName}/Scripts/codemirror/addon/display/fullscreen.js")
-                .SetCdn("https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.52.2/addon/display/fullscreen.min.js", "https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.52.2/addon/display/fullscreen.js")
-                .SetCdnIntegrity("sha256-ttglgk8dprl46qouhLrnP75y3ykP97gJf53RKg9htE4=", "sha256-HhKG06Ib+xZ6RYvmBap8s0os+CEXWPArOCet4VaME6Q=")
-                .SetVersion("5.52.2");
+            .DefineScript("codemirror-addon-display-fullscreen")
+            .SetUrl($"~/{Common.ModuleName}/Scripts/codemirror/addon/display/fullscreen.min.js", $"~/{Common.ModuleName}/Scripts/codemirror/addon/display/fullscreen.js")
+            .SetCdn("https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.52.2/addon/display/fullscreen.min.js", "https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.52.2/addon/display/fullscreen.js")
+            .SetCdnIntegrity("sha256-ttglgk8dprl46qouhLrnP75y3ykP97gJf53RKg9htE4=", "sha256-HhKG06Ib+xZ6RYvmBap8s0os+CEXWPArOCet4VaME6Q=")
+            .SetVersion("5.52.2");
 
          /* Fold Gutter */
          manifest
@@ -217,6 +217,13 @@ namespace Module {
              .SetCdn("https://cdnjs.cloudflare.com/ajax/libs/prism/1.20.0/themes/prism.min.css", "https://cdnjs.cloudflare.com/ajax/libs/prism/1.20.0/themes/prism.css")
              .SetCdnIntegrity("sha256-cuvic28gVvjQIo3Q4hnRpQSNB0aMw3C+kjkR0i+hrWg=", "sha256-LArq5Cddn4QETLgVbBZppSkBLJbL1dhacPVQF/EPH00=")
              .SetVersion("1.20.0");
+
+         manifest
+            .DefineScript("block-ui")
+            .SetUrl($"~/{Common.ModuleName}/Scripts/jquery.blockUI.min.js", $"~/{Common.ModuleName}/Scripts/jquery.blockUI.js")
+            .SetCdn("https://cdnjs.cloudflare.com/ajax/libs/jquery.blockUI/2.70/jquery.blockUI.min.js", "https://cdnjs.cloudflare.com/ajax/libs/jquery.blockUI/2.70/jquery.blockUI.js")
+            .SetCdnIntegrity("sha256-9wRM03dUw6ABCs+AU69WbK33oktrlXamEXMvxUaF+KU=", "sha256-oQaw+JJuUcJQ9QVYMcFnPxICDT+hv8+kuxT2FNzTGhc=")
+            .SetVersion("2.70.0");
 
       }
    }

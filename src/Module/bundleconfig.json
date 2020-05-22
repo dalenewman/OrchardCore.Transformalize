@@ -10,5 +10,11 @@
     "inputFiles": [
       "wwwroot/Scripts/prismjs/prism.js"
     ]
+  },
+  {
+    "outputFileName": "wwwroot/Scripts/jquery.blockUI.min.js",
+    "inputFiles": [
+      "wwwroot/Scripts/jquery.blockUI.js"
+    ]
   }
 ]
