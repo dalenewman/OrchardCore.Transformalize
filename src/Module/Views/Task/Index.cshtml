@@ -36,35 +36,40 @@
                 <tr>
                     <th title="Time">Time</th>
                     <th title="Level">Level</th>
+                    <th title="Process">Process</th>
+                    <th title="Entity">Entity</th>
                     <th title="Message">Message</th>
                 </tr>
             </thead>
             <tbody>
                 @foreach (var entry in Model.Process.Log) {
-                    <tr>
-                        <td style="white-space:nowrap;">@entry.Time.ToString("yyyy-MM-dd hh:mm:ss.fff")</td>
-                        <td>
-                            @switch (entry.LogLevel) {
-                                case LogLevel.Info:
-                                    <span class="badge badge-info">Info</span>
-                                    break;
-                                case LogLevel.Debug:
-                                    <span class="badge badge-secondary">Debug</span>
-                                    break;
-                                case LogLevel.Error:
-                                    <span class="badge badge-danger">Error</span>
-                                    break;
-                                case LogLevel.Warn:
-                                    <span class="badge badge-warning">Warning</span>
-                                    break;
-                                default:
-                                    <span class="badge badge-light">None</span>
-                                    break;
-                            }
+               <tr>
+                  <td style="white-space:nowrap;">@entry.Time.ToString("yyyy-MM-dd hh:mm:ss.fff")</td>
 
-                        </td>
-                        <td>@entry.Message</td>
-                    </tr>
+                  <td>
+                     @switch (entry.LogLevel) {
+                        case LogLevel.Info:
+                           <span class="badge badge-info">Info</span>
+                           break;
+                        case LogLevel.Debug:
+                           <span class="badge badge-secondary">Debug</span>
+                           break;
+                        case LogLevel.Error:
+                           <span class="badge badge-danger">Error</span>
+                           break;
+                        case LogLevel.Warn:
+                           <span class="badge badge-warning">Warning</span>
+                           break;
+                        default:
+                           <span class="badge badge-light">None</span>
+                           break;
+                     }
+
+                  </td>
+                  <td>@entry.Process</td>
+                  <td>@entry.Entity</td>
+                  <td>@entry.Message</td>
+               </tr>
                 }
             </tbody>
         </table>

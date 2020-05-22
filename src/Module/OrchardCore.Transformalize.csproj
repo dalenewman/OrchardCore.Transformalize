@@ -3,9 +3,7 @@
    <PropertyGroup>
       <TargetFramework>netcoreapp3.0</TargetFramework>
       <AddRazorSupportForMvc>true</AddRazorSupportForMvc>
-      <IsPackable>true</IsPackable>
-      <Version>0.6.28-beta</Version>
-      <PackageVersion>0.6.28-beta</PackageVersion>
+      <Version>0.7.7-beta</Version>
       <AssemblyName>OrchardCore.Transformalize</AssemblyName>
       <RootNamespace>Module</RootNamespace>
    </PropertyGroup>

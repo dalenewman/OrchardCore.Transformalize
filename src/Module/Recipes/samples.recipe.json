@@ -12,17 +12,9 @@
          "name": "content",
          "Data": [
             {
-               "ContentItemId": "4pmp0jz2vmbpq6c3bwj6kkr24c",
-               "ContentItemVersionId": "4har5sbw64zmh3f6p7g7tdq6cw",
+               "ContentItemId": "[js: uuid()]",
                "ContentType": "TransformalizeReport",
                "DisplayText": "Northwind",
-               "Latest": true,
-               "Published": true,
-               "ModifiedUtc": "2020-05-14T21:05:08.8130617Z",
-               "PublishedUtc": "2020-05-14T21:05:08.8749232Z",
-               "CreatedUtc": "2020-05-12T02:25:52.236414Z",
-               "Owner": "dalenewman",
-               "Author": "dalenewman",
                "TitlePart": { "Title": "Northwind" },
                "AliasPart": { "Alias": "northwind" },
                "TransformalizeReportPart": {
@@ -32,17 +24,9 @@
                "CommonPart": {}
             },
             {
-               "ContentItemId": "4cs7p76jvxcfw6vfwmeyefbrcn",
-               "ContentItemVersionId": "4j8qhqj0jhe5cvy9f89xb9efnt",
+               "ContentItemId": "[js: uuid()]",
                "ContentType": "TransformalizeReport",
                "DisplayText": "Bogus",
-               "Latest": true,
-               "Published": true,
-               "ModifiedUtc": "2020-05-14T21:01:44.4972751Z",
-               "PublishedUtc": "2020-05-14T21:01:44.5459104Z",
-               "CreatedUtc": "2020-05-09T23:46:36.3844014Z",
-               "Owner": "dalenewman",
-               "Author": "dalenewman",
                "TitlePart": { "Title": "Bogus" },
                "AliasPart": { "Alias": "bogus" },
                "TransformalizeReportPart": {

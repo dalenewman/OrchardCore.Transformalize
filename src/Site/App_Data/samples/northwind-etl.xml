@@ -1,0 +1,134 @@
+<cfg name="NorthWind" flatten="true" mode="default">
+	<connections>
+		<add name="input" provider="sqlite" file="northwind-relational.db"/>
+		<add name="output" provider="sqlite" file="northwind-flat.db" />
+	</connections>
+	<entities>
+		<add name="OrderDetail">
+			<fields>
+				<add name="OrderID" type="long" primary-key="true" />
+				<add name="ProductID" type="long" primary-key="true" />
+				<add name="UnitPrice" type="decimal" precision="19" scale="4" />
+				<add name="Quantity" type="long" />
+				<add name="Discount" type="double" />
+			</fields>
+			<calculated-fields>
+				<add name="Revenue" type="decimal" t="jint(Quantity * ((1-Discount) * UnitPrice)).round(2)" />
+			</calculated-fields>
+		</add>
+		
+    <add name="Order">
+			<fields>
+				<add name="Id" type="long" primary-key="true" />
+				<add name="CustomerId" length="5" />
+				<add name="EmployeeId" type="long" />
+				<add name="OrderDate" type="datetime" t="convert()" />
+				<add name="RequiredDate" type="datetime" t="convert()" />
+				<add name="ShippedDate" type="datetime" t="convert()" />
+				<add name="ShipVia" type="long" />
+				<add name="Freight" type="decimal" precision="19" scale="4" />
+				<add name="ShipName" length="40" />
+				<add name="ShipAddress" length="60" />
+				<add name="ShipCity" length="15" />
+				<add name="ShipRegion" length="15" />
+				<add name="ShipPostalCode" length="10" />
+				<add name="ShipCountry" length="15" />
+			</fields>
+			<calculated-fields>
+				<add name="OrderYear" type="int" t="copy(OrderDate).datePart(year)" />
+				<add name="OrderMonthSortable" t="format({OrderDate:MM-MMM}).toUpper()" />
+				<add name="OrderDaySortable" t="format({OrderDate:yyyy-MM-dd})" />
+				<add name="OrderDayOfWeek" t="copy(OrderDate).datePart(dayOfWeek)" />
+			</calculated-fields>
+		</add>
+		<add name="Product" >
+			<fields>
+				<add name="Id" type="long" primary-key="true" />
+				<add name="ProductName" length="40" />
+				<add name="SupplierId" type="long" />
+				<add name="CategoryId" type="long" />
+				<add name="QuantityPerUnit" length="20" />
+				<add name="UnitPrice" type="decimal" precision="19" scale="4" alias="ProductsUnitPrice" />
+				<add name="UnitsInStock" type="long" />
+				<add name="UnitsOnOrder" type="long" />
+				<add name="ReorderLevel" type="long" />
+				<add name="Discontinued" type="bool" t="convert()" />
+			</fields>
+		</add>
+		<add name="Customer" >
+			<fields>
+				<add name="Id" primary-key="true" length="5" />
+				<add name="CompanyName" length="40" />
+				<add name="ContactName" length="30" />
+				<add name="ContactTitle" length="30" />
+				<add name="Address" length="60" />
+				<add name="City" length="15" />
+				<add name="Region" length="15" />
+				<add name="PostalCode" length="10" />
+				<add name="Country" length="15" />
+				<add name="Phone" length="24" />
+				<add name="Fax" length="24" />
+			</fields>
+		</add>
+		<add name="Employee" >
+			<fields>
+				<add name="Id" type="long" primary-key="true" />
+				<add name="LastName" length="20" />
+				<add name="FirstName" length="10" />
+				<add name="Title" length="30" />
+				<add name="TitleOfCourtesy" length="25" />
+				<add name="BirthDate" type="datetime" t="convert()" />
+				<add name="HireDate" type="datetime" t="convert()" />
+				<add name="Address" alias="EmployeesAddress" length="60" />
+				<add name="City" alias="EmployeesCity" length="15" />
+				<add name="Region" alias="EmployeesRegion" length="15" />
+				<add name="PostalCode" alias="EmployeesPostalCode" length="10" />
+				<add name="Country" alias="EmployeesCountry" length="15" />
+				<add name="HomePhone" length="24" />
+				<add name="Extension" length="4" />
+				<add name="Notes" length="max" />
+				<add name="ReportsTo" type="long" />
+				<add name="PhotoPath" length="255" />
+			</fields>
+		</add>
+		<add name="Shipper" >
+			<fields>
+				<add name="Id" type="long" primary-key="true" />
+				<add name="CompanyName" alias="ShippersCompanyName" length="40" />
+				<add name="Phone" alias="ShippersPhone" length="24" />
+			</fields>
+		</add>
+		<add name="Supplier" >
+			<fields>
+				<add name="Id" type="long" primary-key="true" />
+				<add name="CompanyName" alias="SuppliersCompanyName" length="40" />
+				<add name="ContactName" alias="SuppliersContactName" length="30" />
+				<add name="ContactTitle" alias="SuppliersContactTitle" length="30" />
+				<add name="Address" alias="SuppliersAddress" length="60" />
+				<add name="City" alias="SuppliersCity" length="15" />
+				<add name="Region" alias="SuppliersRegion" length="15" />
+				<add name="PostalCode" alias="SuppliersPostalCode" length="10" />
+				<add name="Country" alias="SuppliersCountry" length="15" />
+				<add name="Phone" alias="SuppliersPhone" length="24" />
+				<add name="Fax" alias="SuppliersFax" length="24" />
+				<add name="HomePage" length="max" />
+			</fields>
+		</add>
+		<add name="Category" >
+			<fields>
+				<add name="Id" type="long" primary-key="true" />
+				<add name="CategoryName" length="15" />
+				<add name="Description" length="max" />
+			</fields>
+		</add>
+	</entities>
+	<relationships>
+		<add left-entity="OrderDetail" left-field="OrderId" right-entity="Order" right-field="Id" />
+		<add left-entity="Order" left-field="CustomerId" right-entity="Customer" right-field="Id" />
+		<add left-entity="Order" left-field="EmployeeId" right-entity="Employee" right-field="Id" />
+		<add left-entity="Order" left-field="ShipVia" right-entity="Shipper" right-field="Id" />
+		<add left-entity="OrderDetail" left-field="ProductId" right-entity="Product" right-field="Id" />
+		<add left-entity="Product" left-field="SupplierId" right-entity="Supplier" right-field="Id" />
+		<add left-entity="Product" left-field="CategoryId" right-entity="Category" right-field="Id" />
+	</relationships>
+</cfg>
