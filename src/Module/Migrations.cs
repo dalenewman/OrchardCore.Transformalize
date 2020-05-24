@@ -5,13 +5,28 @@ using OrchardCore.Data.Migration;
 using Module.Fields;
 using OrchardCore.ContentFields.Fields;
 using OrchardCore.ContentFields.Settings;
+using OrchardCore.Features.Services;
+using System.Threading.Tasks;
+using System.Linq;
+using Castle.Core.Logging;
+using Microsoft.Extensions.Logging;
+using System;
 
 namespace Module {
    public class Migrations : DataMigration {
-      private readonly IContentDefinitionManager _contentDefinitionManager;
 
-      public Migrations(IContentDefinitionManager contentDefinitionManager) {
+      private readonly IContentDefinitionManager _contentDefinitionManager;
+      private readonly IModuleService _moduleService;
+      private readonly ILogger<Migrations> _logger;
+
+      public Migrations(
+         IContentDefinitionManager contentDefinitionManager,
+         IModuleService moduleService,
+         ILogger<Migrations> logger
+      ) {
          _contentDefinitionManager = contentDefinitionManager;
+         _moduleService = moduleService;
+         _logger = logger;
       }
 
       public int Create() {
@@ -80,16 +95,19 @@ namespace Module {
          return 3;
       }
 
-      public int UpdateFrom3() {
+      public async Task<int> UpdateFrom3() {
+
+         await EnableFeature("OrchardCore.ContentFields");
+
          _contentDefinitionManager.AlterPartDefinition("TransformalizeReportPart", part => part
              .WithField("BulkActions", field => field
                  .OfType(nameof(BooleanField))
                  .WithDisplayName("Bulk Actions")
-                 .WithSettings(new BooleanFieldSettings { 
-                     DefaultValue = false, 
-                     Hint = "Allow user to select one, many, or all records for a bulk action?",
-                     Label = "Bulk Actions" 
-                  }
+                 .WithSettings(new BooleanFieldSettings {
+                    DefaultValue = false,
+                    Hint = "Allow user to select one, many, or all records for a bulk action?",
+                    Label = "Bulk Actions"
+                 }
                  )
               )
          );
@@ -97,5 +115,37 @@ namespace Module {
          return 4;
       }
 
+      public async Task<int> UpdateFrom4() {
+
+         await EnableFeature("OrchardCore.ContentFields");
+
+         _contentDefinitionManager.AlterPartDefinition("TransformalizeReportPart", part => part
+             .WithField("BulkActionValueField", field => field
+                 .OfType(nameof(TextField))
+                 .WithDisplayName("Bulk Action Value Field")
+                 .WithSettings(new TextFieldSettings {
+                    Required = false,
+                    Hint = "Specify which field or calculated field provides the value(s) for bulk actions."
+                 }
+                 )
+              )
+         );
+
+         return 5;
+      }
+
+      private async Task EnableFeature(string id) {
+         var availableFeatures = await _moduleService.GetAvailableFeaturesAsync();
+
+         var contentFields = availableFeatures.FirstOrDefault(f => f.Descriptor.Id == id);
+         if (contentFields != null) {
+            if (!contentFields.IsEnabled) {
+               _logger.LogInformation($"Enabling {id}");
+               await _moduleService.EnableFeaturesAsync(new[] { id });
+            }
+         } else {
+            _logger.LogError($"Unable to find {id} features required for Transformalize.");
+         }
+      }
    }
 }

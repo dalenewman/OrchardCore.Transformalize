@@ -4,6 +4,8 @@
 @using System.Linq
 @using Module.Services.Contracts
 @using Module.Services
+@using Transformalize.Configuration
+
 @{
    var firstEntity = Model.Process.Entities.First();
    var sortService = Context.RequestServices.GetService<ISortService>();
@@ -179,15 +181,15 @@
                   <tbody>
                      @foreach (var row in entity.Rows) {
                         <tr>
-                           @if (Model.Part.BulkActions.Value) {
+                           @if (Model.Part.BulkActions.Value && entity.TryGetField(Model.Part.BulkActionValueField.Text, out Field bulkActionValueField)) {
                                  <td>
                                     <div class="checkbox form-check">
                                           @*value must be replaced with bulk action value field, @(row[Model.Part.BulkActionValueField.Text])*@
                                           <input title="Select this row"
                                                 type="checkbox"
                                                 class="bulk-action shift-select form-check-input"
-                                                name="row"
-                                                value="todo"
+                                                name="Records"
+                                                value="@row[bulkActionValueField.Alias]"
                                                 placeholder="Select Record">
                                     </div>
                                  </td>
@@ -524,11 +526,11 @@
         });
 
         $(":checkbox[name=select-all]").click(function () {
-            $(":checkbox[name=row]").prop("checked", this.checked);
+            $(":checkbox[name=Records]").prop("checked", this.checked);
             updateBulkActions();
         });
 
-        $(":checkbox[name=row]").click(function () {
+        $(":checkbox[name=Records]").click(function () {
             updateBulkActions();
         });
 

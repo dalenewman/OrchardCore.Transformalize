@@ -21,10 +21,12 @@ namespace Module.Models {
 </cfg>" };
          PageSizes = new PageSizesField();
          BulkActions = new BooleanField();
+         BulkActionValueField = new TextField();
       }
       public TransformalizeArrangementField Arrangement { get; set; }
       public PageSizesField PageSizes { get; set; }
       public BooleanField BulkActions { get; set; }
+      public TextField BulkActionValueField { get; set; }
 
    }
 }

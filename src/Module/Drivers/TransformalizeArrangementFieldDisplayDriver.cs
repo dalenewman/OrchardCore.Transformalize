@@ -70,6 +70,16 @@ namespace Module.Drivers {
                      if (!process.Entities.Any()) {
                         updater.ModelState.AddModelError(Prefix, S["Please define an entity in {0}.", displayName]);
                      }
+                     var part = context.ContentPart as TransformalizeReportPart;
+                     //if(part.BulkActions.Value) {
+                     //   if (string.IsNullOrEmpty(part.BulkActionValueField.Text)) {
+                     //      updater.ModelState.AddModelError(Prefix, S["Please set the bulk action value field for bulk actions."]);
+                     //   } else {
+                     //      if(process.GetAllFields().All(f=>f.Alias != part.BulkActionValueField.Text)) {
+                     //         updater.ModelState.AddModelError(Prefix, S["The field {0} does not exist in {1}.", part.BulkActionValueField.Text, displayName]);
+                     //      }
+                     //   }
+                     //}
                   }
                } catch (Exception ex) {
                   updater.ModelState.AddModelError(Prefix, S[ex.Message]);

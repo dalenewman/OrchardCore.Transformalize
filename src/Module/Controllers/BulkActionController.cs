@@ -16,13 +16,16 @@ namespace Module.Controllers {
 
       private readonly ITaskService _taskService;
       private readonly IReportService _reportService;
+      private readonly IParameterService _parameterService;
 
       public BulkActionController(
          ITaskService taskService,
-         IReportService reportService
+         IReportService reportService,
+         IParameterService parameterService
       ) {
          _taskService = taskService;
          _reportService = reportService;
+         _parameterService = parameterService;
       }
 
       [HttpPost]
@@ -45,11 +48,17 @@ namespace Module.Controllers {
          }
 
          var context = new PipelineContext(logger, process);
-         var referrer = Request.Headers.ContainsKey("Referrer") ? Request.Headers["Referer"].ToString() : Url.Action("Index", "Report", new { ContentItemId = bar.ContentItemId });
+         var referrer = Request.Headers.ContainsKey("Referer") ? Request.Headers["Referer"].ToString() : Url.Action("Index", "Report", new { ContentItemId = bar.ContentItemId });
 
          context.Info($"Referer is {referrer}");
          context.Info($"{nameof(BulkActionRequest.ActionName)} is {bar.ActionName}");
          context.Info($"{nameof(BulkActionRequest.ActionCount)} is {bar.ActionCount}");
+
+         context.Info("Parameters");
+         var parameters = _parameterService.GetParameters();
+         foreach(var kv in parameters) {
+            context.Info($"{kv.Key} = {kv.Value}");
+         }
 
          process.Log = logger.Log;
          return View(new TaskViewModel(process, contentItem));

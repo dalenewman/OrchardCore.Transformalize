@@ -9,7 +9,6 @@ using OrchardCore.Modules.Manifest;
     Category = "Reporting",
     Dependencies = new[]{
         "OrchardCore.Users",
-        "OrchardCore.Users.Core",
         "OrchardCore.Contents",
         "OrchardCore.ContentFields",
         "OrchardCore.Title",
