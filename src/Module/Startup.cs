@@ -66,6 +66,7 @@ namespace Module {
 
          // parts
          services.AddContentPart<TransformalizeReportPart>();
+         services.AddScoped<IContentPartDisplayDriver, TransformalizeReportPartDisplayDriver>();
          services.AddContentPart<TransformalizeTaskPart>();
 
          // settings

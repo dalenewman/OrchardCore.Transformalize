@@ -125,7 +125,7 @@ namespace Module {
                  .WithDisplayName("Bulk Action Value Field")
                  .WithSettings(new TextFieldSettings {
                     Required = false,
-                    Hint = "Specify which field or calculated field provides the value(s) for bulk actions."
+                    Hint = "Specify which field or calculated field provides the value for bulk actions."
                  }
                  )
               )

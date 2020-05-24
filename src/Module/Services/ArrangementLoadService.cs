@@ -67,7 +67,7 @@ namespace Module.Services {
          }
 
          // disable actions
-         foreach(var action in process.Actions) {
+         foreach (var action in process.Actions) {
             action.Before = false;
             action.After = false;
          }
@@ -89,10 +89,10 @@ namespace Module.Services {
          process.ReadOnly = true;
 
          _stickyParameterService.SetStickyParameters(contentItem.ContentItemId, process.Parameters);
-         
+
          if (part.PageSizes.Enabled()) {
             var pageSizes = _settings.GetPageSizes(part);
-            
+
             var stickySize = _stickyParameterService.GetStickyParameter(contentItem.ContentItemId, "size", () => pageSizes.Min());
             EnforcePageSize(process, _parameters, pageSizes.Min(), stickySize, pageSizes.Max());
 
@@ -111,6 +111,13 @@ namespace Module.Services {
             action.Before = false;
             action.After = false;
          }
+
+         // special handling of bulk action value field
+         if (part.BulkActions.Value && process.TryGetField(part.BulkActionValueField.Text, out Field bulkActionValueField)) {
+            bulkActionValueField.Output = true; 
+            bulkActionValueField.Export = "false";
+         }
+
          return process;
       }
 
@@ -119,7 +126,7 @@ namespace Module.Services {
          Process process;
 
          if (!TryGetTaskPart(contentItem, out var part)) {
-            return new Process { Status = 500, Message = "Error", Log = new List<LogEntry>() { new LogEntry(LogLevel.Error,null, $"LoadForTask can't load {contentItem.ContentType}.") } };
+            return new Process { Status = 500, Message = "Error", Log = new List<LogEntry>() { new LogEntry(LogLevel.Error, null, $"LoadForTask can't load {contentItem.ContentType}.") } };
          }
 
          process = LoadInternal(part.Arrangement.Arrangement, logger, format == "json" ? new JsonSerializer() : null);
@@ -139,7 +146,7 @@ namespace Module.Services {
          ApplyCommonSettings(process);
 
          if (process.Errors().Any() || logger is MemoryLogger m && m.Log.Any(l => l.LogLevel == LogLevel.Error)) {
-            if(logger is MemoryLogger ml) {
+            if (logger is MemoryLogger ml) {
                process.Log.AddRange(ml.Log);
             }
             process.Status = 500;

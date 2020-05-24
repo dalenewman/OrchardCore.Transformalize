@@ -51,6 +51,7 @@ namespace Module.Drivers {
       }
 
       public override async Task<IDisplayResult> UpdateAsync(TransformalizeArrangementField field, IUpdateModel updater, UpdateFieldEditorContext context) {
+         
          if (await updater.TryUpdateModelAsync(field, Prefix, f => f.Arrangement)) {
 
             var displayName = context.PartFieldDefinition.DisplayName();
@@ -66,20 +67,18 @@ namespace Module.Drivers {
                         updater.ModelState.AddModelError(Prefix, S[error]);
                      }
                   }
-                  if(context.ContentPart is TransformalizeReportPart) {
-                     if (!process.Entities.Any()) {
+                  if(context.ContentPart is TransformalizeReportPart part) {
+                     if (process.Entities.Any()) {
+                        if (part.BulkActions.Value) {
+                           if (!string.IsNullOrEmpty(part.BulkActionValueField.Text)) {
+                              if (process.Entities[0].GetAllFields().All(f => f.Alias != part.BulkActionValueField.Text)) {
+                                 updater.ModelState.AddModelError(Prefix, S["The field {0} does not exist in {1}.", part.BulkActionValueField.Text, displayName]);
+                              }
+                           }
+                        }
+                     } else {
                         updater.ModelState.AddModelError(Prefix, S["Please define an entity in {0}.", displayName]);
                      }
-                     var part = context.ContentPart as TransformalizeReportPart;
-                     //if(part.BulkActions.Value) {
-                     //   if (string.IsNullOrEmpty(part.BulkActionValueField.Text)) {
-                     //      updater.ModelState.AddModelError(Prefix, S["Please set the bulk action value field for bulk actions."]);
-                     //   } else {
-                     //      if(process.GetAllFields().All(f=>f.Alias != part.BulkActionValueField.Text)) {
-                     //         updater.ModelState.AddModelError(Prefix, S["The field {0} does not exist in {1}.", part.BulkActionValueField.Text, displayName]);
-                     //      }
-                     //   }
-                     //}
                   }
                } catch (Exception ex) {
                   updater.ModelState.AddModelError(Prefix, S[ex.Message]);
