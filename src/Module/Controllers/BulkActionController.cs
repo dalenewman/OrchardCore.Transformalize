@@ -50,15 +50,17 @@ namespace Module.Controllers {
          var context = new PipelineContext(logger, process);
          var referrer = Request.Headers.ContainsKey("Referer") ? Request.Headers["Referer"].ToString() : Url.Action("Index", "Report", new { ContentItemId = bar.ContentItemId });
 
-         context.Info($"Referer is {referrer}");
-         context.Info($"{nameof(BulkActionRequest.ActionName)} is {bar.ActionName}");
-         context.Info($"{nameof(BulkActionRequest.ActionCount)} is {bar.ActionCount}");
-
          context.Info("Parameters");
          var parameters = _parameterService.GetParameters();
          foreach(var kv in parameters) {
             context.Info($"{kv.Key} = {kv.Value}");
          }
+
+         // confirm we have action, then loadForTask
+         // currently if you access report you inherit access to action
+         // create batch using batch task, getting batch id, storing user, report, action, date, count or all, writes to internal output when can be read here
+         // write batch using batch write service 
+         //   (has to either write values submitted in request Records, or run the report's query for batch with parameters submitted here)
 
          process.Log = logger.Log;
          return View(new TaskViewModel(process, contentItem));
