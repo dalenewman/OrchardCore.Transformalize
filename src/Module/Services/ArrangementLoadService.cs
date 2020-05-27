@@ -11,7 +11,6 @@ using Cfg.Net.Contracts;
 using Module.Models;
 using Cfg.Net.Serializers;
 using Transformalize.Logging;
-using Transformalize.Context;
 
 namespace Module.Services {
    public class ArrangementLoadService : IArrangementLoadService {
@@ -83,7 +82,7 @@ namespace Module.Services {
 
          _stickyParameterService.GetStickyParameters(contentItem.ContentItemId, _parameters);
 
-         var process = LoadInternal(part.Arrangement.Arrangement, logger, format == "json" ? new JsonSerializer() : null);
+         var process = LoadInternal(part.Arrangement.Arrangement, logger, null, format == "json" ? new JsonSerializer() : null);
 
          process.Mode = "report";
          process.ReadOnly = true;
@@ -121,7 +120,34 @@ namespace Module.Services {
          return process;
       }
 
-      public Process LoadForTask(ContentItem contentItem, IPipelineLogger logger, string format = null) {
+      public Process LoadForBatch(ContentItem contentItem, IPipelineLogger logger) {
+
+         if (!TryGetReportPart(contentItem, out var part)) {
+            return new Process { Status = 500, Message = "Error", Log = new List<LogEntry>() { new LogEntry(LogLevel.Error, null, $"LoadForBatch can't load {contentItem.ContentType}.") } };
+         }
+
+         var process = LoadInternal(part.Arrangement.Arrangement, logger);
+
+         process.Mode = "report";
+         process.ReadOnly = true;
+
+         // disable actions
+         foreach (var action in process.Actions) {
+            action.Before = false;
+            action.After = false;
+         }
+
+         // all we need is the batch value
+         var requiredFields = new Dictionary<string, string>() {
+            { part.BulkActionValueField.Text, part.BulkActionValueField.Text }
+         };
+         ConfineData(process, requiredFields);
+
+         return process;
+      }
+
+
+      public Process LoadForTask(ContentItem contentItem, IPipelineLogger logger, IDictionary<string,string> parameters = null, string format = null) {
 
          Process process;
 
@@ -129,14 +155,20 @@ namespace Module.Services {
             return new Process { Status = 500, Message = "Error", Log = new List<LogEntry>() { new LogEntry(LogLevel.Error, null, $"LoadForTask can't load {contentItem.ContentType}.") } };
          }
 
-         process = LoadInternal(part.Arrangement.Arrangement, logger, format == "json" ? new JsonSerializer() : null);
+         process = LoadInternal(part.Arrangement.Arrangement, logger, parameters, format == "json" ? new JsonSerializer() : null);
 
          return process;
       }
 
-      private Process LoadInternal(string arrangement, IPipelineLogger logger, ISerializer serializer = null) {
+      private Process LoadInternal(string arrangement, IPipelineLogger logger, IDictionary<string,string> parameters = null, ISerializer serializer = null) {
 
          Process process;
+
+         if(parameters != null) {
+            foreach(var kv in parameters) {
+               _parameters[kv.Key] = kv.Value;
+            }
+         }
 
          using (MiniProfiler.Current.Step("Load")) {
             _configurationContainer.Serializer = serializer;
@@ -210,12 +242,10 @@ namespace Module.Services {
                process.Connections[i].Key = key;
             }
          }
-
       }
 
       /// <summary>
-      /// when we get to the point we're streaming lots geo-json data from complex reports, 
-      /// this removes unnecessary stuff from the main report definition
+      /// removes unnecessary stuff from the main report for batching, geo-json, etc.
       /// </summary>
       /// <param name="process"></param>
       /// <param name="required"></param>
@@ -251,12 +281,12 @@ namespace Module.Services {
       }
 
       private bool TryGetReportPart(ContentItem contentItem, out TransformalizeReportPart part) {
-         part = contentItem.As<TransformalizeReportPart>();
+         part = contentItem?.As<TransformalizeReportPart>();
          return part != null;
       }
 
       private bool TryGetTaskPart(ContentItem contentItem, out TransformalizeTaskPart part) {
-         part = contentItem.As<TransformalizeTaskPart>();
+         part = contentItem?.As<TransformalizeTaskPart>();
          return part != null;
       }
 

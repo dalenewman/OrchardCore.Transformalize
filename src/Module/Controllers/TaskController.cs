@@ -73,7 +73,7 @@ namespace Module.Controllers {
             return Unauthorized();
          }
 
-         var process = _taskService.LoadForTask(contentItem, logger, format);
+         var process = _taskService.LoadForTask(contentItem, logger, null, format);
 
          if (process.Status != 200) {
             process.Log = logger.Log;

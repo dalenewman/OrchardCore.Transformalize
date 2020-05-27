@@ -30,8 +30,8 @@ namespace Module.Services {
          return _arrangementService.IsMissingRequiredParameters(parameters);
       }
 
-      public Process LoadForTask(ContentItem contentItem, IPipelineLogger logger, string format = null) {
-         return _loadService.LoadForTask(contentItem, logger, format);
+      public Process LoadForTask(ContentItem contentItem, IPipelineLogger logger, IDictionary<string,string> parameters = null, string format = null) {
+         return _loadService.LoadForTask(contentItem, logger, parameters, format);
       }
 
       public async Task RunAsync(Process process, IPipelineLogger logger) {

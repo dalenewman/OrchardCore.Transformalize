@@ -52,6 +52,9 @@
    </ItemGroup>
 
    <ItemGroup>
+     <EmbeddedResource Update="Recipes\batches.recipe.json">
+       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+     </EmbeddedResource>
      <EmbeddedResource Update="Recipes\samples.recipe.json">
        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
      </EmbeddedResource>

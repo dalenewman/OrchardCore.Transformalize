@@ -1,0 +1,41 @@
+{
+   "name": "Transformalize.Batches",
+   "displayName": "Transformalize Batches",
+   "description": "Batch Create and Batch Write Tasks Needed for Bulk Actions.",
+   "author": "Dale Newman",
+   "website": "https://github.com/dalenewman/Transformalize",
+   "version": "0.7.6",
+   "issetuprecipe": false,
+   "tags": [ "reporting", "etl" ],
+   "steps": [
+      {
+         "name": "content",
+         "Data": [
+            {
+               "ContentItemId": "[js: uuid()]",
+               "ContentType": "TransformalizeTask",
+               "DisplayText": "Batch Create",
+               "TitlePart": { "Title": "Batch Create" },
+               "AliasPart": { "Alias": "batch-create" },
+               "TransformalizeTaskPart": { "Arrangement": { "Arrangement": "<cfg name=\"Batch Create\" read-only=\"true\">\r\n  \r\n  <!-- this task creates and returns a batch id for logged in user -->\r\n  \r\n  <parameters>\r\n    <add name=\"Created\" t=\"now().format({Created:yyyy-MM-dd HH:mm:ss.fff})\" />\r\n    <add name=\"UserId\" type=\"int\" t=\"userid()\" />\r\n    <add name=\"ReportId\" type=\"int\" value=\"0\" />\r\n    <add name=\"TaskId\"  type=\"int\" value=\"0\" />\r\n    <add name=\"Description\" value=\"\" />\r\n  </parameters>\r\n  \r\n  <connections>\r\n    <add name=\"db\" provider=\"sqlite\" file=\"App_Data\\batches.db\" />\r\n  </connections>\r\n  \r\n  <entities>\r\n    <add name=\"Script\" \r\n         connection=\"db\" \r\n         query=\"\r\n                  CREATE TABLE IF NOT EXISTS BatchStatus (\r\n                    Id INTEGER NOT NULL PRIMARY KEY,\r\n                    Status TEXT NOT NULL,\r\n                    StatusColor TEXT NOT NULL\r\n                  );\r\n\r\n                  INSERT INTO BatchStatus(Id,Status,StatusColor) \r\n                  SELECT 1, 'Waiting', '95A5A6'\r\n                  WHERE NOT EXISTS(SELECT * FROM BatchStatus WHERE Id = 1);\r\n\r\n                  INSERT INTO BatchStatus(Id,Status,StatusColor) \r\n                  SELECT 2, 'Running', 'D35400'\r\n                  WHERE NOT EXISTS(SELECT * FROM BatchStatus WHERE Id = 2);\r\n\r\n                  INSERT INTO BatchStatus(Id,Status,StatusColor) \r\n                  SELECT 3, 'Completed', '229954'\r\n                  WHERE NOT EXISTS(SELECT * FROM BatchStatus WHERE Id = 3);\r\n\r\n                  INSERT INTO BatchStatus(Id,Status,StatusColor) \r\n                  SELECT 4, 'Failed', 'E74C3C'\r\n                  WHERE NOT EXISTS(SELECT * FROM BatchStatus WHERE Id = 4);\r\n\r\n                  CREATE TABLE IF NOT EXISTS 'Batch' (\r\n                    Id INTEGER NOT NULL PRIMARY KEY,\r\n                    Created TEXT NOT NULL,\r\n                    UserId INTEGER NOT NULL,\r\n                    ReportId INTEGER NOT NULL,\r\n                    TaskId INTEGER NOT NULL,\r\n                    Description TEXT NOT NULL,\r\n                    BatchStatusId INTEGER,\r\n                    Message TEXT NOT NULL,\r\n                    FOREIGN KEY (BatchStatusId) REFERENCES BatchStatus(Id)\r\n                  );\r\n                  \r\n                  CREATE INDEX IF NOT EXISTS IX_Batch_BatchStatusId ON 'Batch'(BatchStatusId);\r\n                  CREATE INDEX IF NOT EXISTS IX_Batch_UserId ON 'Batch'(UserId);\r\n\r\n                  INSERT INTO Batch(Id,Created,UserId,ReportId,TaskId,Description,BatchStatusId,Message)\r\n                  SELECT COALESCE(MAX(Id),0)+1,@Created,@UserId,@ReportId,@TaskId,@Description,1,'' FROM Batch;\r\n                \r\n                  SELECT b.Id AS BatchId\r\n                  FROM Batch b\r\n                  WHERE UserId = @UserId\r\n                  ORDER BY b.Id DESC\r\n                  LIMIT 1\r\n                  \">\r\n      <fields>\r\n          <add name=\"BatchId\" type=\"long\" primary-key=\"true\" />\r\n      </fields>\r\n    </add>\r\n  </entities>\r\n</cfg>" } },
+               "ContentPermissionsPart": {
+                  "Roles": [ "Authenticated" ],
+                  "Enabled": true
+               }
+            },
+            {
+               "ContentItemId": "[js: uuid()]",
+               "ContentType": "TransformalizeTask",
+               "DisplayText": "Batch Write",
+               "TitlePart": { "Title": "Batch Write" },
+               "AliasPart": { "Alias": "batch-write" },
+               "TransformalizeTaskPart": { "Arrangement": { "Arrangement": "<cfg name=\"Batch\" mode=\"@[Mode]\">\r\n\r\n  <parameters>\r\n    <add name=\"BatchId\" type=\"int\" value=\"0\" />\r\n    <add name=\"Mode\" value=\"default\" />\r\n  </parameters>\r\n\r\n  <connections>\r\n    <add name=\"input\" provider=\"internal\" />\r\n    <add name=\"output\" provider=\"sqlite\" file=\"App_Data\\batches.db\" />\r\n  </connections>\r\n  \r\n  <entities>\r\n    <add name=\"Record\" update=\"false\">\r\n      <rows>\r\n        <!-- orchard inserts rows -->\r\n      </rows>\r\n      <fields>\r\n        <add input=\"false\" name=\"BatchId\" type=\"int\" default=\"@[BatchId]\" primary-key=\"true\" />\r\n        <add name=\"BatchValue\" length=\"255\" primary-key=\"true\" />\r\n      </fields>\r\n    </add>\r\n  </entities>\r\n</cfg>" } },
+               "ContentPermissionsPart": {
+                  "Roles": [ "Authenticated" ],
+                  "Enabled": true
+               }
+            }
+         ]
+      }
+   ]
+}

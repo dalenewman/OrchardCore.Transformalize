@@ -43,6 +43,10 @@ namespace Module.Services {
          return _loadService.LoadForReport(contentItem, logger, format);
       }
 
+      public Process LoadForBatch(ContentItem contentItem, IPipelineLogger logger) {
+         return _loadService.LoadForBatch(contentItem, logger);
+      }
+
       public async Task RunAsync(Process process, IPipelineLogger logger) {
          await _runService.RunAsync(process, logger);
       }
