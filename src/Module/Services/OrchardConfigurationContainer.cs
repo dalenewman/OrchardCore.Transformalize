@@ -33,6 +33,7 @@ using Transformalize.Containers.Autofac;
 using Transformalize.Containers.Autofac.Modules;
 using Transformalize.Context;
 using Transformalize.Contracts;
+using Transformalize.Providers.File.Autofac;
 using Transformalize.Transforms.Humanizer.Autofac;
 using Transformalize.Transforms.Jint.Autofac;
 using Transformalize.Transforms.Json.Autofac;
@@ -107,6 +108,7 @@ namespace Module.Services {
          builder.RegisterModule(new JintTransformModule());
          builder.RegisterModule(new JsonTransformModule());
          builder.RegisterModule(new HumanizeModule());
+         builder.RegisterModule(new FileModule());
 
          // register validator modules here so they can register their short-hand
          builder.RegisterModule(new JintValidateModule());

@@ -52,6 +52,7 @@ using LogTransform = Transformalize.Transforms.System.LogTransform;
 using Process = Transformalize.Configuration.Process;
 using System.Data;
 using OrchardCore.Users.Services;
+using Transformalize.Providers.File.Autofac;
 
 namespace Module.Services {
 
@@ -124,8 +125,6 @@ namespace Module.Services {
          // solr
          // lucene
 
-
-
          // just in case other modules need to see these
          builder.Properties["ShortHand"] = _shortHand;
          builder.Properties["Methods"] = _methods;
@@ -134,6 +133,7 @@ namespace Module.Services {
          builder.RegisterModule(new JintTransformModule());
          builder.RegisterModule(new JsonTransformModule());
          builder.RegisterModule(new HumanizeModule());
+         builder.RegisterModule(new FileModule());
 
          // register validator modules here
          builder.RegisterModule(new JintValidateModule());

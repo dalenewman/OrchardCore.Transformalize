@@ -28,6 +28,12 @@ module for [Orchard Core](https://github.com/OrchardCMS/OrchardCore) rc1.
 - [Razor](https://github.com/dalenewman/Transformalize.Provider.Razor), [Liquid / Fluid](https://github.com/dalenewman/Transformalize.Transform.Fluid
 ), [Lambda Parser](https://github.com/dalenewman/Transformalize.Transform.LambdaParser)
 - Orchard transforms: <strike>username()</strike>, <strike>userid()</strike>, <strike>useremail()</strike>.
+- <strike>file related (get file name, file path, file extension)</strike>
+
+#### Actions
+- <strike>file related (copy, move, archive, replace)</strike>
+- <strike>nested tasks</strike>
+- <strike>log</strike>
 
 #### Development Environment
 - Visual Studio 2019 with ASP.NET Core related workloads:
@@ -46,10 +52,11 @@ You may have to enable some of these manually.
 - [`Etch.OrchardCore.ContentPermissions`](https://github.com/EtchUK/Etch.OrchardCore.ContentPermissions)
 - `OrchardCore.MiniProfiler`
 - `OrchardCore.Alias`
-- `OrchardCore.ContentFields` <span style="color:red;">(new as of 2020-05-22)</span>
+- `OrchardCore.ContentFields`
 
 ---
 
+#### Reporting
 Using [Transformalize](https://github.com/dalenewman/Transformalize) for reporting basically means you 
 read from one entity and do not specify an output.  The [bogus](https://github.com/dalenewman/Transformalize.Provider.Bogus) provider 
 (see below) is fun to play with if you don't have any data sources.  To find out 
@@ -57,3 +64,8 @@ more about the providers, click on the links above.  Also, be sure to read
 the main [Transformalize](https://github.com/dalenewman/Transformalize) read me page.
 
 ![bogus report](bogus.gif)
+
+#### Tasks
+Tasks can de-normalize relational databases (as seen on [Transformalize](https://github.com/dalenewman/Transformalize) read me).
+They can also run actions or simple one entity transformations.  They can write scripts 
+(to then run in actions), or run data manipulation for every row (e.g. with ado run transform).
