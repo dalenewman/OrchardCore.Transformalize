@@ -6,13 +6,13 @@ using Transformalize.Configuration;
 using Transformalize.Contracts;
 
 namespace Module.Services {
-   public class TaskService : ITaskService {
+   public class TaskService<T> : ITaskService<T> {
 
       private readonly IArrangementService _arrangementService;
-      private readonly IArrangementLoadService _loadService;
-      private readonly IArrangementRunService _runService;
+      private readonly IArrangementLoadService<T> _loadService;
+      private readonly IArrangementRunService<T> _runService;
 
-      public TaskService(IArrangementService arrangementService, IArrangementLoadService loadService, IArrangementRunService runService) {
+      public TaskService(IArrangementService arrangementService, IArrangementLoadService<T> loadService, IArrangementRunService<T> runService) {
          _arrangementService = arrangementService;
          _loadService = loadService;
          _runService = runService;
@@ -30,11 +30,11 @@ namespace Module.Services {
          return _arrangementService.IsMissingRequiredParameters(parameters);
       }
 
-      public Process LoadForTask(ContentItem contentItem, IPipelineLogger logger, IDictionary<string,string> parameters = null, string format = null) {
+      public Process LoadForTask(ContentItem contentItem, CombinedLogger<T> logger, IDictionary<string,string> parameters = null, string format = null) {
          return _loadService.LoadForTask(contentItem, logger, parameters, format);
       }
 
-      public async Task RunAsync(Process process, IPipelineLogger logger) {
+      public async Task RunAsync(Process process, CombinedLogger<T> logger) {
          await _runService.RunAsync(process, logger);
       }
    }

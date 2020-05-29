@@ -7,15 +7,15 @@ using Transformalize.Contracts;
 
 namespace Module.Services {
 
-   public class ReportService : IReportService {
+   public class ReportService<T> : IReportService<T> {
 
-      private readonly IArrangementLoadService _loadService;
-      private readonly IArrangementRunService _runService;
+      private readonly IArrangementLoadService<T> _loadService;
+      private readonly IArrangementRunService<T> _runService;
       private readonly IArrangementService _arrangementService;
 
       public ReportService(
-         IArrangementLoadService loadService,
-         IArrangementRunService runService,
+         IArrangementLoadService<T> loadService,
+         IArrangementRunService<T> runService,
          IArrangementService arrangementService
       ) {
          _loadService = loadService;
@@ -35,19 +35,19 @@ namespace Module.Services {
          return _arrangementService.IsMissingRequiredParameters(parameters);
       }
 
-      public Process LoadForExport(ContentItem contentItem, IPipelineLogger logger) {
+      public Process LoadForExport(ContentItem contentItem, CombinedLogger<T> logger) {
          return _loadService.LoadForExport(contentItem, logger);
       }
 
-      public Process LoadForReport(ContentItem contentItem, IPipelineLogger logger, string format = null) {
+      public Process LoadForReport(ContentItem contentItem, CombinedLogger<T> logger, string format = null) {
          return _loadService.LoadForReport(contentItem, logger, format);
       }
 
-      public Process LoadForBatch(ContentItem contentItem, IPipelineLogger logger) {
+      public Process LoadForBatch(ContentItem contentItem, CombinedLogger<T> logger) {
          return _loadService.LoadForBatch(contentItem, logger);
       }
 
-      public async Task RunAsync(Process process, IPipelineLogger logger) {
+      public async Task RunAsync(Process process, CombinedLogger<T> logger) {
          await _runService.RunAsync(process, logger);
       }
 

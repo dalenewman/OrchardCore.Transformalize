@@ -13,7 +13,7 @@ using Cfg.Net.Serializers;
 using Transformalize.Logging;
 
 namespace Module.Services {
-   public class ArrangementLoadService : IArrangementLoadService {
+   public class ArrangementLoadService<T> : IArrangementLoadService<T> {
 
       private readonly IStickyParameterService _stickyParameterService;
       private readonly IDictionary<string, string> _parameters;
@@ -35,7 +35,7 @@ namespace Module.Services {
          _configurationContainer = configurationContainer;
       }
 
-      public Process LoadForExport(ContentItem contentItem, IPipelineLogger logger) {
+      public Process LoadForExport(ContentItem contentItem, CombinedLogger<T> logger) {
 
          if (!TryGetReportPart(contentItem, out var part)) {
             return new Process { Status = 500, Message = "Error", Log = new List<LogEntry>() { new LogEntry(LogLevel.Error, null, $"LoadForExport can't load {contentItem.ContentType}.") } };
@@ -74,7 +74,7 @@ namespace Module.Services {
          return process;
       }
 
-      public Process LoadForReport(ContentItem contentItem, IPipelineLogger logger, string format = null) {
+      public Process LoadForReport(ContentItem contentItem, CombinedLogger<T> logger, string format = null) {
 
          if (!TryGetReportPart(contentItem, out var part)) {
             return new Process { Status = 500, Message = "Error", Log = new List<LogEntry>() { new LogEntry(LogLevel.Error, null, $"LoadForReport can't load {contentItem.ContentType}.") } };
@@ -120,7 +120,7 @@ namespace Module.Services {
          return process;
       }
 
-      public Process LoadForBatch(ContentItem contentItem, IPipelineLogger logger) {
+      public Process LoadForBatch(ContentItem contentItem, CombinedLogger<T> logger) {
 
          if (!TryGetReportPart(contentItem, out var part)) {
             return new Process { Status = 500, Message = "Error", Log = new List<LogEntry>() { new LogEntry(LogLevel.Error, null, $"LoadForBatch can't load {contentItem.ContentType}.") } };
@@ -146,8 +146,7 @@ namespace Module.Services {
          return process;
       }
 
-
-      public Process LoadForTask(ContentItem contentItem, IPipelineLogger logger, IDictionary<string,string> parameters = null, string format = null) {
+      public Process LoadForTask(ContentItem contentItem, CombinedLogger<T> logger, IDictionary<string,string> parameters = null, string format = null) {
 
          Process process;
 
@@ -160,7 +159,7 @@ namespace Module.Services {
          return process;
       }
 
-      private Process LoadInternal(string arrangement, IPipelineLogger logger, IDictionary<string,string> parameters = null, ISerializer serializer = null) {
+      private Process LoadInternal(string arrangement, CombinedLogger<T> logger, IDictionary<string,string> parameters = null, ISerializer serializer = null) {
 
          Process process;
 
@@ -177,10 +176,7 @@ namespace Module.Services {
 
          ApplyCommonSettings(process);
 
-         if (process.Errors().Any() || logger is MemoryLogger m && m.Log.Any(l => l.LogLevel == LogLevel.Error)) {
-            if (logger is MemoryLogger ml) {
-               process.Log.AddRange(ml.Log);
-            }
+         if (process.Errors().Any() || process.Log.Any(l => l.LogLevel == LogLevel.Error)) {
             process.Status = 500;
             process.Message = "Process has errors.";
          } else {

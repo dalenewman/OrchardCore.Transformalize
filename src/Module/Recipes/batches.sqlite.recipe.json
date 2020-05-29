@@ -1,6 +1,6 @@
 {
-   "name": "Transformalize.Batches",
-   "displayName": "Transformalize Batches",
+   "name": "Transformalize.Batches.Sqlite",
+   "displayName": "Transformalize Batches SQLite",
    "description": "Batch Create and Batch Write Tasks Needed for Bulk Actions.",
    "author": "Dale Newman",
    "website": "https://github.com/dalenewman/Transformalize",

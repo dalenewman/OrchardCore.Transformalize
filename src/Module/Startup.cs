@@ -22,6 +22,8 @@ using OrchardCore.Settings;
 using OrchardCore.Navigation;
 using OrchardCore.Security.Permissions;
 using Module.Navigation;
+using Transformalize.Contracts;
+using Transformalize.Logging;
 
 namespace Module {
    public class Startup : StartupBase {
@@ -39,15 +41,17 @@ namespace Module {
          services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 
          // transformalize services
+         services.AddScoped(sp => new MemoryLogger(LogLevel.Info));
+         services.AddScoped(typeof(CombinedLogger<>));
          services.AddScoped<ILinkService, LinkService>();
          services.AddScoped<ISortService, SortService>();
          services.AddScoped<IStickyParameterService, StickyParameterService>();
          services.AddScoped<IArrangementService, ArrangementService>();
-         services.AddScoped<IArrangementLoadService, ArrangementLoadService>();
-         services.AddScoped<IArrangementRunService, ArrangementRunService>();
+         services.AddScoped(typeof(IArrangementLoadService<>), typeof(ArrangementLoadService<>));
+         services.AddScoped(typeof(IArrangementRunService<>), typeof(ArrangementRunService<>));
          services.AddScoped<IParameterService, ParameterService>();
-         services.AddScoped<IReportService, ReportService>();
-         services.AddScoped<ITaskService, TaskService>();
+         services.AddScoped(typeof(IReportService<>), typeof(ReportService<>));
+         services.AddScoped(typeof(ITaskService<>), typeof(TaskService<>));
          services.AddScoped<ISettingsService, SettingsService>();
          services.AddScoped<IConfigurationContainer, OrchardConfigurationContainer>();
          services.AddScoped<IContainer, OrchardContainer>();
@@ -82,6 +86,13 @@ namespace Module {
              areaName: Common.ModuleName,
              pattern: "t/report/{ContentItemId}",
              defaults: new { controller = "Report", action = "Index" }
+         );
+
+         routes.MapAreaControllerRoute(
+             name: null,
+             areaName: Common.ModuleName,
+             pattern: "t/report/log/{ContentItemId}",
+             defaults: new { controller = "Report", action = "Log" }
          );
 
          routes.MapAreaControllerRoute(

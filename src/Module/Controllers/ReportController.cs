@@ -3,65 +3,66 @@ using Microsoft.AspNetCore.Mvc;
 using OrchardCore.ContentManagement;
 using Module.Services.Contracts;
 using Module.ViewModels;
-using Transformalize.Contracts;
 using Transformalize.Logging;
 using OrchardCore.Liquid;
 using OrchardCore.Title.Models;
-using Transformalize.Context;
 using Transformalize.Configuration;
 using System.Collections.Generic;
+using Module.Services;
 
 namespace Module.Controllers {
    public class ReportController : Controller {
 
-      private readonly IReportService _reportService;
+      private readonly IReportService<ReportController> _reportService;
       private readonly ISlugService _slugService;
+      private readonly CombinedLogger<ReportController> _logger;
 
       public ReportController(
-         IReportService reportService,
-         ISlugService slugService
+         IReportService<ReportController> reportService,
+         ISlugService slugService,
+         CombinedLogger<ReportController> logger
       ) {
          _reportService = reportService;
          _slugService = slugService;
+         _logger = logger;
       }
 
       [HttpGet]
-      public async Task<ActionResult> Index(string contentItemId) {
+      public async Task<ActionResult> Index(string contentItemId, bool log = false) {
 
          var contentItem = await _reportService.GetByIdOrAliasAsync(contentItemId);
          if (contentItem == null) {
             return NotFound();
          }
 
-         var logger = new MemoryLogger(LogLevel.Info);
-
          if (!_reportService.CanAccess(contentItem)) {
             return View("Log", GetErrorModel(contentItem, "Access Denied."));
          }
 
-         var process = _reportService.LoadForReport(contentItem, logger);
+         var process = _reportService.LoadForReport(contentItem, _logger);
 
          if (process.Status != 200) {
-            return View("Log", new ReportViewModel(process, contentItem));
+            return View("Log", new LogViewModel(_logger.Log, process, contentItem));
          }
 
          if (_reportService.IsMissingRequiredParameters(process.Parameters)) {
-            return View(new ReportViewModel(process, contentItem));
+            return View(new LogViewModel(_logger.Log, process, contentItem));
          }
 
-         await _reportService.RunAsync(process, logger);
+         await _reportService.RunAsync(process, _logger);
          if (process.Status != 200) {
-            return View("Log", new ReportViewModel(process, contentItem));
+            return View("Log", new LogViewModel(_logger.Log, process, contentItem));
          }
-
-         if (Request.Query["log"].ToString() == "1") {
-            process.Log = logger.Log;
-            return View("Log", new ReportViewModel(process, contentItem));
-         } else {
-            return View(new ReportViewModel(process, contentItem));
-         }
+         
+         return log ? View("Log", new LogViewModel(_logger.Log, process, contentItem)) : View(new ReportViewModel(process, contentItem));
 
       }
+
+      [HttpGet]
+      public async Task<ActionResult> Log(string contentItemId) {
+         return await Index(contentItemId, log: true);
+      }
+
 
       [HttpGet]
       public async Task<ActionResult> Run(string contentItemId, string format = "json") {
@@ -76,32 +77,26 @@ namespace Module.Controllers {
 
          var contentType = format == "json" ? "application/json" : "application/xml";
 
-         var logger = new MemoryLogger(LogLevel.Info);
-
          if (!_reportService.CanAccess(contentItem)) {
             return Unauthorized();
          }
 
-         var process = _reportService.LoadForReport(contentItem, logger, format);
+         var process = _reportService.LoadForReport(contentItem, _logger, format);
 
          if (process.Status != 200) {
-            process.Log = logger.Log;
             process.Connections.Clear();
             return new ContentResult() { Content = process.Serialize(), ContentType = contentType };
          }
 
-         var context = new PipelineContext(logger, process);
-
          if (_reportService.IsMissingRequiredParameters(process.Parameters)) {
-            context.Error("Missing required parameter(s)");
-            process.Log = logger.Log;
+            _logger.Error(() => "Missing required parameter(s)");
             process.Message = "Error";
             process.Status = 500;
             process.Connections.Clear();
             return new ContentResult() { Content = process.Serialize(), ContentType = contentType };
          }
 
-         await _reportService.RunAsync(process, logger);
+         await _reportService.RunAsync(process, _logger);
          if (process.Status != 200) {
             process.Connections.Clear();
             return new ContentResult() { Content = process.Serialize(), ContentType = contentType };
@@ -124,9 +119,7 @@ namespace Module.Controllers {
             return Unauthorized();
          }
 
-         var logger = new MemoryLogger(LogLevel.Error);
-
-         var process = _reportService.LoadForExport(contentItem, logger);
+         var process = _reportService.LoadForExport(contentItem, _logger);
 
          if (process.Status != 200) {
             return Problem();
@@ -140,7 +133,7 @@ namespace Module.Controllers {
          Response.ContentType = "application/json";
          Response.Headers.Add("content-disposition", "attachment; filename=" + o.File);
 
-         await _reportService.RunAsync(process, logger);
+         await _reportService.RunAsync(process, _logger);
 
          return new EmptyResult();
 
@@ -158,10 +151,7 @@ namespace Module.Controllers {
             return Unauthorized();
          }
 
-         var logger = new MemoryLogger(LogLevel.Error);
-
-
-         var process = _reportService.LoadForExport(contentItem, logger);
+         var process = _reportService.LoadForExport(contentItem, _logger);
 
          if (process.Status != 200) {
             return Problem();
@@ -178,14 +168,14 @@ namespace Module.Controllers {
          Response.Headers.Add("content-disposition", "attachment; filename=" + o.File);
 
 
-         await _reportService.RunAsync(process, logger);
+         await _reportService.RunAsync(process, _logger);
 
          return new EmptyResult();
 
       }
 
-      public ReportViewModel GetErrorModel(ContentItem contentItem, string message) {
-         return new ReportViewModel(new Process() { Name = "Error", Log = new List<LogEntry>(1) { new LogEntry(LogLevel.Error, null, message) } }, contentItem);
+      public LogViewModel GetErrorModel(ContentItem contentItem, string message) {
+         return new LogViewModel(_logger.Log, new Process() { Name = "Error", Log = new List<LogEntry>(1) { new LogEntry(Transformalize.Contracts.LogLevel.Error, null, message) } }, contentItem);
       }
 
 

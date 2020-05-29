@@ -334,3 +334,4 @@ MigrationBackup/
 
 Sites/
 tenants.json
+batches.db

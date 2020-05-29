@@ -1,3 +1,3 @@
 namespace Module.Services.Contracts {
-   public interface IReportService : IReportLoadService, IArrangementService, IArrangementRunService { }
+   public interface IReportService<T> : IReportLoadService<T>, IArrangementService, IArrangementRunService<T> { }
 }

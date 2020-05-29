@@ -3,7 +3,7 @@
    <PropertyGroup>
       <TargetFramework>netcoreapp3.0</TargetFramework>
       <AddRazorSupportForMvc>true</AddRazorSupportForMvc>
-      <Version>0.7.8-beta</Version>
+      <Version>0.7.9-beta</Version>
       <AssemblyName>OrchardCore.Transformalize</AssemblyName>
       <RootNamespace>Module</RootNamespace>
    </PropertyGroup>
@@ -52,12 +52,17 @@
    </ItemGroup>
 
    <ItemGroup>
-     <EmbeddedResource Update="Recipes\batches.recipe.json">
+     <EmbeddedResource Update="Recipes\batches.sqlite.recipe.json">
        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
      </EmbeddedResource>
      <EmbeddedResource Update="Recipes\samples.recipe.json">
        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
      </EmbeddedResource>
+   </ItemGroup>
+
+   <ItemGroup>
+     <Folder Include="Views\BulkAction\" />
+     <Folder Include="Views\Task\" />
    </ItemGroup>
 
 </Project>

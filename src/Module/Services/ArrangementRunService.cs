@@ -5,10 +5,9 @@ using System.Linq;
 using System.Threading.Tasks;
 using Transformalize.Configuration;
 using Transformalize.Contracts;
-using Transformalize.Logging;
 
 namespace Module.Services {
-   public class ArrangementRunService : IArrangementRunService {
+   public class ArrangementRunService<T> : IArrangementRunService<T> {
 
       private readonly IContainer _container;
 
@@ -18,7 +17,7 @@ namespace Module.Services {
          _container = container;
       }
 
-      public async Task RunAsync(Process process, IPipelineLogger logger) {
+      public async Task RunAsync(Process process, CombinedLogger<T> logger) {
 
          IProcessController controller;
 
@@ -30,10 +29,7 @@ namespace Module.Services {
             await controller.ExecuteAsync();
          }
 
-         if (process.Errors().Any() || logger is MemoryLogger m && m.Log.Any(l => l.LogLevel == LogLevel.Error)) {
-            if (logger is MemoryLogger ml) {
-               process.Log.AddRange(ml.Log);
-            }
+         if (process.Errors().Any() || logger.Log.Any(l => l.LogLevel == LogLevel.Error)) {
             process.Status = 500;
             process.Message = "Error";
          } else {

@@ -1,5 +1,4 @@
 ﻿namespace Module.Services.Contracts {
-   public interface ITaskService : ITaskLoadService, IArrangementService, IArrangementRunService { }
-
+   public interface ITaskService<T> : ITaskLoadService<T>, IArrangementService, IArrangementRunService<T> { }
 
 }

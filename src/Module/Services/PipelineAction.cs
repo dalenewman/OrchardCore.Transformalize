@@ -11,21 +11,28 @@ namespace Module.Services {
       private readonly IContext _context;
       private readonly IServiceProvider _serviceProvider;
       private readonly Action _action;
-      public PipelineAction(IContext context, Action action, IServiceProvider serviceProvider) {
+
+      public PipelineAction(
+         IContext context, 
+         Action action, 
+         IServiceProvider serviceProvider
+      ) {
          _context = context;
          _action = action;
          _serviceProvider = serviceProvider;
       }
+
       public ActionResponse Execute() {
          var response = new ActionResponse() { Action = _action };
 
-         var taskService = _serviceProvider.GetRequiredService<ITaskService>();
+         var taskService = _serviceProvider.GetRequiredService<ITaskService<PipelineAction>>();
+         var logger = _serviceProvider.GetRequiredService<CombinedLogger<PipelineAction>>();
 
          if (!string.IsNullOrEmpty(_action.Name)) {
             var contentItem = taskService.GetByIdOrAliasAsync(_action.Name);
             if (contentItem.Result != null) {
-               var process = taskService.LoadForTask(contentItem.Result, _context.Logger);
-               taskService.RunAsync(process, _context.Logger);
+               var process = taskService.LoadForTask(contentItem.Result, logger);
+               taskService.RunAsync(process, logger);
                response.Code = process.Status;
                response.Message = process.Message;
             } else {

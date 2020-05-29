@@ -1,21 +1,26 @@
 using System.Collections.Generic;
+using Module.Controllers;
 using Module.Models;
+using Module.Services;
 using OrchardCore.ContentManagement;
 using Transformalize.Configuration;
+using Transformalize.Logging;
 
 namespace Module.ViewModels {
-   public class TaskViewModel {
+   public class LogViewModel {
 
       private Dictionary<string, Parameter> _parameterLookup;
 
       public Process Process { get; set; }
       public ContentItem Item { get; set; }
       public TransformalizeTaskPart Part { get; set;}
+      public List<LogEntry> Log { get; }
 
-      public TaskViewModel(Process process, ContentItem item) {
+      public LogViewModel(List<LogEntry> log, Process process, ContentItem item) {
+         Log = log;
          Process = process;
          Item = item;
-         Part = item.As<TransformalizeTaskPart>();
+         Part = item?.As<TransformalizeTaskPart>();
       }
 
      public Parameter GetParameterByName(string name) {
