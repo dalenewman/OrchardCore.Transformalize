@@ -91,8 +91,10 @@ namespace Module.Services {
          builder.RegisterModule(vm);
 
          // register the validator short hand
-         builder.Register((c, p) => _shortHand).Named<ShorthandRoot>(ValidateModule.Name).InstancePerLifetimeScope();
-         builder.Register((c, p) => new ShorthandCustomizer(c.ResolveNamed<ShorthandRoot>(ValidateModule.Name), new[] { "fields", "calculated-fields", "calculatedfields" }, "v", "validators", "method")).Named<IDependency>(ValidateModule.Name).InstancePerLifetimeScope();
+         builder.Register((c, p) => _shortHand).Named<ShorthandRoot>(ValidateModule.FieldsName).InstancePerLifetimeScope();
+         builder.Register((c, p) => _shortHand).Named<ShorthandRoot>(ValidateModule.ParametersName).InstancePerLifetimeScope();
+         builder.Register((c, p) => new ShorthandCustomizer(c.ResolveNamed<ShorthandRoot>(ValidateModule.FieldsName), new[] { "fields", "calculated-fields", "calculatedfields" }, "v", "validators", "method")).Named<IDependency>(ValidateModule.FieldsName).InstancePerLifetimeScope();
+         builder.Register((c, p) => new ShorthandCustomizer(c.ResolveNamed<ShorthandRoot>(ValidateModule.ParametersName), new[] { "parameters" }, "v", "validators", "method")).Named<IDependency>(ValidateModule.ParametersName).InstancePerLifetimeScope();
 
          // register the transform short hand
          builder.Register((c, p) => _shortHand).Named<ShorthandRoot>(TransformModule.FieldsName).InstancePerLifetimeScope();
@@ -118,7 +120,7 @@ namespace Module.Services {
 
          builder.Register(ctx => {
 
-            var transformed = TransformParameters(ctx, cfg);
+            var transformed = TransformalizeParameters(ctx, cfg);
 
             var dependancies = new List<IDependency>();
             dependancies.Add(ctx.Resolve<IReader>());
@@ -129,7 +131,8 @@ namespace Module.Services {
             dependancies.Add(new ParameterModifier(new PlaceHolderReplacer(placeHolderStyle[0], placeHolderStyle[1], placeHolderStyle[2]), "parameters", "name", "value"));
             dependancies.Add(ctx.ResolveNamed<IDependency>(TransformModule.FieldsName));
             dependancies.Add(ctx.ResolveNamed<IDependency>(TransformModule.ParametersName));
-            dependancies.Add(ctx.ResolveNamed<IDependency>(ValidateModule.Name));
+            dependancies.Add(ctx.ResolveNamed<IDependency>(ValidateModule.FieldsName));
+            dependancies.Add(ctx.ResolveNamed<IDependency>(ValidateModule.ParametersName));
 
             var process = new Process(transformed ?? cfg, parameters, dependancies.ToArray());
 
@@ -146,7 +149,7 @@ namespace Module.Services {
          return builder.Build().BeginLifetimeScope();
       }
 
-      private static string TransformParameters(IComponentContext ctx, string cfg) {
+      private static string TransformalizeParameters(IComponentContext ctx, string cfg) {
 
          var preProcess = new Transformalize.ConfigurationFacade.Process(
             cfg,
@@ -155,10 +158,11 @@ namespace Module.Services {
                ctx.Resolve<IReader>(),
                new DateMathModifier(),
                new ParameterModifier(new NullPlaceHolderReplacer()),
-               ctx.ResolveNamed<IDependency>(TransformModule.ParametersName)
+               ctx.ResolveNamed<IDependency>(TransformModule.ParametersName),
+               ctx.ResolveNamed<IDependency>(ValidateModule.ParametersName)
          }.ToArray());
 
-         if (!preProcess.Parameters.Any(pr => pr.Transforms.Any()))
+         if (preProcess.Parameters.Any(pr => !pr.Transforms.Any() && !pr.Validators.Any()))
             return null;
 
          var fields = preProcess.Parameters.Select(pr => new Field {
