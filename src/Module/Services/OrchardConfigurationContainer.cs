@@ -120,7 +120,24 @@ namespace Module.Services {
 
          builder.Register(ctx => {
 
-            var transformed = TransformalizeParameters(ctx, cfg);
+            // parameter values are only used if outside parameters don't exist so
+            // outside parameters will over-write or set the value before transforms / validators run
+            // if outside parameters are used here, and possibly transformed, they will move on to the
+            // real process as the transformed value is what we want
+
+            var pre = new Transformalize.ConfigurationFacade.Process(
+               cfg,
+               null,
+               new List<IDependency> {
+                  ctx.Resolve<IReader>(),
+                  ctx.ResolveNamed<IDependency>(TransformModule.ParametersName),
+                  ctx.ResolveNamed<IDependency>(ValidateModule.ParametersName)
+               }.ToArray()
+            );
+
+            if (pre.Parameters.Any(pr => pr.Transforms.Any() || pr.Validators.Any())) {
+               cfg = TransformalizeParameters(ctx, pre, parameters);
+            }
 
             var dependancies = new List<IDependency>();
             dependancies.Add(ctx.Resolve<IReader>());
@@ -134,7 +151,7 @@ namespace Module.Services {
             dependancies.Add(ctx.ResolveNamed<IDependency>(ValidateModule.FieldsName));
             dependancies.Add(ctx.ResolveNamed<IDependency>(ValidateModule.ParametersName));
 
-            var process = new Process(transformed ?? cfg, parameters, dependancies.ToArray());
+            var process = new Process(cfg, parameters, dependancies.ToArray());
 
             if (process.Errors().Any()) {
                var c = new PipelineContext(logger, new Process() { Name = "Errors" });
@@ -149,37 +166,54 @@ namespace Module.Services {
          return builder.Build().BeginLifetimeScope();
       }
 
-      private static string TransformalizeParameters(IComponentContext ctx, string cfg) {
+      private static string TransformalizeParameters(IComponentContext ctx, Transformalize.ConfigurationFacade.Process process, IDictionary<string,string> parameters) {
 
-         var preProcess = new Transformalize.ConfigurationFacade.Process(
-            cfg,
-            new Dictionary<string, string>(),
-            new List<IDependency> {
-               ctx.Resolve<IReader>(),
-               new DateMathModifier(),
-               new ParameterModifier(new NullPlaceHolderReplacer()),
-               ctx.ResolveNamed<IDependency>(TransformModule.ParametersName),
-               ctx.ResolveNamed<IDependency>(ValidateModule.ParametersName)
-         }.ToArray());
-
-         if (preProcess.Parameters.Any(pr => !pr.Transforms.Any() && !pr.Validators.Any()))
-            return null;
-
-         var fields = preProcess.Parameters.Select(pr => new Field {
+         var fields = process.Parameters.Select(pr => new Field {
             Name = pr.Name,
             Alias = pr.Name,
             Default = pr.Value,
             Type = pr.Type,
-            Transforms = pr.Transforms.Select(o => o.ToOperation()).ToList()
+            Transforms = pr.Transforms.Select(o => o.ToOperation()).ToList(),
+            Validators = pr.Validators.Select(o => o.ToOperation()).ToList()
          }).ToList();
-         var len = fields.Count;
+
+         if (fields.Any(f => f.Validators.Any())) {
+
+            var validatorFields = new List<Field>();
+
+            foreach (var field in fields.Where(f => f.Validators.Any())) {
+
+               field.ValidField = field.Name + "Valid";
+               field.MessageField = field.Name + "Message";
+
+               validatorFields.Add(new Field {
+                  Name = field.ValidField,
+                  Alias = field.ValidField,
+                  Input = false,
+                  Default = "true",
+                  Type = "bool"
+               });
+               validatorFields.Add(new Field {
+                  Name = field.MessageField,
+                  Alias = field.MessageField,
+                  Input = false,
+                  Default = "",
+                  Type = "string",
+                  Length = "255"
+               });
+            }
+
+            fields.AddRange(validatorFields);
+         }
+
+         var fieldCount = fields.Count;
          var entity = new Entity { Name = "Parameters", Alias = "Parameters", Fields = fields };
          var mini = new Process {
-            Name = "ParameterTransform",
+            Name = "TransformalizeParameters",
             ReadOnly = true,
             Entities = new List<Entity> { entity },
-            Maps = preProcess.Maps.Select(m => m.ToMap()).ToList(), // for map transforms
-            Scripts = preProcess.Scripts.Select(s => s.ToScript()).ToList() // for transforms that use scripts (e.g. js)
+            Maps = process.Maps.Select(m => m.ToMap()).ToList(), // for map transforms
+            Scripts = process.Scripts.Select(s => s.ToScript()).ToList() // for transforms that use scripts (e.g. js)
          };
 
          mini.Load(); // very important to check after creating, as it runs validation and even modifies!
@@ -191,30 +225,63 @@ namespace Module.Services {
             entity = mini.Entities.First();
 
             var c = new PipelineContext(ctx.Resolve<IPipelineLogger>(), mini, entity);
+
             var transforms = new List<ITransform> {
                new Transformalize.Transforms.System.DefaultTransform(c, fields)
             };
             transforms.AddRange(TransformFactory.GetTransforms(ctx, c, fields));
 
+            var validators = ValidateFactory.GetValidators(ctx, c, fields);
+
             // make an input out of the parameters
             var input = new List<IRow>();
-            var row = new Transformalize.MasterRow(len);
-            for (var i = 0; i < len; i++) {
-               row[fields[i]] = preProcess.Parameters[i].Value;
+            var row = new Transformalize.MasterRow(fieldCount);
+            for (var i = 0; i < process.Parameters.Count; i++) {
+               var parameter = process.Parameters[i];
+               var field = fields[i];
+               if (parameters.ContainsKey(parameter.Name)) {
+                  row[field] = parameters[parameter.Name];
+                  parameters.Remove(parameter.Name); // since parameter may be transformed and placed in value, we discard the original
+               } else {
+                  row[field] = parameter.Value;
+               }
+               if (parameter.Type != null && parameter.Type != "string" && row[field] != null) {
+                  try {
+                     row[field] = Transformalize.Constants.ObjectConversionMap[parameter.Type](row[field]);
+                  } catch (FormatException ex) {
+                     c.Error($"Could not convert '{row[field]}' to {parameter.Type}. {ex.Message}");
+                     row[field] = Transformalize.Constants.TypeDefaults()[parameter.Type];
+                  }
+               }
             }
-
             input.Add(row);
 
-            var output = transforms.Aggregate(input.AsEnumerable(), (rows, t) => t.Operate(rows)).ToList().First();
+            var output = validators.Aggregate(transforms.Aggregate(input.AsEnumerable(), (rows, t) => t.Operate(rows)), (rows, v) => v.Operate(rows)).ToList().First();
 
-            for (var i = 0; i < len; i++) {
-               var parameter = preProcess.Parameters[i];
-               parameter.Value = output[fields[i]].ToString();
-               parameter.T = string.Empty;
+            for (var i = 0; i < process.Parameters.Count; i++) {
+
+               var field = fields[i];
+               var parameter = process.Parameters[i];
+               
+               // set the transformed value
+               parameter.Value = output[field].ToString();
+
+               // set the validation results
+               if(field.ValidField != string.Empty) {
+                  parameter.Valid = output[fields.First(f => f.Name == field.ValidField)].ToString().ToLower();
+                  parameter.Message = ((string) output[fields.First(f => f.Name == field.MessageField)]).TrimEnd('|');
+               } else {
+                  parameter.Valid = "true";
+               }
+
+               // don't need these anymore
+               parameter.T = null;
                parameter.Transforms.Clear();
+               parameter.V = null;
+               parameter.Validators.Clear();
             }
 
-            return preProcess.Serialize();
+            return process.Serialize();
          }
 
          var context = new PipelineContext(ctx.Resolve<IPipelineLogger>(), mini, entity);
