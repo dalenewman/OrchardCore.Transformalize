@@ -62,7 +62,6 @@
    </ItemGroup>
 
    <ItemGroup>
-     <Folder Include="Views\BulkAction\" />
      <Folder Include="Views\Task\" />
    </ItemGroup>
 

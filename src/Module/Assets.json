@@ -183,6 +183,42 @@
          "node_modules/block-ui/jquery.blockUI.js"
       ],
       "output": "wwwroot/Scripts/jquery.blockUI.js"
+   },
+   {
+      "inputs": [
+         "node_modules/moment/dist/moment.js"
+      ],
+      "output": "wwwroot/Scripts/moment.js"
+   },
+   {
+      "inputs": [
+         "node_modules/parsleyjs/dist/parsley.js"
+      ],
+      "output": "wwwroot/Scripts/parsley.js"
+   },
+   {
+      "inputs": [
+         "node_modules/pickadate/lib/legacy.js"
+      ],
+      "output": "wwwroot/Scripts/pickadate/legacy.js"
+   },
+   {
+      "inputs": [
+         "node_modules/pickadate/lib/picker.js"
+      ],
+      "output": "wwwroot/Scripts/pickadate/picker.js"
+   },
+   {
+      "inputs": [
+         "node_modules/pickadate/lib/picker.date.js"
+      ],
+      "output": "wwwroot/Scripts/pickadate/picker.date.js"
+   },
+   {
+      "inputs": [
+         "node_modules/pickadate/lib/picker.time.js"
+      ],
+      "output": "wwwroot/Scripts/pickadate/picker.time.js"
    }
 
 ]

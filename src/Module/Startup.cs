@@ -84,22 +84,8 @@ namespace Module {
          routes.MapAreaControllerRoute(
              name: null,
              areaName: Common.ModuleName,
-             pattern: "t/report/{ContentItemId}",
-             defaults: new { controller = "Report", action = "Index" }
-         );
-
-         routes.MapAreaControllerRoute(
-             name: null,
-             areaName: Common.ModuleName,
              pattern: "t/report/log/{ContentItemId}",
              defaults: new { controller = "Report", action = "Log" }
-         );
-
-         routes.MapAreaControllerRoute(
-             name: null,
-             areaName: Common.ModuleName,
-             pattern: "t/report/{format}/{ContentItemId}",
-             defaults: new { controller = "Report", action = "Run", format = "json" }
          );
 
          routes.MapAreaControllerRoute(
@@ -119,8 +105,15 @@ namespace Module {
          routes.MapAreaControllerRoute(
              name: null,
              areaName: Common.ModuleName,
-             pattern: "t/task/{ContentItemId}",
-             defaults: new { controller = "Task", action = "Index" }
+             pattern: "t/report/{format}/{ContentItemId}",
+             defaults: new { controller = "Report", action = "Run", format = "json" }
+         );
+
+         routes.MapAreaControllerRoute(
+             name: null,
+             areaName: Common.ModuleName,
+             pattern: "t/report/{ContentItemId}",
+             defaults: new { controller = "Report", action = "Index" }
          );
 
          routes.MapAreaControllerRoute(
@@ -128,6 +121,20 @@ namespace Module {
              areaName: Common.ModuleName,
              pattern: "t/task/{format}/{ContentItemId}",
              defaults: new { controller = "Task", action = "Run", format = "json" }
+         );
+
+         routes.MapAreaControllerRoute(
+             name: null,
+             areaName: Common.ModuleName,
+             pattern: "t/task/{ContentItemId}",
+             defaults: new { controller = "Task", action = "Index" }
+         );
+
+         routes.MapAreaControllerRoute(
+             name: null,
+             areaName: Common.ModuleName,
+             pattern: "t/action/review/{ContentItemId}",
+             defaults: new { controller = "BulkAction", action = "Review" }
          );
 
          routes.MapAreaControllerRoute(

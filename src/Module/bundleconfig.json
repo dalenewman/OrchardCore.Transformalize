@@ -16,5 +16,41 @@
     "inputFiles": [
       "wwwroot/Scripts/jquery.blockUI.js"
     ]
+  },
+  {
+    "outputFileName": "wwwroot/Scripts/moment.min.js",
+    "inputFiles": [
+      "wwwroot/Scripts/moment.js"
+    ]
+  },
+  {
+    "outputFileName": "wwwroot/Scripts/parsley.min.js",
+    "inputFiles": [
+      "wwwroot/Scripts/parsley.js"
+    ]
+  },
+  {
+    "outputFileName": "wwwroot/Scripts/pickadate/legacy.min.js",
+    "inputFiles": [
+      "wwwroot/Scripts/pickadate/legacy.js"
+    ]
+  },
+  {
+    "outputFileName": "wwwroot/Scripts/pickadate/picker.date.min.js",
+    "inputFiles": [
+      "wwwroot/Scripts/pickadate/picker.date.js"
+    ]
+  },
+  {
+    "outputFileName": "wwwroot/Scripts/pickadate/picker.time.min.js",
+    "inputFiles": [
+      "wwwroot/Scripts/pickadate/picker.time.js"
+    ]
+  },
+  {
+    "outputFileName": "wwwroot/Scripts/pickadate/picker.min.js",
+    "inputFiles": [
+      "wwwroot/Scripts/pickadate/picker.js"
+    ]
   }
 ]

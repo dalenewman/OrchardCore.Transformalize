@@ -225,6 +225,34 @@ namespace Module {
             .SetCdnIntegrity("sha256-9wRM03dUw6ABCs+AU69WbK33oktrlXamEXMvxUaF+KU=", "sha256-oQaw+JJuUcJQ9QVYMcFnPxICDT+hv8+kuxT2FNzTGhc=")
             .SetVersion("2.70.0");
 
+         manifest
+            .DefineScript("parsley")
+            .SetUrl($"~/{Common.ModuleName}/Scripts/parsley.min.js", $"~/{Common.ModuleName}/Scripts/parsley.js")
+            .SetCdn("https://cdnjs.cloudflare.com/ajax/libs/parsley.js/2.9.2/parsley.min.js", "https://cdnjs.cloudflare.com/ajax/libs/parsley.js/2.9.2/parsley.js")
+            .SetCdnIntegrity("sha256-pEdn/pJ2tyT37axbEIPkyUUfuG1yXR0+YV+h+jphem4=", "sha256-vkPt2+rodbvJto9KapXeP61nmLcz3VXyzcK/gaWjOEg=")
+            .SetVersion("2.9.2");
+
+         manifest
+            .DefineScript("moment")
+            .SetUrl($"~/{Common.ModuleName}/Scripts/moment.min.js", $"~/{Common.ModuleName}/Scripts/moment.js")
+            .SetCdn("https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.26.0/moment.min.js", "https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.26.0/moment.js")
+            .SetCdnIntegrity("sha256-5oApc/wMda1ntIEK4qoWJ4YItnV4fBHMwywunj8gPqc=", "sha256-GIi3faatmXJKbOQPmLgUPDHXKYmXBSszcO9Euf0BQPk=")
+            .SetVersion("2.26.0");
+
+         manifest
+            .DefineScript("pickadate-picker")
+            .SetUrl($"~/{Common.ModuleName}/Scripts/pickadate/picker.min.js", $"~/{Common.ModuleName}/Scripts/pickadate/picker.js")
+            .SetCdn("https://cdnjs.cloudflare.com/ajax/libs/pickadate.js/3.6.4/compressed/picker.js", "https://cdnjs.cloudflare.com/ajax/libs/pickadate.js/3.6.4/picker.js")
+            .SetCdnIntegrity("sha256-Ir/Txs2EGYQz5HcltQCu06WpUQRhmU4tgHHYbNV0+Cs=", "sha256-oJXL7pU64acHojjSG2JPJy+FOGtYh5qnKhtdwk4YlrU=")
+            .SetVersion("3.6.4");
+
+         manifest
+            .DefineScript("pickadate-picker-date")
+            .SetDependencies( new[] { "pickadate-picker"})
+            .SetUrl($"~/{Common.ModuleName}/Scripts/pickadate/picker.date.min.js", $"~/{Common.ModuleName}/Scripts/pickadate/picker.date.js")
+            .SetCdn("https://cdnjs.cloudflare.com/ajax/libs/pickadate.js/3.6.4/compressed/picker.date.js", "https://cdnjs.cloudflare.com/ajax/libs/pickadate.js/3.6.4/picker.date.js")
+            .SetCdnIntegrity("sha256-WpEr1Ovyxho8DRYP1DyZgjVonSAGF4uDVVZXoe379vw=", "sha256-4jRSfwItZuLvFKlnkeHM+vL0bWgvrVbIF8peMhB7t2Q=")
+            .SetVersion("3.6.4");
       }
    }
 }

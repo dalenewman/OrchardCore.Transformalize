@@ -1,0 +1,40 @@
+@using Module
+
+<script asp-name="jQuery" at="Head"></script>
+<script asp-name="jQuery-ui" at="Foot"></script>
+<script asp-name="block-ui" version="2.70.0" at="Foot"></script>
+<script asp-name="pickadate-picker-date" version="3.6.4" at="Foot"></script>
+<script asp-name="parsley" version="2.9.2" at="Foot"></script>
+<script asp-name="moment" version="2.26.0" at="Foot"></script>
+
+<style>
+   #busy {
+      position: fixed;
+      left: 46%;
+      top: 40%;
+      display: none;
+      background: transparent url(@Url.Content($"~/{Common.ModuleName}/Styles/busy.gif"));
+      background-size: 149px 149px;
+      background-repeat: no-repeat;
+      z-index: 1020;
+      height: 150px;
+      width: 150px;
+   }
+
+   #busy-holder {
+      background: transparent;
+      width: 100%;
+      height: 100%;
+   }
+</style>
+
+<h3>Bulk Action Review View</h3>
+
+<div id="busy_holder">
+   <div id="busy"></div>
+</div>
+
+<script type="text/javascript">
+   //<!--
+   //-->
+</script>

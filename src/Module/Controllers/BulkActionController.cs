@@ -2,13 +2,12 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Module.Services.Contracts;
 using Module.ViewModels;
-using Transformalize.Logging;
 using OrchardCore.ContentManagement;
-using Transformalize.Configuration;
 using System.Collections.Generic;
 using Module.Models;
 using System.Linq;
 using Module.Services;
+using System.Dynamic;
 
 namespace Module.Controllers {
 
@@ -31,7 +30,11 @@ namespace Module.Controllers {
       [HttpPost]
       public async Task<ActionResult> Index(BulkActionRequest bar) {
 
-         var user = HttpContext.User?.Identity?.Name ?? "Anonymous";
+         if (HttpContext == null || HttpContext.User == null || HttpContext.User.Identity == null || !HttpContext.User.Identity.IsAuthenticated) {
+            return Unauthorized();
+         }
+
+         var user = HttpContext.User.Identity.Name ?? "Anonymous";
          var report = await _reportService.GetByIdOrAliasAsync(bar.ContentItemId);
 
          if (report == null) {
@@ -41,7 +44,7 @@ namespace Module.Controllers {
 
          if (!_reportService.CanAccess(report)) {
             _logger.Warn(() => $"User {user} is unauthorized to access {report.DisplayText}.");
-            return Unauthorized();
+            return View("Log", new LogViewModel(_logger.Log, null, null));
          }
 
          var part = report.ContentItem.As<TransformalizeReportPart>();
@@ -154,6 +157,10 @@ namespace Module.Controllers {
             await _taskService.RunAsync(batchWriteProcess, _logger);
             #endregion
 
+            batchWriteParameters.Add("ContentItemId", bar.ContentItemId);
+            batchWriteParameters.Add("ActionName", bar.ActionName);
+            return RedirectToAction("Review", ParametersToRouteValues(batchWriteParameters));
+
          } else {
             _logger.Warn(()=>$"User {user} called missing action {bar.ActionName} in {report.DisplayText}.");
          }
@@ -162,9 +169,37 @@ namespace Module.Controllers {
 
       }
 
-      public LogViewModel GetErrorModel(ContentItem contentItem, string message) {
-         return new LogViewModel(_logger.Log, new Process { Name = "Error", Log = new List<LogEntry>(1) { new LogEntry(Transformalize.Contracts.LogLevel.Error, null, message) } }, contentItem);
+      [HttpGet]
+      public async Task<ActionResult> Review(string contentItemId) {
+
+         if (HttpContext == null || HttpContext.User == null || HttpContext.User.Identity == null || !HttpContext.User.Identity.IsAuthenticated) {
+            return Unauthorized();
+         }
+
+         var user = HttpContext.User.Identity.Name ?? "Anonymous";
+         var report = await _reportService.GetByIdOrAliasAsync(contentItemId);
+
+         if (report == null) {
+            _logger.Warn(() => $"User {user} requested absent content item {contentItemId}.");
+            return View("Log", new LogViewModel(_logger.Log, null, null));
+         }
+
+         if (!_reportService.CanAccess(report)) {
+            _logger.Warn(() => $"User {user} is unauthorized to access {report.DisplayText}.");
+            return View("Log", new LogViewModel(_logger.Log, null, null));
+         }
+
+         return View();
       }
 
+      private dynamic ParametersToRouteValues(IDictionary<string,string> parameters) {
+         var routeValues = new ExpandoObject();
+         var editable = (ICollection<KeyValuePair<string, object>>)routeValues;
+         foreach (var kvp in parameters) {
+            editable.Add(new KeyValuePair<string, object>(kvp.Key, kvp.Value));
+         }
+         dynamic d = routeValues;
+         return d;
+      }
    }
 }
