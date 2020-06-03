@@ -34,6 +34,19 @@
                   "Roles": [ "Authenticated" ],
                   "Enabled": true
                }
+            },
+            {
+               "ContentItemId": "[js: uuid()]",
+               "ContentType": "TransformalizeTask",
+               "DisplayText": "Batch Summary",
+               "TitlePart": { "Title": "Batch Summary" },
+               "AliasPart": { "Alias": "batch-summary" },
+               "TransformalizeTaskPart": { "Arrangement": { "Arrangement": "<cfg name=\"Batch Summary\" read-only=\"true\">\r\n \r\n  <parameters>\r\n    <add name=\"BatchId\" type=\"int\" value=\"13\" />\r\n  </parameters>\r\n  \r\n  <connections>\r\n    <add name=\"db\" provider=\"sqlite\" file=\"App_Data\\batches.db\" />\r\n  </connections>\r\n  \r\n  <entities>\r\n    <add name=\"Script\" \r\n         connection=\"db\" \r\n         query=\"\r\nSELECT\r\n  b.Id AS BatchId,\r\n\tCreated, \r\n\tDescription, \r\n\tbs.Status, \r\n\tbs.StatusColor, \r\n\tMessage,\r\n\tcoalesce(br.Records, 0) AS Records\r\nFROM Batch b\r\nINNER JOIN BatchStatus bs ON (b.BatchStatusId = bs.Id)\r\nLEFT OUTER JOIN (\r\n\tSELECT COUNT(*) AS Records\r\n\tFROM BatchRecord br\r\n\tWHERE BatchId = @BatchId\r\n) br\r\nWHERE b.Id = @BatchId;                \r\n                \">\r\n      <fields>\r\n          <add name=\"BatchId\" type=\"long\" primary-key=\"true\" />\r\n          <add name=\"Created\" type=\"datetime\" t=\"convert()\" />\r\n          <add name=\"Description\" />\r\n          <add name=\"Status\" />\r\n          <add name=\"StatusColor\" />\r\n          <add name=\"Message\" />\r\n          <add name=\"Records\" type=\"long\" />\r\n      </fields>\r\n    </add>\r\n  </entities>\r\n</cfg>" } },
+               "ContentPermissionsPart": {
+                  "Roles": [ "Authenticated" ],
+                  "Enabled": true
+               },
+               "CommonPart": {}
             }
          ]
       }

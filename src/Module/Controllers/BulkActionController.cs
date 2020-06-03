@@ -8,6 +8,7 @@ using Module.Models;
 using System.Linq;
 using Module.Services;
 using System.Dynamic;
+using Transformalize.Configuration;
 
 namespace Module.Controllers {
 
@@ -38,7 +39,7 @@ namespace Module.Controllers {
          var report = await _reportService.GetByIdOrAliasAsync(bar.ContentItemId);
 
          if (report == null) {
-            _logger.Warn(()=>$"User {user} requested absent content item {bar.ContentItemId}.");
+            _logger.Warn(() => $"User {user} requested absent content item {bar.ContentItemId}.");
             return View("Log", new LogViewModel(_logger.Log, null, null));
          }
 
@@ -70,12 +71,6 @@ namespace Module.Controllers {
             if (bulkAction == null) {
                _logger.Warn(() => $"User {user} requested absent content item {bar.ActionName}.");
                return View("Log", new LogViewModel(_logger.Log, null, null));
-            }
-
-            var bulkActionProcess = _taskService.LoadForTask(bulkAction, _logger);
-            if (bulkActionProcess.Status != 200) {
-               _logger.Warn(() => $"User {user} received error trying to load bulk action {bulkAction.DisplayText}.");
-               return View("Log", new LogViewModel(_logger.Log, bulkActionProcess, bulkAction));
             }
             #endregion
 
@@ -124,7 +119,7 @@ namespace Module.Controllers {
             var batchWrite = await _taskService.GetByIdOrAliasAsync(batchWriteAlias);
             var batchWriteProcess = _taskService.LoadForTask(batchWrite, _logger, batchWriteParameters);
             if (batchWriteProcess.Status != 200) {
-               _logger.Warn(()=>$"User {user} received error trying to load bulk action {batchWriteAlias}.");
+               _logger.Warn(() => $"User {user} received error trying to load bulk action {batchWriteAlias}.");
                return View("Log", new LogViewModel(_logger.Log, batchWriteProcess, batchWrite));
             }
 
@@ -132,8 +127,8 @@ namespace Module.Controllers {
             var writeEntity = batchWriteProcess.Entities.First();
             var batchValueField = writeEntity.Fields.LastOrDefault(f => f.Input && f.Output);
 
-            if(batchValueField == null) {
-               _logger.Error(()=>$"Could not identify batch value field in {batchWriteAlias}.");
+            if (batchValueField == null) {
+               _logger.Error(() => $"Could not identify batch value field in {batchWriteAlias}.");
                return View("Log", new LogViewModel(_logger.Log, batchWriteProcess, batchWrite));
             }
 
@@ -141,7 +136,7 @@ namespace Module.Controllers {
                var batchProcess = _reportService.LoadForBatch(report, _logger);
 
                await _taskService.RunAsync(batchProcess, _logger);
-               foreach(var batchRow in batchProcess.Entities.First().Rows) {
+               foreach (var batchRow in batchProcess.Entities.First().Rows) {
                   var row = new Transformalize.Impl.CfgRow(new[] { batchValueField.Alias });
                   row[batchValueField.Alias] = batchRow[part.BulkActionValueField.Text];
                   writeEntity.Rows.Add(row);
@@ -162,7 +157,7 @@ namespace Module.Controllers {
             return RedirectToAction("Review", ParametersToRouteValues(batchWriteParameters));
 
          } else {
-            _logger.Warn(()=>$"User {user} called missing action {bar.ActionName} in {report.DisplayText}.");
+            _logger.Warn(() => $"User {user} called missing action {bar.ActionName} in {report.DisplayText}.");
          }
 
          return View("Log", new LogViewModel(_logger.Log, reportProcess, report));
@@ -189,10 +184,56 @@ namespace Module.Controllers {
             return View("Log", new LogViewModel(_logger.Log, null, null));
          }
 
-         return View();
+         var part = report.ContentItem.As<TransformalizeReportPart>();
+         if (part == null) {
+            _logger.Warn(() => $"User {user} requested incompatible content type {report.DisplayText}.");
+            return BadRequest();
+         }
+
+         var reportProcess = _reportService.LoadForReport(report, _logger);
+         if (reportProcess.Status != 200) {
+            _logger.Warn(() => $"User {user} received error trying to load report {report.DisplayText}.");
+            return View("Log", new LogViewModel(_logger.Log, reportProcess, report));
+         }
+
+
+         var batchSummaryAlias = "batch-summary";
+         var batchSummary = await _taskService.GetByIdOrAliasAsync(batchSummaryAlias);
+
+         Process batchSummaryProcess = null;
+         if (batchSummary != null) {
+            batchSummaryProcess = _taskService.LoadForTask(batchSummary, _logger);
+            if (batchSummaryProcess.Status == 200) {
+               await _taskService.RunAsync(batchSummaryProcess, _logger);
+            }
+         }
+
+         var actionName = HttpContext.Request.Query["ActionName"].ToString();
+         Process bulkActionProcess = null;
+         if (reportProcess.Actions.Any(a => a.Name == actionName)) {
+
+            #region BulkAction
+            var bulkAction = await _taskService.GetByIdOrAliasAsync(actionName);
+
+            if (bulkAction == null) {
+               _logger.Warn(() => $"User {user} requested absent content item {actionName}.");
+               return View("Log", new LogViewModel(_logger.Log, null, null));
+            }
+
+            bulkActionProcess = _taskService.LoadForTask(bulkAction, _logger);
+            if (bulkActionProcess.Status != 200) {
+               _logger.Warn(() => $"User {user} received error trying to load bulk action {bulkAction.DisplayText}.");
+               return View("Log", new LogViewModel(_logger.Log, bulkActionProcess, bulkAction));
+            }
+            #endregion
+         } else {
+            _logger.Warn(() => $"User {user} called missing action {actionName} in {report.DisplayText}.");
+         }
+
+         return View(new BulkActionViewModel(batchSummaryProcess, bulkActionProcess));
       }
 
-      private dynamic ParametersToRouteValues(IDictionary<string,string> parameters) {
+      private dynamic ParametersToRouteValues(IDictionary<string, string> parameters) {
          var routeValues = new ExpandoObject();
          var editable = (ICollection<KeyValuePair<string, object>>)routeValues;
          foreach (var kvp in parameters) {
