@@ -35,8 +35,8 @@ namespace Module.Controllers {
          }
 
          var user = HttpContext.User.Identity.Name ?? "Anonymous";
-
-         var report = await _reportService.Validate(bar.ContentItemId);
+         
+         var report = await _reportService.Validate(new ValidateRequest(bar.ContentItemId));
          if (report.Fails()) {
             return report.ActionResult;
          }
@@ -63,7 +63,7 @@ namespace Module.Controllers {
                { "Description", report.Process.Actions.First(a=>a.Name == bar.ActionName).Description }
             };
 
-            var create = await _taskService.Validate(createAlias, false, createParameters);
+            var create = await _taskService.Validate(new ValidateRequest(createAlias) { Secure = false, InternalParameters = createParameters });
 
             if (create.Fails()) {
                return create.ActionResult;
@@ -95,7 +95,7 @@ namespace Module.Controllers {
                writeParameters[field.Alias] = entity.Rows[0][field.Alias].ToString();
             }
 
-            var write = await _taskService.Validate(writeAlias, false, writeParameters);
+            var write = await _taskService.Validate(new ValidateRequest(writeAlias) { Secure = false, InternalParameters = writeParameters });
 
             if (write.Fails()) {
                return write.ActionResult;
@@ -151,7 +151,7 @@ namespace Module.Controllers {
 
          var user = HttpContext.User.Identity.Name ?? "Anonymous";
 
-         var report = await _reportService.Validate(contentItemId);
+         var report = await _reportService.Validate(new ValidateRequest(contentItemId));
 
          if (report.Fails()) {
             return report.ActionResult;

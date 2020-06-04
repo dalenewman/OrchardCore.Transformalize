@@ -10,4 +10,6 @@ namespace Module.Models {
       public bool Valid { get; set; }
       public bool Fails() => !Valid;
    }
+
+
 }

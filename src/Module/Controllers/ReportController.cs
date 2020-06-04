@@ -9,6 +9,8 @@ using OrchardCore.Title.Models;
 using Transformalize.Configuration;
 using System.Collections.Generic;
 using Module.Services;
+using System.Linq;
+using Module.Models;
 
 namespace Module.Controllers {
    public class ReportController : Controller {
@@ -30,7 +32,7 @@ namespace Module.Controllers {
       [HttpGet]
       public async Task<ActionResult> Index(string contentItemId, bool log = false) {
 
-         var report = await _reportService.Validate(contentItemId);
+         var report = await _reportService.Validate(new ValidateRequest(contentItemId));
 
          if (report.Fails()) {
             return report.ActionResult;
@@ -74,8 +76,10 @@ namespace Module.Controllers {
             return new ContentResult() { Content = process.Serialize(), ContentType = contentType };
          }
 
-         if (_reportService.IsMissingRequiredParameters(process.Parameters)) {
-            _logger.Error(() => "Missing required parameter(s)");
+         if (!process.Parameters.All(p=>p.Valid)) {
+            foreach(var parameter in process.Parameters.Where(p => !p.Valid)) {
+               _logger.Warn(() => parameter.Message);
+            }
             process.Message = "Error";
             process.Status = 500;
             process.Connections.Clear();

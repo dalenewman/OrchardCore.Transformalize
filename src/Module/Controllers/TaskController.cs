@@ -8,6 +8,8 @@ using OrchardCore.ContentManagement;
 using Transformalize.Configuration;
 using System.Collections.Generic;
 using Module.Services;
+using System.Linq;
+using Module.Models;
 
 namespace Module.Controllers {
    public class TaskController : Controller {
@@ -26,7 +28,7 @@ namespace Module.Controllers {
       [HttpGet]
       public async Task<ActionResult> Index(string contentItemId) {
 
-         var task = await _taskService.Validate(contentItemId, true);
+         var task = await _taskService.Validate(new ValidateRequest(contentItemId));
 
          if (task.Fails()) {
             return task.ActionResult;
@@ -67,8 +69,13 @@ namespace Module.Controllers {
 
          var context = new PipelineContext(_logger, process);
 
-         if (_taskService.IsMissingRequiredParameters(process.Parameters)) {
-            context.Error("Missing required parameter(s)");
+         if (!process.Parameters.All(p=>p.Valid)) {
+
+            foreach (var parameter in process.Parameters.Where(p => !p.Valid)) {
+
+               _logger.Warn(() => parameter.Message);
+            }
+
             process.Message = "Error";
             process.Status = 500;
             process.Connections.Clear();

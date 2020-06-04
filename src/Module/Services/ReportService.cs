@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -42,10 +43,6 @@ namespace Module.Services {
          return await _arrangementService.GetByIdOrAliasAsync(idOrAlias);
       }
 
-      public bool IsMissingRequiredParameters(List<Parameter> parameters) {
-         return _arrangementService.IsMissingRequiredParameters(parameters);
-      }
-
       public Process LoadForExport(ContentItem contentItem, CombinedLogger<T> logger) {
          return _loadService.LoadForExport(contentItem, logger);
       }
@@ -62,14 +59,14 @@ namespace Module.Services {
          await _runService.RunAsync(process, logger);
       }
 
-      public async Task<ReportComponents> Validate(string contentItemId) {
+      public async Task<ReportComponents> Validate(ValidateRequest request) {
          var result = new ReportComponents {
-            ContentItem = await GetByIdOrAliasAsync(contentItemId)
+            ContentItem = await GetByIdOrAliasAsync(request.ContentItemId)
          };
          var user = _httpContextAccessor.HttpContext?.User?.Identity?.Name ?? "Anonymous";
 
          if (result.ContentItem == null) {
-            _logger.Warn(() => $"User {user} requested missing content item {contentItemId}.");
+            _logger.Warn(() => $"User {user} requested missing content item {request.ContentItemId}.");
             result.ActionResult = View("Log", new LogViewModel(_logger.Log, null, null));
             return result;
          }
@@ -94,8 +91,10 @@ namespace Module.Services {
             return result;
          }
 
-         if (IsMissingRequiredParameters(result.Process.Parameters)) {
-            _logger.Error(() => $"User {user} is trying to run report {result.ContentItem.DisplayText} without required parameters.");
+         if (!result.Process.Parameters.All(p=>p.Valid)) {
+            foreach (var parameter in result.Process.Parameters.Where(p => !p.Valid)) {
+               _logger.Warn(() => parameter.Message);
+            }
             result.ActionResult = View("Log", new LogViewModel(_logger.Log, result.Process, result.ContentItem));
             return result;
          }
