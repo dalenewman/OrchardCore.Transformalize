@@ -30,31 +30,22 @@ namespace Module.Controllers {
       [HttpGet]
       public async Task<ActionResult> Index(string contentItemId, bool log = false) {
 
-         var contentItem = await _reportService.GetByIdOrAliasAsync(contentItemId);
-         if (contentItem == null) {
-            return NotFound();
+         var report = await _reportService.Validate(contentItemId);
+
+         if (!report.Valid) {
+            return report.ViewResult;
          }
 
-         if (!_reportService.CanAccess(contentItem)) {
-            return View("Log", GetErrorModel(contentItem, "Access Denied."));
+         if (_reportService.IsMissingRequiredParameters(report.Process.Parameters)) {
+            return View(new LogViewModel(_logger.Log, report.Process, report.ContentItem));
          }
 
-         var process = _reportService.LoadForReport(contentItem, _logger);
-
-         if (process.Status != 200) {
-            return View("Log", new LogViewModel(_logger.Log, process, contentItem));
-         }
-
-         if (_reportService.IsMissingRequiredParameters(process.Parameters)) {
-            return View(new LogViewModel(_logger.Log, process, contentItem));
-         }
-
-         await _reportService.RunAsync(process, _logger);
-         if (process.Status != 200) {
-            return View("Log", new LogViewModel(_logger.Log, process, contentItem));
+         await _reportService.RunAsync(report.Process, _logger);
+         if (report.Process.Status != 200) {
+            return View("Log", new LogViewModel(_logger.Log, report.Process, report.ContentItem));
          }
          
-         return log ? View("Log", new LogViewModel(_logger.Log, process, contentItem)) : View(new ReportViewModel(process, contentItem));
+         return log ? View("Log", new LogViewModel(_logger.Log, report.Process, report.ContentItem)) : View(new ReportViewModel(report.Process, report.ContentItem));
 
       }
 
@@ -75,13 +66,12 @@ namespace Module.Controllers {
             return NotFound();
          }
 
-         var contentType = format == "json" ? "application/json" : "application/xml";
-
          if (!_reportService.CanAccess(contentItem)) {
             return Unauthorized();
          }
 
          var process = _reportService.LoadForReport(contentItem, _logger, format);
+         var contentType = format == "json" ? "application/json" : "application/xml";
 
          if (process.Status != 200) {
             process.Connections.Clear();

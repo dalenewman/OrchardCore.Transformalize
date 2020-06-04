@@ -2,7 +2,6 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Module.Services.Contracts;
 using Module.ViewModels;
-using OrchardCore.ContentManagement;
 using System.Collections.Generic;
 using Module.Models;
 using System.Linq;
@@ -36,34 +35,16 @@ namespace Module.Controllers {
          }
 
          var user = HttpContext.User.Identity.Name ?? "Anonymous";
-         var report = await _reportService.GetByIdOrAliasAsync(bar.ContentItemId);
 
-         if (report == null) {
-            _logger.Warn(() => $"User {user} requested absent content item {bar.ContentItemId}.");
-            return View("Log", new LogViewModel(_logger.Log, null, null));
-         }
-
-         if (!_reportService.CanAccess(report)) {
-            _logger.Warn(() => $"User {user} is unauthorized to access {report.DisplayText}.");
-            return View("Log", new LogViewModel(_logger.Log, null, null));
-         }
-
-         var part = report.ContentItem.As<TransformalizeReportPart>();
-         if (part == null) {
-            _logger.Warn(() => $"User {user} requested incompatible content type {report.DisplayText}.");
-            return BadRequest();
-         }
-
-         var reportProcess = _reportService.LoadForReport(report, _logger);
-         if (reportProcess.Status != 200) {
-            _logger.Warn(() => $"User {user} received error trying to load report {report.DisplayText}.");
-            return View("Log", new LogViewModel(_logger.Log, reportProcess, report));
+         var report = await _reportService.Validate(bar.ContentItemId);
+         if (!report.Valid) {
+            return report.ViewResult;
          }
 
          var referrer = Request.Headers.ContainsKey("Referer") ? Request.Headers["Referer"].ToString() : Url.Action("Index", "Report", new { bar.ContentItemId });
 
          // confirm we have an action registered in the report
-         if (reportProcess.Actions.Any(a => a.Name == bar.ActionName)) {
+         if (report.Process.Actions.Any(a => a.Name == bar.ActionName)) {
 
             #region the bulk action in question (not doing anything yet)
             var bulkAction = await _taskService.GetByIdOrAliasAsync(bar.ActionName);
@@ -77,9 +58,9 @@ namespace Module.Controllers {
             #region batch creation
             var batchCreateAlias = "batch-create";
             var batchCreateParameters = new Dictionary<string, string> {
-               { "ReportId", report.Id.ToString() },
+               { "ReportId", report.ContentItem.Id.ToString() },
                { "TaskId", bulkAction.Id.ToString() },
-               { "Description", reportProcess.Actions.First(a=>a.Name == bar.ActionName).Description }
+               { "Description", report.Process.Actions.First(a=>a.Name == bar.ActionName).Description }
             };
             var batchCreate = await _taskService.GetByIdOrAliasAsync(batchCreateAlias);
             if (batchCreate == null) {
@@ -133,12 +114,12 @@ namespace Module.Controllers {
             }
 
             if (bar.ActionCount == 0) {
-               var batchProcess = _reportService.LoadForBatch(report, _logger);
+               var batchProcess = _reportService.LoadForBatch(report.ContentItem, _logger);
 
                await _taskService.RunAsync(batchProcess, _logger);
                foreach (var batchRow in batchProcess.Entities.First().Rows) {
                   var row = new Transformalize.Impl.CfgRow(new[] { batchValueField.Alias });
-                  row[batchValueField.Alias] = batchRow[part.BulkActionValueField.Text];
+                  row[batchValueField.Alias] = batchRow[report.Part.BulkActionValueField.Text];
                   writeEntity.Rows.Add(row);
                }
             } else {
@@ -157,10 +138,10 @@ namespace Module.Controllers {
             return RedirectToAction("Review", ParametersToRouteValues(batchWriteParameters));
 
          } else {
-            _logger.Warn(() => $"User {user} called missing action {bar.ActionName} in {report.DisplayText}.");
+            _logger.Warn(() => $"User {user} called missing action {bar.ActionName} in {report.ContentItem.DisplayText}.");
          }
 
-         return View("Log", new LogViewModel(_logger.Log, reportProcess, report));
+         return View("Log", new LogViewModel(_logger.Log, report.Process, report.ContentItem));
 
       }
 
@@ -172,30 +153,12 @@ namespace Module.Controllers {
          }
 
          var user = HttpContext.User.Identity.Name ?? "Anonymous";
-         var report = await _reportService.GetByIdOrAliasAsync(contentItemId);
 
-         if (report == null) {
-            _logger.Warn(() => $"User {user} requested absent content item {contentItemId}.");
-            return View("Log", new LogViewModel(_logger.Log, null, null));
+         var report = await _reportService.Validate(contentItemId);
+
+         if (!report.Valid) {
+            return report.ViewResult;
          }
-
-         if (!_reportService.CanAccess(report)) {
-            _logger.Warn(() => $"User {user} is unauthorized to access {report.DisplayText}.");
-            return View("Log", new LogViewModel(_logger.Log, null, null));
-         }
-
-         var part = report.ContentItem.As<TransformalizeReportPart>();
-         if (part == null) {
-            _logger.Warn(() => $"User {user} requested incompatible content type {report.DisplayText}.");
-            return BadRequest();
-         }
-
-         var reportProcess = _reportService.LoadForReport(report, _logger);
-         if (reportProcess.Status != 200) {
-            _logger.Warn(() => $"User {user} received error trying to load report {report.DisplayText}.");
-            return View("Log", new LogViewModel(_logger.Log, reportProcess, report));
-         }
-
 
          var batchSummaryAlias = "batch-summary";
          var batchSummary = await _taskService.GetByIdOrAliasAsync(batchSummaryAlias);
@@ -210,7 +173,7 @@ namespace Module.Controllers {
 
          var actionName = HttpContext.Request.Query["ActionName"].ToString();
          Process bulkActionProcess = null;
-         if (reportProcess.Actions.Any(a => a.Name == actionName)) {
+         if (report.Process.Actions.Any(a => a.Name == actionName)) {
 
             #region BulkAction
             var bulkAction = await _taskService.GetByIdOrAliasAsync(actionName);
@@ -227,7 +190,7 @@ namespace Module.Controllers {
             }
             #endregion
          } else {
-            _logger.Warn(() => $"User {user} called missing action {actionName} in {report.DisplayText}.");
+            _logger.Warn(() => $"User {user} called missing action {actionName} in {report.ContentItem.DisplayText}.");
          }
 
          return View(new BulkActionViewModel(batchSummaryProcess, bulkActionProcess));
@@ -242,5 +205,6 @@ namespace Module.Controllers {
          dynamic d = routeValues;
          return d;
       }
+
    }
 }
