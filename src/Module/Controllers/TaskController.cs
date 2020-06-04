@@ -26,31 +26,18 @@ namespace Module.Controllers {
       [HttpGet]
       public async Task<ActionResult> Index(string contentItemId) {
 
-         var contentItem = await _taskService.GetByIdOrAliasAsync(contentItemId);
-         if (contentItem == null) {
-            return NotFound();
+         var task = await _taskService.Validate(contentItemId, true);
+
+         if (task.Fails()) {
+            return task.ActionResult;
          }
 
-         if (!_taskService.CanAccess(contentItem)) {
-            return View(GetErrorModel(contentItem, "Access Denied."));
+         await _taskService.RunAsync(task.Process, _logger);
+         if (task.Process.Status != 200) {
+            return View("Log", new LogViewModel(_logger.Log, task.Process, task.ContentItem));
          }
 
-         var process = _taskService.LoadForTask(contentItem, _logger);
-
-         if (process.Status != 200) {
-            return View("Log", new LogViewModel(_logger.Log, process, contentItem));
-         }
-
-         if (_taskService.IsMissingRequiredParameters(process.Parameters)) {
-            return View("Log", new LogViewModel(_logger.Log, process, contentItem));
-         }
-
-         await _taskService.RunAsync(process, _logger);
-         if (process.Status != 200) {
-            return View("Log", new LogViewModel(_logger.Log, process, contentItem));
-         }
-
-         return View("Log", new LogViewModel(_logger.Log, process, contentItem));
+         return View("Log", new LogViewModel(_logger.Log, task.Process, task.ContentItem));
 
       }
 

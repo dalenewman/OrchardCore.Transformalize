@@ -37,8 +37,8 @@ namespace Module.Controllers {
          var user = HttpContext.User.Identity.Name ?? "Anonymous";
 
          var report = await _reportService.Validate(bar.ContentItemId);
-         if (!report.Valid) {
-            return report.ViewResult;
+         if (report.Fails()) {
+            return report.ActionResult;
          }
 
          var referrer = Request.Headers.ContainsKey("Referer") ? Request.Headers["Referer"].ToString() : Url.Action("Index", "Report", new { bar.ContentItemId });
@@ -56,61 +56,58 @@ namespace Module.Controllers {
             #endregion
 
             #region batch creation
-            var batchCreateAlias = "batch-create";
-            var batchCreateParameters = new Dictionary<string, string> {
+            var createAlias = "batch-create";
+            var createParameters = new Dictionary<string, string> {
                { "ReportId", report.ContentItem.Id.ToString() },
                { "TaskId", bulkAction.Id.ToString() },
                { "Description", report.Process.Actions.First(a=>a.Name == bar.ActionName).Description }
             };
-            var batchCreate = await _taskService.GetByIdOrAliasAsync(batchCreateAlias);
-            if (batchCreate == null) {
-               _logger.Warn(() => $"User {user} requested absent content item {batchCreateAlias}.");
-               return NotFound();
-            }
-            var batchCreateProcess = _taskService.LoadForTask(batchCreate, _logger, batchCreateParameters);
-            if (batchCreateProcess.Status != 200) {
-               _logger.Warn(() => $"User {user} received error trying to load bulk action {batchCreateAlias}.");
-               return View("Log", new LogViewModel(_logger.Log, batchCreateProcess, batchCreate));
-            }
-            await _taskService.RunAsync(batchCreateProcess, _logger);
-            if (batchCreateProcess.Status != 200) {
-               _logger.Warn(() => $"User {user} received error running action {batchCreateAlias}.");
-               return View("Log", new LogViewModel(_logger.Log, batchCreateProcess, batchCreate));
+
+            var create = await _taskService.Validate(createAlias, false, createParameters);
+
+            if (create.Fails()) {
+               return create.ActionResult;
             }
 
-            var entity = batchCreateProcess.Entities.FirstOrDefault();
+            await _taskService.RunAsync(create.Process, _logger);
+            if (create.Process.Status != 200) {
+               _logger.Warn(() => $"User {user} received error running action {createAlias}.");
+               return View("Log", new LogViewModel(_logger.Log, create.Process, create.ContentItem));
+            }
+
+            var entity = create.Process.Entities.FirstOrDefault();
 
             if (entity == null) {
-               _logger.Error(() => $"The {batchCreateAlias} bulk action is missing an entity.");
-               return View("Log", new LogViewModel(_logger.Log, batchCreateProcess, batchCreate));
+               _logger.Error(() => $"The {createAlias} bulk action is missing an entity.");
+               return View("Log", new LogViewModel(_logger.Log, create.Process, create.ContentItem));
             }
 
             if (!entity.Rows.Any()) {
-               _logger.Error(() => $"The {batchCreateAlias} bulk action didn't produce a batch record.");
-               return View("Log", new LogViewModel(_logger.Log, batchCreateProcess, batchCreate));
+               _logger.Error(() => $"The {createAlias} bulk action didn't produce a batch record.");
+               return View("Log", new LogViewModel(_logger.Log, create.Process, create.ContentItem));
             }
             #endregion
 
             #region batch writing
-            var batchWriteAlias = "batch-write";
-            var batchWriteParameters = new Dictionary<string, string>();
+            var writeAlias = "batch-write";
+            var writeParameters = new Dictionary<string, string>();
             foreach (var field in entity.GetAllOutputFields()) {
-               batchWriteParameters[field.Alias] = entity.Rows[0][field.Alias].ToString();
+               writeParameters[field.Alias] = entity.Rows[0][field.Alias].ToString();
             }
-            var batchWrite = await _taskService.GetByIdOrAliasAsync(batchWriteAlias);
-            var batchWriteProcess = _taskService.LoadForTask(batchWrite, _logger, batchWriteParameters);
-            if (batchWriteProcess.Status != 200) {
-               _logger.Warn(() => $"User {user} received error trying to load bulk action {batchWriteAlias}.");
-               return View("Log", new LogViewModel(_logger.Log, batchWriteProcess, batchWrite));
+
+            var write = await _taskService.Validate(writeAlias, false, writeParameters);
+
+            if (write.Fails()) {
+               return write.ActionResult;
             }
 
             // potential memory problem (could be solved by merging report and batch write into one process)
-            var writeEntity = batchWriteProcess.Entities.First();
+            var writeEntity = write.Process.Entities.First();
             var batchValueField = writeEntity.Fields.LastOrDefault(f => f.Input && f.Output);
 
             if (batchValueField == null) {
-               _logger.Error(() => $"Could not identify batch value field in {batchWriteAlias}.");
-               return View("Log", new LogViewModel(_logger.Log, batchWriteProcess, batchWrite));
+               _logger.Error(() => $"Could not identify batch value field in {writeAlias}.");
+               return View("Log", new LogViewModel(_logger.Log, write.Process, write.ContentItem));
             }
 
             if (bar.ActionCount == 0) {
@@ -130,12 +127,12 @@ namespace Module.Controllers {
                }
             }
 
-            await _taskService.RunAsync(batchWriteProcess, _logger);
+            await _taskService.RunAsync(write.Process, _logger);
             #endregion
 
-            batchWriteParameters.Add("ContentItemId", bar.ContentItemId);
-            batchWriteParameters.Add("ActionName", bar.ActionName);
-            return RedirectToAction("Review", ParametersToRouteValues(batchWriteParameters));
+            writeParameters.Add("ContentItemId", bar.ContentItemId);
+            writeParameters.Add("ActionName", bar.ActionName);
+            return RedirectToAction("Review", ParametersToRouteValues(writeParameters));
 
          } else {
             _logger.Warn(() => $"User {user} called missing action {bar.ActionName} in {report.ContentItem.DisplayText}.");
@@ -156,8 +153,8 @@ namespace Module.Controllers {
 
          var report = await _reportService.Validate(contentItemId);
 
-         if (!report.Valid) {
-            return report.ViewResult;
+         if (report.Fails()) {
+            return report.ActionResult;
          }
 
          var batchSummaryAlias = "batch-summary";

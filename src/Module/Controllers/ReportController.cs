@@ -32,12 +32,8 @@ namespace Module.Controllers {
 
          var report = await _reportService.Validate(contentItemId);
 
-         if (!report.Valid) {
-            return report.ViewResult;
-         }
-
-         if (_reportService.IsMissingRequiredParameters(report.Process.Parameters)) {
-            return View(new LogViewModel(_logger.Log, report.Process, report.ContentItem));
+         if (report.Fails()) {
+            return report.ActionResult;
          }
 
          await _reportService.RunAsync(report.Process, _logger);

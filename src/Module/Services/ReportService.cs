@@ -70,27 +70,33 @@ namespace Module.Services {
 
          if (result.ContentItem == null) {
             _logger.Warn(() => $"User {user} requested missing content item {contentItemId}.");
-            result.ViewResult = View("Log", new LogViewModel(_logger.Log, null, null));
+            result.ActionResult = View("Log", new LogViewModel(_logger.Log, null, null));
             return result;
          }
 
          if (!CanAccess(result.ContentItem)) {
             _logger.Warn(() => $"User {user} is may not access {result.ContentItem.DisplayText}.");
-            result.ViewResult = View("Log", new LogViewModel(_logger.Log, null, null));
+            result.ActionResult = View("Log", new LogViewModel(_logger.Log, null, null));
             return result;
          }
 
          result.Part = result.ContentItem.As<TransformalizeReportPart>();
          if (result.Part == null) {
             _logger.Warn(() => $"User {user} requested incompatible content type for {result.ContentItem.DisplayText}.");
-            result.ViewResult = View("Log", new LogViewModel(_logger.Log, null, null));
+            result.ActionResult = View("Log", new LogViewModel(_logger.Log, null, null));
             return result;
          }
 
          result.Process = LoadForReport(result.ContentItem, _logger);
          if (result.Process.Status != 200) {
             _logger.Warn(() => $"User {user} received error trying to load report {result.ContentItem.DisplayText}.");
-            result.ViewResult = View("Log", new LogViewModel(_logger.Log, result.Process, result.ContentItem));
+            result.ActionResult = View("Log", new LogViewModel(_logger.Log, result.Process, result.ContentItem));
+            return result;
+         }
+
+         if (IsMissingRequiredParameters(result.Process.Parameters)) {
+            _logger.Error(() => $"User {user} is trying to run report {result.ContentItem.DisplayText} without required parameters.");
+            result.ActionResult = View("Log", new LogViewModel(_logger.Log, result.Process, result.ContentItem));
             return result;
          }
 
