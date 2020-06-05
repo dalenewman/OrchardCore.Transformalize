@@ -35,7 +35,7 @@ namespace Module.Services {
             }
          }
 
-         if (_context.Request.HasFormContentType && _context.Request.Form[name].ToString() != null) {
+         if (_context.Request.HasFormContentType && _context.Request.Form[name].ToString() != string.Empty) {
             try {
                var formValue = (T)tc.ConvertFromString(_context.Request.Form[name]);
                if (formValue != null) {

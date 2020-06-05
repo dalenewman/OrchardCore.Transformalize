@@ -47,14 +47,15 @@ namespace Module.Services {
       }
 
       public void SetupInvalidParametersResponse<T>(TransformalizeRequest request, TransformalizeResponse<T> response) {
+         response.Process.Status = 422;
+         response.Process.Message = "Parameter Validation Failed";
          if (request.Format == null) {
             foreach (var parameter in response.Process.Parameters.Where(p => !p.Valid)) {
                _logger.Warn(() => parameter.Message);
             }
             response.ActionResult = LogResult(response);
          } else {
-            response.Process.Status = 422;
-            response.Process.Message = "Parameter Validation Failed";
+
             response.Process.Connections.Clear();
             response.Process.Log.AddRange(_logger.Log);
             response.ActionResult = ContentResult(request, response);

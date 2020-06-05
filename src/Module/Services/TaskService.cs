@@ -48,7 +48,6 @@ namespace Module.Services {
          var response = new TransformalizeResponse<TransformalizeTaskPart>(request.Format) {
             ContentItem = await GetByIdOrAliasAsync(request.ContentItemId)
          };
-         var user = _httpContextAccessor.HttpContext?.User?.Identity?.Name ?? "Anonymous";
 
          if (response.ContentItem == null) {
             SetupNotFoundResponse(request, response);

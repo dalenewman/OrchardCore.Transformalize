@@ -35,7 +35,7 @@ namespace Module.Controllers {
          }
 
          var user = HttpContext.User.Identity.Name ?? "Anonymous";
-         
+
          var report = await _reportService.Validate(new TransformalizeRequest(bar.ContentItemId, user));
          if (report.Fails()) {
             return report.ActionResult;
@@ -142,7 +142,6 @@ namespace Module.Controllers {
 
       }
 
-      [HttpGet]
       public async Task<ActionResult> Review(string contentItemId) {
 
          if (HttpContext == null || HttpContext.User == null || HttpContext.User.Identity == null || !HttpContext.User.Identity.IsAuthenticated) {
@@ -169,28 +168,18 @@ namespace Module.Controllers {
          }
 
          var actionName = HttpContext.Request.Query["ActionName"].ToString();
-         Process bulkActionProcess = null;
-         if (report.Process.Actions.Any(a => a.Name == actionName)) {
 
-            #region BulkAction
-            var bulkAction = await _taskService.GetByIdOrAliasAsync(actionName);
+         var bulkAction = await _taskService.Validate(new TransformalizeRequest(actionName, user));
 
-            if (bulkAction == null) {
-               _logger.Warn(() => $"User {user} requested absent content item {actionName}.");
-               return View("Log", new LogViewModel(_logger.Log, null, null));
-            }
-
-            bulkActionProcess = _taskService.LoadForTask(bulkAction);
-            if (bulkActionProcess.Status != 200) {
-               _logger.Warn(() => $"User {user} received error trying to load bulk action {bulkAction.DisplayText}.");
-               return View("Log", new LogViewModel(_logger.Log, bulkActionProcess, bulkAction));
-            }
-            #endregion
-         } else {
-            _logger.Warn(() => $"User {user} called missing action {actionName} in {report.ContentItem.DisplayText}.");
+         if (bulkAction.Fails() && bulkAction.Process.Message != "Parameter Validation Failed") {
+            return bulkAction.ActionResult;
          }
 
-         return View(new BulkActionViewModel(batchSummaryProcess, bulkActionProcess));
+         // because they will need to come back to review page after validating their parameters
+         bulkAction.Process.Parameters.Add(new Parameter() { Name = "ActionName", Value = actionName });
+         bulkAction.Process.Parameters.Add(new Parameter() { Name = "ContentItemId", Value = contentItemId });
+
+         return View(new BulkActionViewModel(batchSummaryProcess, bulkAction.Process));
       }
 
       private dynamic ParametersToRouteValues(IDictionary<string, string> parameters) {

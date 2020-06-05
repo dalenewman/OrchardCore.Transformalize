@@ -1,0 +1,381 @@
+@model BulkActionViewModel
+@using Microsoft.Extensions.DependencyInjection;
+@using Microsoft.AspNetCore.Authorization
+@using Module.Ext
+@using Module 
+
+@{
+   var auth = Context.RequestServices.GetService<IAuthorizationService>();
+   var title = Model.Summary.Entities[0].Rows[0]["Description"];
+}
+
+<h2>@title</h2>
+
+<!-- parameter attributes that probably need to be added
+   Hint
+   PostBack
+   InputType
+   InputAccept
+   InputCapture
+   Class (css class)
+   Length
+   IsDecimalType
+   Precision
+   Scale
+-->
+
+<form id="id_form" asp-area="@(Common.ModuleName)" asp-controller="BulkAction" asp-action="Review" method="post" role="form" enctype="multipart/form-data">
+
+   <input type="hidden" id="id_focus" name="Orchard.Focus" value="@(Model.Task.Parameters.FirstOrDefault(p=>p.Prompt && !p.Valid)?.Name ?? string.Empty)" />
+
+   @foreach (var parameter in Model.Task.Parameters.Where(p => !p.Prompt)) {
+      <input type="hidden" name="@parameter.Name" value="@parameter.Value" />
+   }
+
+   @foreach (var parameter in Model.Task.Parameters.Where(p => p.Prompt)) {
+
+      var value = parameter.Value ?? string.Empty as object;
+
+      var map = Model.Task.Maps.FirstOrDefault(m => m.Name == parameter.Map);
+      if (map != null) {
+
+         <div class="form-group @(parameter.Valid ? string.Empty : "has-error")">
+            <label for="@parameter.Name">@parameter.Label</label>
+            @*<br /><span class="text-muted">parameter.Hint</span>*@
+            @if (map.Items.All(i => !i.To.Equals(value))) {
+               value = map.Items.First().To;
+            }
+            @if (map.Items.Count > 3) {
+               <select class="form-control"
+                       name="@parameter.Name"
+                       id="id_@parameter.Name"
+                       data-tfl-post-back="true">
+                  @foreach (var item in map.Items) {
+                     <option value="@item.To" selected="@(value.Equals(item.To))">@item.From</option>
+                  }
+               </select>
+            } else {
+               if (map.Items.Count > 2) {
+                  foreach (var item in map.Items) {
+                     <div class="radio">
+                        <label><input type="radio" name="@parameter.Name" value="@item.To" checked="@(value.Equals(item.To))" data-tfl-post-back="true" />@item.From</label>
+                     </div>
+                  }
+               } else {
+                  <br />
+                  foreach (var item in map.Items) {
+                     <label class="radio-inline"><input type="radio" name="@parameter.Name" value="@item.To" checked="@(value.Equals(item.To))" data-tfl-post-back="true" /> &nbsp;@item.From</label>
+                  }
+               }
+            }
+            @* if you change markup location you must update parsley error container *@
+            <span class="help-container">
+               @if (!parameter.Valid) {
+                  <span class="help-block">@(parameter.Message.Replace('|', ' '))</span>
+               }
+            </span>
+         </div>
+
+      } else {
+         //var type = parameter.InputType == "defer" ? parameter.Type : parameter.InputType;
+         var type = parameter.Type;
+         switch (type) {
+            case "bool":
+            case "boolean":
+               <div class="@(parameter.Valid ? string.Empty : "has-error")">
+                  <div class="checkbox">
+                     <label for="@parameter.Name">
+                        <input name="@parameter.Name"
+                               id="id_@parameter.Name"
+                               type="checkbox"
+                               checked="@((bool)value)"
+                               data-tfl-post-back="true" /> @parameter.Label
+                           </label>
+                        </div>
+                     </div>
+                     break;
+                  case "date":
+                     <div class="form-group @(parameter.Valid ? string.Empty : "has-error")">
+                        <label for="@parameter.Name">@parameter.Label</label>
+                        @*<br /><span class="text-muted">parameter.Hint</span>*@
+                        <div class="input-group">
+                           <div class="input-group-addon" id="id_dp_@parameter.Name" style="cursor: pointer;">
+                              <span class="glyphicon glyphicon-calendar"></span>
+                           </div>
+                           <input type="text"
+                                  class="form-control"
+                                  @*maxlength="@parameter.Length"*@
+                                  name="@parameter.Name"
+                                  id="id_@parameter.Name"
+                                  placeholder="@parameter.Label"
+                                  value="@value"
+                                  data-tfl-post-back="true"
+                                  @Html.Raw(parameter.ToParsley()) />
+                           <script language="javascript">
+                           $(document).ready(function () {
+                              var input = $('#id_@parameter.Name').pickadate({ editable: true, format: 'yyyy-mm-dd' });
+                              var picker = input.pickadate('picker');
+                              $('#id_@parameter.Name').off('click');
+                              $('#id_dp_@parameter.Name').click(function (e) {
+                                    // stop the click from bubbling
+                                    e.stopPropagation();
+                                    // prevent the default click action
+                                    e.preventDefault();
+                                    // open the date picker
+                                    if (picker.get('open')) {
+                                       picker.close()
+                                    } else {
+                                    picker.open()
+                                    }
+                              });
+                           });
+                           </script>
+                        </div>
+                        @* if you change markup location you must update parsley error container *@
+                        <span class="help-container">
+                           @if (!parameter.Valid) {
+                              <span class="help-block">@(parameter.Message.Replace('|', ' '))</span>
+                           }
+                        </span>
+
+                     </div>
+                     break;
+                  case "time":
+                     <div class="form-group @(parameter.Valid ? string.Empty : "has-error")">
+                        <label for="@parameter.Name">@parameter.Label</label>
+                        @*<br /><span class="text-muted">parameter.Hint</span>*@
+                        <div class="input-group">
+                           <div class="input-group-addon" id="id_dp_@parameter.Name" style="cursor: pointer;">
+                              <span class="glyphicon glyphicon-time"></span>
+                           </div>
+                           <input type="time"
+                                  class="form-control"
+                                  @*maxlength="@parameter.Length"*@
+                                  name="@parameter.Name"
+                                  id="id_@parameter.Name"
+                                  placeholder="@parameter.Label"
+                                  value="@value"
+                                  data-tfl-post-back="true"
+                                  @Html.Raw(parameter.ToParsley()) />
+                           <script language="javascript">
+                              $(document).ready(function () {
+                                 // plugin code goes here
+                              });
+                           </script>
+                        </div>
+                        @* if you change markup location you must update parsley error container *@
+                        <span class="help-container">
+                           @if (!parameter.Valid) {
+                              <span class="help-block">@(parameter.Message.Replace('|', ' '))</span>
+                           }
+                        </span>
+
+                     </div>
+                     break;
+                  case "file":
+
+                     var file = "x"; // Model.GetFile(field, value);
+
+                     @* if change this markup you'll need to update filehandler jquery selectors *@
+                     <div class="form-group @(parameter.Valid ? string.Empty : "has-error")">
+
+                        <label for="@parameter.Name">@parameter.Label</label>
+                        @*@if (parameter.Hint != string.Empty) {
+                              <br /><span class="text-muted">@parameter.Hint</span>
+                           }*@
+
+                        <div id="id_@(parameter.Name)" class="file-options">
+                           <div class="has-file" style="@(file == null ? "display:none" : string.Empty)">
+                              <div class="input-group">
+                                 <div class="input-group-addon removeButton" style="cursor: pointer;">
+                                    <span class="glyphicon glyphicon-remove"></span>
+                                 </div>
+                                 <input type="text"
+                                        class="form-control"
+                                        name="@parameter.Name"
+                                        id="id_@parameter.Name"
+                                        disabled="@(file == null)"
+                                        data-tfl-post-back="false"
+                                        @*value="@(file == null ? string.Empty : file.OriginalName)"*@
+                                        value="x"
+                                        readonly="readonly" />
+                              </div>
+                           </div>
+                           <div class="expecting-file" style="@(file == null ? string.Empty: "display:none")">
+                              <table>
+                                 <tr>
+                                    <td style="width:auto;">
+                                       <span class="btn btn-primary btn-sm fileinput-button">
+                                          <i class="glyphicon glyphicon-plus"></i>
+                                          <span>Upload</span>
+                                          <input name="@(parameter.Name)"
+                                                 type="file"
+                                                 class="form-control"
+                                                 data-tfl-post-back="false"
+                                                 disabled="@(file != null)"
+                                                 @*@(Html.Raw(parameter.InputAccept == string.Empty ? string.Empty : "accept=\"" + parameter.InputAccept + "\""))
+                                                 @(Html.Raw(parameter.InputCapture == string.Empty ? string.Empty : "capture=\"" + parameter.InputCapture + "\""))*@ />
+                                       </span>
+                                    </td>
+                                    <td style="width:100%;">
+                                       <div class="progress">
+                                          <div class="progress-bar progress-bar-striped progress-bar-success"></div>
+                                       </div>
+                                    </td>
+                                 </tr>
+
+                              </table>
+                           </div>
+                        </div>
+
+                        <span class="help-container">
+                           @if (!parameter.Valid) {
+                              <span class="help-block">@(parameter.Message.Replace('|', ' '))</span>
+                           }
+                        </span>
+                        <input type="hidden"
+                               name="@(parameter.Name)_Old"
+                               id="id_@(parameter.Name)_Old"
+                               @*value="@(string.IsNullOrEmpty(Request.Form[parameter.Name + "_Old"]) ? (file == null ? string.Empty : file.Id.ToString()) : Request.Form[parameter.Name + "_Old"])"*@
+                               value="x"
+                               @Html.Raw(parameter.ToParsley()) />
+                        <script language="javascript">$(document).ready(function () { fileHandler('@parameter.Name',false); });</script>
+                     </div>
+
+                     break;
+                  case "scan":
+
+                     var hasScan = value != null && value.ToString() != string.Empty;
+
+                     @* if change this markup you'll need to update filehandler jquery selectors *@
+                     <div class="form-group @(parameter.Valid ? string.Empty : "has-error")">
+
+                        <label for="@parameter.Name">@parameter.Label</label>
+                        @*@if (parameter.Hint != string.Empty) {
+                              <br /><span class="text-muted">@parameter.Hint</span>
+                           }*@
+
+                        <div id="id_@(parameter.Name)" class="file-options">
+                           <div class="has-file" style="@(hasScan ? string.Empty : "display:none")">
+                              <div class="input-group">
+                                 <div class="input-group-addon removeButton" style="cursor: pointer;">
+                                    <span class="glyphicon glyphicon-remove"></span>
+                                 </div>
+                                 <input type="text"
+                                        class="form-control"
+                                        name="@parameter.Name"
+                                        id="id_@parameter.Name"
+                                        data-tfl-post-back="false"
+                                        value="@(hasScan ? value : string.Empty)"
+                                        @Html.Raw(parameter.ToParsley()) />
+                              </div>
+                           </div>
+                           <div class="expecting-file" style="@(hasScan ? "display:none" : string.Empty)">
+                              <table>
+                                 <tr>
+                                    <td style="width:auto;">
+                                       <span class="btn btn-warning btn-sm fileinput-button">
+                                          <i class="glyphicon glyphicon glyphicon-barcode"></i>
+                                          <span> Scan </span>
+                                          <input name="@(parameter.Name)"
+                                                 type="file"
+                                                 class="form-control"
+                                                 data-tfl-post-back="false"
+                                                 disabled="@(hasScan)"
+                                                 accept="image/*"
+                                                 @*@(Html.Raw(field.InputCapture == string.Empty ? string.Empty : "capture=\"" + field.InputCapture + "\""))*@ />
+                                       </span>
+                                    </td>
+                                    <td style="width:100%;">
+                                       <div class="progress">
+                                          <div class="progress-bar progress-bar-striped progress-bar-success"></div>
+                                       </div>
+                                    </td>
+                                 </tr>
+                              </table>
+                           </div>
+                        </div>
+
+                        <span class="help-container">
+                           @if (!parameter.Valid) {
+                              <span class="help-block">@(parameter.Message.Replace('|', ' '))</span>
+                           }
+                        </span>
+                        <script language="javascript">$(document).ready(function () { fileHandler('@parameter.Name',true); });</script>
+                     </div>
+
+                     break;
+
+                  default:
+                     int length;
+                     <div class="form-group @(parameter.Valid ? string.Empty : "has-error")">
+                        <label for="@parameter.Name">@parameter.Label</label>
+                        @*@if (parameter.Hint != string.Empty) {
+                              <br /><span class="text-muted">@parameter.Hint</span>
+                           }*@
+                        @*@if (parameter.UseTextArea(out length)) {
+                              <textarea class="form-control"
+                                        name="@parameter.Name"
+                                        id="id_@parameter.Name"
+                                        rows="3"
+                                        placeholder="@parameter.Label"
+                                        maxlength="@length"
+                                        data-tfl-post-back="true"
+                                        @Html.Raw(parameter.ToParsley())>@value.ToString().Trim()</textarea>
+                           } else {*@
+                        @switch (type) {
+                           case "number":
+                              <input type="number"
+                                     class="form-control"
+                                     @*maxlength="@parameter.Length"*@
+                                     name="@parameter.Name"
+                                     id="id_@parameter.Name"
+                                     placeholder="@parameter.Label"
+                                     value="@value"
+                                     data-tfl-post-back="true"
+                                     @*@(Html.Raw(parameter.IsDecimalType() ? string.Format("step=\"{0}\"", ".".PadRight(parameter.Scale - 1, '0') + "1") : string.Empty))*@
+                                     @Html.Raw(parameter.ToParsley()) />
+                              break;
+                           default:
+                              <input type="text"
+                                     class="form-control"
+                                     @*maxlength="@parameter.Length"*@
+                                     name="@parameter.Name"
+                                     id="id_@parameter.Name"
+                                     placeholder="@parameter.Label"
+                                     value="@value"
+                                     data-tfl-post-back="false"
+                                     @Html.Raw(parameter.ToParsley()) />
+                              break;
+                        }
+
+                        @*}*@
+                        @* if you change location you must update parsley error container *@
+                        <span class="help-container">
+                           @if (!parameter.Valid) {
+                              <span class="help-block">@(parameter.Message.Replace('|', ' '))</span>
+                           }
+                        </span>
+
+                     </div>
+                     break;
+               }
+            }
+         }
+
+
+
+   <input name="Orchard.Submit" id="id_submit" type="submit" value="Submit" class="btn btn-primary btn-block" />
+
+</form>
+
+
+
+
+
+
+
+
+
+
+
