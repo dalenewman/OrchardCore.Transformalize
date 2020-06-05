@@ -1,10 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.ModelBinding;
-using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Module.Models;
 using Module.Services.Contracts;
-using Module.ViewModels;
 using OrchardCore.ContentManagement;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,14 +10,14 @@ using Transformalize.Configuration;
 namespace Module.Services {
    public class TaskService<T> : ITaskService<T> {
 
-      private readonly IArrangementService _arrangementService;
+      private readonly IArrangementService<T> _arrangementService;
       private readonly IArrangementLoadService<T> _loadService;
       private readonly IArrangementRunService<T> _runService;
       private readonly IHttpContextAccessor _httpContextAccessor;
       private readonly CombinedLogger<T> _logger;
 
       public TaskService(
-         IArrangementService arrangementService, 
+         IArrangementService<T> arrangementService, 
          IArrangementLoadService<T> loadService,
          IHttpContextAccessor httpContextAccessor,
          IArrangementRunService<T> runService,
@@ -50,51 +46,56 @@ namespace Module.Services {
          await _runService.RunAsync(process, logger);
       }
 
-      public async Task<TaskComponents> Validate(ValidateRequest request) {
+      public async Task<TransformalizeResponse<TransformalizeTaskPart>> Validate(TransformalizeRequest request) {
 
-         var result = new TaskComponents {
+         var response = new TransformalizeResponse<TransformalizeTaskPart>(request.Format) {
             ContentItem = await GetByIdOrAliasAsync(request.ContentItemId)
          };
          var user = _httpContextAccessor.HttpContext?.User?.Identity?.Name ?? "Anonymous";
 
-         if (result.ContentItem == null) {
-            _logger.Warn(() => $"User {user} requested missing content item {request.ContentItemId}.");
-            result.ActionResult = View("Log", new LogViewModel(_logger.Log, null, null));
-            return result;
+         if (response.ContentItem == null) {
+            SetupNotFoundResponse(request, response);
+            return response;
          }
 
-         if (request.Secure && !CanAccess(result.ContentItem)) {
-            _logger.Warn(() => $"User {user} is may not access {result.ContentItem.DisplayText}.");
-            result.ActionResult = View("Log", new LogViewModel(_logger.Log, null, null));
-            return result;
+         if (request.Secure && !CanAccess(response.ContentItem)) {
+            SetupPermissionsResponse(request, response);
+            return response;
          }
 
-         result.Process = LoadForTask(result.ContentItem, _logger, request.InternalParameters);
-         if (result.Process.Status != 200) {
-            _logger.Warn(() => $"User {user} received error trying to load task {result.ContentItem.DisplayText}.");
-            result.ActionResult = View("Log", new LogViewModel(_logger.Log, result.Process, result.ContentItem));
-            return result;
+         response.Process = LoadForTask(response.ContentItem, _logger, request.InternalParameters, request.Format);
+         if (response.Process.Status != 200) {
+            SetupLoadErrorResponse(request, response);
+            return response;
          }
 
-         if (!result.Process.Parameters.All(p => p.Valid)) {
-            foreach (var parameter in result.Process.Parameters.Where(p => !p.Valid)) {
-               _logger.Warn(() => parameter.Message);
-            }
-            result.ActionResult = View("Log", new LogViewModel(_logger.Log, result.Process, result.ContentItem));
-            return result;
+         if (!response.Process.Parameters.All(p => p.Valid)) {
+            SetupInvalidParametersResponse(request, response);
+            return response;
          }
 
-         result.Valid = true;
-         return result;
+         response.Valid = true;
+         return response;
       }
 
-      private ViewResult View(string viewName, object model) {
-         return new ViewResult {
-            ViewName = viewName,
-            ViewData = new ViewDataDictionary(new EmptyModelMetadataProvider(), new ModelStateDictionary()) {
-               Model = model
-            }
-         };
+      public void SetupInvalidParametersResponse<TPart>(TransformalizeRequest request, TransformalizeResponse<TPart> response) {
+         _arrangementService.SetupInvalidParametersResponse(request, response);
+      }
+
+      public void SetupPermissionsResponse<TPart>(TransformalizeRequest request, TransformalizeResponse<TPart> response) {
+         _arrangementService.SetupPermissionsResponse(request, response);
+      }
+
+      public void SetupNotFoundResponse<TPart>(TransformalizeRequest request, TransformalizeResponse<TPart> response) {
+         _arrangementService.SetupNotFoundResponse(request, response);
+      }
+
+      public void SetupLoadErrorResponse<TPart>(TransformalizeRequest request, TransformalizeResponse<TPart> response) {
+         _arrangementService.SetupLoadErrorResponse(request, response);
+      }
+
+      public void SetupWrongTypeResponse<T1>(TransformalizeRequest request, TransformalizeResponse<T1> response) {
+         _arrangementService.SetupWrongTypeResponse(request, response);
       }
    }
 }

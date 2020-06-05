@@ -46,7 +46,7 @@ namespace Module {
          services.AddScoped<ILinkService, LinkService>();
          services.AddScoped<ISortService, SortService>();
          services.AddScoped<IStickyParameterService, StickyParameterService>();
-         services.AddScoped<IArrangementService, ArrangementService>();
+         services.AddScoped(typeof(IArrangementService<>), typeof(ArrangementService<>));
          services.AddScoped(typeof(IArrangementLoadService<>), typeof(ArrangementLoadService<>));
          services.AddScoped(typeof(IArrangementRunService<>), typeof(ArrangementRunService<>));
          services.AddScoped<IParameterService, ParameterService>();

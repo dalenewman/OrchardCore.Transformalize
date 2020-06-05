@@ -1,5 +1,5 @@
 namespace Module.Services {
-    public enum Direction {
+   public enum Direction {
         None,
         Asc,
         Desc

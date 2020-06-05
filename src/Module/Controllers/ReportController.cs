@@ -32,7 +32,9 @@ namespace Module.Controllers {
       [HttpGet]
       public async Task<ActionResult> Index(string contentItemId, bool log = false) {
 
-         var report = await _reportService.Validate(new ValidateRequest(contentItemId));
+         var user = HttpContext.User?.Identity?.Name ?? "Anonymous";
+
+         var report = await _reportService.Validate(new TransformalizeRequest(contentItemId, user));
 
          if (report.Fails()) {
             return report.ActionResult;
