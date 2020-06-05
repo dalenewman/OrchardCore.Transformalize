@@ -46,12 +46,12 @@ namespace Module {
          services.AddScoped<ILinkService, LinkService>();
          services.AddScoped<ISortService, SortService>();
          services.AddScoped<IStickyParameterService, StickyParameterService>();
-         services.AddScoped(typeof(IArrangementService<>), typeof(ArrangementService<>));
-         services.AddScoped(typeof(IArrangementLoadService<>), typeof(ArrangementLoadService<>));
-         services.AddScoped(typeof(IArrangementRunService<>), typeof(ArrangementRunService<>));
+         services.AddScoped<IArrangementService,ArrangementService>();
+         services.AddScoped<IArrangementLoadService,ArrangementLoadService>();
+         services.AddScoped<IArrangementRunService,ArrangementRunService>();
          services.AddScoped<IParameterService, ParameterService>();
-         services.AddScoped(typeof(IReportService<>), typeof(ReportService<>));
-         services.AddScoped(typeof(ITaskService<>), typeof(TaskService<>));
+         services.AddScoped<IReportService,ReportService>();
+         services.AddScoped<ITaskService,TaskService>();
          services.AddScoped<ISettingsService, SettingsService>();
          services.AddScoped<IConfigurationContainer, OrchardConfigurationContainer>();
          services.AddScoped<IContainer, OrchardContainer>();

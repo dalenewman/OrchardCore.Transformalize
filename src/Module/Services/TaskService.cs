@@ -8,26 +8,23 @@ using System.Threading.Tasks;
 using Transformalize.Configuration;
 
 namespace Module.Services {
-   public class TaskService<T> : ITaskService<T> {
+   public class TaskService : ITaskService {
 
-      private readonly IArrangementService<T> _arrangementService;
-      private readonly IArrangementLoadService<T> _loadService;
-      private readonly IArrangementRunService<T> _runService;
+      private readonly IArrangementService _arrangementService;
+      private readonly IArrangementLoadService _loadService;
+      private readonly IArrangementRunService _runService;
       private readonly IHttpContextAccessor _httpContextAccessor;
-      private readonly CombinedLogger<T> _logger;
 
       public TaskService(
-         IArrangementService<T> arrangementService, 
-         IArrangementLoadService<T> loadService,
+         IArrangementService arrangementService, 
+         IArrangementLoadService loadService,
          IHttpContextAccessor httpContextAccessor,
-         IArrangementRunService<T> runService,
-         CombinedLogger<T> logger
+         IArrangementRunService runService
       ) {
          _arrangementService = arrangementService;
          _loadService = loadService;
          _runService = runService;
          _httpContextAccessor = httpContextAccessor;
-         _logger = logger;
       }
 
       public bool CanAccess(ContentItem contentItem) {
@@ -38,12 +35,12 @@ namespace Module.Services {
          return _arrangementService.GetByIdOrAliasAsync(idOrAlias);
       }
 
-      public Process LoadForTask(ContentItem contentItem, CombinedLogger<T> logger, IDictionary<string,string> parameters = null, string format = null) {
-         return _loadService.LoadForTask(contentItem, logger, parameters, format);
+      public Process LoadForTask(ContentItem contentItem, IDictionary<string,string> parameters = null, string format = null) {
+         return _loadService.LoadForTask(contentItem, parameters, format);
       }
 
-      public async Task RunAsync(Process process, CombinedLogger<T> logger) {
-         await _runService.RunAsync(process, logger);
+      public async Task RunAsync(Process process) {
+         await _runService.RunAsync(process);
       }
 
       public async Task<TransformalizeResponse<TransformalizeTaskPart>> Validate(TransformalizeRequest request) {
@@ -63,7 +60,7 @@ namespace Module.Services {
             return response;
          }
 
-         response.Process = LoadForTask(response.ContentItem, _logger, request.InternalParameters, request.Format);
+         response.Process = LoadForTask(response.ContentItem, request.InternalParameters, request.Format);
          if (response.Process.Status != 200) {
             SetupLoadErrorResponse(request, response);
             return response;

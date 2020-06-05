@@ -8,26 +8,23 @@ using Transformalize.Configuration;
 
 namespace Module.Services {
 
-   public class ReportService<T> : IReportService<T> {
+   public class ReportService : IReportService {
 
-      private readonly IArrangementLoadService<T> _loadService;
-      private readonly IArrangementRunService<T> _runService;
-      private readonly IArrangementService<T> _arrangementService;
+      private readonly IArrangementLoadService _loadService;
+      private readonly IArrangementRunService _runService;
+      private readonly IArrangementService _arrangementService;
       private readonly IHttpContextAccessor _httpContextAccessor;
-      private readonly CombinedLogger<T> _logger;
 
       public ReportService(
-         IArrangementLoadService<T> loadService,
-         IArrangementRunService<T> runService,
-         IArrangementService<T> arrangementService,
-         IHttpContextAccessor httpContextAccessor,
-         CombinedLogger<T> logger
+         IArrangementLoadService loadService,
+         IArrangementRunService runService,
+         IArrangementService arrangementService,
+         IHttpContextAccessor httpContextAccessor
       ) {
          _loadService = loadService;
          _runService = runService;
          _arrangementService = arrangementService;
          _httpContextAccessor = httpContextAccessor;
-         _logger = logger;
       }
 
       public bool CanAccess(ContentItem contentItem) {
@@ -38,20 +35,20 @@ namespace Module.Services {
          return await _arrangementService.GetByIdOrAliasAsync(idOrAlias);
       }
 
-      public Process LoadForExport(ContentItem contentItem, CombinedLogger<T> logger) {
-         return _loadService.LoadForExport(contentItem, logger);
+      public Process LoadForExport(ContentItem contentItem) {
+         return _loadService.LoadForExport(contentItem);
       }
 
-      public Process LoadForReport(ContentItem contentItem, CombinedLogger<T> logger, string format = null) {
-         return _loadService.LoadForReport(contentItem, logger, format);
+      public Process LoadForReport(ContentItem contentItem, string format = null) {
+         return _loadService.LoadForReport(contentItem, format);
       }
 
-      public Process LoadForBatch(ContentItem contentItem, CombinedLogger<T> logger) {
-         return _loadService.LoadForBatch(contentItem, logger);
+      public Process LoadForBatch(ContentItem contentItem) {
+         return _loadService.LoadForBatch(contentItem);
       }
 
-      public async Task RunAsync(Process process, CombinedLogger<T> logger) {
-         await _runService.RunAsync(process, logger);
+      public async Task RunAsync(Process process) {
+         await _runService.RunAsync(process);
       }
 
       public async Task<TransformalizeResponse<TransformalizeReportPart>> Validate(TransformalizeRequest request) {
@@ -77,7 +74,7 @@ namespace Module.Services {
             return response;
          }
 
-         response.Process = LoadForReport(response.ContentItem, _logger);
+         response.Process = LoadForReport(response.ContentItem);
          if (response.Process.Status != 200) {
             SetupLoadErrorResponse(request, response);
             return response;

@@ -10,18 +10,18 @@ using System.Linq;
 using System.Threading.Tasks;
 
 namespace Module.Services {
-   public class ArrangementService<TLog> : IArrangementService<TLog> {
+   public class ArrangementService : IArrangementService {
 
       private readonly IContentManager _contentManager;
       private readonly IContentAliasManager _aliasManager;
       private readonly IContentPermissionsService _contentPermissionsService;
-      private readonly CombinedLogger<TLog> _logger;
+      private readonly CombinedLogger<ArrangementService> _logger;
 
       public ArrangementService(
          IContentManager contentManager,
          IContentAliasManager aliasManager, 
          IContentPermissionsService contentPermissionsService,
-         CombinedLogger<TLog> logger
+         CombinedLogger<ArrangementService> logger
          ) {
          _aliasManager = aliasManager;
          _contentManager = contentManager;
@@ -54,7 +54,7 @@ namespace Module.Services {
             response.ActionResult = LogResult(response);
          } else {
             response.Process.Status = 422;
-            response.Process.Message = "Missing Required Parameters";
+            response.Process.Message = "Parameter Validation Failed";
             response.Process.Connections.Clear();
             response.Process.Log.AddRange(_logger.Log);
             response.ActionResult = ContentResult(request, response);

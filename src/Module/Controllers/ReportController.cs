@@ -15,12 +15,12 @@ using Module.Models;
 namespace Module.Controllers {
    public class ReportController : Controller {
 
-      private readonly IReportService<ReportController> _reportService;
+      private readonly IReportService _reportService;
       private readonly ISlugService _slugService;
       private readonly CombinedLogger<ReportController> _logger;
 
       public ReportController(
-         IReportService<ReportController> reportService,
+         IReportService reportService,
          ISlugService slugService,
          CombinedLogger<ReportController> logger
       ) {
@@ -40,7 +40,7 @@ namespace Module.Controllers {
             return report.ActionResult;
          }
 
-         await _reportService.RunAsync(report.Process, _logger);
+         await _reportService.RunAsync(report.Process);
          if (report.Process.Status != 200) {
             return View("Log", new LogViewModel(_logger.Log, report.Process, report.ContentItem));
          }
@@ -70,7 +70,7 @@ namespace Module.Controllers {
             return Unauthorized();
          }
 
-         var process = _reportService.LoadForReport(contentItem, _logger, format);
+         var process = _reportService.LoadForReport(contentItem, format);
          var contentType = format == "json" ? "application/json" : "application/xml";
 
          if (process.Status != 200) {
@@ -88,7 +88,7 @@ namespace Module.Controllers {
             return new ContentResult() { Content = process.Serialize(), ContentType = contentType };
          }
 
-         await _reportService.RunAsync(process, _logger);
+         await _reportService.RunAsync(process);
          if (process.Status != 200) {
             process.Connections.Clear();
             return new ContentResult() { Content = process.Serialize(), ContentType = contentType };
@@ -111,7 +111,7 @@ namespace Module.Controllers {
             return Unauthorized();
          }
 
-         var process = _reportService.LoadForExport(contentItem, _logger);
+         var process = _reportService.LoadForExport(contentItem);
 
          if (process.Status != 200) {
             return Problem();
@@ -125,7 +125,7 @@ namespace Module.Controllers {
          Response.ContentType = "application/json";
          Response.Headers.Add("content-disposition", "attachment; filename=" + o.File);
 
-         await _reportService.RunAsync(process, _logger);
+         await _reportService.RunAsync(process);
 
          return new EmptyResult();
 
@@ -143,7 +143,7 @@ namespace Module.Controllers {
             return Unauthorized();
          }
 
-         var process = _reportService.LoadForExport(contentItem, _logger);
+         var process = _reportService.LoadForExport(contentItem);
 
          if (process.Status != 200) {
             return Problem();
@@ -160,7 +160,7 @@ namespace Module.Controllers {
          Response.Headers.Add("content-disposition", "attachment; filename=" + o.File);
 
 
-         await _reportService.RunAsync(process, _logger);
+         await _reportService.RunAsync(process);
 
          return new EmptyResult();
 

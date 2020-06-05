@@ -8,11 +8,11 @@ using Module.Models;
 namespace Module.Controllers {
    public class TaskController : Controller {
 
-      private readonly ITaskService<TaskController> _taskService;
+      private readonly ITaskService _taskService;
       private readonly CombinedLogger<TaskController> _logger;
 
       public TaskController(
-         ITaskService<TaskController> taskService,
+         ITaskService taskService,
          CombinedLogger<TaskController> logger
       ) {
          _taskService = taskService;
@@ -30,7 +30,7 @@ namespace Module.Controllers {
             return task.ActionResult;
          }
 
-         await _taskService.RunAsync(task.Process, _logger);
+         await _taskService.RunAsync(task.Process);
          if (task.Process.Status != 200) {
             return View("Log", new LogViewModel(_logger.Log, task.Process, task.ContentItem));
          }
@@ -51,7 +51,7 @@ namespace Module.Controllers {
             return task.ActionResult;
          }
 
-         await _taskService.RunAsync(task.Process, _logger);
+         await _taskService.RunAsync(task.Process);
 
          task.Process.Connections.Clear();
         

@@ -7,29 +7,32 @@ using Transformalize.Configuration;
 using Transformalize.Contracts;
 
 namespace Module.Services {
-   public class ArrangementRunService<T> : IArrangementRunService<T> {
+   public class ArrangementRunService : IArrangementRunService {
 
       private readonly IContainer _container;
+      private readonly CombinedLogger<ArrangementRunService> _logger;
 
       public ArrangementRunService(
-         IContainer container
+         IContainer container,
+         CombinedLogger<ArrangementRunService> logger
       ) {
          _container = container;
+         _logger = logger;
       }
 
-      public async Task RunAsync(Process process, CombinedLogger<T> logger) {
+      public async Task RunAsync(Process process) {
 
          IProcessController controller;
 
          using (MiniProfiler.Current.Step("Run.Prepare")) {
-            controller = _container.CreateScope(process, logger).Resolve<IProcessController>();
+            controller = _container.CreateScope(process, _logger).Resolve<IProcessController>();
          }
 
          using (MiniProfiler.Current.Step("Run.Execute")) {
             await controller.ExecuteAsync();
          }
 
-         if (process.Errors().Any() || logger.Log.Any(l => l.LogLevel == LogLevel.Error)) {
+         if (process.Errors().Any() || _logger.Log.Any(l => l.LogLevel == LogLevel.Error)) {
             process.Status = 500;
             process.Message = "Error";
          } else {

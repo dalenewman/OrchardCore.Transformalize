@@ -25,14 +25,13 @@ namespace Module.Services {
       public ActionResponse Execute() {
          var response = new ActionResponse() { Action = _action };
 
-         var taskService = _serviceProvider.GetRequiredService<ITaskService<PipelineAction>>();
-         var logger = _serviceProvider.GetRequiredService<CombinedLogger<PipelineAction>>();
+         var taskService = _serviceProvider.GetRequiredService<ITaskService>();
 
          if (!string.IsNullOrEmpty(_action.Name)) {
             var contentItem = taskService.GetByIdOrAliasAsync(_action.Name);
             if (contentItem.Result != null) {
-               var process = taskService.LoadForTask(contentItem.Result, logger);
-               taskService.RunAsync(process, logger);
+               var process = taskService.LoadForTask(contentItem.Result);
+               taskService.RunAsync(process);
                response.Code = process.Status;
                response.Message = process.Message;
             } else {

@@ -3,7 +3,7 @@ using OrchardCore.ContentManagement;
 using System.Threading.Tasks;
 
 namespace Module.Services.Contracts {
-   public interface IArrangementService<TLog> {
+   public interface IArrangementService {
       Task<ContentItem> GetByIdOrAliasAsync(string idOrAlias);
       bool CanAccess(ContentItem contentItem);
       void SetupInvalidParametersResponse<TPart>(TransformalizeRequest request, TransformalizeResponse<TPart> response);

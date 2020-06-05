@@ -13,35 +13,38 @@ using Cfg.Net.Serializers;
 using Transformalize.Logging;
 
 namespace Module.Services {
-   public class ArrangementLoadService<T> : IArrangementLoadService<T> {
+   public class ArrangementLoadService : IArrangementLoadService {
 
       private readonly IStickyParameterService _stickyParameterService;
       private readonly IDictionary<string, string> _parameters;
       private readonly ISortService _sortService;
       private readonly ISettingsService _settings;
       private readonly IConfigurationContainer _configurationContainer;
+      private readonly CombinedLogger<ArrangementLoadService> _logger;
 
       public ArrangementLoadService(
          IParameterService parameterService,
          IStickyParameterService stickyParameterService,
          ISortService sortService,
          ISettingsService settings,
-         IConfigurationContainer configurationContainer
+         IConfigurationContainer configurationContainer,
+         CombinedLogger<ArrangementLoadService> logger
       ) {
          _stickyParameterService = stickyParameterService;
          _parameters = parameterService.GetParameters();
          _sortService = sortService;
          _settings = settings;
+         _logger = logger;
          _configurationContainer = configurationContainer;
       }
 
-      public Process LoadForExport(ContentItem contentItem, CombinedLogger<T> logger) {
+      public Process LoadForExport(ContentItem contentItem) {
 
          if (!TryGetReportPart(contentItem, out var part)) {
             return new Process { Status = 500, Message = "Error", Log = new List<LogEntry>() { new LogEntry(LogLevel.Error, null, $"LoadForExport can't load {contentItem.ContentType}.") } };
          }
 
-         var process = LoadInternal(part.Arrangement.Arrangement, logger);
+         var process = LoadInternal(part.Arrangement.Arrangement);
 
          process.Mode = "report";
          process.ReadOnly = true;
@@ -74,7 +77,7 @@ namespace Module.Services {
          return process;
       }
 
-      public Process LoadForReport(ContentItem contentItem, CombinedLogger<T> logger, string format = null) {
+      public Process LoadForReport(ContentItem contentItem, string format = null) {
 
          if (!TryGetReportPart(contentItem, out var part)) {
             return new Process { Status = 500, Message = "Error", Log = new List<LogEntry>() { new LogEntry(LogLevel.Error, null, $"LoadForReport can't load {contentItem.ContentType}.") } };
@@ -82,7 +85,7 @@ namespace Module.Services {
 
          _stickyParameterService.GetStickyParameters(contentItem.ContentItemId, _parameters);
 
-         var process = LoadInternal(part.Arrangement.Arrangement, logger, null, format == "json" ? new JsonSerializer() : null);
+         var process = LoadInternal(part.Arrangement.Arrangement, null, format == "json" ? new JsonSerializer() : null);
 
          process.Mode = "report";
          process.ReadOnly = true;
@@ -120,13 +123,13 @@ namespace Module.Services {
          return process;
       }
 
-      public Process LoadForBatch(ContentItem contentItem, CombinedLogger<T> logger) {
+      public Process LoadForBatch(ContentItem contentItem) {
 
          if (!TryGetReportPart(contentItem, out var part)) {
             return new Process { Status = 500, Message = "Error", Log = new List<LogEntry>() { new LogEntry(LogLevel.Error, null, $"LoadForBatch can't load {contentItem.ContentType}.") } };
          }
 
-         var process = LoadInternal(part.Arrangement.Arrangement, logger);
+         var process = LoadInternal(part.Arrangement.Arrangement);
 
          process.Mode = "report";
          process.ReadOnly = true;
@@ -146,7 +149,7 @@ namespace Module.Services {
          return process;
       }
 
-      public Process LoadForTask(ContentItem contentItem, CombinedLogger<T> logger, IDictionary<string,string> parameters = null, string format = null) {
+      public Process LoadForTask(ContentItem contentItem, IDictionary<string,string> parameters = null, string format = null) {
 
          Process process;
 
@@ -154,12 +157,12 @@ namespace Module.Services {
             return new Process { Status = 500, Message = "Error", Log = new List<LogEntry>() { new LogEntry(LogLevel.Error, null, $"LoadForTask can't load {contentItem.ContentType}.") } };
          }
 
-         process = LoadInternal(part.Arrangement.Arrangement, logger, parameters, format == "json" ? new JsonSerializer() : null);
+         process = LoadInternal(part.Arrangement.Arrangement, parameters, format == "json" ? new JsonSerializer() : null);
 
          return process;
       }
 
-      private Process LoadInternal(string arrangement, CombinedLogger<T> logger, IDictionary<string,string> parameters = null, ISerializer serializer = null) {
+      private Process LoadInternal(string arrangement, IDictionary<string,string> parameters = null, ISerializer serializer = null) {
 
          Process process;
 
@@ -171,7 +174,7 @@ namespace Module.Services {
 
          using (MiniProfiler.Current.Step("Load")) {
             _configurationContainer.Serializer = serializer;
-            process = _configurationContainer.CreateScope(arrangement, logger, _parameters).Resolve<Process>();
+            process = _configurationContainer.CreateScope(arrangement, _logger, _parameters).Resolve<Process>();
          }
 
          ApplyCommonSettings(process);

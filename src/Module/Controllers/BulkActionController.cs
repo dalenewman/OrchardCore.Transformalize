@@ -13,13 +13,13 @@ namespace Module.Controllers {
 
    public class BulkActionController : Controller {
 
-      private readonly ITaskService<BulkActionController> _taskService;
-      private readonly IReportService<BulkActionController> _reportService;
+      private readonly ITaskService _taskService;
+      private readonly IReportService _reportService;
       private readonly CombinedLogger<BulkActionController> _logger;
 
       public BulkActionController(
-         ITaskService<BulkActionController> taskService,
-         IReportService<BulkActionController> reportService,
+         ITaskService taskService,
+         IReportService reportService,
          CombinedLogger<BulkActionController> logger
       ) {
          _taskService = taskService;
@@ -69,7 +69,7 @@ namespace Module.Controllers {
                return create.ActionResult;
             }
 
-            await _taskService.RunAsync(create.Process, _logger);
+            await _taskService.RunAsync(create.Process);
             if (create.Process.Status != 200) {
                _logger.Warn(() => $"User {user} received error running action {createAlias}.");
                return View("Log", new LogViewModel(_logger.Log, create.Process, create.ContentItem));
@@ -111,9 +111,9 @@ namespace Module.Controllers {
             }
 
             if (bar.ActionCount == 0) {
-               var batchProcess = _reportService.LoadForBatch(report.ContentItem, _logger);
+               var batchProcess = _reportService.LoadForBatch(report.ContentItem);
 
-               await _taskService.RunAsync(batchProcess, _logger);
+               await _taskService.RunAsync(batchProcess);
                foreach (var batchRow in batchProcess.Entities.First().Rows) {
                   var row = new Transformalize.Impl.CfgRow(new[] { batchValueField.Alias });
                   row[batchValueField.Alias] = batchRow[report.Part.BulkActionValueField.Text];
@@ -127,7 +127,7 @@ namespace Module.Controllers {
                }
             }
 
-            await _taskService.RunAsync(write.Process, _logger);
+            await _taskService.RunAsync(write.Process);
             #endregion
 
             writeParameters.Add("ContentItemId", bar.ContentItemId);
@@ -162,9 +162,9 @@ namespace Module.Controllers {
 
          Process batchSummaryProcess = null;
          if (batchSummary != null) {
-            batchSummaryProcess = _taskService.LoadForTask(batchSummary, _logger);
+            batchSummaryProcess = _taskService.LoadForTask(batchSummary);
             if (batchSummaryProcess.Status == 200) {
-               await _taskService.RunAsync(batchSummaryProcess, _logger);
+               await _taskService.RunAsync(batchSummaryProcess);
             }
          }
 
@@ -180,7 +180,7 @@ namespace Module.Controllers {
                return View("Log", new LogViewModel(_logger.Log, null, null));
             }
 
-            bulkActionProcess = _taskService.LoadForTask(bulkAction, _logger);
+            bulkActionProcess = _taskService.LoadForTask(bulkAction);
             if (bulkActionProcess.Status != 200) {
                _logger.Warn(() => $"User {user} received error trying to load bulk action {bulkAction.DisplayText}.");
                return View("Log", new LogViewModel(_logger.Log, bulkActionProcess, bulkAction));
