@@ -32,6 +32,9 @@ namespace Module.Services {
       }
 
       public Task<ContentItem> GetByIdOrAliasAsync(string idOrAlias) {
+         if(string.IsNullOrEmpty(idOrAlias)){
+            return null;
+         }
          return _arrangementService.GetByIdOrAliasAsync(idOrAlias);
       }
 

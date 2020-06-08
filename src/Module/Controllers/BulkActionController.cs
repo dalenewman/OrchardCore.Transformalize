@@ -8,6 +8,9 @@ using System.Linq;
 using Module.Services;
 using System.Dynamic;
 using Transformalize.Configuration;
+using OrchardCore.Users.Services;
+using OrchardCore.Users.Models;
+using Transformalize;
 
 namespace Module.Controllers {
 
@@ -16,54 +19,69 @@ namespace Module.Controllers {
       private readonly ITaskService _taskService;
       private readonly IReportService _reportService;
       private readonly CombinedLogger<BulkActionController> _logger;
+      private readonly IUserService _userService;
 
       public BulkActionController(
          ITaskService taskService,
          IReportService reportService,
+         IUserService userService,
          CombinedLogger<BulkActionController> logger
       ) {
          _taskService = taskService;
          _reportService = reportService;
+         _userService = userService;
          _logger = logger;
       }
 
       [HttpPost]
-      public async Task<ActionResult> Index(BulkActionRequest bar) {
+      public async Task<ActionResult> Index(BulkActionRequest request) {
 
          if (HttpContext == null || HttpContext.User == null || HttpContext.User.Identity == null || !HttpContext.User.Identity.IsAuthenticated) {
             return Unauthorized();
          }
 
-         var user = HttpContext.User.Identity.Name ?? "Anonymous";
+         var userName = HttpContext.User.Identity.Name ?? "Anonymous";
 
-         var report = await _reportService.Validate(new TransformalizeRequest(bar.ContentItemId, user));
+         var report = await _reportService.Validate(new TransformalizeRequest(request.ContentItemId, userName));
          if (report.Fails()) {
             return report.ActionResult;
          }
 
-         var referrer = Request.Headers.ContainsKey("Referer") ? Request.Headers["Referer"].ToString() : Url.Action("Index", "Report", new { bar.ContentItemId });
+         var referrer = Request.Headers.ContainsKey("Referer") ? Request.Headers["Referer"].ToString() : Url.Action("Index", "Report", new { request.ContentItemId });
 
          // confirm we have an action registered in the report
-         if (report.Process.Actions.Any(a => a.Name == bar.ActionName)) {
+         if (report.Process.Actions.Any(a => a.Name == request.ActionName)) {
 
-            #region the bulk action in question (not doing anything yet)
-            var bulkAction = await _taskService.GetByIdOrAliasAsync(bar.ActionName);
+            var bulkAction = await _taskService.Validate(new TransformalizeRequest(request.ActionName, userName) { Secure = false });
 
-            if (bulkAction == null) {
-               _logger.Warn(() => $"User {user} requested absent content item {bar.ActionName}.");
-               return View("Log", new LogViewModel(_logger.Log, null, null));
+            if (bulkAction.Fails() && bulkAction.Process.Message != "Parameter Validation Failed") {
+               return bulkAction.ActionResult;
             }
-            #endregion
 
             #region batch creation
+            var user = await _userService.GetUserAsync(userName) as User;
+
             var createAlias = "batch-create";
             var createParameters = new Dictionary<string, string> {
+
+               { "UserId", user.Id.ToString() },
+               { "UserName", user.UserName },
+               { "UserEmail", user.Email },
+
                { "ReportId", report.ContentItem.Id.ToString() },
-               { "TaskId", bulkAction.Id.ToString() },
-               { "Description", report.Process.Actions.First(a=>a.Name == bar.ActionName).Description }
+               { "ReportContentItemId", report.ContentItem.ContentItemId },
+               { "ReportContentItemVersionId", report.ContentItem.ContentItemVersionId },
+               { "ReportTitle", report.ContentItem.DisplayText },
+
+               { "TaskId", bulkAction.ContentItem.ContentItemId },
+               { "TaskContentItemId", bulkAction.ContentItem.ContentItemId },
+               { "TaskContentItemVersionId", bulkAction.ContentItem.ContentItemVersionId },
+               { "TaskTitle", bulkAction.ContentItem.DisplayText },
+
+               { "Description", report.Process.Actions.First(a=>a.Name == request.ActionName).Description }
             };
 
-            var create = await _taskService.Validate(new TransformalizeRequest(createAlias, user) { Secure = false, InternalParameters = createParameters });
+            var create = await _taskService.Validate(new TransformalizeRequest(createAlias, userName) { Secure = false, InternalParameters = createParameters });
 
             if (create.Fails()) {
                return create.ActionResult;
@@ -71,19 +89,19 @@ namespace Module.Controllers {
 
             await _taskService.RunAsync(create.Process);
             if (create.Process.Status != 200) {
-               _logger.Warn(() => $"User {user} received error running action {createAlias}.");
+               _logger.Warn(() => $"User {userName} received error running action {createAlias}.");
                return View("Log", new LogViewModel(_logger.Log, create.Process, create.ContentItem));
             }
 
             var entity = create.Process.Entities.FirstOrDefault();
 
             if (entity == null) {
-               _logger.Error(() => $"The {createAlias} bulk action is missing an entity.");
+               _logger.Error(() => $"The {createAlias} task is missing an entity.  It needs an entity with at least one row that returns one row of data (e.g. the BatchId).");
                return View("Log", new LogViewModel(_logger.Log, create.Process, create.ContentItem));
             }
 
             if (!entity.Rows.Any()) {
-               _logger.Error(() => $"The {createAlias} bulk action didn't produce a batch record.");
+               _logger.Error(() => $"The {createAlias} task didn't produce a row (e.g. a single row with a BatchId need to associate the batch values with this batch).");
                return View("Log", new LogViewModel(_logger.Log, create.Process, create.ContentItem));
             }
             #endregion
@@ -95,7 +113,7 @@ namespace Module.Controllers {
                writeParameters[field.Alias] = entity.Rows[0][field.Alias].ToString();
             }
 
-            var write = await _taskService.Validate(new TransformalizeRequest(writeAlias, user) { Secure = false, InternalParameters = writeParameters });
+            var write = await _taskService.Validate(new TransformalizeRequest(writeAlias, userName) { Secure = false, InternalParameters = writeParameters });
 
             if (write.Fails()) {
                return write.ActionResult;
@@ -110,7 +128,7 @@ namespace Module.Controllers {
                return View("Log", new LogViewModel(_logger.Log, write.Process, write.ContentItem));
             }
 
-            if (bar.ActionCount == 0) {
+            if (request.ActionCount == 0) {
                var batchProcess = _reportService.LoadForBatch(report.ContentItem);
 
                await _taskService.RunAsync(batchProcess);
@@ -120,7 +138,7 @@ namespace Module.Controllers {
                   writeEntity.Rows.Add(row);
                }
             } else {
-               foreach (var batchValue in bar.Records) {
+               foreach (var batchValue in request.Records) {
                   var row = new Transformalize.Impl.CfgRow(new[] { batchValueField.Alias });
                   row[batchValueField.Alias] = batchValue;
                   writeEntity.Rows.Add(row);
@@ -130,19 +148,19 @@ namespace Module.Controllers {
             await _taskService.RunAsync(write.Process);
             #endregion
 
-            writeParameters.Add("ContentItemId", bar.ContentItemId);
-            writeParameters.Add("ActionName", bar.ActionName);
+            writeParameters.Add("ReportContentItemId", bulkAction.ContentItem.ContentItemId);
+            writeParameters.Add("TaskContentItemId", bulkAction.ContentItem.ContentItemId);
             return RedirectToAction("Review", ParametersToRouteValues(writeParameters));
 
          } else {
-            _logger.Warn(() => $"User {user} called missing action {bar.ActionName} in {report.ContentItem.DisplayText}.");
+            _logger.Warn(() => $"User {userName} called missing action {request.ActionName} in {report.ContentItem.DisplayText}.");
          }
 
          return View("Log", new LogViewModel(_logger.Log, report.Process, report.ContentItem));
 
       }
 
-      public async Task<ActionResult> Review(string contentItemId) {
+      public async Task<ActionResult> Review(BulkActionReviewRequest request) {
 
          if (HttpContext == null || HttpContext.User == null || HttpContext.User.Identity == null || !HttpContext.User.Identity.IsAuthenticated) {
             return Unauthorized();
@@ -150,36 +168,34 @@ namespace Module.Controllers {
 
          var user = HttpContext.User.Identity.Name ?? "Anonymous";
 
-         var report = await _reportService.Validate(new TransformalizeRequest(contentItemId, user));
-
-         if (report.Fails()) {
-            return report.ActionResult;
-         }
-
          var batchSummaryAlias = "batch-summary";
-         var batchSummary = await _taskService.GetByIdOrAliasAsync(batchSummaryAlias);
+         var batchSummary = await _taskService.Validate(new TransformalizeRequest(batchSummaryAlias, user) { Secure = false });
 
-         Process batchSummaryProcess = null;
-         if (batchSummary != null) {
-            batchSummaryProcess = _taskService.LoadForTask(batchSummary);
-            if (batchSummaryProcess.Status == 200) {
-               await _taskService.RunAsync(batchSummaryProcess);
-            }
+         if (batchSummary.Fails()) {
+            return batchSummary.ActionResult;
          }
 
-         var actionName = HttpContext.Request.Query["ActionName"].ToString();
+         await _taskService.RunAsync(batchSummary.Process);
 
-         var bulkAction = await _taskService.Validate(new TransformalizeRequest(actionName, user));
+         // if batch summary can provide provide content item id(s)
+         if(request.TaskContentItemId == null) {
+            request.TaskContentItemId = GetFieldFromSummary(batchSummary.Process, "TaskContentItemId");
+         }
+         if(request.ReportContentItemId == null) {
+            request.ReportContentItemId = GetFieldFromSummary(batchSummary.Process, "ReportContentItemId");
+         }
+
+         var bulkAction = await _taskService.Validate(new TransformalizeRequest(request.TaskContentItemId, user));
 
          if (bulkAction.Fails() && bulkAction.Process.Message != "Parameter Validation Failed") {
             return bulkAction.ActionResult;
          }
 
          // because they will need to come back to review page after validating their parameters
-         bulkAction.Process.Parameters.Add(new Parameter() { Name = "ActionName", Value = actionName });
-         bulkAction.Process.Parameters.Add(new Parameter() { Name = "ContentItemId", Value = contentItemId });
+         bulkAction.Process.Parameters.Add(new Parameter() { Name = "TaskContentItemId", Value = request.TaskContentItemId });
+         bulkAction.Process.Parameters.Add(new Parameter() { Name = "ReportContentItemId", Value = request.ReportContentItemId });
 
-         return View(new BulkActionViewModel(batchSummaryProcess, bulkAction.Process));
+         return View(new BulkActionViewModel(bulkAction, batchSummary.Process));
       }
 
       private dynamic ParametersToRouteValues(IDictionary<string, string> parameters) {
@@ -190,6 +206,19 @@ namespace Module.Controllers {
          }
          dynamic d = routeValues;
          return d;
+      }
+
+      public string GetFieldFromSummary(Process process, string fieldName) {
+         if(process != null) {
+            if (process.Entities.Any() && process.Entities[0].Rows.Any()) {
+               var fields = process.Entities[0].GetAllOutputFields();
+               var field = fields.FirstOrDefault(f => f.Alias == fieldName);
+               if(field != null) {
+                  return process.Entities[0].Rows[0][fieldName]?.ToString() ?? string.Empty;
+               }
+            }
+         }
+         return null;
       }
 
    }

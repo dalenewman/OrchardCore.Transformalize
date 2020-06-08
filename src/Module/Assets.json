@@ -186,7 +186,7 @@
    },
    {
       "inputs": [
-         "node_modules/moment/dist/moment.js"
+         "node_modules/moment/moment.js"
       ],
       "output": "wwwroot/Scripts/moment.js"
    },

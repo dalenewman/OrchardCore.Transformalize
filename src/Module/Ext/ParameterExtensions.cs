@@ -16,14 +16,14 @@ namespace Module.Ext {
             switch (expression.Method) {
                case "required":
                   attributes["data-parsley-required"] = "true";
-                  //switch (f.InputType) {
-                  //   case "file":
-                  //   case "scan":
-                  //      attributes["data-parsley-required-message"] = "a " + f.InputType + " is required";
-                  //      break;
-                  //   default:
-                  //      break;
-                  //}
+                  switch (f.InputType) {
+                     case "file":
+                     case "scan":
+                        attributes["data-parsley-required-message"] = "a " + f.InputType + " is required";
+                        break;
+                     default:
+                        break;
+                  }
                   break;
                case "length":
                   attributes["data-parsley-length"] = string.Format("[{0}, {1}]", expression.SingleParameter, expression.SingleParameter);
@@ -32,7 +32,7 @@ namespace Module.Ext {
                   attributes["data-parsley-type"] = "number";
                   break;
                case "matches":
-                  attributes["data-parsley-pattern"] = expression.SingleParameter;	
+                  attributes["data-parsley-pattern"] = expression.SingleParameter;
                   break;
                case "min":
                   attributes["data-parsley-min"] = expression.SingleParameter;
@@ -69,6 +69,20 @@ namespace Module.Ext {
 
 
          return string.Join(" ", attributes.Select(i => string.Format("{0}=\"{1}\"", i.Key, i.Value)));
+      }
+
+      public static bool UseTextArea(this Parameter parameter, out int length) {
+         var useTextArea = parameter.Length == "max";
+         length = 4000;
+         if (!useTextArea) {
+            if (int.TryParse(parameter.Length, out length)) {
+               useTextArea = length >= 255;
+            }
+         }
+         if (length == 0) {
+            length = 4000;
+         }
+         return useTextArea;
       }
    }
 }

@@ -166,16 +166,33 @@ namespace Module.Services {
          return builder.Build().BeginLifetimeScope();
       }
 
-      private static string TransformalizeParameters(IComponentContext ctx, Transformalize.ConfigurationFacade.Process process, IDictionary<string,string> parameters) {
+      private static string TransformalizeParameters(IComponentContext ctx, Transformalize.ConfigurationFacade.Process process, IDictionary<string, string> parameters) {
 
-         var fields = process.Parameters.Select(pr => new Field {
-            Name = pr.Name,
-            Alias = pr.Name,
-            Default = pr.Value,
-            Type = pr.Type,
-            Transforms = pr.Transforms.Select(o => o.ToOperation()).ToList(),
-            Validators = pr.Validators.Select(o => o.ToOperation()).ToList()
-         }).ToList();
+         var fields = new List<Field>();
+
+         foreach (var pr in process.Parameters) {
+            var field = new Field {
+               Name = pr.Name,
+               Alias = pr.Name,
+               Default = pr.Value,
+               Label = pr.Label,
+               Transforms = pr.Transforms.Select(o => o.ToOperation()).ToList(),
+               Validators = pr.Validators.Select(o => o.ToOperation()).ToList()
+            };
+            if (!string.IsNullOrEmpty(pr.Length)) {
+               field.Length = pr.Length;
+            }
+            if (!string.IsNullOrEmpty(pr.Type)) {
+               field.Type = pr.Type;
+            }
+            if (!string.IsNullOrEmpty(pr.Precision) && int.TryParse(pr.Precision, out int precision)) {
+               field.Precision = precision;
+            }
+            if (!string.IsNullOrEmpty(pr.Scale) && int.TryParse(pr.Scale, out int scale)) {
+               field.Scale = scale;
+            }
+            fields.Add(field);
+         }
 
          if (fields.Any(f => f.Validators.Any())) {
 
@@ -262,22 +279,19 @@ namespace Module.Services {
 
                var field = fields[i];
                var parameter = process.Parameters[i];
-               
+
                // set the transformed value
                parameter.Value = output[field].ToString();
 
                // set the validation results
-               if(field.ValidField != string.Empty) {
+               if (field.ValidField != string.Empty) {
                   parameter.Valid = output[fields.First(f => f.Name == field.ValidField)].ToString().ToLower();
-                  parameter.Message = ((string) output[fields.First(f => f.Name == field.MessageField)]).TrimEnd('|');
+                  parameter.Message = ((string)output[fields.First(f => f.Name == field.MessageField)]).TrimEnd('|');
                } else {
                   parameter.Valid = "true";
                }
 
-               // don't need these anymore
-               parameter.T = null;
                parameter.Transforms.Clear();
-               parameter.V = null;
                parameter.Validators.Clear();
             }
 

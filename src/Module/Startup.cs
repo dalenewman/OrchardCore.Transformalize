@@ -133,7 +133,7 @@ namespace Module {
          routes.MapAreaControllerRoute(
              name: null,
              areaName: Common.ModuleName,
-             pattern: "t/action/review/{ContentItemId}",
+             pattern: "t/action/review",
              defaults: new { controller = "BulkAction", action = "Review" }
          );
 
