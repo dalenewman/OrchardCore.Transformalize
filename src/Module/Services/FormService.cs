@@ -7,13 +7,13 @@ using System.Threading.Tasks;
 using Transformalize.Configuration;
 
 namespace Module.Services {
-   public class TaskService : ITaskService {
+   public class FormService : IFormService {
 
       private readonly IArrangementService _arrangementService;
       private readonly IArrangementLoadService _loadService;
       private readonly IArrangementRunService _runService;
 
-      public TaskService(
+      public FormService(
          IArrangementService arrangementService, 
          IArrangementLoadService loadService,
          IArrangementRunService runService
@@ -34,8 +34,8 @@ namespace Module.Services {
          return _arrangementService.GetByIdOrAliasAsync(idOrAlias);
       }
 
-      public Process LoadForTask(ContentItem contentItem, IDictionary<string,string> parameters = null, string format = null) {
-         return _loadService.LoadForTask(contentItem, parameters, format);
+      public Process LoadForForm(ContentItem contentItem, IDictionary<string,string> parameters = null) {
+         return _loadService.LoadForForm(contentItem, parameters);
       }
 
       public async Task RunAsync(Process process) {
@@ -58,14 +58,9 @@ namespace Module.Services {
             return response;
          }
 
-         response.Process = LoadForTask(response.ContentItem, request.InternalParameters, request.Format);
+         response.Process = LoadForForm(response.ContentItem, request.InternalParameters);
          if (response.Process.Status != 200) {
             SetupLoadErrorResponse(request, response);
-            return response;
-         }
-
-         if (!response.Process.Parameters.All(p => p.Valid)) {
-            SetupInvalidParametersResponse(request, response);
             return response;
          }
 

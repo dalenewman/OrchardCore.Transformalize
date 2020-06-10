@@ -6,6 +6,16 @@
 
 @{
    var auth = Context.RequestServices.GetService<IAuthorizationService>();
+   var returnUrl = string.Empty;
+   var target = "_self";
+   if(Model.Item != null) {
+      // You might not want to re-run your task automatically
+      if(Model.Item.ContentType == "TransformalizeTask") {
+         target = "_blank";
+      } else {
+         returnUrl = System.Net.WebUtility.UrlEncode(Context.Request.Path + Context.Request.QueryString);
+      }
+   }
 }
 <style>
    .table-sm > tbody > tr > td {
@@ -21,8 +31,8 @@
    }
 </style>
 
-@if (Model.Item != null && await auth.AuthorizeAsync(Context.User, OrchardCore.Contents.Permissions.EditContent)) {
-   <button title="edit this report" type="button" class="btn btn-warning btn-sm float-right" onclick="window.open('@(Url.Content("~/Admin/Contents/ContentItems/" + Model.Item.ContentItemId + "/Edit?" + Common.ReturnUrlName + "=" + Context.Request.Path))', '_self');">
+@if (Model.Item != null && await auth.AuthorizeAsync(Context.User, OrchardCore.Contents.Permissions.EditContent, Model.Item)) {
+   <button title="edit this report" type="button" class="btn btn-warning btn-sm float-right" onclick="window.open('@(Url.Content("~/Admin/Contents/ContentItems/" + Model.Item.ContentItemId + "/Edit?" + Common.ReturnUrlName + "=" + returnUrl))', '@target');">
       <span class="fas fa-edit"></span>
    </button>
 }

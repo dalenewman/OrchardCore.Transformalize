@@ -2,7 +2,8 @@
 using System.Threading.Tasks;
 
 namespace Module.Services.Contracts {
-   public interface ITaskService : ITaskLoadService, IArrangementService, IArrangementRunService {
+   public interface IFormService : IFormLoadService, IArrangementService, IArrangementRunService {
       Task<TransformalizeResponse<TransformalizeTaskPart>> Validate(TransformalizeRequest request);
    }
+
 }

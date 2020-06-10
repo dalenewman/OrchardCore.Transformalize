@@ -8,5 +8,6 @@ namespace Module.Services.Contracts {
       Process LoadForExport(ContentItem contentItem);
       Process LoadForTask(ContentItem contentItem, IDictionary<string,string> parameters = null, string format = null);
       Process LoadForBatch(ContentItem contentItem);
+      Process LoadForForm(ContentItem contentItem, IDictionary<string,string> parameters = null);
    }
 }

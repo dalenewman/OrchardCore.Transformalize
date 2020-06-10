@@ -11,6 +11,7 @@ using Cfg.Net.Contracts;
 using Module.Models;
 using Cfg.Net.Serializers;
 using Transformalize.Logging;
+using Transformalize.Impl;
 
 namespace Module.Services {
    public class ArrangementLoadService : IArrangementLoadService {
@@ -116,7 +117,7 @@ namespace Module.Services {
 
          // special handling of bulk action value field
          if (part.BulkActions.Value && process.TryGetField(part.BulkActionValueField.Text, out Field bulkActionValueField)) {
-            bulkActionValueField.Output = true; 
+            bulkActionValueField.Output = true;
             bulkActionValueField.Export = "false";
          }
 
@@ -149,7 +150,7 @@ namespace Module.Services {
          return process;
       }
 
-      public Process LoadForTask(ContentItem contentItem, IDictionary<string,string> parameters = null, string format = null) {
+      public Process LoadForTask(ContentItem contentItem, IDictionary<string, string> parameters = null, string format = null) {
 
          Process process;
 
@@ -162,12 +163,49 @@ namespace Module.Services {
          return process;
       }
 
-      private Process LoadInternal(string arrangement, IDictionary<string,string> parameters = null, ISerializer serializer = null) {
+      public Process LoadForForm(ContentItem contentItem, IDictionary<string, string> parameters = null) {
 
          Process process;
 
-         if(parameters != null) {
-            foreach(var kv in parameters) {
+         if (!TryGetTaskPart(contentItem, out var part)) {
+            return new Process { Status = 500, Message = "Error", Log = new List<LogEntry>() { new LogEntry(LogLevel.Error, null, $"LoadForTask can't load {contentItem.ContentType}.") } };
+         }
+
+         process = LoadInternal(part.Arrangement.Arrangement, parameters);
+
+         // switch postback auto to true or false
+         foreach (var parameter in process.Parameters.Where(p => p.Prompt && p.PostBack == "auto")) {
+
+            parameter.PostBack = parameter.Validators.Any() ? "true" : "false";
+
+            if (parameter.Map == string.Empty)
+               continue;
+
+            var map = process.Maps.FirstOrDefault(m => m.Name == parameter.Map);
+            if (map == null)
+               continue;
+
+            if (!map.Query.Contains("@"))
+               continue;
+
+            // it is possible for this map to affect other field's post-back setting
+            foreach (var p in new ParameterFinder().Find(map.Query).Distinct()) {
+               var parameterField = process.Parameters.FirstOrDefault(f => f.Name == p);
+               if (parameterField != null) {
+                  parameterField.PostBack = "true";
+               }
+            }
+         }
+
+         return process;
+      }
+
+      private Process LoadInternal(string arrangement, IDictionary<string, string> parameters = null, ISerializer serializer = null) {
+
+         Process process;
+
+         if (parameters != null) {
+            foreach (var kv in parameters) {
                _parameters[kv.Key] = kv.Value;
             }
          }

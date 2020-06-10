@@ -1,7 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.IO;
-
 namespace Module {
    public static class Common {
 
@@ -10,6 +6,7 @@ namespace Module {
       public const string ReturnUrlName = "ReturnUrl";
       public const string SettingsGroupId = "Transformalize";
       public const string CodeMirrorVersion = "5.52.2";
+      public const string InvalidParametersMessage = "Parameter Validation Failed";
 
    }
 }

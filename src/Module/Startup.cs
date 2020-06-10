@@ -24,6 +24,7 @@ using OrchardCore.Security.Permissions;
 using Module.Navigation;
 using Transformalize.Contracts;
 using Transformalize.Logging;
+using Autofac.Core;
 
 namespace Module {
    public class Startup : StartupBase {
@@ -34,7 +35,6 @@ namespace Module {
          TemplateContext.GlobalMemberAccessStrategy.Register<PageSizesField>();
          TemplateContext.GlobalMemberAccessStrategy.Register<DisplayPageSizesFieldViewModel>();
       }
-
       public override void ConfigureServices(IServiceCollection services) {
 
          services.AddSession();
@@ -52,6 +52,7 @@ namespace Module {
          services.AddScoped<IParameterService, ParameterService>();
          services.AddScoped<IReportService,ReportService>();
          services.AddScoped<ITaskService,TaskService>();
+         services.AddScoped<IFormService, FormService>();
          services.AddScoped<ISettingsService, SettingsService>();
          services.AddScoped<IConfigurationContainer, OrchardConfigurationContainer>();
          services.AddScoped<IContainer, OrchardContainer>();
@@ -135,6 +136,20 @@ namespace Module {
              areaName: Common.ModuleName,
              pattern: "t/action/review",
              defaults: new { controller = "BulkAction", action = "Review" }
+         );
+
+         routes.MapAreaControllerRoute(
+             name: null,
+             areaName: Common.ModuleName,
+             pattern: "t/action/review/form",
+             defaults: new { controller = "BulkAction", action = "Form" }
+         );
+
+         routes.MapAreaControllerRoute(
+             name: null,
+             areaName: Common.ModuleName,
+             pattern: "t/action/run",
+             defaults: new { controller = "BulkAction", action = "Run" }
          );
 
          routes.MapAreaControllerRoute(

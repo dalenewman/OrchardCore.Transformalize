@@ -11,6 +11,7 @@ using Transformalize.Configuration;
 using OrchardCore.Users.Services;
 using OrchardCore.Users.Models;
 using Transformalize;
+using OrchardCore.DisplayManagement.Manifest;
 
 namespace Module.Controllers {
 
@@ -18,17 +19,20 @@ namespace Module.Controllers {
 
       private readonly ITaskService _taskService;
       private readonly IReportService _reportService;
+      private readonly IFormService _formService;
       private readonly CombinedLogger<BulkActionController> _logger;
       private readonly IUserService _userService;
 
       public BulkActionController(
          ITaskService taskService,
          IReportService reportService,
+         IFormService formService,
          IUserService userService,
          CombinedLogger<BulkActionController> logger
       ) {
          _taskService = taskService;
          _reportService = reportService;
+         _formService = formService;
          _userService = userService;
          _logger = logger;
       }
@@ -54,7 +58,7 @@ namespace Module.Controllers {
 
             var bulkAction = await _taskService.Validate(new TransformalizeRequest(request.ActionName, userName) { Secure = false });
 
-            if (bulkAction.Fails() && bulkAction.Process.Message != "Parameter Validation Failed") {
+            if (bulkAction.Fails() && bulkAction.Process.Message != Common.InvalidParametersMessage) {
                return bulkAction.ActionResult;
             }
 
@@ -178,16 +182,16 @@ namespace Module.Controllers {
          await _taskService.RunAsync(batchSummary.Process);
 
          // if batch summary can provide provide content item id(s)
-         if(request.TaskContentItemId == null) {
+         if (request.TaskContentItemId == null) {
             request.TaskContentItemId = GetFieldFromSummary(batchSummary.Process, "TaskContentItemId");
          }
-         if(request.ReportContentItemId == null) {
+         if (request.ReportContentItemId == null) {
             request.ReportContentItemId = GetFieldFromSummary(batchSummary.Process, "ReportContentItemId");
          }
 
-         var bulkAction = await _taskService.Validate(new TransformalizeRequest(request.TaskContentItemId, user));
+         var bulkAction = await _formService.Validate(new TransformalizeRequest(request.TaskContentItemId, user));
 
-         if (bulkAction.Fails() && bulkAction.Process.Message != "Parameter Validation Failed") {
+         if (bulkAction.Fails()) {
             return bulkAction.ActionResult;
          }
 
@@ -197,6 +201,48 @@ namespace Module.Controllers {
 
          return View(new BulkActionViewModel(bulkAction, batchSummary.Process));
       }
+
+
+      public async Task<ActionResult> Form(BulkActionReviewRequest request) {
+
+         if (HttpContext == null || HttpContext.User == null || HttpContext.User.Identity == null || !HttpContext.User.Identity.IsAuthenticated) {
+            return Unauthorized();
+         }
+
+         var user = HttpContext.User.Identity.Name ?? "Anonymous";
+         var bulkAction = await _formService.Validate(new TransformalizeRequest(request.TaskContentItemId, user));
+
+         if (bulkAction.Fails()) {
+            return bulkAction.ActionResult;
+         }
+
+         // because they will need to come back to review page after validating their parameters
+         bulkAction.Process.Parameters.Add(new Parameter() { Name = "TaskContentItemId", Value = request.TaskContentItemId });
+         bulkAction.Process.Parameters.Add(new Parameter() { Name = "ReportContentItemId", Value = request.ReportContentItemId });
+
+         return View("Form", bulkAction);
+      }
+
+
+      public async Task<ActionResult> Run(BulkActionReviewRequest request) {
+
+         if (HttpContext == null || HttpContext.User == null || HttpContext.User.Identity == null || !HttpContext.User.Identity.IsAuthenticated) {
+            return Unauthorized();
+         }
+
+         var user = HttpContext.User.Identity.Name ?? "Anonymous";
+
+         var bulkAction = await _taskService.Validate(new TransformalizeRequest(request.TaskContentItemId, user));
+
+         if (bulkAction.Fails()) {
+            return bulkAction.ActionResult;
+         }
+
+         await _taskService.RunAsync(bulkAction.Process);
+
+         return View("Log", new LogViewModel(_logger.Log, bulkAction.Process, bulkAction.ContentItem));
+      }
+
 
       private dynamic ParametersToRouteValues(IDictionary<string, string> parameters) {
          var routeValues = new ExpandoObject();
@@ -209,11 +255,11 @@ namespace Module.Controllers {
       }
 
       public string GetFieldFromSummary(Process process, string fieldName) {
-         if(process != null) {
+         if (process != null) {
             if (process.Entities.Any() && process.Entities[0].Rows.Any()) {
                var fields = process.Entities[0].GetAllOutputFields();
                var field = fields.FirstOrDefault(f => f.Alias == fieldName);
-               if(field != null) {
+               if (field != null) {
                   return process.Entities[0].Rows[0][fieldName]?.ToString() ?? string.Empty;
                }
             }

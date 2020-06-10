@@ -98,8 +98,8 @@
 
          @if (entity.Name != "Missing Entity") {
 
-            if (await auth.AuthorizeAsync(Context.User, OrchardCore.Contents.Permissions.EditContent)) {
-               <button title="edit this report" type="button" class="btn btn-warning btn-sm" onclick="window.open('@(Url.Content("~/Admin/Contents/ContentItems/" + Model.Item.ContentItemId + "/Edit?" + Common.ReturnUrlName + "=" + Context.Request.Path))', '_self');">
+            if (Model.Item != null && await auth.AuthorizeAsync(Context.User, OrchardCore.Contents.Permissions.EditContent, Model.Item)) {
+               <button title="edit this report" type="button" class="btn btn-warning btn-sm" onclick="window.open('@(Url.Content("~/Admin/Contents/ContentItems/" + Model.Item.ContentItemId + "/Edit?" + Common.ReturnUrlName + "=" + System.Net.WebUtility.UrlEncode(Context.Request.Path + Context.Request.QueryString)))', '_self');">
                   <span class="fas fa-edit"></span>
                </button>
             }

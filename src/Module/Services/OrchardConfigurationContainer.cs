@@ -33,6 +33,7 @@ using Transformalize.Containers.Autofac;
 using Transformalize.Containers.Autofac.Modules;
 using Transformalize.Context;
 using Transformalize.Contracts;
+using Transformalize.Impl;
 using Transformalize.Providers.File.Autofac;
 using Transformalize.Transforms.Humanizer.Autofac;
 using Transformalize.Transforms.Jint.Autofac;
@@ -123,7 +124,7 @@ namespace Module.Services {
             // parameter values are only used if outside parameters don't exist so
             // outside parameters will over-write or set the value before transforms / validators run
             // if outside parameters are used here, and possibly transformed, they will move on to the
-            // real process as the transformed value is what we want
+            // real process as the transformed value
 
             var pre = new Transformalize.ConfigurationFacade.Process(
                cfg,
@@ -176,6 +177,7 @@ namespace Module.Services {
                Alias = pr.Name,
                Default = pr.Value,
                Label = pr.Label,
+               PostBack = pr.PostBack,
                Transforms = pr.Transforms.Select(o => o.ToOperation()).ToList(),
                Validators = pr.Validators.Select(o => o.ToOperation()).ToList()
             };

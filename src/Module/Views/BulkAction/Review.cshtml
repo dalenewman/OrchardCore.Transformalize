@@ -1,5 +1,11 @@
 @model BulkActionViewModel
 @using Module
+@using Microsoft.Extensions.DependencyInjection
+@using Microsoft.AspNetCore.Authorization
+
+@{
+   var auth = Context.RequestServices.GetService<IAuthorizationService>();
+}
 
 <script asp-name="jQuery" at="Head"></script>
 <script asp-name="jQuery-ui" at="Foot"></script>
@@ -39,6 +45,11 @@
 
 
 <div class="container">
+   @if (Model.Task.ContentItem != null && await auth.AuthorizeAsync(Context.User, OrchardCore.Contents.Permissions.EditContent, Model.Task.ContentItem)) {
+      <button title="edit this task" type="button" class="btn btn-warning btn-sm float-right" onclick="window.open('@(Url.Content("~/Admin/Contents/ContentItems/" + Model.Task.ContentItem.ContentItemId + "/Edit?" + Common.ReturnUrlName + "=" + System.Net.WebUtility.UrlEncode(Context.Request.Path + Context.Request.QueryString)))', '_self');">
+         <span class="fas fa-edit"></span>
+      </button>
+   }
    <div class="row">
       <div class="col-md-4">
          <h4>Batch Summary</h4>
@@ -59,18 +70,11 @@
          }
       </div>
       <div class="col-md-8">
+         @if (Model.Task.Process.Parameters.Where(p => p.Prompt).Any()) {
+            <h4>Parameters</h4>
+         }
          <div id="id_content">
-
-            @if (Model.Task.Process.Parameters.Where(p => p.Prompt).Any()) {
-               <h4>Parameters</h4>
-            }
-
-         <form id="id_form" method="post" role="form" enctype="multipart/form-data">
-
-            @{ Html.RenderPartial("ParameterForm", Model); }
-
-         </form>
-
+            @{ Html.RenderPartial("Form", Model.Task); }
          </div>
       </div>
    </div>
@@ -83,8 +87,9 @@
 <script type="text/javascript" language="javascript">
     //<!--
    var settings = {
-      ajaxUrl: "@(Url.Action("Validate", "BulkAction", new { Area = Common.ModuleName, TaskContentItemId = Model.Task.ContentItem.ContentItemId }))" + window.location.search,
-      saveUrl: "@(Url.Action("Review", "BulkAction", new { Area = Common.ModuleName }))" + window.location.search,
+      ajaxUrl: "@(Url.Action("Form", "BulkAction", new { Area = Common.ModuleName }))",
+      updateUrl: "@(Url.Action("Review", "BulkAction", new { Area = Common.ModuleName }))",
+      runUrl: "@(Url.Action("Run", "BulkAction", new { Area = Common.ModuleName }))",
       uploadUrl: "@(Url.Action("Upload", "BulkAction", new { Area = Common.ModuleName }))",
       scanUrl: "@(Url.Action("Scan", "BulkAction", new { Area = Common.ModuleName }))"
    }
@@ -122,8 +127,8 @@
 
         function bind(html) {
 
-            $("#id_content").html(html);
-            $("#id_form").attr("action", settings.saveUrl);
+           $("#id_content").html(html);
+           $("#id_form").attr("action", $('#id_submit').val() === "Run" ? settings.runUrl : settings.updateUrl);
             $("#id_form").parsley({
                errorsContainer: function(e) {
                    return e.$element.closest('div.form-group').find('span.help-container');
@@ -189,17 +194,17 @@
 
         }
 
-        function post() {
+      function post() {
             $.ajax({
-                url: settings.ajaxUrl,
-                type: "POST",
-                data: $("#id_form").serialize(),
-                success: function (html) {
-                    bind(html);
-                },
-                error: function (html) {
-                    bind(html);
-                }
+               url: settings.ajaxUrl,
+               type: "POST",
+               data: $("#id_form").serialize(),
+               success: function (html) {
+                  bind(html);
+               },
+               error: function (html) {
+                  bind(html);
+               }
             }, "html");
         }
 
@@ -273,9 +278,7 @@
                      baseZ: 1021
                   }
             });
-         }
-
-        setTimeout(function () { $(".zone-messages").fadeOut(); }, 5000);
+      }
 
       bind();
    });
