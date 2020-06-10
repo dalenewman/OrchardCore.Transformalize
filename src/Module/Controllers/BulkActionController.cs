@@ -10,8 +10,7 @@ using System.Dynamic;
 using Transformalize.Configuration;
 using OrchardCore.Users.Services;
 using OrchardCore.Users.Models;
-using Transformalize;
-using OrchardCore.DisplayManagement.Manifest;
+using System.Text;
 
 namespace Module.Controllers {
 
@@ -38,7 +37,7 @@ namespace Module.Controllers {
       }
 
       [HttpPost]
-      public async Task<ActionResult> Index(BulkActionRequest request) {
+      public async Task<ActionResult> Create(BulkActionRequest request) {
 
          if (HttpContext == null || HttpContext.User == null || HttpContext.User.Identity == null || !HttpContext.User.Identity.IsAuthenticated) {
             return Unauthorized();
@@ -152,8 +151,8 @@ namespace Module.Controllers {
             await _taskService.RunAsync(write.Process);
             #endregion
 
-            writeParameters.Add("ReportContentItemId", bulkAction.ContentItem.ContentItemId);
-            writeParameters.Add("TaskContentItemId", bulkAction.ContentItem.ContentItemId);
+            writeParameters["ReportContentItemId"] = bulkAction.ContentItem.ContentItemId;
+            writeParameters["TaskContentItemId"] = bulkAction.ContentItem.ContentItemId;
             return RedirectToAction("Review", ParametersToRouteValues(writeParameters));
 
          } else {
@@ -240,8 +239,57 @@ namespace Module.Controllers {
 
          await _taskService.RunAsync(bulkAction.Process);
 
-         return View("Log", new LogViewModel(_logger.Log, bulkAction.Process, bulkAction.ContentItem));
+         var recordsAffected = bulkAction.Process.Actions.Where(a => a.RowCount > 0).Sum(a => a.RowCount) + bulkAction.Process.Entities.Where(a => a.Hits > 0).Sum(e => e.Hits);
+         var closeParameters = new Dictionary<string, string>() { { "RecordsAffected", recordsAffected.ToString() } };
+
+         if (bulkAction.Process.Status == 200) {
+            var batchSuccessAlias = "batch-success";
+            var batchSuccess = await _taskService.Validate(new TransformalizeRequest(batchSuccessAlias, user) { InternalParameters = closeParameters });
+
+            if (batchSuccess.Fails()) {
+               _logger.Warn(() => $"{bulkAction.ContentItem.DisplayText} succeeded but {batchSuccessAlias} failed to load.");
+            } else {
+               await _taskService.RunAsync(batchSuccess.Process);
+            }
+         } else {
+            var batchFailAlias = "batch-fail";
+            var message = new StringBuilder(bulkAction.Process.Message);
+            foreach(var error in _logger.Log.Where(l=>l.LogLevel == Transformalize.Contracts.LogLevel.Error)) {
+               message.AppendLine(error.Message);
+            }
+            closeParameters["Message"] = message.ToString();
+            var batchFail = await _taskService.Validate(new TransformalizeRequest(batchFailAlias, user) { InternalParameters = closeParameters });
+
+            if (batchFail.Fails()) {
+               _logger.Warn(() => $"{bulkAction.ContentItem.DisplayText} failed and {batchFailAlias} failed to load.");
+            } else {
+               await _taskService.RunAsync(batchFail.Process);
+            }
+         }
+
+         return RedirectToAction("Result", ParametersToRouteValues(bulkAction.Process.Parameters));
       }
+
+      public async Task<ActionResult> Result() {
+
+         if (HttpContext == null || HttpContext.User == null || HttpContext.User.Identity == null || !HttpContext.User.Identity.IsAuthenticated) {
+            return Unauthorized();
+         }
+
+         var user = HttpContext.User.Identity.Name ?? "Anonymous";
+
+         var batchSummaryAlias = "batch-summary";
+         var batchSummary = await _taskService.Validate(new TransformalizeRequest(batchSummaryAlias, user) { Secure = false });
+
+         if (batchSummary.Fails()) {
+            return batchSummary.ActionResult;
+         }
+
+         await _taskService.RunAsync(batchSummary.Process);
+
+         return View(batchSummary.Process);
+      }
+
 
 
       private dynamic ParametersToRouteValues(IDictionary<string, string> parameters) {
@@ -249,6 +297,16 @@ namespace Module.Controllers {
          var editable = (ICollection<KeyValuePair<string, object>>)routeValues;
          foreach (var kvp in parameters) {
             editable.Add(new KeyValuePair<string, object>(kvp.Key, kvp.Value));
+         }
+         dynamic d = routeValues;
+         return d;
+      }
+
+      private dynamic ParametersToRouteValues(List<Parameter> parameters) {
+         var routeValues = new ExpandoObject();
+         var editable = (ICollection<KeyValuePair<string, object>>)routeValues;
+         foreach (var p in parameters) {
+            editable.Add(new KeyValuePair<string, object>(p.Name, p.Value));
          }
          dynamic d = routeValues;
          return d;

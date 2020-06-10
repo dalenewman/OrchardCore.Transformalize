@@ -134,6 +134,13 @@ namespace Module {
          routes.MapAreaControllerRoute(
              name: null,
              areaName: Common.ModuleName,
+             pattern: "t/action/create",
+             defaults: new { controller = "BulkAction", action = "Create" }
+         );
+
+         routes.MapAreaControllerRoute(
+             name: null,
+             areaName: Common.ModuleName,
              pattern: "t/action/review",
              defaults: new { controller = "BulkAction", action = "Review" }
          );
@@ -155,8 +162,8 @@ namespace Module {
          routes.MapAreaControllerRoute(
              name: null,
              areaName: Common.ModuleName,
-             pattern: "t/action/{ContentItemId}",
-             defaults: new { controller = "BulkAction", action = "Index" }
+             pattern: "t/action/result",
+             defaults: new { controller = "BulkAction", action = "Result" }
          );
 
          builder.UseSession();

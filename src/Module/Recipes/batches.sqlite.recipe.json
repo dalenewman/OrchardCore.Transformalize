@@ -4,7 +4,7 @@
    "description": "Batch Create and Batch Write Tasks Needed for Bulk Actions.",
    "author": "Dale Newman",
    "website": "https://github.com/dalenewman/Transformalize",
-   "version": "0.7.14",
+   "version": "0.7.15",
    "issetuprecipe": false,
    "tags": [ "reporting", "etl" ],
    "steps": [
@@ -45,8 +45,31 @@
                "ContentPermissionsPart": {
                   "Roles": [ "Authenticated" ],
                   "Enabled": true
-               },
-               "CommonPart": {}
+               }
+            },
+            {
+               "ContentItemId": "[js: uuid()]",
+               "ContentType": "TransformalizeTask",
+               "DisplayText": "Batch Success",
+               "TitlePart": { "Title": "Batch Success" },
+               "AliasPart": { "Alias": "batch-success" },
+               "TransformalizeTaskPart": { "Arrangement": { "Arrangement": "<cfg name=\"Batch Success\">\r\n \r\n  <parameters>\r\n    <add name=\"BatchId\" type=\"long\" value=\"0\" />\r\n    <add name=\"RecordsAffected\" type=\"int\" value=\"0\" />\r\n  </parameters>\r\n  \r\n  <connections>\r\n    <add name=\"db\" provider=\"sqlite\" file=\"App_Data\\batches.db\" />\r\n  </connections>\r\n  \r\n  <actions>\r\n    <add name=\"Create\" type=\"run\" connection=\"db\" \r\n         command=\"UPDATE Batch \r\n                  SET BatchStatusId = 3,\r\n                      Message = @RecordsAffected || ' Records Affected'\r\n                  WHERE Id = @BatchId;\" />\r\n  </actions>\r\n\r\n</cfg>" } },
+               "ContentPermissionsPart": {
+                  "Roles": [ "Authenticated" ],
+                  "Enabled": true
+               }
+            },
+            {
+               "ContentItemId": "[js: uuid()]",
+               "ContentType": "TransformalizeTask",
+               "DisplayText": "Batch Fail",
+               "TitlePart": { "Title": "Batch Fail" },
+               "AliasPart": { "Alias": "batch-fail" },
+               "TransformalizeTaskPart": { "Arrangement": { "Arrangement": "<cfg name=\"Batch Fail\">\r\n \r\n  <parameters>\r\n    <add name=\"BatchId\" type=\"long\" value=\"0\" />\r\n    <add name=\"RecordsAffected\" type=\"int\" value=\"0\" />\r\n    <add name=\"Message\" value=\"\" />\r\n  </parameters>\r\n  \r\n  <connections>\r\n    <add name=\"db\" provider=\"sqlite\" file=\"App_Data\\batches.db\" />\r\n  </connections>\r\n  \r\n  <actions>\r\n    <add name=\"Create\" type=\"run\" connection=\"db\" \r\n         command=\"UPDATE Batch \r\n                  SET BatchStatusId = 4,\r\n                      Message = @RecordsAffected || ' Records Affected. ' || @Message\r\n                  WHERE Id = @BatchId;\" />\r\n  </actions>\r\n\r\n</cfg>" } },
+               "ContentPermissionsPart": {
+                  "Roles": [ "Authenticated" ],
+                  "Enabled": true
+               }
             }
          ]
       }

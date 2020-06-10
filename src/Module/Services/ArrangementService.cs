@@ -51,11 +51,12 @@ namespace Module.Services {
          response.Process.Message = Common.InvalidParametersMessage;
          if (request.Format == null) {
             foreach (var parameter in response.Process.Parameters.Where(p => !p.Valid)) {
-               _logger.Warn(() => parameter.Message);
+               foreach (var message in parameter.Message.Split('|')) {
+                  _logger.Warn(() => message);
+               }
             }
             response.ActionResult = LogResult(response);
          } else {
-
             response.Process.Connections.Clear();
             response.Process.Log.AddRange(_logger.Log);
             response.ActionResult = ContentResult(request, response);

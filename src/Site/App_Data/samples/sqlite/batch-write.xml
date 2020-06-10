@@ -1,0 +1,25 @@
+<cfg name="Batch" mode="@[Mode]">
+
+  <parameters>
+    <add name="BatchId" type="int" value="0" />
+    <add name="Mode" value="default" />
+  </parameters>
+
+  <connections>
+    <add name="input" provider="internal" />
+    <add name="output" provider="sqlite" file="App_Data\batches.db" />
+  </connections>
+  
+  <entities>
+    <add name="Record" update="false">
+      <rows>
+        <!-- OrchardCore.Transformalize will insert rows here -->
+      </rows>
+      <fields>
+        <add input="false" name="BatchId" type="int" default="@[BatchId]" primary-key="true" />
+        <!-- currently this last field is used to store the batch values -->
+        <add name="BatchValue" length="255" primary-key="true" />
+      </fields>
+    </add>
+  </entities>
+</cfg>

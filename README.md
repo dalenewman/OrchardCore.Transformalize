@@ -9,9 +9,9 @@ module for [Orchard Core](https://github.com/OrchardCMS/OrchardCore) rc1.
    - <strike>JSON Extract</strike>
    - Map(Box) view
    - Calendar view
-- Batches / Bulk Actions <span style="color:orange;">(underway)</span>
+- <strike>Batches / Bulk Actions</strike>
   - <strike>Tasks (ETL Jobs) for running batches, etc</strike>
-  - Forms for accepting parameters for batches
+  - <strike>Forms for accepting parameters for batches</strike>
 - <strike>Add Mini Profiler into ADO providers</strike>
 - Settings
   - <strike>Connections</strike>
@@ -66,6 +66,39 @@ the main [Transformalize](https://github.com/dalenewman/Transformalize) read me 
 ![bogus report](bogus.gif)
 
 #### Tasks
-Tasks can de-normalize relational databases (as seen on [Transformalize](https://github.com/dalenewman/Transformalize) read me).
-They can also run actions or simple one entity transformations.  They can write scripts 
-(to then run in actions), or run data manipulation for every row (e.g. with ado run transform).
+Tasks can transform, validate, or de-normalize data (as seen in the [Transformalize](https://github.com/dalenewman/Transformalize) read me).
+They can also run actions or other tasks.  You can use them to write and run SQL scripts 
+or manipulate every row (e.g. with an ADO run transform).
+
+#### Bulk Actions
+When you enable Bulk Actions on a report, you designate a field or calculated field 
+in your arrangement as the Bulk Action Value Field.  Each row's value from 
+this field is sent to the bulk action.
+
+Bulk actions you run correspond to previously defined tasks.  Tasks are added to 
+an arrangement like this:
+
+```xml
+<cfg name="report">
+   <actions>
+      <add name="the-alias-of-your-task" description="seen in the bulk action dropdown" />
+   </actions>
+   <connections/>
+   <entities/>
+</cfg>
+```
+
+In order for bulk actions to work in a flexible way, 6 tasks must be 
+defined:
+
+1. `batch-create`: creates and returns a batch id
+2. `batch-write`: writes batch id and bulk action's values.
+3. `batch-summary`: Returns a batch summary for Review and Result page.
+4. `batch-success`: runs on success
+5. `batch-fail`: runs on failure
+6. `batch-running`: runs when bulk action is sent to background or queue
+
+A recipe named "Transformalize Batches SQLite" provides a SQLite 
+example.  These task names (aliases) are hard-coded 
+right now but will be put into settings.
+

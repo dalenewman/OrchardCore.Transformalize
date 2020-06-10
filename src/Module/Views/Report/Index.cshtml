@@ -119,7 +119,7 @@
 
          Field[] fields;
          Field bulkActionValueField = null;
-         if(Model.Part.BulkActions.Value && entity.TryGetField(Model.Part.BulkActionValueField.Text, out bulkActionValueField)) {
+         if (Model.Part.BulkActions.Value && entity.TryGetField(Model.Part.BulkActionValueField.Text, out bulkActionValueField)) {
             fields = firstEntity.GetAllOutputFields().Where(f => !f.System && f.Alias != bulkActionValueField.Alias).ToArray();
          } else {
             fields = firstEntity.GetAllOutputFields().Where(f => !f.System).ToArray();
@@ -137,7 +137,7 @@
                                  <input title="Select the entire search result" id="select-all" type="checkbox" class="bulk-action form-check-input" name="select-all" placeholder="Select the entire search result">
                               </div>
                            </th>
-                           }
+                        }
                         @foreach (var field in fields) {
                            <th title="@field.Name">@field.Label</th>
                         }
@@ -186,95 +186,95 @@
                   </thead>
                   <tbody>
                      @foreach (var row in entity.Rows) {
-                     <tr>
-                        @if (Model.Part.BulkActions.Value) {
-                           if (bulkActionValueField != null) {
+                        <tr>
+                           @if (Model.Part.BulkActions.Value) {
+                              if (bulkActionValueField != null) {
+                                 <td>
+                                    <div class="checkbox form-check">
+                                       <input title="Select this row"
+                                              type="checkbox"
+                                              class="bulk-action shift-select form-check-input"
+                                              name="Records"
+                                              value="@row[bulkActionValueField.Alias]"
+                                              placeholder="Select Record">
+                                    </div>
+                                 </td>
+                              } else {
+                                 <td>
+                                    <div class="checkbox form-check">
+                                       <input type="checkbox" class="form-check-input" name="Records" disabled="disabled">
+                                    </div>
+                                 </td>
+                              }
+                           }
+
+                           @foreach (var field in fields) {
                               <td>
-                                 <div class="checkbox form-check">
-                                    <input title="Select this row"
-                                           type="checkbox"
-                                           class="bulk-action shift-select form-check-input"
-                                           name="Records"
-                                           value="@row[bulkActionValueField.Alias]"
-                                           placeholder="Select Record">
-                                 </div>
-                              </td>
-                           } else {
-                              <td>
-                                 <div class="checkbox form-check">
-                                    <input type="checkbox" class="form-check-input" name="Records" disabled="disabled">
-                                 </div>
+                                 @switch (field.Type) {
+                                    case "bool":
+                                    case "boolean":
+                                       if ((bool)row[field.Alias]) {
+                                          <span class="badge alert-success">
+                                             <span class="fas fa-check"></span>
+                                          </span>
+                                       } else {
+                                          <span class="badge alert-danger">
+                                             <span class="fas fa-remove"></span>
+                                          </span>
+                                       }
+                                       break;
+                                    case "date":
+                                    case "datetime":
+                                       if (field.Format == string.Empty) {
+                                          @(row[field.Alias])
+                                       } else {
+                                          if (row[field.Alias] is DateTime) {
+                                             @(((DateTime)row[field.Alias]).ToString(field.Format))
+                                          } else {
+                                             @((Convert.ToDateTime(row[field.Alias])).ToString(field.Format))
+                                          }
+                                       }
+                                       break;
+                                    case "byte[]":
+                                       @Transformalize.Utility.BytesToHexString(row[field.Alias] as byte[])
+                                       break;
+                                    case "single":
+                                    case "double":
+                                    case "decimal":
+                                    case "float":
+                                       if (field.Format == string.Empty) {
+                                          @(row[field.Alias])
+                                       } else {
+                                          switch (field.Type) {
+                                             case "single":
+                                             case "float":
+                                                @(row[field.Alias] is float ? ((float)row[field.Alias]).ToString(field.Format) : Convert.ToSingle(row[field.Alias]).ToString(field.Format))
+                                                break;
+                                             case "decimal":
+                                                @(row[field.Alias] is decimal ? ((decimal)row[field.Alias]).ToString(field.Format) : Convert.ToDecimal(row[field.Alias]).ToString(field.Format))
+                                                break;
+                                             case "double":
+                                                @(row[field.Alias] is double ? ((double)row[field.Alias]).ToString(field.Format) : Convert.ToDouble(row[field.Alias]).ToString(field.Format))
+                                                break;
+                                             default:
+                                                @(row[field.Alias])
+                                                break;
+                                          }
+
+                                       }
+                                       break;
+                                    default:
+                                       if (field.Raw) {
+                                          @Html.Raw(row[field.Alias])
+                                       } else {
+                                          @row[field.Alias]
+                                       }
+
+                                       break;
+                                 }
                               </td>
                            }
-                        }
-
-                        @foreach (var field in fields) {
-                           <td>
-                              @switch (field.Type) {
-                                 case "bool":
-                                 case "boolean":
-                                    if ((bool)row[field.Alias]) {
-                                       <span class="badge alert-success">
-                                          <span class="fas fa-check"></span>
-                                       </span>
-                                    } else {
-                                       <span class="badge alert-danger">
-                                          <span class="fas fa-remove"></span>
-                                       </span>
-                                    }
-                                    break;
-                                 case "date":
-                                 case "datetime":
-                                    if (field.Format == string.Empty) {
-                                       @(row[field.Alias])
-                                    } else {
-                                       if (row[field.Alias] is DateTime) {
-                                          @(((DateTime)row[field.Alias]).ToString(field.Format))
-                                       } else {
-                                          @((Convert.ToDateTime(row[field.Alias])).ToString(field.Format))
-                                       }
-                                    }
-                                    break;
-                                 case "byte[]":
-                                    @Transformalize.Utility.BytesToHexString(row[field.Alias] as byte[])
-                                    break;
-                                 case "single":
-                                 case "double":
-                                 case "decimal":
-                                 case "float":
-                                    if (field.Format == string.Empty) {
-                                       @(row[field.Alias])
-                                    } else {
-                                       switch (field.Type) {
-                                          case "single":
-                                          case "float":
-                                             @(row[field.Alias] is float ? ((float)row[field.Alias]).ToString(field.Format) : Convert.ToSingle(row[field.Alias]).ToString(field.Format))
-                                             break;
-                                          case "decimal":
-                                             @(row[field.Alias] is decimal ? ((decimal)row[field.Alias]).ToString(field.Format) : Convert.ToDecimal(row[field.Alias]).ToString(field.Format))
-                                             break;
-                                          case "double":
-                                             @(row[field.Alias] is double ? ((double)row[field.Alias]).ToString(field.Format) : Convert.ToDouble(row[field.Alias]).ToString(field.Format))
-                                             break;
-                                          default:
-                                             @(row[field.Alias])
-                                             break;
-                                       }
-
-                                    }
-                                    break;
-                                 default:
-                                    if (field.Raw) {
-                                       @Html.Raw(row[field.Alias])
-                                    } else {
-                                       @row[field.Alias]
-                                    }
-
-                                    break;
-                              }
-                           </td>
-                        }
-                     </tr>
+                        </tr>
                      }
                   </tbody>
                </table>
@@ -354,29 +354,23 @@
       }
    }
 
-   function bulkAction(page,name) {
+   function bulkAction(page, name) {
       var length = $('.bulk-action:checked').length;
       if (length > 0) {
-         $.blockUI({
-            message: null,
-            css: {
-               border: 'none',
-               padding: '15px',
-               backgroundColor: '#000',
-               '-webkit-border-radius': '10px',
-               '-moz-border-radius': '10px',
-               opacity: .5,
-               color: '#fff',
-               baseZ: 1021
-            }
-         });
          var $form = $('#id_report');
          $form.attr('method', 'POST');
-         $form.attr('action', '@(Url.Action("Index", "BulkAction", new { ContentItemId = Model.Item.ContentItemId }))');
+         $form.attr('target', '_blank');
+         $form.attr('action', '@(Url.Action("Create", "BulkAction", new { ContentItemId = Model.Item.ContentItemId }))');
          $form.append('@(Html.AntiForgeryToken())');
          $form.append('<input type="hidden" name="ActionName" value="'+name+'" />');
          $form.append('<input type="hidden" name="ActionCount" value="'+controls.bulkActionLength+'" />');
-         $('#id_output').val("batch");
+         controls.submit(page);
+
+         // clean up since now we've got everything messed up
+         $form.attr('method', 'GET');
+         $form.attr('target', '_self');
+         $form.attr('action', '@(Url.Action("Index", "Report", new { ContentItemId = Model.Item.ContentItemId }))');
+         // just reset
          controls.submit(page);
       }
    }
@@ -437,8 +431,6 @@
             }
         });
         $("#id_report select").css("visibility", "visible");
-
-
 
         $('.search-button').bind('click', function() {
             $('#id_report').submit();

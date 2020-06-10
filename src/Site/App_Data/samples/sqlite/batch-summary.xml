@@ -1,0 +1,63 @@
+<cfg name="Batch Summary" read-only="true">
+
+  <parameters>
+    <add name="BatchId" type="int" value="0" />
+  </parameters>
+
+  <connections>
+    <add name="db" provider="sqlite" file="App_Data\batches.db" />
+  </connections>
+
+  <maps>
+    <!-- bootstrap 4 contextual classes are primary, secondary, success, danger, warning, info, light, and dark -->
+    <add name="ContextualClasses">
+      <items>
+        <add from="Waiting" to="secondary"/>
+        <add from="Completed" to="success"/>
+        <add from="Failed" to="danger"/>
+        <add from="Running" to="warning"/>
+      </items>
+    </add>
+  </maps>
+
+  <entities>
+    <add name="Script" 
+         connection="db" 
+         query="
+                SELECT
+                  b.Description,
+                  b.Id AS BatchId,
+                  b.Created,
+                  b.ReportTitle,
+                  bs.Status, 
+                  b.Message,
+                  coalesce(br.Records, 0) AS Records,
+                  b.ReportContentItemId,
+                  b.TaskContentItemId                 
+                FROM Batch b
+                INNER JOIN BatchStatus bs ON (b.BatchStatusId = bs.Id)
+                LEFT OUTER JOIN (
+                  SELECT COUNT(*) AS Records
+                  FROM BatchRecord br
+                  WHERE BatchId = @BatchId
+                ) br
+                WHERE b.Id = @BatchId;
+                ">
+      <fields>
+        <add name="Description" label="Bulk Action" t='format(<strong>{Description}</strong>)' raw="true" />
+        <add name="BatchId" type="long" primary-key="true" />
+        <add name="Created" type="datetime" t="convert().timezone(UTC,Eastern Standard Time)" />
+        <add name="ReportTitle" label="Report" />
+        <add name="Status" output="false" />
+        <add input="false" name="ContextualClass" t="copy(Status).map(ContextualClasses)" output="false" />
+        <add input="false" name="Badge" label="Status" raw="true" t='format(<span class="badge badge-{ContextualClass}">{Status}</span>)' />
+        <add name="Message" />
+        <add name="Records" type="long" />
+        
+        <!-- These two fields are not shown in the summary but are checked for incase you want to a review a batch later by id and you don't have these values -->
+        <add name="ReportContentItemId" label="Report Id" />
+        <add name="TaskContentItemId" label="Task Id" />        
+      </fields>
+    </add>
+  </entities>
+</cfg>
