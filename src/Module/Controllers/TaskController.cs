@@ -53,6 +53,7 @@ namespace Module.Controllers {
 
          await _taskService.RunAsync(task.Process);
 
+         task.Process.Log.AddRange(_logger.Log);
          task.Process.Connections.Clear();
         
          return new ContentResult() { Content = task.Process.Serialize(), ContentType = request.ContentType };

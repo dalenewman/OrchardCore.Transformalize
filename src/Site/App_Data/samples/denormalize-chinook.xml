@@ -1,0 +1,71 @@
+<cfg name="Chinook" mode="@[Mode]" flatten="true">
+  <parameters>
+    <add name="Mode" value="default" />
+  </parameters>
+  <connections>
+    <add name="input" provider="sqlite" file="App_Data\samples\chinook-relational.db" />
+    <add name="output" provider="sqlite" file="App_Data\samples\chinook-flat.db" />
+  </connections>
+  <entities>
+    <add name="InvoiceLine">
+      <fields>
+        <add name="InvoiceLineId" type="long" primary-key="true" />
+        <add name="InvoiceId" type="long" />
+        <add name="TrackId" type="long" />
+        <add name="UnitPrice" type="decimal" precision="10" scale="2" />
+        <add name="Quantity" type="long" />
+      </fields>
+    </add>
+    <add name="Invoice">
+      <fields>
+        <add name="InvoiceId" type="long" primary-key="true" />
+        <add name="CustomerId" type="long" />
+        <add name="InvoiceDate" type="datetime" />
+        <add name="BillingAddress" length="70" />
+        <add name="BillingCity" length="40" />
+        <add name="BillingState" length="40" />
+        <add name="BillingCountry" length="40" />
+        <add name="BillingPostalCode" length="10" />
+        <add name="Total" type="decimal" precision="10" scale="2" />
+      </fields>
+    </add>
+    <add name="Customer">
+      <fields>
+        <add name="CustomerId" type="long" primary-key="true" />
+        <add name="FirstName" length="40" />
+        <add name="LastName" length="20" />
+        <add name="Company" length="80" />
+        <add name="Address" length="70" />
+        <add name="City" length="40" />
+        <add name="State" length="40" />
+        <add name="Country" length="40" />
+        <add name="PostalCode" length="10" />
+        <add name="Phone" length="24" />
+        <add name="Fax" length="24" />
+        <add name="Email" length="60" />
+        <add name="SupportRepId" type="long" />
+      </fields>
+      <calculated-fields>
+          <add name="FullName" length="61" t="format({FirstName} {LastName})" />
+      </calculated-fields>
+    </add>
+    <add name="Track">
+      <fields>
+        <add name="TrackId" type="long" primary-key="true" />
+        <add name="Name" alias="TrackName" length="200" />
+        <add name="AlbumId" type="long" />
+        <add name="MediaTypeId" type="long"  />
+        <add name="GenreId" type="long" />
+        <add name="Composer" length="220"  />
+        <add name="Milliseconds" alias="TrackMilliseconds" type="long" />
+        <add name="Bytes" alias="TrackBytes" type="long"  />
+        <add name="UnitPrice" alias="TrackUnitPrice" type="decimal" precision="10" scale="2" />
+      </fields>
+    </add>
+  </entities>
+  <relationships>
+    <add left-entity="InvoiceLine" left-field="InvoiceId" right-entity="Invoice" right-field="InvoiceId" />
+    <add left-entity="Invoice" left-field="CustomerId" right-entity="Customer" right-field="CustomerId" />
+    <add left-entity="InvoiceLine" left-field="TrackId" right-entity="Track" right-field="TrackId" />
+  </relationships>
+</cfg>
