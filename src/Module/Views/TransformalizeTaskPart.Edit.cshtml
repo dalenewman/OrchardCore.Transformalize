@@ -1,0 +1,32 @@
+﻿@model EditTransformalizeTaskPartViewModel
+@using Module.ViewModels;
+
+@{
+   var runLink = Url.Action("Index", "Task", new { Area = Module.Common.ModuleName, ContentItemId = Model.TransformalizeTaskPart.ContentItem.ContentItemId });
+   var xmlLink = Url.Action("Run", "Task", new { Format = "xml", Area = Module.Common.ModuleName, ContentItemId = Model.TransformalizeTaskPart.ContentItem.ContentItemId });
+   var jsonLink = Url.Action("Run", "Task", new { Format = "json", Area = Module.Common.ModuleName, ContentItemId = Model.TransformalizeTaskPart.ContentItem.ContentItemId });
+}
+
+<fieldset>
+   <div class="btn-group float-right" role="group">
+      <button title="run this task"
+              type="button"
+              class="btn btn-success btn-sm"
+              onclick="window.open('@runLink', '_blank');">
+         <span class="fas fa-clipboard-list"></span>
+      </button>
+      <button title="run this task as xml"
+              type="button"
+              class="btn btn-primary btn-sm"
+              onclick="window.open('@xmlLink', '_blank');">
+         <span class="fas fa-code"></span>
+      </button>
+      <button title="run this task as json"
+              type="button"
+              class="btn btn-secondary btn-sm"
+              onclick="window.open('@jsonLink', '_blank');">
+         <span class="fas fa-exchange-alt"></span>
+      </button>
+   </div>
+</fieldset>
+

@@ -63,7 +63,7 @@ namespace Module {
          services.AddScoped<IResourceManifestProvider, ResourceManifest>();
          services.AddScoped<IContentHandler, TransformalizeHandler>();
 
-         // fields
+         // fields (also see global template access above)
          services.AddContentField<TransformalizeArrangementField>(); // UseDisplayDriver in dev branch
          services.AddScoped<IContentFieldDisplayDriver, TransformalizeArrangementFieldDisplayDriver>();
          services.AddContentField<PageSizesField>(); // UseDisplayDriver in dev branch
@@ -73,6 +73,7 @@ namespace Module {
          services.AddContentPart<TransformalizeReportPart>();
          services.AddScoped<IContentPartDisplayDriver, TransformalizeReportPartDisplayDriver>();
          services.AddContentPart<TransformalizeTaskPart>();
+         services.AddScoped<IContentPartDisplayDriver, TransformalizeTaskPartDisplayDriver>();
 
          // settings
          services.AddScoped<IDisplayDriver<ISite>, TransformalizeSettingsDisplayDriver>();

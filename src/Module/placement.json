@@ -1,0 +1,12 @@
+{
+   "TransformalizeReportPart": [
+      {
+         "place": "Content:1"
+      }
+   ],
+   "TransformalizeTaskPart": [
+      {
+         "place": "Content:1"
+      }
+   ]
+}

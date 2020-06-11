@@ -5,6 +5,7 @@ using OrchardCore.ContentManagement.Display.Models;
 using OrchardCore.DisplayManagement.ModelBinding;
 using OrchardCore.DisplayManagement.Views;
 using Module.Models;
+using Module.ViewModels;
 
 namespace Module.Drivers {
    public class TransformalizeReportPartDisplayDriver : ContentPartDisplayDriver<TransformalizeReportPart> {
@@ -15,6 +16,15 @@ namespace Module.Drivers {
          IStringLocalizer<TransformalizeReportPartDisplayDriver> localizer
       ) {
          S = localizer;
+      }
+
+      // change display for admin content items view?
+      // public override IDisplayResult Display(TransformalizeReportPart part) => View(nameof(TransformalizeReportPart), part);
+
+      public override IDisplayResult Edit(TransformalizeReportPart transformalizeReportPart) {
+         return Initialize<EditTransformalizeReportPartViewModel>("TransformalizeReportPart_Edit", model => {
+            model.TransformalizeReportPart = transformalizeReportPart;
+         }).Location("Content:1");
       }
 
       public override async Task<IDisplayResult> UpdateAsync(TransformalizeReportPart part, IUpdateModel updater, UpdatePartEditorContext context) {

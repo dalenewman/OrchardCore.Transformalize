@@ -1,0 +1,39 @@
+﻿@model EditTransformalizeReportPartViewModel
+@using Module.ViewModels;
+
+@{
+   var viewLink = Url.Action("Index", "Report", new { Area = Module.Common.ModuleName, ContentItemId = Model.TransformalizeReportPart.ContentItem.ContentItemId });
+   var xmlLink = Url.Action("Run", "Report", new { Format = "xml", Area = Module.Common.ModuleName, ContentItemId = Model.TransformalizeReportPart.ContentItem.ContentItemId });
+   var jsonLink = Url.Action("Run", "Report", new { Format = "json", Area = Module.Common.ModuleName, ContentItemId = Model.TransformalizeReportPart.ContentItem.ContentItemId });
+   var logLink = Url.Action("Log", "Report", new { Format = "json", Area = Module.Common.ModuleName, ContentItemId = Model.TransformalizeReportPart.ContentItem.ContentItemId });
+}
+
+<fieldset>
+   <div class="btn-group float-right" role="group">
+      <button title="view this report"
+              type="button"
+              class="btn btn-success btn-sm"
+              onclick="window.open('@viewLink', '_blank');">
+         <span class="fas fa-list"></span>
+      </button>
+      <button title="run this report as xml"
+              type="button"
+              class="btn btn-primary btn-sm"
+              onclick="window.open('@xmlLink', '_blank');">
+         <span class="fas fa-code"></span>
+      </button>
+      <button title="run this report as json"
+              type="button"
+              class="btn btn-secondary btn-sm"
+              onclick="window.open('@jsonLink', '_blank');">
+         <span class="fas fa-exchange-alt"></span>
+      </button>
+      <button title="view this report's log"
+              type="button"
+              class="btn btn-info btn-sm"
+              onclick="window.open('@logLink', '_blank');">
+         <span class="fas fa-clipboard-list"></span>
+      </button>
+   </div>
+</fieldset>
+
