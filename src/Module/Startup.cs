@@ -46,12 +46,12 @@ namespace Module {
          services.AddScoped<ILinkService, LinkService>();
          services.AddScoped<ISortService, SortService>();
          services.AddScoped<IStickyParameterService, StickyParameterService>();
-         services.AddScoped<IArrangementService,ArrangementService>();
-         services.AddScoped<IArrangementLoadService,ArrangementLoadService>();
-         services.AddScoped<IArrangementRunService,ArrangementRunService>();
+         services.AddScoped<IArrangementService, ArrangementService>();
+         services.AddScoped<IArrangementLoadService, ArrangementLoadService>();
+         services.AddScoped<IArrangementRunService, ArrangementRunService>();
          services.AddScoped<IParameterService, ParameterService>();
-         services.AddScoped<IReportService,ReportService>();
-         services.AddScoped<ITaskService,TaskService>();
+         services.AddScoped<IReportService, ReportService>();
+         services.AddScoped<ITaskService, TaskService>();
          services.AddScoped<IFormService, FormService>();
          services.AddScoped<ISettingsService, SettingsService>();
          services.AddScoped<IConfigurationContainer, OrchardConfigurationContainer>();
@@ -83,54 +83,14 @@ namespace Module {
 
       public override void Configure(IApplicationBuilder builder, IEndpointRouteBuilder routes, IServiceProvider serviceProvider) {
 
-         routes.MapAreaControllerRoute(
-             name: null,
-             areaName: Common.ModuleName,
-             pattern: "t/report/log/{ContentItemId}",
-             defaults: new { controller = "Report", action = "Log" }
-         );
+         RouteReporting(routes);
+         RouteTasks(routes);
+         RouteBulkActions(routes);
 
-         routes.MapAreaControllerRoute(
-             name: null,
-             areaName: Common.ModuleName,
-             pattern: "t/report/download/csv/{ContentItemId}",
-             defaults: new { controller = "Report", action = "SaveAsCsv" }
-         );
+         builder.UseSession();
+      }
 
-         routes.MapAreaControllerRoute(
-            name: null,
-             areaName: Common.ModuleName,
-             pattern: "t/report/download/json/{ContentItemId}",
-             defaults: new { controller = "Report", action = "SaveAsJson" }
-         );
-
-         routes.MapAreaControllerRoute(
-             name: null,
-             areaName: Common.ModuleName,
-             pattern: "t/report/{format}/{ContentItemId}",
-             defaults: new { controller = "Report", action = "Run", format = "json" }
-         );
-
-         routes.MapAreaControllerRoute(
-             name: null,
-             areaName: Common.ModuleName,
-             pattern: "t/report/{ContentItemId}",
-             defaults: new { controller = "Report", action = "Index" }
-         );
-
-         routes.MapAreaControllerRoute(
-             name: null,
-             areaName: Common.ModuleName,
-             pattern: "t/task/{format}/{ContentItemId}",
-             defaults: new { controller = "Task", action = "Run", format = "json" }
-         );
-
-         routes.MapAreaControllerRoute(
-             name: null,
-             areaName: Common.ModuleName,
-             pattern: "t/task/{ContentItemId}",
-             defaults: new { controller = "Task", action = "Index" }
-         );
+      public void RouteBulkActions(IEndpointRouteBuilder routes) {
 
          routes.MapAreaControllerRoute(
              name: null,
@@ -167,7 +127,77 @@ namespace Module {
              defaults: new { controller = "BulkAction", action = "Result" }
          );
 
-         builder.UseSession();
+      }
+
+      public void RouteTasks(IEndpointRouteBuilder routes) {
+
+         routes.MapAreaControllerRoute(
+            name: "Task Review",
+            areaName: Common.ModuleName,
+            pattern: "t/task/{ContentItemId}",
+            defaults: new { controller = "Task", action = "Review" }
+         );
+
+         routes.MapAreaControllerRoute(
+             name: "Task Review Form",
+             areaName: Common.ModuleName,
+             pattern: "t/task/form/{ContentItemId}",
+             defaults: new { controller = "Task", action = "Form" }
+         );
+
+         routes.MapAreaControllerRoute(
+             name: "Task Run",
+             areaName: Common.ModuleName,
+             pattern: "t/task/run/{ContentItemId}",
+             defaults: new { controller = "Task", action = "Run" }
+         );
+
+         routes.MapAreaControllerRoute(
+             name: "Task Run API",
+             areaName: Common.ModuleName,
+             pattern: "t/task/run/{format}/{ContentItemId}",
+             defaults: new { controller = "Task", action = "Run", format = "json" }
+         );
+
+      }
+
+      public void RouteReporting(IEndpointRouteBuilder routes) {
+
+         routes.MapAreaControllerRoute(
+             name: null,
+             areaName: Common.ModuleName,
+             pattern: "t/report/log/{ContentItemId}",
+             defaults: new { controller = "Report", action = "Log" }
+         );
+
+         routes.MapAreaControllerRoute(
+             name: null,
+             areaName: Common.ModuleName,
+             pattern: "t/report/download/csv/{ContentItemId}",
+             defaults: new { controller = "Report", action = "SaveAsCsv" }
+         );
+
+         routes.MapAreaControllerRoute(
+            name: null,
+             areaName: Common.ModuleName,
+             pattern: "t/report/download/json/{ContentItemId}",
+             defaults: new { controller = "Report", action = "SaveAsJson" }
+         );
+
+         routes.MapAreaControllerRoute(
+             name: null,
+             areaName: Common.ModuleName,
+             pattern: "t/report/{format}/{ContentItemId}",
+             defaults: new { controller = "Report", action = "Run", format = "json" }
+         );
+
+         routes.MapAreaControllerRoute(
+             name: null,
+             areaName: Common.ModuleName,
+             pattern: "t/report/{ContentItemId}",
+             defaults: new { controller = "Report", action = "Index" }
+         );
+
       }
    }
 }

@@ -5,6 +5,11 @@ using Parameter = Transformalize.Configuration.Parameter;
 namespace Module.Ext {
 
    public static class ParameterExtensions {
+
+      public static bool Readonly(this Parameter p) {
+         return !p.Prompt;
+      }
+
       public static string ToParsley(this Parameter f) {
          if (f.V == string.Empty)
             return string.Empty;

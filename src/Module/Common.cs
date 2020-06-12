@@ -1,3 +1,6 @@
+using System;
+using System.Collections.Generic;
+
 namespace Module {
    public static class Common {
 
@@ -7,6 +10,7 @@ namespace Module {
       public const string SettingsGroupId = "Transformalize";
       public const string CodeMirrorVersion = "5.52.2";
       public const string InvalidParametersMessage = "Parameter Validation Failed";
+      public static HashSet<string> SystemFields = new HashSet<string>(2, StringComparer.OrdinalIgnoreCase) { "TaskContentItemId", "ReportContentItemId" };
 
    }
 }

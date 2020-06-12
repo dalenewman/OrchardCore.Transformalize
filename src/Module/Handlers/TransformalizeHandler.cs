@@ -33,7 +33,7 @@ namespace Module.Handlers {
                      metadata.DisplayRouteValues.Remove("Controller");
                      metadata.DisplayRouteValues.Add("Controller", "Task");
                      metadata.DisplayRouteValues.Remove("Action");
-                     metadata.DisplayRouteValues.Add("Action", "Index");
+                     metadata.DisplayRouteValues.Add("Action", "Review");
                      metadata.DisplayRouteValues.Remove("ContentItemId");
                      metadata.DisplayRouteValues.Add("ContentItemId", context.ContentItem.As<AliasPart>().Alias);
                   }
