@@ -7,6 +7,7 @@ namespace Module.Models {
       public string ContentItemId { get; set; } = string.Empty;
       public string User { get; set; }
       public bool Secure { get; set; } = true;
+      public bool ValidateParameters { get; set; } = true;
       public string Format {
          get { return _format; }
          set {

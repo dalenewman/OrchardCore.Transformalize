@@ -109,8 +109,8 @@ namespace Module.Services {
             _sortService.AddSortToEntity(process.Entities.First(), _parameters["sort"]);
          }
 
-         // disable actions
-         foreach (var action in process.Actions) {
+         // disable internal actions
+         foreach (var action in process.Actions.Where(a=>a.Type == "internal")) {
             action.Before = false;
             action.After = false;
          }

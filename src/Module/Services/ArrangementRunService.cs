@@ -7,6 +7,7 @@ using Transformalize.Configuration;
 using Transformalize.Contracts;
 
 namespace Module.Services {
+
    public class ArrangementRunService : IArrangementRunService {
 
       private readonly IContainer _container;

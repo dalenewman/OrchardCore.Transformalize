@@ -74,17 +74,12 @@
                   }
                </select>
             } else {
-               if (map.Items.Count > 2) {
-                  foreach (var item in map.Items) {
-                     <div class="radio">
-                        <label><input type="radio" name="@parameter.Name" value="@item.To" checked="@(value.Equals(item.To))" data-tfl-post-back="@(parameter.PostBack)" class="@(parameter.Valid ? "is-valid" : "is-invalid")" />@item.From</label>
-                     </div>
-                  }
-               } else {
-                  <br />
-                  foreach (var item in map.Items) {
-                     <label class="radio-inline"><input type="radio" name="@parameter.Name" value="@item.To" checked="@(value.Equals(item.To))" data-tfl-post-back="@(parameter.PostBack)" class="@(parameter.Valid ? "is-valid" : "is-invalid")" /> &nbsp;@item.From</label>
-                  }
+               <br/>
+               foreach (var item in map.Items) {
+                  <div class="form-check form-check-inline">
+                     <input type="radio" name="@parameter.Name" class="form-check-input" value="@item.To" checked="@(value.Equals(item.To))" data-tfl-post-back="@(parameter.PostBack)"/>
+                     <label for="@parameter.Name" class="form-check-label">@item.From</label>
+                  </div>
                }
             }
             @* if you change markup location you must update parsley error container *@

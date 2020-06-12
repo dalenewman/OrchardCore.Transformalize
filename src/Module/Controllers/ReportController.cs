@@ -3,13 +3,9 @@ using Microsoft.AspNetCore.Mvc;
 using OrchardCore.ContentManagement;
 using Module.Services.Contracts;
 using Module.ViewModels;
-using Transformalize.Logging;
 using OrchardCore.Liquid;
 using OrchardCore.Title.Models;
-using Transformalize.Configuration;
-using System.Collections.Generic;
 using Module.Services;
-using System.Linq;
 using Module.Models;
 
 namespace Module.Controllers {
@@ -44,7 +40,7 @@ namespace Module.Controllers {
          if (report.Process.Status != 200) {
             return View("Log", new LogViewModel(_logger.Log, report.Process, report.ContentItem));
          }
-         
+
          return log ? View("Log", new LogViewModel(_logger.Log, report.Process, report.ContentItem)) : View(new ReportViewModel(report.Process, report.ContentItem));
 
       }
@@ -58,45 +54,20 @@ namespace Module.Controllers {
       [HttpGet]
       public async Task<ActionResult> Run(string contentItemId, string format = "json") {
 
-         // important: since you're exposing the configuration, 
-         // always clear out the connections before sending to the client
+         var user = HttpContext.User?.Identity?.Name ?? "Anonymous";
 
-         var contentItem = await _reportService.GetByIdOrAliasAsync(contentItemId);
-         if (contentItem == null) {
-            return NotFound();
+         var request = new TransformalizeRequest(contentItemId, user) { Format = format };
+         var report = await _reportService.Validate(request);
+
+         if (report.Fails()) {
+            return report.ActionResult;
          }
 
-         if (!_reportService.CanAccess(contentItem)) {
-            return Unauthorized();
-         }
+         await _reportService.RunAsync(report.Process);
 
-         var process = _reportService.LoadForReport(contentItem, format);
-         var contentType = format == "json" ? "application/json" : "application/xml";
+         report.Process.Connections.Clear();
 
-         if (process.Status != 200) {
-            process.Connections.Clear();
-            return new ContentResult() { Content = process.Serialize(), ContentType = contentType };
-         }
-
-         if (!process.Parameters.All(p=>p.Valid)) {
-            foreach(var parameter in process.Parameters.Where(p => !p.Valid)) {
-               _logger.Warn(() => parameter.Message);
-            }
-            process.Message = "Error";
-            process.Status = 500;
-            process.Connections.Clear();
-            return new ContentResult() { Content = process.Serialize(), ContentType = contentType };
-         }
-
-         await _reportService.RunAsync(process);
-         if (process.Status != 200) {
-            process.Connections.Clear();
-            return new ContentResult() { Content = process.Serialize(), ContentType = contentType };
-         }
-
-         process.Connections.Clear();
-         return new ContentResult() { Content = process.Serialize(), ContentType = contentType };
-
+         return new ContentResult() { Content = report.Process.Serialize(), ContentType = request.ContentType };
       }
 
       [HttpGet]
@@ -165,11 +136,5 @@ namespace Module.Controllers {
          return new EmptyResult();
 
       }
-
-      public LogViewModel GetErrorModel(ContentItem contentItem, string message) {
-         return new LogViewModel(_logger.Log, new Process() { Name = "Error", Log = new List<LogEntry>(1) { new LogEntry(Transformalize.Contracts.LogLevel.Error, null, message) } }, contentItem);
-      }
-
-
    }
 }

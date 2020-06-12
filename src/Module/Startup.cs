@@ -24,7 +24,6 @@ using OrchardCore.Security.Permissions;
 using Module.Navigation;
 using Transformalize.Contracts;
 using Transformalize.Logging;
-using Autofac.Core;
 
 namespace Module {
    public class Startup : StartupBase {
@@ -49,6 +48,7 @@ namespace Module {
          services.AddScoped<IArrangementService, ArrangementService>();
          services.AddScoped<IArrangementLoadService, ArrangementLoadService>();
          services.AddScoped<IArrangementRunService, ArrangementRunService>();
+         services.AddScoped<IArrangementSchemaService, ArrangementSchemaService>();
          services.AddScoped<IParameterService, ParameterService>();
          services.AddScoped<IReportService, ReportService>();
          services.AddScoped<ITaskService, TaskService>();
@@ -86,6 +86,13 @@ namespace Module {
          RouteReporting(routes);
          RouteTasks(routes);
          RouteBulkActions(routes);
+
+         routes.MapAreaControllerRoute(
+             name: "Schema API",
+             areaName: Common.ModuleName,
+             pattern: "t/schema/{format}/{ContentItemId}",
+             defaults: new { controller = "Schema", action = "Index", format = "xml" }
+         );
 
          builder.UseSession();
       }

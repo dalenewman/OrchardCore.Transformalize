@@ -80,7 +80,7 @@ namespace Module.Services {
             return response;
          }
 
-         if (!response.Process.Parameters.All(p => p.Valid)) {
+         if (request.ValidateParameters && !response.Process.Parameters.All(p => p.Valid)) {
             SetupInvalidParametersResponse(request, response);
             return response;
          }

@@ -24,6 +24,10 @@ namespace Module.Controllers {
 
       public async Task<ActionResult> Run(string contentItemId, string format = null) {
 
+         if (HttpContext == null || HttpContext.User == null || HttpContext.User.Identity == null || !HttpContext.User.Identity.IsAuthenticated) {
+            return Unauthorized();
+         }
+
          var user = HttpContext.User?.Identity?.Name ?? "Anonymous";
 
          var request = new TransformalizeRequest(contentItemId, user) { Format = format };
@@ -76,7 +80,6 @@ namespace Module.Controllers {
 
          return View(task);
       }
-
 
    }
 }

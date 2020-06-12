@@ -47,8 +47,10 @@ namespace Module.Services {
       }
 
       public void SetupInvalidParametersResponse<T>(TransformalizeRequest request, TransformalizeResponse<T> response) {
+         
          response.Process.Status = 422;
          response.Process.Message = Common.InvalidParametersMessage;
+
          if (request.Format == null) {
             foreach (var parameter in response.Process.Parameters.Where(p => !p.Valid)) {
                foreach (var message in parameter.Message.Split('|')) {
@@ -61,33 +63,42 @@ namespace Module.Services {
             response.Process.Log.AddRange(_logger.Log);
             response.ActionResult = ContentResult(request, response);
          }
-
       }
 
       public void SetupPermissionsResponse<T>(TransformalizeRequest request, TransformalizeResponse<T> response) {
+
          _logger.Warn(() => $"User {request.User} may not access {response.ContentItem.DisplayText}.");
+
+         response.Process = new Transformalize.Configuration.Process() { Name = "401", Status = 401, Message = "Unauthorized" };
+
          if (request.Format == null) {
             response.ActionResult = LogResult(response);
          } else {
-            response.Process.Status = 401;
-            response.Process.Message = "Unauthorized";
             response.ActionResult = ContentResult(request, response);
          }
       }
 
       public void SetupNotFoundResponse<T>(TransformalizeRequest request, TransformalizeResponse<T> response) {
+
          _logger.Warn(() => $"User {request.User} requested missing content item {request.ContentItemId}.");
+
+         response.Process.Status = 404;
+         response.Process.Message = "Not Found";
+
          if (request.Format == null) {
             response.ActionResult = LogResult(response);
          } else {
-            response.Process.Status = 404;
-            response.Process.Message = "Not Found";
+            
             response.ActionResult = ContentResult(request, response);
          }
       }
 
       public void SetupLoadErrorResponse<T>(TransformalizeRequest request, TransformalizeResponse<T> response) {
+
+         // process already has a non 200 status
+
          _logger.Warn(() => $"User {request.User} received error trying to load {response.ContentItem.DisplayText}.");
+         
          if (request.Format == null) {
             response.ActionResult = LogResult(response);
          } else {
@@ -98,12 +109,16 @@ namespace Module.Services {
       }
 
       public void SetupWrongTypeResponse<T>(TransformalizeRequest request, TransformalizeResponse<T> response) {
+
+         response.Process.Status = 422;
+         response.Process.Message = Common.InvalidContentTypeMessage;
+
          _logger.Warn(() => $"User {request.User} requested {response.ContentItem.ContentType} from the report service.");
+         
          if (request.Format == null) {
             response.ActionResult = LogResult(response);
          } else {
-            response.Process.Status = 422;
-            response.Process.Message = "Invalid Type of Content";
+            response.Process.Connections.Clear();
             response.ActionResult = new ContentResult { Content = response.Process.Serialize(), ContentType = request.ContentType };
          }
       }
