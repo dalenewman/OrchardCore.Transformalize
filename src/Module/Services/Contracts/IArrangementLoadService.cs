@@ -9,5 +9,6 @@ namespace Module.Services.Contracts {
       Process LoadForTask(ContentItem contentItem, IDictionary<string,string> parameters = null, string format = null);
       Process LoadForBatch(ContentItem contentItem);
       Process LoadForForm(ContentItem contentItem, IDictionary<string,string> parameters = null);
+      Process LoadForSchema(ContentItem contentItem, string format = "xml");
    }
 }

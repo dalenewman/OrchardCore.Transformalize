@@ -216,7 +216,7 @@ namespace Module.Services {
                   Name = field.MessageField,
                   Alias = field.MessageField,
                   Input = false,
-                  Default = "",
+                  Default = string.Empty,
                   Type = "string",
                   Length = "255"
                });

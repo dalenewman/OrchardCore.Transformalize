@@ -29,6 +29,10 @@ namespace Module.Services {
          _logger = logger;
       }
       public async Task<ContentItem> GetByIdOrAliasAsync(string idOrAlias) {
+         if (string.IsNullOrEmpty(idOrAlias)) {
+            return null;
+         }
+
          ContentItem contentItem = null;
          if (idOrAlias.Length == Common.IdLength) {
             contentItem = await _contentManager.GetAsync(idOrAlias);

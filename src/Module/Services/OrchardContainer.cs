@@ -103,7 +103,7 @@ namespace Module.Services {
          foreach (var action in process.Actions.Where(a => a.GetModes().Any(m => m == process.Mode || m == "*"))) {
             if (action.Type == "tfl") {
                builder.Register<IAction>(ctx => {
-                  return new PipelineAction(ctx.Resolve<IContext>(), action, _serviceProvider);
+                  return new PipelineAction(action, _serviceProvider);
                }).Named<IAction>(action.Key);
             }
          }

@@ -8,18 +8,15 @@ using Module.Models;
 namespace Module.Controllers {
    public class SchemaController : Controller {
 
-      private readonly ITaskService _taskService;
+      private readonly ISchemaService _schemaService;
       private readonly CombinedLogger<TaskController> _logger;
-      private readonly IArrangementSchemaService _schemaService;
 
       public SchemaController(
-         ITaskService taskService,
-         IArrangementSchemaService schemaService,
+         ISchemaService taskService,
          CombinedLogger<TaskController> logger
       ) {
-         _taskService = taskService;
+         _schemaService = taskService;
          _logger = logger;
-         _schemaService = schemaService;
       }
 
       public async Task<ActionResult> Index(string contentItemId, string format = "xml") {
@@ -30,9 +27,8 @@ namespace Module.Controllers {
 
          var user = HttpContext.User?.Identity?.Name ?? "Anonymous";
 
-         // invalid parameters removes the connections when sending data back (xml, json) and that would not allow us to get the schema so we do not validate parameters here
-         var request = new TransformalizeRequest(contentItemId, user) { Format = format, ValidateParameters = false };
-         var task = await _taskService.Validate(request);
+         var request = new TransformalizeRequest(contentItemId, user) { Format = format };
+         var task = await _schemaService.Validate(request);
 
          if (task.Fails()) {
             return task.ActionResult;

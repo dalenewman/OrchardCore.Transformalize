@@ -8,16 +8,13 @@ using Action = Transformalize.Configuration.Action;
 namespace Module.Services {
    public class PipelineAction : IAction {
 
-      private readonly IContext _context;
       private readonly IServiceProvider _serviceProvider;
       private readonly Action _action;
 
       public PipelineAction(
-         IContext context, 
          Action action, 
          IServiceProvider serviceProvider
       ) {
-         _context = context;
          _action = action;
          _serviceProvider = serviceProvider;
       }

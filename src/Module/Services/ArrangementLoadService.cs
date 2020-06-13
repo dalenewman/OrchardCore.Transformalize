@@ -163,6 +163,24 @@ namespace Module.Services {
          return process;
       }
 
+      public Process LoadForSchema(ContentItem contentItem, string format = null) {
+
+         Process process;
+         string arrangement;
+
+         if (TryGetTaskPart(contentItem, out var taskPart)) {
+            arrangement = taskPart.Arrangement.Arrangement;
+         } else if(TryGetReportPart(contentItem, out var reportPart)) {
+            arrangement = reportPart.Arrangement.Arrangement;
+         } else {
+            return new Process { Status = 500, Message = "Error", Log = new List<LogEntry>() { new LogEntry(LogLevel.Error, null, $"LoadForSchema can't load {contentItem.DisplayText}.") } };
+         }
+
+         process = LoadInternal(arrangement, null, format == "json" ? new JsonSerializer() : null);
+
+         return process;
+      }
+
       public Process LoadForForm(ContentItem contentItem, IDictionary<string, string> parameters = null) {
 
          Process process;

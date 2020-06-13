@@ -53,6 +53,7 @@ namespace Module {
          services.AddScoped<IReportService, ReportService>();
          services.AddScoped<ITaskService, TaskService>();
          services.AddScoped<IFormService, FormService>();
+         services.AddScoped<ISchemaService, SchemaService>();
          services.AddScoped<ISettingsService, SettingsService>();
          services.AddScoped<IConfigurationContainer, OrchardConfigurationContainer>();
          services.AddScoped<IContainer, OrchardContainer>();

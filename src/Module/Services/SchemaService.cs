@@ -1,26 +1,25 @@
-﻿using Module.Models;
+﻿using GraphQL;
+using Module.Models;
 using Module.Services.Contracts;
 using OrchardCore.ContentManagement;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using Transformalize.Configuration;
 
 namespace Module.Services {
-   public class TaskService : ITaskService {
+   public class SchemaService : ISchemaService {
 
       private readonly IArrangementService _arrangementService;
       private readonly IArrangementLoadService _loadService;
-      private readonly IArrangementRunService _runService;
+      private readonly IArrangementSchemaService _schemaService;
 
-      public TaskService(
+      public SchemaService(
          IArrangementService arrangementService, 
          IArrangementLoadService loadService,
-         IArrangementRunService runService
+         IArrangementSchemaService schemaService
       ) {
          _arrangementService = arrangementService;
          _loadService = loadService;
-         _runService = runService;
+         _schemaService = schemaService;
       }
 
       public bool CanAccess(ContentItem contentItem) {
@@ -31,17 +30,17 @@ namespace Module.Services {
          return _arrangementService.GetByIdOrAliasAsync(idOrAlias);
       }
 
-      public Process LoadForTask(ContentItem contentItem, IDictionary<string,string> parameters = null, string format = null) {
-         return _loadService.LoadForTask(contentItem, parameters, format);
+      public Process LoadForSchema(ContentItem contentItem, string format) {
+         return _loadService.LoadForSchema(contentItem, format);
       }
 
-      public async Task RunAsync(Process process) {
-         await _runService.RunAsync(process);
+      public async Task<Process> GetSchemaAsync(Process process) {
+         return await _schemaService.GetSchemaAsync(process);
       }
 
-      public async Task<TransformalizeResponse<TransformalizeTaskPart>> Validate(TransformalizeRequest request) {
+      public async Task<TransformalizeResponse<ContentPart>> Validate(TransformalizeRequest request) {
 
-         var response = new TransformalizeResponse<TransformalizeTaskPart>(request.Format) {
+         var response = new TransformalizeResponse<ContentPart>(request.Format) {
             ContentItem = await GetByIdOrAliasAsync(request.ContentItemId)
          };
 
@@ -55,20 +54,9 @@ namespace Module.Services {
             return response;
          }
 
-         response.Part = response.ContentItem.As<TransformalizeTaskPart>();
-         if (response.Part == null) {
-            SetupWrongTypeResponse(request, response);
-            return response;
-         }
-
-         response.Process = LoadForTask(response.ContentItem, request.InternalParameters, request.Format);
+         response.Process = LoadForSchema(response.ContentItem, request.Format);
          if (response.Process.Status != 200) {
             SetupLoadErrorResponse(request, response);
-            return response;
-         }
-
-         if (request.ValidateParameters && !response.Process.Parameters.All(p => p.Valid)) {
-            SetupInvalidParametersResponse(request, response);
             return response;
          }
 
