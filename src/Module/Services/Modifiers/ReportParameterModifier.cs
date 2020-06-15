@@ -9,7 +9,7 @@ namespace Module.Services.Modifiers {
    /// </summary>
    public class ReportParameterModifier : ICustomizer {
 
-      private HashSet<object> _triggers = new HashSet<object> { "facet", "facets", "search" };
+      private readonly HashSet<object> _triggers = new HashSet<object> { "facet", "facets", "search" };
       public ReportParameterModifier() {
       }
 

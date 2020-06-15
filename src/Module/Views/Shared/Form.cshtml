@@ -95,6 +95,7 @@
          switch (type) {
             case "bool":
             case "boolean":
+               value = Transformalize.Constants.ObjectConversionMap["bool"](value);
                <div class="@(parameter.Valid ? "is-valid" : "is-invalid") @parameter.Class">
                   <div class="checkbox">
                      <label for="@parameter.Name">

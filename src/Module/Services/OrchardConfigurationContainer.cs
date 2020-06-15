@@ -266,7 +266,11 @@ namespace Module.Services {
                }
                if (parameter.Type != null && parameter.Type != "string" && row[field] != null) {
                   try {
-                     row[field] = Transformalize.Constants.ObjectConversionMap[parameter.Type](row[field]);
+                     if(row[field] is string str) {
+                        row[field] = Transformalize.Constants.ConversionMap[parameter.Type](str);
+                     }else {
+                        row[field] = Transformalize.Constants.ObjectConversionMap[parameter.Type](row[field]);
+                     }                     
                   } catch (FormatException ex) {
                      c.Error($"Could not convert '{row[field]}' to {parameter.Type}. {ex.Message}");
                      row[field] = Transformalize.Constants.TypeDefaults()[parameter.Type];

@@ -438,43 +438,48 @@
 
         $(".form-control.date").datepicker({ dateFormat: "yy-mm-dd" });
 
-        $('#id_report').bind('submit', function() {
+       $('#id_report').bind('submit', function () {
 
-            // stop double submit
-            $('#id_submit').prop('disabled', true);
+          // trim white space from text input
+          $('input[type="text"]').each(function () {
+             this.value = $.trim(this.value);
+          });
 
-            // the rest of this just cleans up the URL (bookmark)
-            var page = parseInt($('#id_page').val());
+         // stop double submit
+         $('#id_submit').prop('disabled', true);
 
-            if (page <= 1) {
-                $('#id_page').attr('disabled', true);
-            }
+         // the rest of this just cleans up the URL (bookmark)
+         var page = parseInt($('#id_page').val());
 
-            $('#id_report input').filter(function () {
-                var value = $(this).val();
-                return value === "*" || value === "";
-            }).attr('disabled',true);
+         if (page <= 1) {
+               $('#id_page').attr('disabled', true);
+         }
 
-            $("#id_report select").each(function () {
-                if (lastFilter !== $(this).attr("name") && lastFilter !== cleared) {
-                    var selected = $('option:selected', this);
-                    var count = selected.length;
-                    if (count === 0) {
-                        $(this).attr('disabled', true);
-                    } else if (count === 1) {
-                        var value = $(selected[0]).val();
-                        if (value === "" || value === "*") {
-                            $(this).attr('disabled', true);
-                        }
-                    }
-                }
-            });
+         $('#id_report input').filter(function () {
+               var value = $(this).val();
+               return value === "*" || value === "";
+         }).attr('disabled',true);
 
-            $('#busy').show();
+         $("#id_report select").each(function () {
+               if (lastFilter !== $(this).attr("name") && lastFilter !== cleared) {
+                  var selected = $('option:selected', this);
+                  var count = selected.length;
+                  if (count === 0) {
+                     $(this).attr('disabled', true);
+                  } else if (count === 1) {
+                     var value = $(selected[0]).val();
+                     if (value === "" || value === "*") {
+                           $(this).attr('disabled', true);
+                     }
+                  }
+               }
+         });
 
-            // normal submit handler fires
-            return true;
-        });
+         $('#busy').show();
+
+         // normal submit handler fires
+         return true;
+      });
 
         $('#id_clear').click(function () {
 
@@ -538,6 +543,12 @@
         $(":checkbox[name=Records]").click(function () {
             updateBulkActions();
         });
+
+       $('input[type="text"]').on("focus", function () {
+          if ($(this).val() == "*") {
+             $(this).select();
+          }
+       });
 
     });
 

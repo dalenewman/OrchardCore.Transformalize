@@ -1,7 +1,24 @@
 <cfg name="Chinook" mode="@[Mode]" flatten="true">
   <parameters>
-    <add name="Mode" value="default" />
+    <add name="Mode" value="default" prompt="true" v="map(Modes)" post-back="false" map="Modes" />
   </parameters>
+  <maps>
+    <add name="Modes">
+      <items>
+        <add from="default" to="default" />
+        <add from="init" to="init" />
+      </items>
+    </add>
+    <add name="MediaTypeExtensions">
+      <items>
+        <add from="MPEG audio file" to="mp3" />
+        <add from="Protected AAC audio file" to="m4p" />
+        <add from="Protected MPEG-4 video file" to="m4v" />
+        <add from="Purchased AAC audio file" to="m4a" />
+        <add from="AAC audio file" to="aac" />
+      </items>
+    </add>
+  </maps>
   <connections>
     <add name="input" provider="sqlite" file="App_Data\samples\chinook-relational.db" />
     <add name="output" provider="sqlite" file="App_Data\samples\chinook-flat.db" />
@@ -15,6 +32,9 @@
         <add name="UnitPrice" type="decimal" precision="10" scale="2" />
         <add name="Quantity" type="long" />
       </fields>
+      <calculated-fields>
+        <add name="Temporary" length="255" />
+      </calculated-fields>
     </add>
     <add name="Invoice">
       <fields>
@@ -26,10 +46,14 @@
         <add name="BillingState" length="40" />
         <add name="BillingCountry" length="40" />
         <add name="BillingPostalCode" length="10" />
-        <add name="Total" type="decimal" precision="10" scale="2" />
       </fields>
+      <calculated-fields>
+        <add name="InvoiceYear" type="int" t="copy(InvoiceDate).datePart(year)" />
+        <add name="InvoiceMonth" length="6" t="copy(InvoiceDate).toString(MM-MMM).upper()" />
+        <add name="InvoiceDateOnly" length="10" t="copy(InvoiceDate).toString(yyyy-MM-dd)" />
+      </calculated-fields>
     </add>
-    <add name="Customer">
+    <add name="Customer" prefix="Customer">
       <fields>
         <add name="CustomerId" type="long" primary-key="true" />
         <add name="FirstName" length="40" />
@@ -46,20 +70,52 @@
         <add name="SupportRepId" type="long" />
       </fields>
       <calculated-fields>
-          <add name="FullName" length="61" t="format({FirstName} {LastName})" />
+        <add name="CustomerFullName" length="61" t="format({FirstName} {LastName})" />
       </calculated-fields>
     </add>
-    <add name="Track">
+    <add name="Track" prefix="Track">
       <fields>
         <add name="TrackId" type="long" primary-key="true" />
-        <add name="Name" alias="TrackName" length="200" />
+        <add name="Name" length="200" />
         <add name="AlbumId" type="long" />
         <add name="MediaTypeId" type="long"  />
         <add name="GenreId" type="long" />
         <add name="Composer" length="220"  />
-        <add name="Milliseconds" alias="TrackMilliseconds" type="long" />
-        <add name="Bytes" alias="TrackBytes" type="long"  />
-        <add name="UnitPrice" alias="TrackUnitPrice" type="decimal" precision="10" scale="2" />
+        <add name="Milliseconds" type="long" />
+        <add name="Bytes" type="long"  />
+        <add name="UnitPrice" type="decimal" precision="10" scale="2" />
+      </fields>
+      <calculated-fields>
+        <add name="TrackSize" t="copy(Bytes).bytes().humanize(MB)" />
+        <add name="TrackTime" t="copy(Milliseconds).toTime(milliseconds).split(.).first()" />
+      </calculated-fields>
+    </add>
+    <add name="Album">
+      <fields>
+        <add name="AlbumId" type="long" primary-key="true" />
+        <add name="Title" alias="Album" length="160"/>
+        <add name="ArtistId" type="long"/>
+      </fields>
+    </add>
+    <add name="Artist">
+      <fields>
+        <add name="ArtistId" type="long" primary-key="true" />
+        <add name="Name" alias="ArtistName" length="120"/>
+      </fields>
+    </add>
+    <add name="MediaType">
+      <fields>
+        <add name="MediaTypeId" type="long" primary-key="true" />
+        <add name="Name" alias="MediaType" length="120"/>
+      </fields>
+      <calculated-fields>
+        <add name="MediaTypeExt" t="copy(MediaType).map(MediaTypeExtensions)" default="None" />
+      </calculated-fields>
+    </add>
+    <add name="Genre">
+      <fields>
+        <add name="GenreId" type="long" primary-key="true" />
+        <add name="Name" alias="Genre" length="120"/>
       </fields>
     </add>
   </entities>
@@ -67,5 +123,11 @@
     <add left-entity="InvoiceLine" left-field="InvoiceId" right-entity="Invoice" right-field="InvoiceId" />
     <add left-entity="Invoice" left-field="CustomerId" right-entity="Customer" right-field="CustomerId" />
     <add left-entity="InvoiceLine" left-field="TrackId" right-entity="Track" right-field="TrackId" />
+
+    <add left-entity="Track" left-field="MediaTypeId" right-entity="MediaType" right-field="MediaTypeId" />
+    <add left-entity="Track" left-field="GenreId" right-entity="Genre" right-field="GenreId" />
+    <add left-entity="Track" left-field="AlbumId" right-entity="Album" right-field="AlbumId" />
+    <add left-entity="Album" left-field="ArtistId" right-entity="Artist" right-field="ArtistId" />
+
   </relationships>
 </cfg>

@@ -55,7 +55,7 @@ namespace Module.Services {
             }
          }
 
-         // remove some of the Cfg-Net transformations that are not meant to be seen
+         // remove some of the cfg-net transformations that are not meant to be seen
          foreach (var entity in process.Entities) {
             
             entity.Fields.RemoveAll(f => f.System);

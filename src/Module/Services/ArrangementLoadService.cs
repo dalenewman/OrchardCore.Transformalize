@@ -56,7 +56,7 @@ namespace Module.Services {
          }
 
          if (_parameters.ContainsKey("sort") && _parameters["sort"] != null) {
-            _sortService.AddSortToEntity(process.Entities.First(), _parameters["sort"]);
+            _sortService.AddSortToEntity(part, process.Entities.First(), _parameters["sort"]);
          }
 
          // modify entities for output/export differences
@@ -106,7 +106,7 @@ namespace Module.Services {
          }
 
          if (_parameters.ContainsKey("sort") && _parameters["sort"] != null) {
-            _sortService.AddSortToEntity(process.Entities.First(), _parameters["sort"]);
+            _sortService.AddSortToEntity(part, process.Entities.First(), _parameters["sort"]);
          }
 
          // disable internal actions

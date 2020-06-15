@@ -53,6 +53,7 @@ using Process = Transformalize.Configuration.Process;
 using System.Data;
 using OrchardCore.Users.Services;
 using Transformalize.Providers.File.Autofac;
+using Transformalize.Transforms.Ado.Autofac;
 
 namespace Module.Services {
 
@@ -134,6 +135,7 @@ namespace Module.Services {
          builder.RegisterModule(new JsonTransformModule());
          builder.RegisterModule(new HumanizeModule());
          builder.RegisterModule(new FileModule());
+         builder.RegisterModule(new AdoTransformModule());
 
          // register validator modules here
          builder.RegisterModule(new JintValidateModule());

@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Module.Models;
 using Module.Services.Contracts;
 using Transformalize.Configuration;
 
@@ -34,9 +35,9 @@ namespace Module.Services {
             return Direction.None;
         }
 
-        public void AddSortToEntity(Entity entity, string expression) {
+        public void AddSortToEntity(TransformalizeReportPart part, Entity entity, string expression) {
             string orderBy = null;
-            var fields = entity.GetAllOutputFields().Where(f=>!f.System).ToArray();
+            var fields = entity.GetAllOutputFields().Where(f=>!f.System && f.Alias != part.BulkActionValueField.Text).ToArray();
             for (var i = 0; i < fields.Length; i++) {
                 var field = fields[i];
                 if (field.Sortable == "false") {
