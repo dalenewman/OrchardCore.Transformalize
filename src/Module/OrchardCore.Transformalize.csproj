@@ -1,9 +1,9 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.Razor">
 
    <PropertyGroup>
-      <TargetFramework>netcoreapp3.0</TargetFramework>
+      <TargetFramework>netcoreapp3.1</TargetFramework>
       <AddRazorSupportForMvc>true</AddRazorSupportForMvc>
-      <Version>0.7.15-beta</Version>
+      <Version>0.7.16-beta</Version>
       <AssemblyName>OrchardCore.Transformalize</AssemblyName>
       <RootNamespace>Module</RootNamespace>
    </PropertyGroup>
@@ -17,19 +17,19 @@
    </ItemGroup>
 
    <ItemGroup>
-      <PackageReference Include="Etch.OrchardCore.ContentPermissions" Version="0.2.0-rc1" />
+      <PackageReference Include="Etch.OrchardCore.ContentPermissions" Version="0.3.0-rc2" />
       <PackageReference Include="Flurl" Version="2.8.2" />
-      <PackageReference Include="OrchardCore.Alias" Version="1.0.0-rc1-10004" />
-      <PackageReference Include="OrchardCore.ContentFields" Version="1.0.0-rc1-10004" />
-      <PackageReference Include="OrchardCore.ContentManagement" Version="1.0.0-rc1-10004" />
-      <PackageReference Include="OrchardCore.Contents" Version="1.0.0-rc1-10004" />
-      <PackageReference Include="OrchardCore.DisplayManagement" Version="1.0.0-rc1-10004" />
-      <PackageReference Include="OrchardCore.Features" Version="1.0.0-rc1-10004" />
-      <PackageReference Include="OrchardCore.MiniProfiler" Version="1.0.0-rc1-10004" />
-      <PackageReference Include="OrchardCore.Module.Targets" Version="1.0.0-rc1-10004" />
-      <PackageReference Include="OrchardCore.ResourceManagement" Version="1.0.0-rc1-10004" />
-      <PackageReference Include="OrchardCore.Title" Version="1.0.0-rc1-10004" />
-      <PackageReference Include="OrchardCore.Users.Core" Version="1.0.0-rc1-10004" />
+      <PackageReference Include="OrchardCore.Alias" Version="1.0.0-rc2-13450" />
+      <PackageReference Include="OrchardCore.ContentFields" Version="1.0.0-rc2-13450" />
+      <PackageReference Include="OrchardCore.ContentManagement" Version="1.0.0-rc2-13450" />
+      <PackageReference Include="OrchardCore.Contents" Version="1.0.0-rc2-13450" />
+      <PackageReference Include="OrchardCore.DisplayManagement" Version="1.0.0-rc2-13450" />
+      <PackageReference Include="OrchardCore.Features" Version="1.0.0-rc2-13450" />
+      <PackageReference Include="OrchardCore.MiniProfiler" Version="1.0.0-rc2-13450" />
+      <PackageReference Include="OrchardCore.Module.Targets" Version="1.0.0-rc2-13450" />
+      <PackageReference Include="OrchardCore.ResourceManagement" Version="1.0.0-rc2-13450" />
+      <PackageReference Include="OrchardCore.Title" Version="1.0.0-rc2-13450" />
+      <PackageReference Include="OrchardCore.Users.Core" Version="1.0.0-rc2-13450" />
       <PackageReference Include="Transformalize" Version="0.7.18-beta" />
       <PackageReference Include="Transformalize.Container.Autofac" Version="0.7.15-beta" />
       <PackageReference Include="Transformalize.Provider.Ado.Autofac" Version="0.7.9-beta" />

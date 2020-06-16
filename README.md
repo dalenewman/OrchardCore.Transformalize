@@ -1,5 +1,5 @@
 A [Transformalize](https://github.com/dalenewman/Transformalize) 
-module for [Orchard Core](https://github.com/OrchardCMS/OrchardCore) rc1. 
+module for [Orchard Core](https://github.com/OrchardCMS/OrchardCore) rc2. 
 
 #### Features
 - <strike>Code Mirror XML Editor for arrangements</strike>
