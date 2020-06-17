@@ -16,18 +16,28 @@ using Transformalize.Logging;
 using Transformalize.Contracts;
 using System.Collections.Generic;
 using Autofac;
+using OrchardCore.DisplayManagement.Notify;
+using Microsoft.AspNetCore.Mvc.Localization;
 
 namespace Module.Drivers {
+   
    public class TransformalizeArrangementFieldDisplayDriver : ContentFieldDisplayDriver<TransformalizeArrangementField> {
-      private readonly IStringLocalizer S;
+
+      private readonly IStringLocalizer<TransformalizeArrangementFieldDisplayDriver> S;
+      private readonly IHtmlLocalizer<TransformalizeArrangementFieldDisplayDriver> H;
       private readonly IConfigurationContainer _container;
+      private readonly INotifier _notifier;
 
       public TransformalizeArrangementFieldDisplayDriver(
          IStringLocalizer<TransformalizeArrangementFieldDisplayDriver> localizer,
-         IConfigurationContainer container
+         IHtmlLocalizer<TransformalizeArrangementFieldDisplayDriver> htmlLocalizer,
+         IConfigurationContainer container,
+         INotifier notifier
       ) {
          S = localizer;
+         H = htmlLocalizer;
          _container = container;
+         _notifier = notifier;
       }
 
       public override IDisplayResult Display(TransformalizeArrangementField field, BuildFieldDisplayContext context) {
@@ -65,6 +75,11 @@ namespace Module.Drivers {
                   if (process.Errors().Any()) {
                      foreach (var error in process.Errors()) {
                         updater.ModelState.AddModelError(Prefix, S[error]);
+                     }
+                  }
+                  if (process.Warnings().Any()) {
+                     foreach(var warning in process.Warnings()) {
+                        _notifier.Warning(H[warning]);
                      }
                   }
                   if(context.ContentPart is TransformalizeReportPart part) {

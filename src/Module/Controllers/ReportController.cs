@@ -88,7 +88,7 @@ namespace Module.Controllers {
             return Problem();
          }
 
-         var o = process.Output();
+         var o = process.GetOutputConnection();
          o.Stream = true;
          o.Provider = "json";
          o.File = _slugService.Slugify(contentItem.As<TitlePart>().Title) + ".json";
@@ -120,7 +120,7 @@ namespace Module.Controllers {
             return Problem();
          }
 
-         var o = process.Output();
+         var o = process.GetOutputConnection();
          o.Stream = true;
          o.Provider = "file";
          o.Delimiter = ",";

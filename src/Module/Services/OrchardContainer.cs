@@ -181,7 +181,7 @@ namespace Module.Services {
                return new OutputContext(context);
             }).Named<OutputContext>(entity.Key);
 
-            var connection = process.Connections.First(c => c.Name == entity.Connection);
+            var connection = process.Connections.First(c => c.Name == entity.Input);
             builder.Register(ctx => new ConnectionContext(ctx.Resolve<IContext>(), connection)).Named<IConnectionContext>(entity.Key);
 
          }
@@ -299,12 +299,13 @@ namespace Module.Services {
             }
 
             // flatten(ing) is first post-action
-            var isAdo = _adoProviders.Contains(process.Output().Provider);
+            var output = process.GetOutputConnection();
+            var isAdo = _adoProviders.Contains(output.Provider);
             if (process.Flatten && isAdo) {
-               if (ctx.IsRegisteredWithName<IAction>(process.Output().Key)) {
-                  controller.PostActions.Add(ctx.ResolveNamed<IAction>(process.Output().Key));
+               if (ctx.IsRegisteredWithName<IAction>(output.Key)) {
+                  controller.PostActions.Add(ctx.ResolveNamed<IAction>(process.GetOutputConnection().Key));
                } else {
-                  context.Error($"Could not find ADO Flatten Action for provider {process.Output().Provider}.");
+                  context.Error($"Could not find ADO Flatten Action for provider {output.Provider}.");
                }
             }
 

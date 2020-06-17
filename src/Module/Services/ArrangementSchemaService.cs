@@ -29,12 +29,12 @@ namespace Module.Services {
          var entityReaders = new Dictionary<Entity, ISchemaReader>();
 
          foreach (var connection in process.Connections) {
-            if (process.Entities.Any(e => e.Connection == connection.Name) && !connectionReaders.ContainsKey(connection.Name)) {
+            if (process.Entities.Any(e => e.Input == connection.Name) && !connectionReaders.ContainsKey(connection.Name)) {
                connectionReaders.Add(connection.Name, scope.ResolveNamed<ISchemaReader>(connection.Key));
             }
          }
-         foreach (var entity in process.Entities.Where(e => connectionReaders.ContainsKey(e.Connection))) {
-            entityReaders.Add(entity, connectionReaders[entity.Connection]);
+         foreach (var entity in process.Entities.Where(e => connectionReaders.ContainsKey(e.Input))) {
+            entityReaders.Add(entity, connectionReaders[entity.Input]);
          }
 
          var schemas = new List<Schema>();

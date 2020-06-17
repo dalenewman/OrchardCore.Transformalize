@@ -21,9 +21,13 @@ namespace Module.Services {
          foreach (var connection in Process.Connections) {
             Connections.Add(connection.Name, connection);
          }
+         foreach (var map in Process.Maps) {
+            Maps.Add(map.Name, map);
+         }
       }
 
       public Dictionary<string, Connection> Connections { get; } = new Dictionary<string, Connection>();
+      public Dictionary<string, Map> Maps { get; } = new Dictionary<string, Map>();
 
       public IEnumerable<int> GetPageSizes(TransformalizeReportPart part) {
          if (part.PageSizes.Enabled()) {
