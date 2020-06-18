@@ -22,6 +22,7 @@ using Cfg.Net.Environment;
 using Cfg.Net.Reader;
 using Cfg.Net.Shorthand;
 using Microsoft.AspNetCore.Http;
+using Module.Services.Contracts;
 using Module.Services.Modifiers;
 using Module.Transforms;
 using OrchardCore.Users.Services;
@@ -54,14 +55,21 @@ namespace Module.Services {
       private readonly ShorthandRoot _shortHand = new ShorthandRoot();
       private readonly IUserService _userService;
       private readonly IHttpContextAccessor _httpContext;
+      private readonly ISettingsService _settings;
+      private readonly CombinedLogger<OrchardConfigurationContainer> _logger;
 
       public ISerializer Serializer { get; set; }
 
       public OrchardConfigurationContainer(
-                  IHttpContextAccessor httpContext,
-         IUserService userService) {
+         IHttpContextAccessor httpContext,
+         CombinedLogger<OrchardConfigurationContainer> logger,
+         ISettingsService settings,
+         IUserService userService) 
+      {
          _userService = userService;
          _httpContext = httpContext;
+         _logger = logger;
+         _settings = settings;
       }
 
       public ILifetimeScope CreateScope(string cfg, IPipelineLogger logger, IDictionary<string, string> parameters = null) {
@@ -137,6 +145,7 @@ namespace Module.Services {
             );
 
             if (pre.Parameters.Any(pr => pr.Transforms.Any() || pr.Validators.Any())) {
+               _settings.ApplyCommonSettings(pre);
                cfg = TransformalizeParameters(ctx, pre, parameters);
             }
 
@@ -155,10 +164,9 @@ namespace Module.Services {
             var process = new Process(cfg, parameters, dependancies.ToArray());
 
             if (process.Errors().Any()) {
-               var c = new PipelineContext(logger, new Process() { Name = "Errors" });
-               c.Error("The configuration has errors.");
+               _logger.Error(()=>"The configuration has errors.");
                foreach (var error in process.Errors()) {
-                  c.Error(error);
+                  _logger.Error(() => error);
                }
             }
 
@@ -167,7 +175,7 @@ namespace Module.Services {
          return builder.Build().BeginLifetimeScope();
       }
 
-      private static string TransformalizeParameters(IComponentContext ctx, Transformalize.ConfigurationFacade.Process process, IDictionary<string, string> parameters) {
+      private string TransformalizeParameters(IComponentContext ctx, Transformalize.ConfigurationFacade.Process process, IDictionary<string, string> parameters) {
 
          var fields = new List<Field>();
 
@@ -266,13 +274,13 @@ namespace Module.Services {
                }
                if (parameter.Type != null && parameter.Type != "string" && row[field] != null) {
                   try {
-                     if(row[field] is string str) {
+                     if (row[field] is string str) {
                         row[field] = Transformalize.Constants.ConversionMap[parameter.Type](str);
-                     }else {
+                     } else {
                         row[field] = Transformalize.Constants.ObjectConversionMap[parameter.Type](row[field]);
-                     }                     
+                     }
                   } catch (FormatException ex) {
-                     c.Error($"Could not convert '{row[field]}' to {parameter.Type}. {ex.Message}");
+                     _logger.Error(()=>$"Could not convert '{row[field]}' to {parameter.Type}. {ex.Message}");
                      row[field] = Transformalize.Constants.TypeDefaults()[parameter.Type];
                   }
                }

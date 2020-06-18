@@ -54,6 +54,7 @@ using System.Data;
 using OrchardCore.Users.Services;
 using Transformalize.Providers.File.Autofac;
 using Transformalize.Transforms.Ado.Autofac;
+using Transformalize.Actions;
 
 namespace Module.Services {
 
@@ -317,6 +318,10 @@ namespace Module.Services {
                if (action.After) {
                   controller.PostActions.Add(ctx.ResolveNamed<IAction>(action.Key));
                }
+            }
+
+            foreach (var map in process.Maps.Where(m => !string.IsNullOrEmpty(m.Query))) {
+               controller.PreActions.Add(new MapReaderAction(context, map, ctx.ResolveNamed<IMapReader>(map.Name)));
             }
 
             return controller;

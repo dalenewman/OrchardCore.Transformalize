@@ -61,7 +61,7 @@
             @if (parameter.Hint != string.Empty) {
                <br /><span class="text-muted">parameter.Hint</span>
             }
-            @if (map.Items.All(i => !i.To.Equals(value))) {
+            @if (map.Items.Any() && map.Items.All(i => !i.To.Equals(value))) {
                value = map.Items.First().To;
             }
             @if (map.Items.Count > 3) {

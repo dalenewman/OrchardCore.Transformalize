@@ -12,7 +12,6 @@ using Module.Models;
 using Cfg.Net.Serializers;
 using Transformalize.Logging;
 using Transformalize.Impl;
-using YesSql.Data;
 
 namespace Module.Services {
    public class ArrangementLoadService : IArrangementLoadService {
@@ -234,7 +233,7 @@ namespace Module.Services {
             process = _configurationContainer.CreateScope(arrangement, _logger, _parameters).Resolve<Process>();
          }
 
-         ApplyCommonSettings(process);
+         _settings.ApplyCommonSettings(process);
 
          if (process.Errors().Any() || process.Log.Any(l => l.LogLevel == LogLevel.Error)) {
             process.Status = 500;
@@ -280,32 +279,6 @@ namespace Module.Services {
             }
             entity.Size = max > 0 && size > max ? max : size;
 
-         }
-
-      }
-
-      /// <summary>
-      /// copies common arrangement settings into current process
-      /// </summary>
-      /// <param name="process">the transformalize report process</param>
-      private void ApplyCommonSettings(Process process) {
-
-         // common connections
-         for (int i = 0; i < process.Connections.Count; i++) {
-            var connection = process.Connections[i];
-            if (_settings.Connections.ContainsKey(connection.Name) && connection.Provider == Transformalize.Constants.DefaultSetting) {
-               var key = connection.Key;
-               process.Connections[i] = _settings.Connections[connection.Name];
-               process.Connections[i].Key = key;
-            }
-         }
-
-         // common maps
-         for (int i = 0; i < process.Maps.Count; i++) {
-            var map = process.Maps[i];
-            if(_settings.Maps.ContainsKey(map.Name) && !map.Items.Any() && map.Query == string.Empty) {
-               process.Maps[i] = _settings.Maps[map.Name];
-            }
          }
 
       }

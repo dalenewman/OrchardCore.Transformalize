@@ -9,5 +9,7 @@ namespace Module.Services.Contracts {
       public TransformalizeSettings Settings { get; }
       public Process Process { get; set; }
       public IEnumerable<int> GetPageSizes(TransformalizeReportPart part);
+      public void ApplyCommonSettings(Process process);
+      public void ApplyCommonSettings(Transformalize.ConfigurationFacade.Process process);
    }
 }
