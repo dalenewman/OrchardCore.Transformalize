@@ -55,8 +55,8 @@ namespace Module {
          services.AddScoped<IFormService, FormService>();
          services.AddScoped<ISchemaService, SchemaService>();
          services.AddScoped<ISettingsService, SettingsService>();
-         services.AddScoped<IConfigurationContainer, OrchardConfigurationContainer>();
-         services.AddScoped<IContainer, OrchardContainer>();
+         services.AddTransient<IConfigurationContainer, OrchardConfigurationContainer>();
+         services.AddTransient<IContainer, OrchardContainer>();
 
          // orchard cms services
          services.AddScoped<IDataMigration, Migrations>();

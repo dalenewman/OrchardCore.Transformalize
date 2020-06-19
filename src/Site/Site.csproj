@@ -5,7 +5,7 @@
     <TieredCompilation>true</TieredCompilation>
     <AspNetCoreHostingModel>InProcess</AspNetCoreHostingModel>
     <PreserveCompilationReferences>true</PreserveCompilationReferences>
-    <Version>0.7.16-beta</Version>
+    <Version>0.8.8-beta</Version>
   </PropertyGroup>
 
   <ItemGroup>

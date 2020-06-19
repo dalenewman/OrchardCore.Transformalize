@@ -29,7 +29,6 @@ using OrchardCore.Users.Services;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using Transformalize.Configuration;
 using Transformalize.Containers.Autofac;
 using Transformalize.Containers.Autofac.Modules;
@@ -140,18 +139,19 @@ namespace Module.Services {
             // if outside parameters are used here, and possibly transformed, they will move on to the
             // real process as the transformed value
 
-            var pre = new Process(
+            // THE REASON WHY YOU NEED FACADE IS SO PLACE-HOLDERS (always strings like @[Seed]) AREN'T LOST IN OTHER TYPES OF FIELDS (i.e. ints).
+            var pre = new Transformalize.ConfigurationFacade.Process(
                cfg,
-               parameters: null,
-               enabled: false,
+               //parameters: null,
+               parameters: parameters,
                dependencies: new List<IDependency> {
+                  // added parameter modifier
+                  new ParameterModifier(new NullPlaceHolderReplacer(), "parameters", "name", "value"),
                   ctx.Resolve<IReader>(),
                   ctx.ResolveNamed<IDependency>(TransformModule.ParametersName),
                   ctx.ResolveNamed<IDependency>(ValidateModule.ParametersName)
                }.ToArray()
             );
-
-
 
             if (pre.Parameters.Any(pr => pr.Transforms.Any() || pr.Validators.Any())) {
                _settings.ApplyCommonSettings(pre);
@@ -184,7 +184,7 @@ namespace Module.Services {
          return builder.Build().BeginLifetimeScope();
       }
 
-      private string TransformalizeParameters(IComponentContext ctx, Process process, IDictionary<string, string> parameters) {
+      private string TransformalizeParameters(IComponentContext ctx, Transformalize.ConfigurationFacade.Process process, IDictionary<string, string> parameters) {
 
          var fields = new List<Field>();
 
@@ -195,13 +195,21 @@ namespace Module.Services {
                Default = pr.Value,
                Label = pr.Label,
                PostBack = pr.PostBack,
-               Transforms = pr.Transforms,
-               Validators = pr.Validators,
-               Length = pr.Length,
-               Type = pr.Type,
-               Precision = pr.Precision,
-               Scale = pr.Scale
+               Transforms = pr.Transforms.Select(o => o.ToOperation()).ToList(),
+               Validators = pr.Validators.Select(o => o.ToOperation()).ToList()
             };
+            if (!string.IsNullOrEmpty(pr.Length)) {
+               field.Length = pr.Length;
+            }
+            if (!string.IsNullOrEmpty(pr.Type)) {
+               field.Type = pr.Type;
+            }
+            if (!string.IsNullOrEmpty(pr.Precision) && int.TryParse(pr.Precision, out int precision)) {
+               field.Precision = precision;
+            }
+            if (!string.IsNullOrEmpty(pr.Scale) && int.TryParse(pr.Scale, out int scale)) {
+               field.Scale = scale;
+            }
             fields.Add(field);
          }
 
@@ -235,10 +243,10 @@ namespace Module.Services {
          }
 
          // sandwich connections with internal input and output
-         var connections = new List<Connection>();
-         connections.Add(new Connection() { Name = _tpInput, Provider = "internal" });
+         var connections = new List<Transformalize.ConfigurationFacade.Connection>();
+         connections.Add(new Transformalize.ConfigurationFacade.Connection() { Name = _tpInput, Provider = "internal" });
          connections.AddRange(process.Connections);
-         connections.Add(new Connection() { Name = _tpOutput, Provider = "internal" });
+         connections.Add(new Transformalize.ConfigurationFacade.Connection() { Name = _tpOutput, Provider = "internal" });
 
          var fieldCount = fields.Count;
          var entity = new Entity { Name = "Parameters", Alias = "Parameters", Fields = fields, Input = _tpInput };
@@ -246,11 +254,11 @@ namespace Module.Services {
             Name = "TransformalizeParameters",
             ReadOnly = true,
             Output = _tpOutput,
-            Parameters = process.Parameters,
+            Parameters = process.Parameters.Select(p=>p.ToParameter()).ToList(),
             Entities = new List<Entity> { entity },
-            Maps = process.Maps, // for map transforms
-            Scripts = process.Scripts, // for transforms that use scripts (e.g. js)
-            Connections = connections
+            Maps = process.Maps.Select(m=>m.ToMap()).ToList() , // for map transforms
+            Scripts = process.Scripts.Select(m=>m.ToScript()).ToList() , // for transforms that use scripts (e.g. js)
+            Connections = connections.Select(c=>c.ToConnection()).ToList()
          };
 
          mini.Load(); // very important to check after creating, as it runs validation and even modifies!
@@ -267,6 +275,23 @@ namespace Module.Services {
                scope.Resolve<IProcessController>().Execute();
                output = mini.Entities[0].Rows.FirstOrDefault();
             }
+            _container.ParametersForInternalReader = null;
+
+            for (int i = 0; i < mini.Maps.Count; i++) {
+               var source = mini.Maps[i];
+               var target = process.Maps[i];
+               if(source.Items.Any() && !target.Items.Any()) {
+                  foreach(var item in source.Items) {
+                     target.Items.Add(new Transformalize.ConfigurationFacade.MapItem() {
+                        From = item.From.ToString(),
+                        To = item.To.ToString(),
+                        Parameter = item.Parameter,
+                        Value = item.Value
+                     });
+                  }
+                  target.Query = string.Empty;
+               }
+            }
 
             if(output != null) {
                for (var i = 0; i < process.Parameters.Count; i++) {
@@ -278,11 +303,15 @@ namespace Module.Services {
                   parameter.Value = output[field.Name].ToString();
 
                   // set the validation results
-                  if (field.ValidField != string.Empty) {
-                     parameter.Valid = (bool)output[field.ValidField];
-                     parameter.Message = ((string)output[field.MessageField]).TrimEnd('|');
+                  if (field.ValidField == string.Empty) {
+                     parameter.Valid = "true";
                   } else {
-                     parameter.Valid = true;
+                     if ((bool)output[field.ValidField]) {
+                        parameter.Valid = "true";
+                     } else {
+                        parameter.Valid = "false";
+                        parameter.Message = ((string)output[field.MessageField]).TrimEnd('|');
+                     }
                   }
 
                   parameter.Transforms.Clear();

@@ -229,49 +229,50 @@ namespace Module.Services {
             }).Named<IPipeline>(entity.Key);
          }
 
+         if(process.Entities.Count > 1 && process.Relationships.Any()) {
+            // process pipeline
+            builder.Register(ctx => {
 
-         // process pipeline
-         builder.Register(ctx => {
+               var calc = process.ToCalculatedFieldsProcess();
+               var entity = calc.Entities.First();
 
-            var calc = process.ToCalculatedFieldsProcess();
-            var entity = calc.Entities.First();
+               var context = new PipelineContext(ctx.Resolve<IPipelineLogger>(), calc, entity);
+               var outputContext = new OutputContext(context);
 
-            var context = new PipelineContext(ctx.Resolve<IPipelineLogger>(), calc, entity);
-            var outputContext = new OutputContext(context);
+               context.Debug(() => $"Registering {process.Pipeline} pipeline.");
+               var outputController = ctx.IsRegistered<IOutputController>() ? ctx.Resolve<IOutputController>() : new NullOutputController();
+               var pipeline = new DefaultPipeline(outputController, context);
 
-            context.Debug(() => $"Registering {process.Pipeline} pipeline.");
-            var outputController = ctx.IsRegistered<IOutputController>() ? ctx.Resolve<IOutputController>() : new NullOutputController();
-            var pipeline = new DefaultPipeline(outputController, context);
+               // no updater necessary
+               pipeline.Register(new NullUpdater(context, false));
 
-            // no updater necessary
-            pipeline.Register(new NullUpdater(context, false));
+               if (!process.CalculatedFields.Any()) {
+                  pipeline.Register(new NullReader(context, false));
+                  pipeline.Register(new NullWriter(context, false));
+                  return pipeline;
+               }
 
-            if (!process.CalculatedFields.Any()) {
-               pipeline.Register(new NullReader(context, false));
-               pipeline.Register(new NullWriter(context, false));
+               // register transforms
+               pipeline.Register(new IncrementTransform(context));
+               pipeline.Register(new LogTransform(context));
+               pipeline.Register(new DefaultTransform(new PipelineContext(ctx.Resolve<IPipelineLogger>(), calc, entity), entity.CalculatedFields));
+
+               pipeline.Register(TransformFactory.GetTransforms(ctx, context, entity.CalculatedFields));
+               pipeline.Register(ValidateFactory.GetValidators(ctx, context, entity.GetAllFields().Where(f => f.Validators.Any())));
+
+               pipeline.Register(new StringTruncateTransfom(new PipelineContext(ctx.Resolve<IPipelineLogger>(), calc, entity)));
+
+               // register input and output
+               pipeline.Register(ctx.IsRegistered<IRead>() ? ctx.Resolve<IRead>() : new NullReader(context));
+               pipeline.Register(ctx.IsRegistered<IWrite>() ? ctx.Resolve<IWrite>() : new NullWriter(context));
+
+               if (outputContext.Connection.Provider == "sqlserver") {
+                  pipeline.Register(new MinDateTransform(new PipelineContext(ctx.Resolve<IPipelineLogger>(), calc, entity), new DateTime(1753, 1, 1)));
+               }
+
                return pipeline;
-            }
-
-            // register transforms
-            pipeline.Register(new IncrementTransform(context));
-            pipeline.Register(new LogTransform(context));
-            pipeline.Register(new DefaultTransform(new PipelineContext(ctx.Resolve<IPipelineLogger>(), calc, entity), entity.CalculatedFields));
-
-            pipeline.Register(TransformFactory.GetTransforms(ctx, context, entity.CalculatedFields));
-            pipeline.Register(ValidateFactory.GetValidators(ctx, context, entity.GetAllFields().Where(f => f.Validators.Any())));
-
-            pipeline.Register(new StringTruncateTransfom(new PipelineContext(ctx.Resolve<IPipelineLogger>(), calc, entity)));
-
-            // register input and output
-            pipeline.Register(ctx.IsRegistered<IRead>() ? ctx.Resolve<IRead>() : new NullReader(context));
-            pipeline.Register(ctx.IsRegistered<IWrite>() ? ctx.Resolve<IWrite>() : new NullWriter(context));
-
-            if (outputContext.Connection.Provider == "sqlserver") {
-               pipeline.Register(new MinDateTransform(new PipelineContext(ctx.Resolve<IPipelineLogger>(), calc, entity), new DateTime(1753, 1, 1)));
-            }
-
-            return pipeline;
-         }).As<IPipeline>();
+            }).As<IPipeline>();
+         }
 
          // process controller
          builder.Register<IProcessController>(ctx => {

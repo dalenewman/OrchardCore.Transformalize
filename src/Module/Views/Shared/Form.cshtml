@@ -66,6 +66,7 @@
             }
             @if (map.Items.Count > 3) {
                <select class="form-control @(parameter.Valid ? "is-valid" : "is-invalid")"
+                       style="background-image:none;"
                        name="@parameter.Name"
                        id="id_@parameter.Name"
                        data-tfl-post-back="@parameter.PostBack">
