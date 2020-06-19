@@ -38,9 +38,18 @@ namespace Module.Services.Modules {
       private readonly HashSet<string> _internalActions = new HashSet<string> { "log", "wait", "sleep" };
       private const string Internal = "internal";
       private readonly Process _process;
+      private readonly List<IRow> _rows;
 
-      public OrchardInternalModule(Process process) {
+      public IDictionary<string, string> ParametersForInternalReader { get; set; }
+
+      /// <summary>
+      /// Register internal actions, connections, readers, and writers
+      /// </summary>
+      /// <param name="process">the arrangement</param>
+      /// <param name="rows">an optional list of rows that overrides internal readers</param>
+      public OrchardInternalModule(Process process, List<IRow> rows = null) {
          _process = process;
+         _rows = rows;
       }
 
       protected override void Load(ContainerBuilder builder) {
@@ -59,7 +68,7 @@ namespace Module.Services.Modules {
             }
          }
 
-         if (_process.Connections.All(c=>c.Provider != Internal)) {
+         if (_process.Connections.All(c => c.Provider != Internal)) {
             return;
          }
 
@@ -105,8 +114,11 @@ namespace Module.Services.Modules {
             builder.Register<IRead>(ctx => {
                var input = ctx.ResolveNamed<InputContext>(entity.Key);
                var rowFactory = ctx.ResolveNamed<IRowFactory>(entity.Key, new NamedParameter("capacity", input.RowCapacity));
-
-               return new InternalReader(input, rowFactory);
+               if (ParametersForInternalReader == null) {
+                  return new InternalReader(input, rowFactory);
+               } else {
+                  return new InternalParameterReader(input, rowFactory, ParametersForInternalReader);
+               }
             }).Named<IRead>(entity.Key);
 
          }

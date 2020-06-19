@@ -29,6 +29,7 @@ using OrchardCore.Users.Services;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using Transformalize.Configuration;
 using Transformalize.Containers.Autofac;
 using Transformalize.Containers.Autofac.Modules;
@@ -51,12 +52,15 @@ namespace Module.Services {
    /// </summary>
    public class OrchardConfigurationContainer : IConfigurationContainer {
 
+      private const string _tpInput = "tp-input";
+      private const string _tpOutput = "tp-output";
       private readonly HashSet<string> _methods = new HashSet<string>();
       private readonly ShorthandRoot _shortHand = new ShorthandRoot();
       private readonly IUserService _userService;
       private readonly IHttpContextAccessor _httpContext;
       private readonly ISettingsService _settings;
       private readonly CombinedLogger<OrchardConfigurationContainer> _logger;
+      private readonly IContainer _container;
 
       public ISerializer Serializer { get; set; }
 
@@ -64,12 +68,14 @@ namespace Module.Services {
          IHttpContextAccessor httpContext,
          CombinedLogger<OrchardConfigurationContainer> logger,
          ISettingsService settings,
-         IUserService userService) 
-      {
+         IUserService userService,
+         IContainer container
+      ) {
          _userService = userService;
          _httpContext = httpContext;
          _logger = logger;
          _settings = settings;
+         _container = container;
       }
 
       public ILifetimeScope CreateScope(string cfg, IPipelineLogger logger, IDictionary<string, string> parameters = null) {
@@ -87,7 +93,7 @@ namespace Module.Services {
          builder.Register<IReader>(c => new DefaultReader(new FileReader(), new WebReader())).As<IReader>();
 
          // register short-hand for t attribute
-         var tm = new TransformModule(new Process { Name = "TransformShorthand" }, _methods, _shortHand, logger) { Plugins = false};
+         var tm = new TransformModule(new Process { Name = "TransformShorthand" }, _methods, _shortHand, logger) { Plugins = false };
          // adding additional transforms here
          tm.AddTransform(new TransformHolder((c) => new UsernameTransform(_httpContext, c), new UsernameTransform().GetSignatures()));
          tm.AddTransform(new TransformHolder((c) => new UserIdTransform(_httpContext, _userService, c), new UserIdTransform().GetSignatures()));
@@ -145,6 +151,8 @@ namespace Module.Services {
                }.ToArray()
             );
 
+
+
             if (pre.Parameters.Any(pr => pr.Transforms.Any() || pr.Validators.Any())) {
                _settings.ApplyCommonSettings(pre);
                cfg = TransformalizeParameters(ctx, pre, parameters);
@@ -165,7 +173,7 @@ namespace Module.Services {
             var process = new Process(cfg, parameters, dependancies.ToArray());
 
             if (process.Errors().Any()) {
-               _logger.Error(()=>"The configuration has errors.");
+               _logger.Error(() => "The configuration has errors.");
                foreach (var error in process.Errors()) {
                   _logger.Error(() => error);
                }
@@ -226,14 +234,23 @@ namespace Module.Services {
             fields.AddRange(validatorFields);
          }
 
+         // sandwich connections with internal input and output
+         var connections = new List<Connection>();
+         connections.Add(new Connection() { Name = _tpInput, Provider = "internal" });
+         connections.AddRange(process.Connections);
+         connections.Add(new Connection() { Name = _tpOutput, Provider = "internal" });
+
          var fieldCount = fields.Count;
-         var entity = new Entity { Name = "Parameters", Alias = "Parameters", Fields = fields };
+         var entity = new Entity { Name = "Parameters", Alias = "Parameters", Fields = fields, Input = _tpInput };
          var mini = new Process {
             Name = "TransformalizeParameters",
             ReadOnly = true,
+            Output = _tpOutput,
+            Parameters = process.Parameters,
             Entities = new List<Entity> { entity },
             Maps = process.Maps, // for map transforms
-            Scripts = process.Scripts // for transforms that use scripts (e.g. js)
+            Scripts = process.Scripts, // for transforms that use scripts (e.g. js)
+            Connections = connections
          };
 
          mini.Load(); // very important to check after creating, as it runs validation and even modifies!
@@ -244,62 +261,34 @@ namespace Module.Services {
             fields = mini.Entities.First().Fields;
             entity = mini.Entities.First();
 
-            var c = new PipelineContext(ctx.Resolve<IPipelineLogger>(), mini, entity);
-
-            var transforms = new List<ITransform> {
-               new Transformalize.Transforms.System.DefaultTransform(c, fields)
-            };
-            transforms.AddRange(TransformFactory.GetTransforms(ctx, c, fields));
-
-            var validators = ValidateFactory.GetValidators(ctx, c, fields);
-
-            // make an input out of the parameters
-            var input = new List<IRow>();
-            var row = new Transformalize.MasterRow(fieldCount);
-            for (var i = 0; i < process.Parameters.Count; i++) {
-               var parameter = process.Parameters[i];
-               var field = fields[i];
-               if (parameters.ContainsKey(parameter.Name)) {
-                  row[field] = parameters[parameter.Name];
-                  parameters.Remove(parameter.Name); // since parameter may be transformed and placed in value, we discard the original
-               } else {
-                  row[field] = parameter.Value;
-               }
-               if (parameter.Type != null && parameter.Type != "string" && row[field] != null) {
-                  try {
-                     if (row[field] is string str) {
-                        row[field] = Transformalize.Constants.ConversionMap[parameter.Type](str);
-                     } else {
-                        row[field] = Transformalize.Constants.ObjectConversionMap[parameter.Type](row[field]);
-                     }
-                  } catch (FormatException ex) {
-                     _logger.Error(()=>$"Could not convert '{row[field]}' to {parameter.Type}. {ex.Message}");
-                     row[field] = Transformalize.Constants.TypeDefaults()[parameter.Type];
-                  }
-               }
+            CfgRow output;
+            _container.ParametersForInternalReader = parameters;
+            using (var scope = _container.CreateScope(mini, _logger)) {
+               scope.Resolve<IProcessController>().Execute();
+               output = mini.Entities[0].Rows.FirstOrDefault();
             }
-            input.Add(row);
 
-            var output = validators.Aggregate(transforms.Aggregate(input.AsEnumerable(), (rows, t) => t.Operate(rows)), (rows, v) => v.Operate(rows)).ToList().First();
+            if(output != null) {
+               for (var i = 0; i < process.Parameters.Count; i++) {
 
-            for (var i = 0; i < process.Parameters.Count; i++) {
+                  var field = fields[i];
+                  var parameter = process.Parameters[i];
 
-               var field = fields[i];
-               var parameter = process.Parameters[i];
+                  // set the transformed value
+                  parameter.Value = output[field.Name].ToString();
 
-               // set the transformed value
-               parameter.Value = output[field].ToString();
+                  // set the validation results
+                  if (field.ValidField != string.Empty) {
+                     parameter.Valid = (bool)output[field.ValidField];
+                     parameter.Message = ((string)output[field.MessageField]).TrimEnd('|');
+                  } else {
+                     parameter.Valid = true;
+                  }
 
-               // set the validation results
-               if (field.ValidField != string.Empty) {
-                  parameter.Valid = (bool)output[fields.First(f => f.Name == field.ValidField)];
-                  parameter.Message = ((string)output[fields.First(f => f.Name == field.MessageField)]).TrimEnd('|');
-               } else {
-                  parameter.Valid = true;
+                  parameter.Transforms.Clear();
+                  parameter.Validators.Clear();
                }
 
-               parameter.Transforms.Clear();
-               parameter.Validators.Clear();
             }
 
             return process.Serialize();

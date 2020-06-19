@@ -67,6 +67,8 @@ namespace Module.Services {
       private readonly IServiceProvider _serviceProvider;
       private readonly HashSet<string> _adoProviders = new HashSet<string>() { "sqlserver", "postgresql", "sqlite", "mysql" };
 
+      public IDictionary<string,string> ParametersForInternalReader { get; set; }
+
       public OrchardContainer(
          IHttpContextAccessor httpContext,
          IUserService userService,
@@ -99,7 +101,7 @@ namespace Module.Services {
          builder.RegisterModule(vm);
 
          // using custom internal module that does not handle the nested transformalize actions
-         builder.RegisterModule(new OrchardInternalModule(process));
+         builder.RegisterModule(new OrchardInternalModule(process) { ParametersForInternalReader = ParametersForInternalReader});
 
          // handling nested transformalize actions here instead
          foreach (var action in process.Actions.Where(a => a.GetModes().Any(m => m == process.Mode || m == "*"))) {

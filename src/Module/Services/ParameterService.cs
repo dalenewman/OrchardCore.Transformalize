@@ -22,8 +22,8 @@ namespace Module.Services {
             }
             if (_request.HasFormContentType) {
                foreach (var key in _request.Form.Keys) {
-                  if (!_request.Form[key].ToString().Equals("__requestverificationtoken", StringComparison.OrdinalIgnoreCase)) {
-                     parameters[key] = _request.Form[key];
+                  if (key != "__RequestVerificationToken") {
+                     parameters[key] = _request.Form[key].ToString();
                   }
                }
             }
