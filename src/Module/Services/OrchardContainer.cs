@@ -86,7 +86,7 @@ namespace Module.Services {
          builder.RegisterInstance(logger).As<IPipelineLogger>().SingleInstance();
 
          // register short-hand for t attribute, allowing for additional transforms
-         var tm = new TransformModule(process, _methods, _shortHand, logger);
+         var tm = new TransformModule(process, _methods, _shortHand, logger) { Plugins = false };
          // adding additional transforms here
          tm.AddTransform(new TransformHolder((c) => new UsernameTransform(_httpContext, c), new UsernameTransform().GetSignatures()));
          tm.AddTransform(new TransformHolder((c) => new UserIdTransform(_httpContext, _userService, c), new UserIdTransform().GetSignatures()));
@@ -94,7 +94,7 @@ namespace Module.Services {
          builder.RegisterModule(tm);
 
          // register short-hand for v attribute, allowing for additional validators
-         var vm = new ValidateModule(process, _methods, _shortHand, logger);
+         var vm = new ValidateModule(process, _methods, _shortHand, logger) { Plugins = false };
          // adding additional validators here
          builder.RegisterModule(vm);
 
@@ -155,7 +155,7 @@ namespace Module.Services {
 
             builder.Register(ctx => new ConnectionContext(ctx.Resolve<IContext>(), connection)).Named<IConnectionContext>(connection.Key);
 
-            if (connection.Name != "output")
+            if (connection.Name != process.Output)
                continue;
 
             // register output for connection

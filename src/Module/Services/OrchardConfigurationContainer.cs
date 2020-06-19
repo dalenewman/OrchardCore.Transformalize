@@ -87,7 +87,7 @@ namespace Module.Services {
          builder.Register<IReader>(c => new DefaultReader(new FileReader(), new WebReader())).As<IReader>();
 
          // register short-hand for t attribute
-         var tm = new TransformModule(new Process { Name = "TransformShorthand" }, _methods, _shortHand, logger);
+         var tm = new TransformModule(new Process { Name = "TransformShorthand" }, _methods, _shortHand, logger) { Plugins = false};
          // adding additional transforms here
          tm.AddTransform(new TransformHolder((c) => new UsernameTransform(_httpContext, c), new UsernameTransform().GetSignatures()));
          tm.AddTransform(new TransformHolder((c) => new UserIdTransform(_httpContext, _userService, c), new UserIdTransform().GetSignatures()));
@@ -95,7 +95,7 @@ namespace Module.Services {
          builder.RegisterModule(tm);
 
          // register short-hand for v attribute
-         var vm = new ValidateModule(new Process { Name = "ValidateShorthand" }, _methods, _shortHand, logger);
+         var vm = new ValidateModule(new Process { Name = "ValidateShorthand" }, _methods, _shortHand, logger) { Plugins = false };
          // adding additional validators here
          builder.RegisterModule(vm);
 
@@ -134,10 +134,11 @@ namespace Module.Services {
             // if outside parameters are used here, and possibly transformed, they will move on to the
             // real process as the transformed value
 
-            var pre = new Transformalize.ConfigurationFacade.Process(
+            var pre = new Process(
                cfg,
-               null,
-               new List<IDependency> {
+               parameters: null,
+               enabled: false,
+               dependencies: new List<IDependency> {
                   ctx.Resolve<IReader>(),
                   ctx.ResolveNamed<IDependency>(TransformModule.ParametersName),
                   ctx.ResolveNamed<IDependency>(ValidateModule.ParametersName)
@@ -175,7 +176,7 @@ namespace Module.Services {
          return builder.Build().BeginLifetimeScope();
       }
 
-      private string TransformalizeParameters(IComponentContext ctx, Transformalize.ConfigurationFacade.Process process, IDictionary<string, string> parameters) {
+      private string TransformalizeParameters(IComponentContext ctx, Process process, IDictionary<string, string> parameters) {
 
          var fields = new List<Field>();
 
@@ -186,21 +187,13 @@ namespace Module.Services {
                Default = pr.Value,
                Label = pr.Label,
                PostBack = pr.PostBack,
-               Transforms = pr.Transforms.Select(o => o.ToOperation()).ToList(),
-               Validators = pr.Validators.Select(o => o.ToOperation()).ToList()
+               Transforms = pr.Transforms,
+               Validators = pr.Validators,
+               Length = pr.Length,
+               Type = pr.Type,
+               Precision = pr.Precision,
+               Scale = pr.Scale
             };
-            if (!string.IsNullOrEmpty(pr.Length)) {
-               field.Length = pr.Length;
-            }
-            if (!string.IsNullOrEmpty(pr.Type)) {
-               field.Type = pr.Type;
-            }
-            if (!string.IsNullOrEmpty(pr.Precision) && int.TryParse(pr.Precision, out int precision)) {
-               field.Precision = precision;
-            }
-            if (!string.IsNullOrEmpty(pr.Scale) && int.TryParse(pr.Scale, out int scale)) {
-               field.Scale = scale;
-            }
             fields.Add(field);
          }
 
@@ -239,8 +232,8 @@ namespace Module.Services {
             Name = "TransformalizeParameters",
             ReadOnly = true,
             Entities = new List<Entity> { entity },
-            Maps = process.Maps.Select(m => m.ToMap()).ToList(), // for map transforms
-            Scripts = process.Scripts.Select(s => s.ToScript()).ToList() // for transforms that use scripts (e.g. js)
+            Maps = process.Maps, // for map transforms
+            Scripts = process.Scripts // for transforms that use scripts (e.g. js)
          };
 
          mini.Load(); // very important to check after creating, as it runs validation and even modifies!
@@ -299,10 +292,10 @@ namespace Module.Services {
 
                // set the validation results
                if (field.ValidField != string.Empty) {
-                  parameter.Valid = output[fields.First(f => f.Name == field.ValidField)].ToString().ToLower();
+                  parameter.Valid = (bool)output[fields.First(f => f.Name == field.ValidField)];
                   parameter.Message = ((string)output[fields.First(f => f.Name == field.MessageField)]).TrimEnd('|');
                } else {
-                  parameter.Valid = "true";
+                  parameter.Valid = true;
                }
 
                parameter.Transforms.Clear();
