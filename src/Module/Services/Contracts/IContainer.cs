@@ -17,13 +17,15 @@
 #endregion
 
 using Autofac;
-using System.Collections.Generic;
+using System;
+using Transformalize.Context;
 using Transformalize.Contracts;
 using Process = Transformalize.Configuration.Process;
 
 namespace Module.Services {
    public interface IContainer {
-      IDictionary<string,string> ParametersForInternalReader { get; set; }
+      public Func<InputContext, IRowFactory, IRead> GetReaderAlternate { get; set; }
+      public Func<IRead, InputContext, IRowFactory, IRead> GetReaderDecorator { get; set; }
       ILifetimeScope CreateScope(Process process, IPipelineLogger logger);
    }
 }

@@ -142,11 +142,9 @@ namespace Module.Services {
             // THE REASON WHY YOU NEED FACADE IS SO PLACE-HOLDERS (always strings like @[Seed]) AREN'T LOST IN OTHER TYPES OF FIELDS (i.e. ints).
             var pre = new Transformalize.ConfigurationFacade.Process(
                cfg,
-               //parameters: null,
                parameters: parameters,
                dependencies: new List<IDependency> {
-                  // added parameter modifier
-                  new ParameterModifier(new NullPlaceHolderReplacer(), "parameters", "name", "value"),
+                  new TransferParameterModifier("parameters", "name", "value"),
                   ctx.Resolve<IReader>(),
                   ctx.ResolveNamed<IDependency>(TransformModule.ParametersName),
                   ctx.ResolveNamed<IDependency>(ValidateModule.ParametersName)
@@ -213,9 +211,9 @@ namespace Module.Services {
             fields.Add(field);
          }
 
-         if (fields.Any(f => f.Validators.Any())) {
+         var validatorFields = new List<Field>();
 
-            var validatorFields = new List<Field>();
+         if (fields.Any(f => f.Validators.Any())) {
 
             foreach (var field in fields.Where(f => f.Validators.Any())) {
 
@@ -238,8 +236,6 @@ namespace Module.Services {
                   Length = "255"
                });
             }
-
-            fields.AddRange(validatorFields);
          }
 
          // sandwich connections with internal input and output
@@ -249,9 +245,15 @@ namespace Module.Services {
          connections.Add(new Transformalize.ConfigurationFacade.Connection() { Name = _tpOutput, Provider = "internal" });
 
          var fieldCount = fields.Count;
-         var entity = new Entity { Name = "Parameters", Alias = "Parameters", Fields = fields, Input = _tpInput };
+         var entity = new Entity { 
+            Name = "Parameters", 
+            Alias = "Parameters", 
+            Fields = fields, 
+            CalculatedFields = validatorFields,
+            Input = _tpInput 
+         };
          var mini = new Process {
-            Name = "TransformalizeParameters",
+            Name = "Transformalize Parameters",
             ReadOnly = true,
             Output = _tpOutput,
             Parameters = process.Parameters.Select(p=>p.ToParameter()).ToList(),
@@ -270,12 +272,11 @@ namespace Module.Services {
             entity = mini.Entities.First();
 
             CfgRow output;
-            _container.ParametersForInternalReader = parameters;
+            _container.GetReaderAlternate = (input, rowFactory) => new ParameterRowReader(input, new DefaultRowReader(input,rowFactory)); 
             using (var scope = _container.CreateScope(mini, _logger)) {
                scope.Resolve<IProcessController>().Execute();
                output = mini.Entities[0].Rows.FirstOrDefault();
             }
-            _container.ParametersForInternalReader = null;
 
             for (int i = 0; i < mini.Maps.Count; i++) {
                var source = mini.Maps[i];

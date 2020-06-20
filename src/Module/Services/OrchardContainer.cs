@@ -67,7 +67,8 @@ namespace Module.Services {
       private readonly IServiceProvider _serviceProvider;
       private readonly HashSet<string> _adoProviders = new HashSet<string>() { "sqlserver", "postgresql", "sqlite", "mysql" };
 
-      public IDictionary<string,string> ParametersForInternalReader { get; set; }
+      public Func<InputContext, IRowFactory, IRead> GetReaderAlternate { get; set; }
+      public Func<IRead, InputContext, IRowFactory, IRead> GetReaderDecorator { get; set; }
 
       public OrchardContainer(
          IHttpContextAccessor httpContext,
@@ -101,7 +102,7 @@ namespace Module.Services {
          builder.RegisterModule(vm);
 
          // using custom internal module that does not handle the nested transformalize actions
-         builder.RegisterModule(new OrchardInternalModule(process) { ParametersForInternalReader = ParametersForInternalReader});
+         builder.RegisterModule(new OrchardInternalModule(process));
 
          // handling nested transformalize actions here instead
          foreach (var action in process.Actions.Where(a => a.GetModes().Any(m => m == process.Mode || m == "*"))) {
@@ -191,15 +192,34 @@ namespace Module.Services {
 
          // entity pipelines
          foreach (var entity in process.Entities) {
+
             builder.Register(ctx => {
 
                var context = ctx.ResolveNamed<IContext>(entity.Key);
                var outputController = ctx.IsRegisteredWithName<IOutputController>(entity.Key) ? ctx.ResolveNamed<IOutputController>(entity.Key) : new NullOutputController();
                var pipeline = new DefaultPipeline(outputController, context);
 
-               // TODO: rely on IInputProvider's Read method instead (after every provider has one)
-               pipeline.Register(ctx.IsRegisteredWithName(entity.Key, typeof(IRead)) ? ctx.ResolveNamed<IRead>(entity.Key) : null);
-               pipeline.Register(ctx.IsRegisteredWithName(entity.Key, typeof(IInputProvider)) ? ctx.ResolveNamed<IInputProvider>(entity.Key) : null);
+               if (entity.IsMaster) {
+                  if (GetReaderAlternate != null) {
+                     // Using an alternate reader (e.g. a ParameterRowReader that reads parameters into a row)
+                     var input = ctx.ResolveNamed<InputContext>(entity.Key);
+                     var rowFactory = ctx.ResolveNamed<IRowFactory>(entity.Key, new NamedParameter("capacity", input.RowCapacity));
+                     pipeline.Register(GetReaderAlternate(input, rowFactory));
+                  } else if (GetReaderDecorator != null && ctx.IsRegisteredWithName(entity.Key, typeof(IRead))) {
+                     // Decorating the normally registered reader (e.g. ParameterRowReader updating a row from an AdoReader)
+                     // TODO: Support IInputProvider instead of just IRead
+                     var input = ctx.ResolveNamed<InputContext>(entity.Key);
+                     var rowFactory = ctx.ResolveNamed<IRowFactory>(entity.Key, new NamedParameter("capacity", input.RowCapacity));
+                     pipeline.Register(GetReaderDecorator(ctx.ResolveNamed<IRead>(entity.Key), input, rowFactory));
+                  } else {
+                     pipeline.Register(ctx.IsRegisteredWithName(entity.Key, typeof(IRead)) ? ctx.ResolveNamed<IRead>(entity.Key) : null);
+                     pipeline.Register(ctx.IsRegisteredWithName(entity.Key, typeof(IInputProvider)) ? ctx.ResolveNamed<IInputProvider>(entity.Key) : null);
+                  }
+               } else {
+                  // TODO: rely on IInputProvider's Read method instead (after every provider has one)
+                  pipeline.Register(ctx.IsRegisteredWithName(entity.Key, typeof(IRead)) ? ctx.ResolveNamed<IRead>(entity.Key) : null);
+                  pipeline.Register(ctx.IsRegisteredWithName(entity.Key, typeof(IInputProvider)) ? ctx.ResolveNamed<IInputProvider>(entity.Key) : null);
+               }
 
                // transforms
                if (!process.ReadOnly) {
@@ -229,7 +249,7 @@ namespace Module.Services {
             }).Named<IPipeline>(entity.Key);
          }
 
-         if(process.Entities.Count > 1 && process.Relationships.Any()) {
+         if (process.Entities.Count > 1 && process.Relationships.Any()) {
             // process pipeline
             builder.Register(ctx => {
 

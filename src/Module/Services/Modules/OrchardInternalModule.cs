@@ -35,21 +35,16 @@ namespace Module.Services.Modules {
    /// </summary>
    public class OrchardInternalModule : Autofac.Module {
 
-      private readonly HashSet<string> _internalActions = new HashSet<string> { "log", "wait", "sleep" };
+      private readonly HashSet<string> _internalActions = new HashSet<string> { "log" };
       private const string Internal = "internal";
       private readonly Process _process;
-      private readonly List<IRow> _rows;
-
-      public IDictionary<string, string> ParametersForInternalReader { get; set; }
 
       /// <summary>
       /// Register internal actions, connections, readers, and writers
       /// </summary>
       /// <param name="process">the arrangement</param>
-      /// <param name="rows">an optional list of rows that overrides internal readers</param>
-      public OrchardInternalModule(Process process, List<IRow> rows = null) {
+      public OrchardInternalModule(Process process) {
          _process = process;
-         _rows = rows;
       }
 
       protected override void Load(ContainerBuilder builder) {
@@ -114,13 +109,8 @@ namespace Module.Services.Modules {
             builder.Register<IRead>(ctx => {
                var input = ctx.ResolveNamed<InputContext>(entity.Key);
                var rowFactory = ctx.ResolveNamed<IRowFactory>(entity.Key, new NamedParameter("capacity", input.RowCapacity));
-               if (ParametersForInternalReader == null) {
-                  return new InternalReader(input, rowFactory);
-               } else {
-                  return new InternalParameterReader(input, rowFactory, ParametersForInternalReader);
-               }
+               return new InternalReader(input, rowFactory);
             }).Named<IRead>(entity.Key);
-
          }
       }
 
@@ -131,9 +121,6 @@ namespace Module.Services.Modules {
          switch (action.Type) {
             case "log":
                return new LogAction(context, action);
-            case "wait":
-            case "sleep":
-               return new WaitAction(action);
             default:
                context.Error("{0} action is not registered.", action.Type);
                return new NullAction();
