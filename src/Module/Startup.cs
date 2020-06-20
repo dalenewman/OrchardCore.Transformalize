@@ -50,13 +50,17 @@ namespace Module {
          services.AddScoped<IArrangementRunService, ArrangementRunService>();
          services.AddScoped<IArrangementSchemaService, ArrangementSchemaService>();
          services.AddScoped<IParameterService, ParameterService>();
+         services.AddScoped<ICommonService, CommonService>();
          services.AddScoped<IReportService, ReportService>();
          services.AddScoped<ITaskService, TaskService>();
          services.AddScoped<IFormService, FormService>();
          services.AddScoped<ISchemaService, SchemaService>();
          services.AddScoped<ISettingsService, SettingsService>();
+         services.AddScoped<ITransformalizeParametersModifier, TransformalizeParametersModifier>();
+
          services.AddTransient<IConfigurationContainer, OrchardConfigurationContainer>();
          services.AddTransient<IContainer, OrchardContainer>();
+         
 
          // orchard cms services
          services.AddScoped<IDataMigration, Migrations>();
@@ -85,6 +89,13 @@ namespace Module {
          RouteReporting(routes);
          RouteTasks(routes);
          RouteBulkActions(routes);
+
+         routes.MapAreaControllerRoute(
+             name: "Transformalize Parameters",
+             areaName: Common.ModuleName,
+             pattern: "t/tp/{ContentItemId}",
+             defaults: new { controller = "Arrangement", action = "TransformalizeParameters" }
+         );
 
          routes.MapAreaControllerRoute(
              name: "Schema API",

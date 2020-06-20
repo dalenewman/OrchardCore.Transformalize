@@ -16,16 +16,19 @@
 // limitations under the License.
 #endregion
 
-using Autofac;
 using Cfg.Net.Contracts;
-using System.Collections.Generic;
-using Transformalize.Contracts;
+using Module.Models;
 
-namespace Module.Services {
+namespace Module.Services.Contracts {
 
-   public interface IConfigurationContainer {
+   public interface IArrangementModifier {
       ISerializer Serializer { get; set; }
-      ILifetimeScope CreateScope(string cfg, IPipelineLogger logger, IDictionary<string, string> parameters);
+      ArrangementModifierResponse Modify(string cfg);
+   }
+
+   // for dependency injection
+   public interface ITransformalizeParametersModifier : IArrangementModifier {
+
    }
 
 }

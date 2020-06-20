@@ -24,6 +24,7 @@ using Cfg.Net.Shorthand;
 using Microsoft.AspNetCore.Http;
 using Module.Services.Contracts;
 using Module.Services.Modifiers;
+using Module.Services.Modules;
 using Module.Transforms;
 using OrchardCore.Users.Services;
 using System;
@@ -86,51 +87,7 @@ namespace Module.Services {
          }
 
          var builder = new ContainerBuilder();
-
-         builder.Register((ctx) => logger).As<IPipelineLogger>();
-
-         builder.Register<IReader>(c => new DefaultReader(new FileReader(), new WebReader())).As<IReader>();
-
-         // register short-hand for t attribute
-         var tm = new TransformModule(new Process { Name = "TransformShorthand" }, _methods, _shortHand, logger) { Plugins = false };
-         // adding additional transforms here
-         tm.AddTransform(new TransformHolder((c) => new UsernameTransform(_httpContext, c), new UsernameTransform().GetSignatures()));
-         tm.AddTransform(new TransformHolder((c) => new UserIdTransform(_httpContext, _userService, c), new UserIdTransform().GetSignatures()));
-         tm.AddTransform(new TransformHolder((c) => new UserEmailTransform(_httpContext, _userService, c), new UserEmailTransform().GetSignatures()));
-         builder.RegisterModule(tm);
-
-         // register short-hand for v attribute
-         var vm = new ValidateModule(new Process { Name = "ValidateShorthand" }, _methods, _shortHand, logger) { Plugins = false };
-         // adding additional validators here
-         builder.RegisterModule(vm);
-
-         // register the validator short hand
-         builder.Register((c, p) => _shortHand).Named<ShorthandRoot>(ValidateModule.FieldsName).InstancePerLifetimeScope();
-         builder.Register((c, p) => _shortHand).Named<ShorthandRoot>(ValidateModule.ParametersName).InstancePerLifetimeScope();
-         builder.Register((c, p) => new ShorthandCustomizer(c.ResolveNamed<ShorthandRoot>(ValidateModule.FieldsName), new[] { "fields", "calculated-fields", "calculatedfields" }, "v", "validators", "method")).Named<IDependency>(ValidateModule.FieldsName).InstancePerLifetimeScope();
-         builder.Register((c, p) => new ShorthandCustomizer(c.ResolveNamed<ShorthandRoot>(ValidateModule.ParametersName), new[] { "parameters" }, "v", "validators", "method")).Named<IDependency>(ValidateModule.ParametersName).InstancePerLifetimeScope();
-
-         // register the transform short hand
-         builder.Register((c, p) => _shortHand).Named<ShorthandRoot>(TransformModule.FieldsName).InstancePerLifetimeScope();
-         builder.Register((c, p) => _shortHand).Named<ShorthandRoot>(TransformModule.ParametersName).InstancePerLifetimeScope();
-         builder.Register((c, p) => new ShorthandCustomizer(c.ResolveNamed<ShorthandRoot>(TransformModule.FieldsName), new[] { "fields", "calculated-fields", "calculatedfields" }, "t", "transforms", "method")).Named<IDependency>(TransformModule.FieldsName).InstancePerLifetimeScope();
-         builder.Register((c, p) => new ShorthandCustomizer(c.ResolveNamed<ShorthandRoot>(TransformModule.ParametersName), new[] { "parameters" }, "t", "transforms", "method")).Named<IDependency>(TransformModule.ParametersName).InstancePerLifetimeScope();
-
-         // the shorthand registrations are stored in the builder's properties for plugins to add to
-         builder.Properties["ShortHand"] = _shortHand;
-         builder.Properties["Methods"] = _methods;
-
-         // register transform modules here so they can add their shorthand
-         builder.RegisterModule(new JintTransformModule());
-         builder.RegisterModule(new JsonTransformModule());
-         builder.RegisterModule(new HumanizeModule());
-         builder.RegisterModule(new FileModule());
-
-         // register validator modules here so they can register their short-hand
-         builder.RegisterModule(new JintValidateModule());
-
-         builder.Register((c, p) => _methods).Named<HashSet<string>>("Methods").InstancePerLifetimeScope();
-         builder.Register((c, p) => _shortHand).As<ShorthandRoot>().InstancePerLifetimeScope();
+         builder.RegisterModule(new ShorthandModule(_logger, _httpContext, _userService));
 
          builder.Register(ctx => {
 
@@ -213,29 +170,24 @@ namespace Module.Services {
 
          var validatorFields = new List<Field>();
 
-         if (fields.Any(f => f.Validators.Any())) {
+         foreach (var field in fields.Where(f => f.Validators.Any())) {
 
-            foreach (var field in fields.Where(f => f.Validators.Any())) {
+            field.ValidField = field.Name + "Valid";
+            field.MessageField = field.Name + "Message";
 
-               field.ValidField = field.Name + "Valid";
-               field.MessageField = field.Name + "Message";
-
-               validatorFields.Add(new Field {
-                  Name = field.ValidField,
-                  Alias = field.ValidField,
-                  Input = false,
-                  Default = "true",
-                  Type = "bool"
-               });
-               validatorFields.Add(new Field {
-                  Name = field.MessageField,
-                  Alias = field.MessageField,
-                  Input = false,
-                  Default = string.Empty,
-                  Type = "string",
-                  Length = "255"
-               });
-            }
+            validatorFields.Add(new Field {
+               Name = field.ValidField,
+               Input = false,
+               Default = "true",
+               Type = "bool"
+            });
+            validatorFields.Add(new Field {
+               Name = field.MessageField,
+               Input = false,
+               Default = string.Empty,
+               Type = "string",
+               Length = "255"
+            });
          }
 
          // sandwich connections with internal input and output
@@ -245,22 +197,22 @@ namespace Module.Services {
          connections.Add(new Transformalize.ConfigurationFacade.Connection() { Name = _tpOutput, Provider = "internal" });
 
          var fieldCount = fields.Count;
-         var entity = new Entity { 
-            Name = "Parameters", 
-            Alias = "Parameters", 
-            Fields = fields, 
+         var entity = new Entity {
+            Name = "Parameters",
+            Alias = "Parameters",
+            Fields = fields,
             CalculatedFields = validatorFields,
-            Input = _tpInput 
+            Input = _tpInput
          };
          var mini = new Process {
             Name = "Transformalize Parameters",
             ReadOnly = true,
             Output = _tpOutput,
-            Parameters = process.Parameters.Select(p=>p.ToParameter()).ToList(),
+            Parameters = process.Parameters.Select(p => p.ToParameter()).ToList(),
             Entities = new List<Entity> { entity },
-            Maps = process.Maps.Select(m=>m.ToMap()).ToList() , // for map transforms
-            Scripts = process.Scripts.Select(m=>m.ToScript()).ToList() , // for transforms that use scripts (e.g. js)
-            Connections = connections.Select(c=>c.ToConnection()).ToList()
+            Maps = process.Maps.Select(m => m.ToMap()).ToList(), // for map transforms
+            Scripts = process.Scripts.Select(m => m.ToScript()).ToList(), // for transforms that use scripts (e.g. js)
+            Connections = connections.Select(c => c.ToConnection()).ToList()
          };
 
          mini.Load(); // very important to check after creating, as it runs validation and even modifies!
@@ -272,7 +224,7 @@ namespace Module.Services {
             entity = mini.Entities.First();
 
             CfgRow output;
-            _container.GetReaderAlternate = (input, rowFactory) => new ParameterRowReader(input, new DefaultRowReader(input,rowFactory)); 
+            _container.GetReaderAlternate = (input, rowFactory) => new ParameterRowReader(input, new DefaultRowReader(input, rowFactory));
             using (var scope = _container.CreateScope(mini, _logger)) {
                scope.Resolve<IProcessController>().Execute();
                output = mini.Entities[0].Rows.FirstOrDefault();
@@ -281,8 +233,8 @@ namespace Module.Services {
             for (int i = 0; i < mini.Maps.Count; i++) {
                var source = mini.Maps[i];
                var target = process.Maps[i];
-               if(source.Items.Any() && !target.Items.Any()) {
-                  foreach(var item in source.Items) {
+               if (source.Items.Any() && !target.Items.Any()) {
+                  foreach (var item in source.Items) {
                      target.Items.Add(new Transformalize.ConfigurationFacade.MapItem() {
                         From = item.From.ToString(),
                         To = item.To.ToString(),
@@ -294,31 +246,26 @@ namespace Module.Services {
                }
             }
 
-            if(output != null) {
-               for (var i = 0; i < process.Parameters.Count; i++) {
+            if (output != null) {
+               if (output != null) {
+                  foreach (var parameter in process.Parameters.Where(p => !string.IsNullOrEmpty(p.V) || p.Validators.Any())) {
+                     var field = fields.First(f => f.Name == parameter.Name);
 
-                  var field = fields[i];
-                  var parameter = process.Parameters[i];
+                     // set the transformed value
+                     parameter.Value = output[field.Name].ToString();
 
-                  // set the transformed value
-                  parameter.Value = output[field.Name].ToString();
-
-                  // set the validation results
-                  if (field.ValidField == string.Empty) {
-                     parameter.Valid = "true";
-                  } else {
+                     // set the validation results
                      if ((bool)output[field.ValidField]) {
                         parameter.Valid = "true";
                      } else {
                         parameter.Valid = "false";
                         parameter.Message = ((string)output[field.MessageField]).TrimEnd('|');
                      }
+
+                     parameter.Transforms.Clear();
+                     parameter.Validators.Clear();
                   }
-
-                  parameter.Transforms.Clear();
-                  parameter.Validators.Clear();
                }
-
             }
 
             return process.Serialize();

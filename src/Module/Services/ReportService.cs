@@ -108,5 +108,6 @@ namespace Module.Services {
       public void SetupWrongTypeResponse<T1>(TransformalizeRequest request, TransformalizeResponse<T1> response) {
          _arrangementService.SetupWrongTypeResponse(request, response);
       }
+
    }
 }
