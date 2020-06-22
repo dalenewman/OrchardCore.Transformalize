@@ -30,8 +30,8 @@
       <PackageReference Include="OrchardCore.ResourceManagement" Version="1.0.0-rc2-13450" />
       <PackageReference Include="OrchardCore.Title" Version="1.0.0-rc2-13450" />
       <PackageReference Include="OrchardCore.Users.Core" Version="1.0.0-rc2-13450" />
-      <PackageReference Include="Transformalize" Version="0.8.10-beta" />
-      <PackageReference Include="Transformalize.Container.Autofac" Version="0.8.8-beta" />
+      <PackageReference Include="Transformalize" Version="0.8.11-beta" />
+      <PackageReference Include="Transformalize.Container.Autofac" Version="0.8.11-beta" />
       <PackageReference Include="Transformalize.Provider.Ado.Autofac" Version="0.8.8-beta" />
       <PackageReference Include="Transformalize.Provider.Bogus.Autofac" Version="0.8.1-beta" />
       <PackageReference Include="Transformalize.Provider.CsvHelper.Autofac" Version="0.8.1-beta" />

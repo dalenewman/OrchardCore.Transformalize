@@ -18,7 +18,6 @@
 
 using Autofac;
 using Cfg.Net.Contracts;
-using Fluid;
 using Microsoft.AspNetCore.Http;
 using Module.Models;
 using Module.Services.Contracts;
@@ -35,6 +34,10 @@ using Process = Transformalize.Configuration.Process;
 
 namespace Module.Services {
 
+   /// <summary>
+   /// Takes the arrangement and validates and transforms the parameters in a transformalize process
+   /// Transfers external parameters to internal parameters and adds Valid and Message fields to each
+   /// </summary>
    public class TransformalizeParametersModifier : ITransformalizeParametersModifier {
 
       private const string _tpInput = "tp-input";
@@ -72,19 +75,10 @@ namespace Module.Services {
          };
 
          // using facade (which is all string properties) so things can be 
-         // transformed before type checked or place-holders are replaced
+         // transformed before types are checked or place-holders are replaced
 
          var builder = new ContainerBuilder();
          builder.RegisterModule(new ShorthandModule(_logger, _httpContext, _userService));
-
-         //var facade = new Transformalize.ConfigurationFacade.Process(
-         //   cfg,
-         //   parameters: response.Parameters,
-         //   dependencies: new List<IDependency> {
-         //      // transfer external parameters to internal parameters
-         //      new TransferParameterModifier("parameters", "name", "value"),
-         //   }.ToArray()
-         //);
 
          Transformalize.ConfigurationFacade.Process facade;
 
@@ -93,7 +87,7 @@ namespace Module.Services {
                cfg,
                parameters: response.Parameters,
                dependencies: new List<IDependency> {
-                  new TransferParameterModifier("parameters", "name", "value"),
+                  new TransferParameterModifier("parameters", "name", "value"),  // consumes parameters
                   scope.ResolveNamed<IDependency>(TransformModule.ParametersName),
                   scope.ResolveNamed<IDependency>(ValidateModule.ParametersName)
                }.ToArray()
@@ -111,14 +105,13 @@ namespace Module.Services {
                Default = pr.Value,
                Label = pr.Label,
                PostBack = pr.PostBack,
+               Type = pr.Type,
+               InputType = pr.InputType,
                Transforms = pr.Transforms.Select(o => o.ToOperation()).ToList(),
                Validators = pr.Validators.Select(o => o.ToOperation()).ToList()
             };
             if (!string.IsNullOrEmpty(pr.Length)) {
                field.Length = pr.Length;
-            }
-            if (!string.IsNullOrEmpty(pr.Type)) {
-               field.Type = pr.Type;
             }
             if (!string.IsNullOrEmpty(pr.Precision) && int.TryParse(pr.Precision, out int precision)) {
                field.Precision = precision;
@@ -138,14 +131,12 @@ namespace Module.Services {
 
             validatorFields.Add(new Field {
                Name = field.ValidField,
-               Alias = field.ValidField,
                Input = false,
                Default = "true",
                Type = "bool"
             });
             validatorFields.Add(new Field {
                Name = field.MessageField,
-               Alias = field.MessageField,
                Input = false,
                Default = string.Empty,
                Type = "string",
@@ -164,9 +155,6 @@ namespace Module.Services {
          //create an internal connection for output
          connections.Add(new Transformalize.ConfigurationFacade.Connection() { Name = _tpOutput, Provider = "internal" });
 
-
-         var fieldCount = fields.Count;
-
          // create entity
          var entity = new Entity {
             Name = "Parameters",
@@ -181,9 +169,10 @@ namespace Module.Services {
             ReadOnly = true,
             Output = _tpOutput,
             Parameters = facade.Parameters.Select(p => p.ToParameter()).ToList(),
+            Maps = facade.Maps.Select(m => m.ToMap()).ToList(),
+            Scripts = facade.Scripts.Select(m => m.ToScript()).ToList(),
+            Actions = facade.Actions.Select(a=> a.ToAction()).ToList(),
             Entities = new List<Entity> { entity },
-            Maps = facade.Maps.Select(m => m.ToMap()).ToList(), // for map transforms
-            Scripts = facade.Scripts.Select(m => m.ToScript()).ToList(), // for transforms that use scripts (e.g. js)
             Connections = connections.Select(c => c.ToConnection()).ToList()
          };
 
@@ -220,18 +209,20 @@ namespace Module.Services {
             }
 
             if (output != null) {
-               foreach (var parameter in facade.Parameters.Where(p => p.Validators.Any())) {
+               foreach (var parameter in facade.Parameters) {
                   var field = fields.First(f => f.Name == parameter.Name);
 
                   // set the transformed value
                   parameter.Value = output[field.Name].ToString();
 
-                  // set the validation results
-                  if ((bool)output[field.ValidField]) {
-                     parameter.Valid = "true";
-                  } else {
-                     parameter.Valid = "false";
-                     parameter.Message = ((string)output[field.MessageField]).TrimEnd('|');
+                  if (parameter.Validators.Any()) {
+                     // set the validation results
+                     if ((bool)output[field.ValidField]) {
+                        parameter.Valid = "true";
+                     } else {
+                        parameter.Valid = "false";
+                        parameter.Message = ((string)output[field.MessageField]).TrimEnd('|');
+                     }
                   }
 
                   parameter.T = null;
