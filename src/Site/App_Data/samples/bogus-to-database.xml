@@ -1,0 +1,31 @@
+<cfg name="Bogus" mode="@[Mode]" output="@[Output]">
+  <parameters>
+    <add name="Seed" type="int" prompt="true" value="1" width="40" v="required()" />
+    <add name="Mode" prompt="true" value="default" map="Modes" v="map(Modes)" />
+    <add name="Output" prompt="true" value="JunkOnSqlServer" map="Junk Databases" v="map(Junk Databases)" />
+    <add name="Size" prompt="true" value="1000" type="int" v="required().is(int)" />
+  </parameters>
+  <maps>
+    <add name="Modes" />
+    <add name="Junk Databases" />
+  </maps>
+  <connections>
+    <add name="input" provider="bogus" seed="@[Seed]" />
+    <add name="@[Output]" />
+  </connections>
+  <entities>
+    <add name="Sample" update="false" size="@[Size]">
+      <fields>
+        <add name="Identity" type="int" />
+        <add name="FirstName" label="First Name" output="false" />
+        <add name="LastName" label="Last Name" output="false" />
+        <add input="false" name="Name" t="format({FirstName} {LastName})" />
+        <add name="Email" t='lower().format(<a href="mailto:{Email}">{Email}</a>)' raw="true" />
+        <add name="Recent" type="datetime" output="false" />
+      </fields>
+      <calculated-fields>
+        <add name="Last Seen" t="copy(Recent).timeAgo()" />
+      </calculated-fields>
+    </add>
+  </entities>
+</cfg>

@@ -1,0 +1,22 @@
+<cfg name="Test File Releted Transforms">
+  <parameters>
+      <add name="Filename" value="App_Data\test-1.txt" />
+      <add name="FileExtension" t="copy(Filename).fileExt()" />
+      <add name="FilenameOnly" t="copy(Filename).filename()" />
+      <add name="FilenameOnlyNoExt" t="copy(Filename).filename(false)" />
+      <add name="FilePath" t="copy(Filename).filepath()" v="required()" />
+      <add name="Something" t="upper()" prompt="true" />
+      <add name="Number1" type="int" value="5" prompt="true" />
+      <add name="Number2" type="decimal" value="2.0" prompt="true" />
+      <add name="Product" type="decimal" t="jint(Number1*Number2)" />
+  </parameters>
+  <actions>
+    <add type="log" level="info" message="Filename = @[Filename]" />
+    <add type="log" level="info" message="FileExtension = @[FileExtension]" />
+    <add type="log" level="info" message="FilenameOnly = @[FilenameOnly]" />
+    <add type="log" level="info" message="FilenameOnlyNoExt = @[FilenameOnlyNoExt]" />
+    <add type="log" level="info" message="FilePath = @[FilePath]" />
+    <add type="log" level="info" message="Something = @[Something]" />
+    <add type="log" level="info" message="Product = @[Product]" />
+  </actions>
+</cfg>
