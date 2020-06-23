@@ -99,6 +99,7 @@ namespace Module.Services {
          var fields = new List<Field>();
 
          foreach (var pr in facade.Parameters) {
+
             var field = new Field {
                Name = pr.Name,
                Alias = pr.Name,
@@ -163,15 +164,25 @@ namespace Module.Services {
             Input = _tpInput
          };
 
-         // create process, adding everything previous created
+         // disable checking for invalid characters unless set
+         var parameters = new List<Parameter>();
+         foreach(var parameter in facade.Parameters) {
+            var add = parameter.ToParameter();
+            if(parameter.InvalidCharacters == null) {
+               add.InvalidCharacters = string.Empty;
+            }
+            parameters.Add(add);
+         }
+
+         // create process to transform and validate the parameter values
          var process = new Process {
             Name = "Transformalize Parameters",
             ReadOnly = true,
+            Mode = "form",  // causes auto post-back's to resolve to either true or false
             Output = _tpOutput,
-            Parameters = facade.Parameters.Select(p => p.ToParameter()).ToList(),
+            Parameters = parameters,
             Maps = facade.Maps.Select(m => m.ToMap()).ToList(),
             Scripts = facade.Scripts.Select(m => m.ToScript()).ToList(),
-            // Actions = facade.Actions.Select(a=> a.ToAction()).ToList(),  I do not think we need actions to transform and validate parameters
             Entities = new List<Entity> { entity },
             Connections = connections.Select(c => c.ToConnection()).ToList()
          };
@@ -214,6 +225,7 @@ namespace Module.Services {
 
                   // set the transformed value
                   parameter.Value = output[field.Name].ToString();
+                  parameter.PostBack = field.PostBack;  // auto is changed to true|false in transformalize
 
                   if (parameter.Validators.Any()) {
                      // set the validation results
