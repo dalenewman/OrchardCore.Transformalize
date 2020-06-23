@@ -65,6 +65,7 @@ namespace Module.Services {
       private readonly IHttpContextAccessor _httpContext;
       private readonly IUserService _userService;
       private readonly IServiceProvider _serviceProvider;
+      private readonly CombinedLogger<OrchardContainer> _logger;
       private readonly HashSet<string> _adoProviders = new HashSet<string>() { "sqlserver", "postgresql", "sqlite", "mysql" };
 
       public Func<InputContext, IRowFactory, IRead> GetReaderAlternate { get; set; }
@@ -73,11 +74,13 @@ namespace Module.Services {
       public OrchardContainer(
          IHttpContextAccessor httpContext,
          IUserService userService,
-         IServiceProvider serviceProvider
+         IServiceProvider serviceProvider,
+         CombinedLogger<OrchardContainer> logger
       ) {
          _httpContext = httpContext;
          _userService = userService;
          _serviceProvider = serviceProvider;
+         _logger = logger;
       }
 
       public ILifetimeScope CreateScope(Process process, IPipelineLogger logger) {
@@ -335,11 +338,15 @@ namespace Module.Services {
 
             // actions
             foreach (var action in process.Actions.Where(a => a.GetModes().Any(m => m == process.Mode || m == "*"))) {
-               if (action.Before) {
-                  controller.PreActions.Add(ctx.ResolveNamed<IAction>(action.Key));
-               }
-               if (action.After) {
-                  controller.PostActions.Add(ctx.ResolveNamed<IAction>(action.Key));
+               if (ctx.IsRegisteredWithName<IAction>(action.Key)) {
+                  if (action.Before) {
+                     controller.PreActions.Add(ctx.ResolveNamed<IAction>(action.Key));
+                  }
+                  if (action.After) {
+                     controller.PostActions.Add(ctx.ResolveNamed<IAction>(action.Key));
+                  }
+               } else {
+                  _logger.Warn(() => $"The action {action.Name} with type {action.Type} isn't registered.");
                }
             }
 

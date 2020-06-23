@@ -75,24 +75,6 @@ namespace Module.Services {
 
          builder.Register(ctx => {
 
-            // parameter values are only used if outside parameters don't exist so
-            // outside parameters will over-write or set the value before transforms / validators run
-            // if outside parameters are used here, and possibly transformed, they will move on to the
-            // real process as the transformed value
-
-            // THE REASON WHY YOU NEED FACADE IS SO PLACE-HOLDERS (always strings like @[Seed]) AREN'T LOST IN OTHER TYPES OF FIELDS (i.e. ints).
-            var pre = new Transformalize.ConfigurationFacade.Process(
-               cfg,
-               parameters: parameters,
-               dependencies: new List<IDependency> {
-                  new TransferParameterModifier("parameters", "name", "value"),
-                  ctx.Resolve<IReader>(),
-                  ctx.ResolveNamed<IDependency>(TransformModule.ParametersName),
-                  ctx.ResolveNamed<IDependency>(ValidateModule.ParametersName)
-               }.ToArray()
-            );
-
-            _settings.ApplyCommonSettings(pre);
             var response = _transformalizeParameters.Modify(cfg);
 
             cfg = response.Arrangement;

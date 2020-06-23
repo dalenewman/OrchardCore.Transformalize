@@ -13,9 +13,10 @@ module for [Orchard Core](https://github.com/OrchardCMS/OrchardCore) rc2.
   - <strike>Tasks (ETL Jobs) for running batches, etc</strike>
   - <strike>Forms for accepting parameters for batches</strike>
 - <strike>Add Mini Profiler into ADO providers</strike>
-- Settings
+- <strike>Common Arrangement Settings</strike>
+  - <strike>Parameters</strike>
   - <strike>Connections</strike>
-  - Actions
+  - <strike>Actions</strike>
   - <strike>Page Sizes</strike>
 
 #### Providers
@@ -42,7 +43,7 @@ module for [Orchard Core](https://github.com/OrchardCMS/OrchardCore) rc2.
 - Add nuget package source https://www.myget.org/F/transformalize/api/v3/index.json
 - Set the Site as the startup project and run.
 - Enable Transformalize in Dashboard > Configuration > Features
-- Optionally run recipe in Dashboard > Configuration > Recipes
+- Optionally run Transformalize recipes in Dashboard > Configuration > Recipes
 
 #### Module Dependencies
 You may have to enable some of these manually.

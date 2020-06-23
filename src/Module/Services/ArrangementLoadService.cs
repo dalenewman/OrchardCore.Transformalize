@@ -233,7 +233,7 @@ namespace Module.Services {
             process = _configurationContainer.CreateScope(arrangement, _logger, _parameters).Resolve<Process>();
          }
 
-         _settings.ApplyCommonSettings(process);
+         // _settings.ApplyCommonSettings(process); already loaded in cfg container
 
          if (process.Errors().Any() || process.Log.Any(l => l.LogLevel == LogLevel.Error)) {
             process.Status = 500;

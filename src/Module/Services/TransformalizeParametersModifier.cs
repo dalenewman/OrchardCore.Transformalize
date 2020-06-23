@@ -106,7 +106,7 @@ namespace Module.Services {
                Label = pr.Label,
                PostBack = pr.PostBack,
                Type = pr.Type,
-               InputType = pr.InputType,
+               InputType = pr.InputType,  // used in ParameterRowReader to identify files
                Transforms = pr.Transforms.Select(o => o.ToOperation()).ToList(),
                Validators = pr.Validators.Select(o => o.ToOperation()).ToList()
             };
@@ -171,7 +171,7 @@ namespace Module.Services {
             Parameters = facade.Parameters.Select(p => p.ToParameter()).ToList(),
             Maps = facade.Maps.Select(m => m.ToMap()).ToList(),
             Scripts = facade.Scripts.Select(m => m.ToScript()).ToList(),
-            Actions = facade.Actions.Select(a=> a.ToAction()).ToList(),
+            // Actions = facade.Actions.Select(a=> a.ToAction()).ToList(),  I do not think we need actions to transform and validate parameters
             Entities = new List<Entity> { entity },
             Connections = connections.Select(c => c.ToConnection()).ToList()
          };
@@ -204,7 +204,7 @@ namespace Module.Services {
                         Value = item.Value
                      });
                   }
-                  target.Query = string.Empty;
+                  target.Query = string.Empty;  // remove the query so they are not queried again
                }
             }
 
@@ -225,6 +225,7 @@ namespace Module.Services {
                      }
                   }
 
+                  // remove this stuff because all the transforming and validating is done at this point
                   parameter.T = null;
                   parameter.Transforms.Clear();
                   parameter.V = null;

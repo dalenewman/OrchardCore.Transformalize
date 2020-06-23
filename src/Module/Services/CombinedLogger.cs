@@ -33,6 +33,9 @@ namespace Module.Services {
       }
 
       public void Debug(IContext context, Func<string> message) {
+         if (message == null) {
+            return;
+         }
          if (_siteLogger.IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug) || _logger.DebugEnabled) {
             var msg = message();
             _siteLogger.LogDebug(msg);
@@ -41,32 +44,44 @@ namespace Module.Services {
       }
 
       public void Error(IContext context, string message, params object[] args) {
+         if(message == null) {
+            return;
+         }
          if (_siteLogger.IsEnabled(Microsoft.Extensions.Logging.LogLevel.Error) || _logger.ErrorEnabled) {
-            var msg = string.Format(message, args);
+            var msg = args == null ? message : string.Format(message, args);
             _siteLogger.LogError(msg);
             _logger.Error(context, msg);
          }
       }
 
       public void Error(IContext context, Exception exception, string message, params object[] args) {
+         if (message == null) {
+            return;
+         }
          if (_siteLogger.IsEnabled(Microsoft.Extensions.Logging.LogLevel.Error) || _logger.ErrorEnabled) {
-            var msg = string.Format(message, args);
+            var msg = args == null ? message : string.Format(message, args);
             _siteLogger.LogError(exception, msg);
             _logger.Error(context, exception, msg);
          }
       }
 
       public void Info(IContext context, string message, params object[] args) {
+         if (message == null) {
+            return;
+         }
          if (_siteLogger.IsEnabled(Microsoft.Extensions.Logging.LogLevel.Information) || _logger.InfoEnabled) {
-            var msg = string.Format(message, args);
+            var msg = args == null ? message : string.Format(message, args);
             _siteLogger.LogInformation(msg);
             _logger.Info(context, msg);
          }
       }
 
       public void Warn(IContext context, string message, params object[] args) {
+         if (message == null) {
+            return;
+         }
          if (_siteLogger.IsEnabled(Microsoft.Extensions.Logging.LogLevel.Warning) || _logger.WarnEnabled) {
-            var msg = string.Format(message, args);
+            var msg = args == null ? message : string.Format(message, args);
             _siteLogger.LogWarning(msg);
             _logger.Warn(context, msg);
          }
