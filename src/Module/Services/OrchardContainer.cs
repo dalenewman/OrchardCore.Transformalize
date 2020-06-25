@@ -40,6 +40,7 @@ using Transformalize.Providers.Bogus.Autofac;
 using Transformalize.Providers.CsvHelper.Autofac;
 using Transformalize.Providers.Elasticsearch.Autofac;
 using Transformalize.Providers.Json.Autofac;
+using Transformalize.Providers.GeoJson.Autofac;
 using Transformalize.Providers.MySql;
 using Transformalize.Providers.MySql.Autofac;
 using Transformalize.Providers.PostgreSql;
@@ -48,13 +49,13 @@ using Transformalize.Providers.Sqlite.Autofac;
 using Transformalize.Providers.SQLite;
 using Transformalize.Providers.SqlServer;
 using Transformalize.Providers.SqlServer.Autofac;
-using LogTransform = Transformalize.Transforms.System.LogTransform;
-using Process = Transformalize.Configuration.Process;
+using Transformalize.Providers.File.Autofac;
 using System.Data;
 using OrchardCore.Users.Services;
-using Transformalize.Providers.File.Autofac;
 using Transformalize.Transforms.Ado.Autofac;
 using Transformalize.Actions;
+using LogTransform = Transformalize.Transforms.System.LogTransform;
+using Process = Transformalize.Configuration.Process;
 
 namespace Module.Services {
 
@@ -86,6 +87,8 @@ namespace Module.Services {
       public ILifetimeScope CreateScope(Process process, IPipelineLogger logger) {
 
          var builder = new ContainerBuilder();
+
+         // the modules below rely on this process being there
          builder.Properties["Process"] = process;
 
          builder.Register(ctx => process).As<Process>();
@@ -119,21 +122,28 @@ namespace Module.Services {
          // register providers
          var providers = new HashSet<string>(process.Connections.Select(c => c.Provider));
 
-         // ADO
+         // relational databases
          builder.RegisterModule(new AdoProviderModule());
          if (providers.Contains("sqlserver")) { builder.RegisterModule(new SqlServerModule() { ConnectionFactory = (c) => new ProfiledConnectionFactory(new SqlServerConnectionFactory(c)) }); }
          if (providers.Contains("postgresql")) { builder.RegisterModule(new PostgreSqlModule() { ConnectionFactory = (c) => new ProfiledConnectionFactory(new PostgreSqlConnectionFactory(c)) }); }
          if (providers.Contains("sqlite")) { builder.RegisterModule(new SqliteModule() { ConnectionFactory = (c) => new ProfiledConnectionFactory(new SqliteConnectionFactory(c)) }); }
          if (providers.Contains("mysql")) { builder.RegisterModule(new MySqlModule() { ConnectionFactory = (c) => new ProfiledConnectionFactory(new MySqlConnectionFactory(c)) }); }
 
-         if (providers.Contains("bogus")) { builder.RegisterModule(new BogusModule()); }
-         if (providers.Contains("file")) { builder.RegisterModule(new CsvHelperProviderModule(_httpContext.HttpContext.Response.Body)); }
-         if (providers.Contains("json")) { builder.RegisterModule(new JsonProviderModule(_httpContext.HttpContext.Response.Body)); }
+         // search engines
          if (providers.Contains("elasticsearch")) { builder.RegisterModule(new ElasticsearchModule()); }
          // solr
          // lucene
 
-         // just in case other modules need to see these
+         // exporting
+         var stream = _httpContext.HttpContext.Response.Body;
+         if (providers.Contains("file")) { builder.RegisterModule(new CsvHelperProviderModule(stream)); }
+         if (providers.Contains("json")) { builder.RegisterModule(new JsonProviderModule(stream)); }
+         if (providers.Contains("geojson")) { builder.RegisterModule(new GeoJsonProviderModule(stream)); }
+
+         // misc
+         if (providers.Contains("bogus")) { builder.RegisterModule(new BogusModule()); }
+
+         // transform and validation modules need these properties
          builder.Properties["ShortHand"] = _shortHand;
          builder.Properties["Methods"] = _methods;
 

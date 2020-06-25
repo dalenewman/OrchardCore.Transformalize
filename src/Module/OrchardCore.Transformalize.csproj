@@ -3,9 +3,13 @@
    <PropertyGroup>
       <TargetFramework>netcoreapp3.1</TargetFramework>
       <AddRazorSupportForMvc>true</AddRazorSupportForMvc>
-      <Version>0.8.8-beta</Version>
+      <Version>0.8.11-beta</Version>
       <AssemblyName>OrchardCore.Transformalize</AssemblyName>
       <RootNamespace>Module</RootNamespace>
+   </PropertyGroup>
+
+   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+     <DefineConstants>TRACE</DefineConstants>
    </PropertyGroup>
 
    <ItemGroup>
@@ -30,13 +34,14 @@
       <PackageReference Include="OrchardCore.ResourceManagement" Version="1.0.0-rc2-13450" />
       <PackageReference Include="OrchardCore.Title" Version="1.0.0-rc2-13450" />
       <PackageReference Include="OrchardCore.Users.Core" Version="1.0.0-rc2-13450" />
-      <PackageReference Include="Transformalize" Version="0.8.13-beta" />
-      <PackageReference Include="Transformalize.Container.Autofac" Version="0.8.11-beta" />
+      <PackageReference Include="Transformalize" Version="0.8.14-beta" />
+      <PackageReference Include="Transformalize.Container.Autofac" Version="0.8.15-beta" />
       <PackageReference Include="Transformalize.Provider.Ado.Autofac" Version="0.8.8-beta" />
       <PackageReference Include="Transformalize.Provider.Bogus.Autofac" Version="0.8.1-beta" />
       <PackageReference Include="Transformalize.Provider.CsvHelper.Autofac" Version="0.8.1-beta" />
       <PackageReference Include="Transformalize.Provider.Elasticsearch.Autofac" Version="0.8.1-beta" />
       <PackageReference Include="Transformalize.Provider.File.Autofac" Version="0.8.8-beta" />
+      <PackageReference Include="Transformalize.Provider.GeoJson.Autofac" Version="0.8.15-beta" />
       <PackageReference Include="Transformalize.Provider.Json.Autofac" Version="0.8.1-beta" />
       <PackageReference Include="Transformalize.Provider.MySql.Autofac" Version="0.8.1-beta" />
       <PackageReference Include="Transformalize.Provider.PostgreSql.Autofac" Version="0.8.1-beta" />

@@ -7,6 +7,7 @@ using OrchardCore.Liquid;
 using OrchardCore.Title.Models;
 using Module.Services;
 using Module.Models;
+using System.Collections.Generic;
 
 namespace Module.Controllers {
    public class ReportController : Controller {
@@ -71,7 +72,7 @@ namespace Module.Controllers {
       }
 
       [HttpGet]
-      public async Task<ActionResult> SaveAsJson(string contentItemId) {
+      public async Task<ActionResult> StreamJson(string contentItemId) {
 
          var contentItem = await _reportService.GetByIdOrAliasAsync(contentItemId);
          if (contentItem == null) {
@@ -103,7 +104,59 @@ namespace Module.Controllers {
       }
 
       [HttpGet]
-      public async Task<ActionResult> SaveAsCsv(string contentItemId) {
+      public async Task<ActionResult> StreamGeoJson(string contentItemId) {
+
+         var contentItem = await _reportService.GetByIdOrAliasAsync(contentItemId);
+         if (contentItem == null) {
+            return NotFound();
+         }
+
+         if (!_reportService.CanAccess(contentItem)) {
+            return Unauthorized();
+         }
+
+         var process = _reportService.LoadForExport(contentItem);
+
+         if (process.Status != 200) {
+            return Problem();
+         }
+
+         var part = contentItem.As<TransformalizeReportPart>();
+
+         var o = process.GetOutputConnection();
+         o.Stream = true;
+         o.Provider = "geojson";
+         o.File = _slugService.Slugify(contentItem.As<TitlePart>().Title) + ".geo.json";
+
+         // todo: these will have to be put in report part
+         var suppress = new HashSet<string>() { part.BulkActionValueField.Text, "geojson-color", "geojson-description" };
+         var coordinates = new HashSet<string>() { "latitude", "longitude" };
+
+         foreach (var entity in process.Entities) {
+            foreach (var field in entity.GetAllFields()) {
+               if (suppress.Contains(field.Alias)) {
+                  field.Output = false;
+                  field.Property = false;
+                  field.Alias += "Suppressed";
+               } else if (coordinates.Contains(field.Alias)) {
+                  field.Property = field.Export == "true";
+               } else {
+                  field.Property = field.Property || field.Output && field.Export == "defer" || field.Export == "true";
+               }
+            }
+         }
+
+         Response.ContentType = "application/vnd.geo+json";
+         Response.Headers.Add("content-disposition", "attachment; filename=" + o.File);
+
+         await _reportService.RunAsync(process);
+
+         return new EmptyResult();
+
+      }
+
+      [HttpGet]
+      public async Task<ActionResult> StreamCsv(string contentItemId) {
 
          var contentItem = await _reportService.GetByIdOrAliasAsync(contentItemId);
          if (contentItem == null) {

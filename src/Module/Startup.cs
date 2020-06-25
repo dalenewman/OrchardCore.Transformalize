@@ -73,10 +73,8 @@ namespace Module {
          services.AddContentField<PageSizesField>().UseDisplayDriver<PageSizesFieldDisplayDriver>();
 
          // parts
-         services.AddContentPart<TransformalizeReportPart>();
-         services.AddScoped<IContentPartDisplayDriver, TransformalizeReportPartDisplayDriver>();
-         services.AddContentPart<TransformalizeTaskPart>();
-         services.AddScoped<IContentPartDisplayDriver, TransformalizeTaskPartDisplayDriver>();
+         services.AddContentPart<TransformalizeReportPart>().UseDisplayDriver<TransformalizeReportPartDisplayDriver>();
+         services.AddContentPart<TransformalizeTaskPart>().UseDisplayDriver<TransformalizeTaskPartDisplayDriver>();
 
          // settings
          services.AddScoped<IDisplayDriver<ISite>, TransformalizeSettingsDisplayDriver>();
@@ -191,14 +189,21 @@ namespace Module {
              name: null,
              areaName: Common.ModuleName,
              pattern: "t/report/download/csv/{ContentItemId}",
-             defaults: new { controller = "Report", action = "SaveAsCsv" }
+             defaults: new { controller = "Report", action = "StreamCsv" }
          );
 
          routes.MapAreaControllerRoute(
             name: null,
              areaName: Common.ModuleName,
              pattern: "t/report/download/json/{ContentItemId}",
-             defaults: new { controller = "Report", action = "SaveAsJson" }
+             defaults: new { controller = "Report", action = "StreamJson" }
+         );
+
+         routes.MapAreaControllerRoute(
+            name: null,
+             areaName: Common.ModuleName,
+             pattern: "t/report/download/geojson/{ContentItemId}",
+             defaults: new { controller = "Report", action = "StreamGeoJson" }
          );
 
          routes.MapAreaControllerRoute(

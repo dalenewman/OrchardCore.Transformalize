@@ -96,6 +96,10 @@ namespace Module.Services {
 
          _settings.ApplyCommonSettings(facade);
 
+         if (!facade.Parameters.Any()) {
+            return response;
+         }
+
          var fields = new List<Field>();
 
          foreach (var pr in facade.Parameters) {
