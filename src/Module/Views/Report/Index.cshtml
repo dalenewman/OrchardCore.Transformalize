@@ -452,27 +452,27 @@
          var page = parseInt($('#id_page').val());
 
          if (page <= 1) {
-               $('#id_page').attr('disabled', true);
+            $('#id_page').attr('disabled', true);
          }
 
          $('#id_report input').filter(function () {
-               var value = $(this).val();
-               return value === "*" || value === "";
+            var value = $(this).val();
+            return value === "*" || value === "";
          }).attr('disabled',true);
 
          $("#id_report select").each(function () {
-               if (lastFilter !== $(this).attr("name") && lastFilter !== cleared) {
-                  var selected = $('option:selected', this);
-                  var count = selected.length;
-                  if (count === 0) {
-                     $(this).attr('disabled', true);
-                  } else if (count === 1) {
-                     var value = $(selected[0]).val();
-                     if (value === "" || value === "*") {
-                           $(this).attr('disabled', true);
-                     }
+            if (lastFilter !== $(this).attr("name") && lastFilter !== cleared) {
+               var selected = $('option:selected', this);
+               var count = selected.length;
+               if (count === 0) {
+                  $(this).attr('disabled', true);
+               } else if (count === 1) {
+                  var value = $(selected[0]).val();
+                  if (value === "" || value === "*") {
+                        $(this).attr('disabled', true);
                   }
                }
+            }
          });
 
          $('#busy').show();
@@ -555,7 +555,6 @@
    @foreach (var script in Model.Process.Scripts.Where(s => s.Global && string.IsNullOrEmpty(s.File) && s.Language == "js")) {
       <text>/* @script.Name */</text>
       @Html.Raw(script.Content)
-
    }
     //-->
 </script>

@@ -39,7 +39,7 @@ namespace Module.Services {
          _configurationContainer = configurationContainer;
       }
 
-      public Process LoadForExport(ContentItem contentItem) {
+      public Process LoadForStream(ContentItem contentItem) {
 
          if (!TryGetReportPart(contentItem, out var part)) {
             return new Process { Status = 500, Message = "Error", Log = new List<LogEntry>() { new LogEntry(LogLevel.Error, null, $"LoadForExport can't load {contentItem.ContentType}.") } };
@@ -124,6 +124,47 @@ namespace Module.Services {
          return process;
       }
 
+      public Process LoadForMap(ContentItem contentItem) {
+
+         if (!TryGetReportPart(contentItem, out var part)) {
+            return new Process { Status = 500, Message = "Error", Log = new List<LogEntry>() { new LogEntry(LogLevel.Error, null, $"LoadForMap can't load {contentItem.ContentType}.") } };
+         }
+
+         _stickyParameterService.GetStickyParameters(contentItem.ContentItemId, _parameters);
+
+         var process = LoadInternal(part.Arrangement.Arrangement, null);
+
+         process.Mode = "map";
+         process.ReadOnly = true;
+
+         _stickyParameterService.SetStickyParameters(contentItem.ContentItemId, process.Parameters);
+
+         // TODO: Paging and Sorting may be handled differently for map view
+         if (part.PageSizes.Enabled()) {
+            var pageSizes = _settings.GetPageSizes(part);
+            var stickySize = _stickyParameterService.GetStickyParameter(contentItem.ContentItemId, "size", () => pageSizes.Min());
+            EnforcePageSize(process, _parameters, pageSizes.Min(), stickySize, pageSizes.Max());
+         }
+
+         if (_parameters.ContainsKey("sort") && _parameters["sort"] != null) {
+            _sortService.AddSortToEntity(part, process.Entities.First(), _parameters["sort"]);
+         }
+
+         // disable internal actions
+         foreach (var action in process.Actions.Where(a => a.Type == "internal")) {
+            action.Before = false;
+            action.After = false;
+         }
+
+         // special handling of bulk action value field
+         if (part.BulkActions.Value && process.TryGetField(part.BulkActionValueField.Text, out Field bulkActionValueField)) {
+            bulkActionValueField.Output = true;
+            bulkActionValueField.Export = "false";
+         }
+
+         return process;
+      }
+
       public Process LoadForBatch(ContentItem contentItem) {
 
          if (!TryGetReportPart(contentItem, out var part)) {
@@ -146,6 +187,46 @@ namespace Module.Services {
             { part.BulkActionValueField.Text, part.BulkActionValueField.Text }
          };
          ConfineData(process, requiredFields);
+
+         return process;
+      }
+
+      public Process LoadForMapStream(ContentItem contentItem) {
+
+         if (!TryGetReportPart(contentItem, out var part)) {
+            return new Process { Status = 500, Message = "Error", Log = new List<LogEntry>() { new LogEntry(LogLevel.Error, null, $"LoadForBatch can't load {contentItem.ContentType}.") } };
+         }
+
+         var process = LoadInternal(part.Arrangement.Arrangement);
+
+         process.Mode = "stream-map";
+         process.ReadOnly = true;
+
+         var o = process.GetOutputConnection();
+         o.Stream = true;
+         o.Provider = "geojson";
+
+         // todo: these will have to be put in report part
+         var mapFields = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase) {
+            { "geojson-color", "geojson-color" },
+            { "geojson-description", "geojson-description" },
+            { "latitude", "latitude" },
+            { "longitude", "longitude" }
+         };
+
+         if (!string.IsNullOrEmpty(part.BulkActionValueField.Text)) {
+            mapFields[part.BulkActionValueField.Text] = part.BulkActionValueField.Text;
+         }
+
+         // restrict fields to only what is needed for map
+         ConfineData(process, mapFields);
+
+
+         // disable actions
+         foreach (var action in process.Actions) {
+            action.Before = false;
+            action.After = false;
+         }
 
          return process;
       }

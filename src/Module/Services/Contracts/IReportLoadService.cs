@@ -4,7 +4,10 @@ using Transformalize.Configuration;
 namespace Module.Services.Contracts {
    public interface IReportLoadService {
       Process LoadForReport(ContentItem contentItem, string format = null);
-      Process LoadForExport(ContentItem contentItem);
+      Process LoadForStream(ContentItem contentItem);
       Process LoadForBatch(ContentItem contentItem);
+      Process LoadForMap(ContentItem contentItem);
+      Process LoadForMapStream(ContentItem contentITem);
    }
+
 }

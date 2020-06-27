@@ -60,7 +60,6 @@ namespace Module {
 
          services.AddTransient<IConfigurationContainer, OrchardConfigurationContainer>();
          services.AddTransient<IContainer, OrchardContainer>();
-         
 
          // orchard cms services
          services.AddScoped<IDataMigration, Migrations>();
@@ -179,45 +178,59 @@ namespace Module {
       public void RouteReporting(IEndpointRouteBuilder routes) {
 
          routes.MapAreaControllerRoute(
-             name: null,
+             name: "Report Log",
              areaName: Common.ModuleName,
              pattern: "t/report/log/{ContentItemId}",
              defaults: new { controller = "Report", action = "Log" }
          );
 
          routes.MapAreaControllerRoute(
-             name: null,
+             name: "Report Map",
              areaName: Common.ModuleName,
-             pattern: "t/report/download/csv/{ContentItemId}",
-             defaults: new { controller = "Report", action = "StreamCsv" }
+             pattern: "t/report/map/{ContentItemId}",
+             defaults: new { controller = "Report", action = "Map" }
          );
 
          routes.MapAreaControllerRoute(
-            name: null,
-             areaName: Common.ModuleName,
-             pattern: "t/report/download/json/{ContentItemId}",
-             defaults: new { controller = "Report", action = "StreamJson" }
+            name: "Stream CSV",
+            areaName: Common.ModuleName,
+            pattern: "t/report/stream/csv/{ContentItemId}",
+            defaults: new { controller = "Report", action = "StreamCsv" }
          );
 
          routes.MapAreaControllerRoute(
-            name: null,
-             areaName: Common.ModuleName,
-             pattern: "t/report/download/geojson/{ContentItemId}",
-             defaults: new { controller = "Report", action = "StreamGeoJson" }
+            name: "Stream JSON",
+            areaName: Common.ModuleName,
+            pattern: "t/report/stream/json/{ContentItemId}",
+            defaults: new { controller = "Report", action = "StreamJson" }
          );
 
          routes.MapAreaControllerRoute(
-             name: null,
-             areaName: Common.ModuleName,
-             pattern: "t/report/{format}/{ContentItemId}",
-             defaults: new { controller = "Report", action = "Run", format = "json" }
+            name: "Stream Geo JSON",
+            areaName: Common.ModuleName,
+            pattern: "t/report/stream/geojson/{ContentItemId}",
+            defaults: new { controller = "Report", action = "StreamGeoJson" }
          );
 
          routes.MapAreaControllerRoute(
-             name: null,
-             areaName: Common.ModuleName,
-             pattern: "t/report/{ContentItemId}",
-             defaults: new { controller = "Report", action = "Index" }
+            name: "Stream Geo JSON to Map",
+            areaName: Common.ModuleName,
+            pattern: "t/report/stream/map/{ContentItemId}",
+            defaults: new { controller = "Report", action = "StreamMap" }
+         );
+
+         routes.MapAreaControllerRoute(
+            name: "Run Report API",
+            areaName: Common.ModuleName,
+            pattern: "t/report/{format}/{ContentItemId}",
+            defaults: new { controller = "Report", action = "Run", format = "json" }
+         );
+
+         routes.MapAreaControllerRoute(
+            name: "Run Report",
+            areaName: Common.ModuleName,
+            pattern: "t/report/{ContentItemId}",
+            defaults: new { controller = "Report", action = "Index" }
          );
 
       }

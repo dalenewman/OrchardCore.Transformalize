@@ -5,6 +5,8 @@
 @using Module
 @using Microsoft.AspNetCore.Authorization
 @using OrchardCore.ContentManagement
+@using Microsoft.AspNetCore.Http.Extensions
+
 @model ReportViewModel
 
 @{
@@ -14,7 +16,7 @@
 
    var settings = Context.RequestServices.GetService<ISettingsService>();
    var pageSizes = new List<int>();
-   if(Model.Part != null) {
+   if (Model.Part != null) {
       pageSizes.AddRange(settings.GetPageSizes(Model.Part));
    }
    // pageSizes.AddRange(entity.Page > 0 && (Model.Process.Mode == "map" || Model.Process.Mode == "calendar") ? Model.Part.Sizes(Model.Part.MapSizes) : new int[0]);
@@ -125,65 +127,63 @@
                    }
                }*@
 
-            @*if (Model.Part.MapEnabled && hasCoordinates || Model.Part.CalendarEnabled) {
+         if (hasCoordinates) {
 
-                   var headless = Request.RawUrl.Contains("Headless");
+            var headless = Context.Request.GetDisplayUrl().Contains("Headless");
 
-                   // not using Url.Action because I don't want the autoroute (friendly slug name) here
-                   var reportUrl = Url.Content("~/Pipeline/Report/" + Model.Part.Id);
-                   if (headless) {
-                       reportUrl = reportUrl.Replace("/Pipeline/Report/", "/Pipeline/Headless/Report/");
-                   }
-                   views.Add(new PipelineViewModel("report") {
-                       Active = Model.Process.Mode == "report",
-                       Glyphicon = "blackboard",
-                       Link = linkService.Create(Context.Request, Context.Session, Model.Item.ContentItemId, reportUrl, "report", false)
-                   });
+            // not using Url.Action because I don't want the autoroute (friendly slug name) here
+            var reportUrl = Url.Content("~/t/report/" + Model.Item.ContentItemId);
+            if (headless) {
+               reportUrl = reportUrl.Replace("/t/report/", "/t/headless/report/");
+            }
+            views.Add(new PipelineViewModel("report") {
+               Active = Model.Process.Mode == "report",
+               Glyphicon = "list",
+               Link = linkService.Create(Model.Item.ContentItemId, reportUrl, false)
+            });
 
-                   if (Model.Part.MapEnabled && hasCoordinates) {
+            if (hasCoordinates) {
 
-                       var mapUrl = Url.Action("Index", "Map", new RouteValueDictionary { { "Id", Model.Part.Id } });
-                       if (headless) {
-                           mapUrl = mapUrl.Replace("/Pipeline/Map/", "/Pipeline/Headless/Map/");
-                       }
-                       views.Add(new PipelineView("map") {
-                           Active = Model.Process.Mode == "map",
-                           Glyphicon = "map-marker",
-                           Link = linkService.Create(Request, Session, Model.Part.Id, mapUrl, "map", false)
-                       });
-                   }
-                   if (Model.Part.CalendarEnabled) {
+               var mapUrl = Url.Action("Map", "Report", new { Model.Item.ContentItemId });
+               if (headless) {
+                  mapUrl = mapUrl.Replace("/t/report/map/", "/t/headless/report/map/");
+               }
+               views.Add(new PipelineViewModel("map") {
+                  Active = Model.Process.Mode == "map",
+                  Glyphicon = "map-marker",
+                  Link = linkService.Create(Model.Item.ContentItemId, mapUrl, false)
+               });
+            }
+            //if (Model.Part.CalendarEnabled) {
 
-                       var calendarUrl = Url.Action("Index", "Calendar", new RouteValueDictionary { { "Id", Model.Part.Id } });
-                       if (headless) {
-                           calendarUrl = calendarUrl.Replace("/Pipeline/Calendar/", "/Pipeline/Headless/Calendar/");
-                       }
-                       views.Add(new PipelineView("calendar") {
-                           Active = Model.Process.Mode == "calendar",
-                           Glyphicon = "calendar",
-                           Link = linkService.Create(Request, Session, Model.Part.Id, calendarUrl, "calendar", false)
-                       });
-                   }
-                   var defaultView = views.First(v => v.Mode != Model.Process.Mode);
+            //   var calendarUrl = Url.Action("Index", "Calendar", new RouteValueDictionary { { "Id", Model.Part.Id } });
+            //   if (headless) {
+            //      calendarUrl = calendarUrl.Replace("/Pipeline/Calendar/", "/Pipeline/Headless/Calendar/");
+            //   }
+            //   views.Add(new PipelineViewModel("calendar") {
+            //      Active = Model.Process.Mode == "calendar",
+            //      Glyphicon = "calendar",
+            //      Link = linkService.Create(Request, Session, Model.Part.Id, calendarUrl, "calendar", false)
+            //   });
+            //}
+            var defaultView = views.First(v => v.Mode != Model.Process.Mode);
 
-                   <div class="btn-group" role="group">
-                       <button type="button" class="btn btn-primary btn-sm" title="@defaultView.Title" onclick="javascript:window.open('@defaultView.Link','_self');">
-                           <span class="fas fa-@defaultView.Glyphicon"></span>
-                       </button>
-                       <button type="button" class="btn btn-primary btn-sm dropdown-toggle" title="other views" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                           <span class="caret"></span>
-                       </button>
-                       <ul class="dropdown-menu">
-                           @foreach (var export in views) {
-                               <li title="@export.Title" class="@(export.Active ? "active" : string.Empty)">
-                                   <a href="@(export.Link)">
-                                       <span class="fas fa-@export.Glyphicon"></span>&nbsp;&nbsp;@export.Label
-                                   </a>
-                               </li>
-                           }
-                       </ul>
-                   </div>
-               }*@
+               <div class="btn-group btn-group-sm" role="group">
+                  <button type="button" class="btn btn-primary btn-sm" title="@defaultView.Title" onclick="javascript:window.open('@defaultView.Link','_self');">
+                     <span class="fas fa-@defaultView.Glyphicon"></span>
+                  </button>
+                  <button type="button" class="btn btn-primary btn-sm dropdown-toggle" title="other views" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                     <span class="caret"></span>
+                  </button>
+                  <div class="dropdown-menu">
+                     @foreach (var export in views) {
+                        <a class="dropdown-item @(export.Active ? "active" : string.Empty)" href="@(export.Link)" title="@export.Title">
+                           <span class="fas fa-@export.Glyphicon"></span>&nbsp;&nbsp;@export.Label
+                        </a>
+                     }
+                  </div>
+               </div>
+            }
 
             <div class="btn-group btn-group-sm">
                <button type="button" class="btn btn-sm btn-info" title="save to csv file" onclick="javascript:window.open('@exportCsvLink','_self');">

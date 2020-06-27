@@ -4,6 +4,7 @@ namespace Module.Models {
    public class TransformalizeRequest {
       private string _format = null;
 
+      public string Mode { get; set; } = "default";
       public string ContentItemId { get; set; } = string.Empty;
       public string User { get; set; }
       public bool Secure { get; set; } = true;

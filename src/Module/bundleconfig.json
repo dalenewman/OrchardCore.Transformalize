@@ -52,5 +52,35 @@
     "inputFiles": [
       "wwwroot/Scripts/pickadate/picker.js"
     ]
+  },
+  {
+    "outputFileName": "wwwroot/Scripts/mapbox-gl.min.js",
+    "inputFiles": [
+      "wwwroot/Scripts/mapbox-gl.js"
+    ]
+  },
+  {
+    "outputFileName": "wwwroot/Scripts/mapbox-gl-draw.min.js",
+    "inputFiles": [
+      "wwwroot/Scripts/mapbox-gl-draw.js"
+    ]
+  },
+  {
+    "outputFileName": "wwwroot/Styles/mapbox-gl.min.css",
+    "inputFiles": [
+      "wwwroot/Styles/mapbox-gl.css"
+    ]
+  },
+  {
+    "outputFileName": "wwwroot/Styles/mapbox-gl-draw.min.css",
+    "inputFiles": [
+      "wwwroot/Styles/mapbox-gl-draw.css"
+    ]
+  },
+  {
+    "outputFileName": "wwwroot/Scripts/turf.min.js",
+    "inputFiles": [
+      "wwwroot/Scripts/turf.js"
+    ]
   }
 ]

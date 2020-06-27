@@ -1,5 +1,7 @@
+using System.Collections;
 using System.Linq;
 using System.Threading.Tasks;
+using AspNetCore;
 using Microsoft.AspNetCore.Http;
 using Module.Models;
 using Module.Services.Contracts;
@@ -35,8 +37,8 @@ namespace Module.Services {
          return await _arrangementService.GetByIdOrAliasAsync(idOrAlias);
       }
 
-      public Process LoadForExport(ContentItem contentItem) {
-         return _loadService.LoadForExport(contentItem);
+      public Process LoadForStream(ContentItem contentItem) {
+         return _loadService.LoadForStream(contentItem);
       }
 
       public Process LoadForReport(ContentItem contentItem, string format = null) {
@@ -47,12 +49,20 @@ namespace Module.Services {
          return _loadService.LoadForBatch(contentItem);
       }
 
+      public Process LoadForMap(ContentItem contentItem) {
+         return _loadService.LoadForMap(contentItem);
+      }
+
+      public Process LoadForMapStream(ContentItem contentItem) {
+         return _loadService.LoadForMapStream(contentItem);
+      }
+
       public async Task RunAsync(Process process) {
          await _runService.RunAsync(process);
       }
 
       public async Task<TransformalizeResponse<TransformalizeReportPart>> Validate(TransformalizeRequest request) {
-         
+
          var response = new TransformalizeResponse<TransformalizeReportPart>(request.Format) {
             ContentItem = await GetByIdOrAliasAsync(request.ContentItemId)
          };
@@ -74,7 +84,21 @@ namespace Module.Services {
             return response;
          }
 
-         response.Process = LoadForReport(response.ContentItem);
+         switch (request.Mode) {
+            case "map":
+               response.Process = LoadForMap(response.ContentItem);
+               break;
+            case "stream-map":
+               response.Process = LoadForMapStream(response.ContentItem);
+               break;
+            case "stream":
+               response.Process = LoadForStream(response.ContentItem);
+               break;
+            default:
+               response.Process = LoadForReport(response.ContentItem);
+               break;
+         }
+         
          if (response.Process.Status != 200) {
             SetupLoadErrorResponse(request, response);
             return response;
@@ -108,6 +132,7 @@ namespace Module.Services {
       public void SetupWrongTypeResponse<T1>(TransformalizeRequest request, TransformalizeResponse<T1> response) {
          _arrangementService.SetupWrongTypeResponse(request, response);
       }
+
 
    }
 }
