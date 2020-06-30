@@ -92,7 +92,6 @@ namespace Module.Services {
          if (request.Format == null) {
             response.ActionResult = LogResult(response);
          } else {
-            
             response.ActionResult = ContentResult(request, response);
          }
       }

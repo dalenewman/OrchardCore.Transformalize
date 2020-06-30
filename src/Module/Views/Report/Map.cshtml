@@ -134,7 +134,7 @@
       <div id="id_map" data-tap-disabled="true" style="height: 655px; width: 100%; padding-top: 2px;"></div>
       <script>
       //<!--
-      mapboxgl.accessToken = 'token';
+      mapboxgl.accessToken = '@Model.Settings.MapBoxToken';
       var url = '@(linkService.Create(Model.Item.ContentItemId, Url.Action("StreamMap", new { ContentItemId = alias }), true))';
 
       $(document).ready(function() {

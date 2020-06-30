@@ -12,6 +12,8 @@ namespace Module.ViewModels {
       private Dictionary<string, Parameter> _inlines;
       private Process _process;
       private HashSet<string> _topParameters;
+     
+      public TransformalizeSettings Settings { get; set; }
 
       // temps
       public bool MapPaging { get; set; }

@@ -38,8 +38,8 @@
       <PackageReference Include="Transformalize.Container.Autofac" Version="0.8.15-beta" />
       <PackageReference Include="Transformalize.Provider.Ado.Autofac" Version="0.8.8-beta" />
       <PackageReference Include="Transformalize.Provider.Bogus.Autofac" Version="0.8.1-beta" />
-      <PackageReference Include="Transformalize.Provider.CsvHelper.Autofac" Version="0.8.1-beta" />
-      <PackageReference Include="Transformalize.Provider.Elasticsearch.Autofac" Version="0.8.1-beta" />
+      <PackageReference Include="Transformalize.Provider.CsvHelper.Autofac" Version="0.8.17-beta" />
+      <PackageReference Include="Transformalize.Provider.Elasticsearch.Autofac" Version="0.8.15-beta" />
       <PackageReference Include="Transformalize.Provider.File.Autofac" Version="0.8.8-beta" />
       <PackageReference Include="Transformalize.Provider.GeoJson.Autofac" Version="0.8.15-beta" />
       <PackageReference Include="Transformalize.Provider.Json.Autofac" Version="0.8.1-beta" />

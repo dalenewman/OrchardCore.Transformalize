@@ -24,3 +24,9 @@
    <input asp-for="DefaultPageSizes" class="form-control" />
    <span class="hint">@T["A comma delimited list of page sizes (integers).  These are used for all reports that do not set a page sizes."]</span>
 </div>
+
+<div class="form-group">
+   <label asp-for="MapBoxToken">@T["MapBox Token"]</label>
+   <input asp-for="MapBoxToken" class="form-control" />
+   <span class="hint">@T["Get a token at "] <a href="https://www.mapbox.com" target="_blank">https://www.mapbox.com</a>.</span>
+</div>

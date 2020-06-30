@@ -38,10 +38,10 @@ namespace Module.Drivers {
          return Initialize<TransformalizeSettingsViewModel>($"{nameof(TransformalizeSettings)}_Edit", model => {
             model.CommonArrangement = settings.CommonArrangement;
             model.DefaultPageSizes = settings.DefaultPageSizes;
+            model.MapBoxToken = settings.MapBoxToken;
          })
          .Location("Content:1")
          .OnGroup(Common.SettingsGroupId);
-
 
       }
 
@@ -56,6 +56,8 @@ namespace Module.Drivers {
             // this gets what's coming from the editor into model
             var model = new TransformalizeSettingsViewModel();
             await context.Updater.TryUpdateModelAsync(model, Prefix);
+
+            settings.MapBoxToken = model.MapBoxToken;
 
             // common arrangement
             if (string.IsNullOrWhiteSpace(model.CommonArrangement)) {

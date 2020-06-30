@@ -5,16 +5,17 @@ namespace Module.Models {
    public class TransformalizeSettings {
 
       private List<int> _pageSizes;
-      private string defaultPageSizes;
-      private string commonArrangement;
+      private string _defaultPageSizes;
+      private string _commonArrangement;
+      private string _mapBoxToken;
 
       public string CommonArrangement {
-         get => string.IsNullOrWhiteSpace(commonArrangement) ? string.Empty : commonArrangement;
-         set => commonArrangement = string.IsNullOrWhiteSpace(value) ? string.Empty : value;
+         get => string.IsNullOrWhiteSpace(_commonArrangement) ? string.Empty : _commonArrangement;
+         set => _commonArrangement = string.IsNullOrWhiteSpace(value) ? string.Empty : value;
       }
       public string DefaultPageSizes {
-         get => string.IsNullOrEmpty(defaultPageSizes) ? "20,50,100" : defaultPageSizes;
-         set => defaultPageSizes = string.IsNullOrEmpty(value) ? "20,50,100" : value;
+         get => string.IsNullOrEmpty(_defaultPageSizes) ? "20,50,100" : _defaultPageSizes;
+         set => _defaultPageSizes = string.IsNullOrEmpty(value) ? "20,50,100" : value;
       }
 
       public IEnumerable<int> DefaultPageSizesAsEnumerable() {
@@ -29,5 +30,11 @@ namespace Module.Models {
          }
          return _pageSizes;
       }
+
+      public string MapBoxToken {
+         get => string.IsNullOrWhiteSpace(_mapBoxToken) ? string.Empty : _mapBoxToken;
+         set => _mapBoxToken = string.IsNullOrWhiteSpace(value) ? string.Empty : value;
+      }
+
    }
 }

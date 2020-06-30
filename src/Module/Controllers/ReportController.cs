@@ -18,14 +18,17 @@ namespace Module.Controllers {
       private readonly IReportService _reportService;
       private readonly ISlugService _slugService;
       private readonly CombinedLogger<ReportController> _logger;
+      private readonly ISettingsService _settings;
 
       public ReportController(
          IReportService reportService,
          ISlugService slugService,
+         ISettingsService settings,
          CombinedLogger<ReportController> logger
       ) {
          _reportService = reportService;
          _slugService = slugService;
+         _settings = settings;
          _logger = logger;
       }
 
@@ -65,13 +68,22 @@ namespace Module.Controllers {
             return map.ActionResult;
          }
 
+         if (string.IsNullOrEmpty(_settings.Settings.MapBoxToken)) {
+            _logger.Warn(() => $"User {request.User} requested map without mapbox token {request.ContentItemId}.");
+
+            map.Process.Status = 404;
+            map.Process.Message = "MapBox Token Not Found";
+
+            return View("Log", new LogViewModel(_logger.Log, map.Process, map.ContentItem));
+         }
+
          await _reportService.RunAsync(map.Process);
 
          if (map.Process.Status != 200) {
             return View("Log", new LogViewModel(_logger.Log, map.Process, map.ContentItem));
          }
 
-         return View(new ReportViewModel(map.Process, map.ContentItem));
+         return View(new ReportViewModel(map.Process, map.ContentItem) { Settings = _settings.Settings });
 
       }
 
