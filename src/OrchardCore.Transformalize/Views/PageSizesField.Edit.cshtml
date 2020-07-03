@@ -1,0 +1,8 @@
+@model OrchardCore.TransformalizeModule.ViewModels.EditPageSizesFieldViewModel
+@using OrchardCore.ContentManagement.Metadata.Models
+
+<div class="form-group">
+   <label asp-for="PageSizes">@Model.PartFieldDefinition.DisplayName()</label>
+   <input asp-for="PageSizes" class="form-control" />
+   <span class="hint">@T["To overide default page sizes, specify a comma delimited list of page sizes (integers). To use the common page sizes defined in settings, leave it blank.  To disable pagination altogether, set this to 0."]</span>
+</div>

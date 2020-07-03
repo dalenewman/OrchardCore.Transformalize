@@ -1,0 +1,31 @@
+<cfg name="Sacramento" mode="init">
+  <parameters/>
+  <connections>
+    <add name="input" provider="file" file="App_Data\samples\sacramento-crime\SacramentoCrimeJanuary2006.csv" delimiter="," start="2" />
+    <add name="output" provider="sqlserver" database="Junk" />
+  </connections>
+  <entities>
+    <add name="Crime">
+      <fields>
+        <add input="false" name="Id" type="int" t="identity(1,1)" primary-key="true" /> 
+        <add name="cdatetime" type="datetime" />
+        <add name="address" />
+        <add name="district" length="2" />
+        <add name="beat" length="11" />
+        <add name="grid" length="5" />
+        <add name="crimedescr" length="31" />
+        <add name="ucr_ncic_code" length="5" />
+        <add name="latitude" type="double" length="12" />
+        <add name="longitude" type="double" length="13" />
+      </fields>
+      <calculated-fields>
+        <add name="year" type="int" t="copy(cdatetime).datepart(year)" />
+        <add name="month" length="6" t="copy(cdatetime).toString(MM-MMM).upper()" />
+        <add name="day" length="10" t="copy(cdatetime).toString(yyyy-MM-dd)" />
+        <add name="dayofweek" length="12" t="copy(cdatetime).datepart(dayofweek)" />
+        <add name="hour" length="2" t="copy(cdatetime).toString(HH)" />           
+        <add name="geojson-color" default="#48C9B0" />
+      </calculated-fields>
+    </add>
+  </entities>
+</cfg>

@@ -1,0 +1,9 @@
+<cfg name="Test File Actions">
+  <actions>
+    <add type="log" level="info" message="I am going to test file actions: copy, move, replace, and archive." />
+    <add type="copy" from="App_Data\file-1.txt" to="App_Data\file-2.txt" />
+    <add type="move" from="App_Data\file-2.txt" to="App_Data\temp" error-mode="continue" />
+    <add type="replace" file="App_Data\temp\file-2.txt" old-value="a file" new-value="an important file" />
+    <add type="archive" from="App_Data\temp\file-2.txt" to="App_Data\archive" />
+  </actions>
+</cfg>

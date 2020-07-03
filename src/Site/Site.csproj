@@ -1,27 +1,25 @@
-﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
     <TieredCompilation>true</TieredCompilation>
     <AspNetCoreHostingModel>InProcess</AspNetCoreHostingModel>
     <PreserveCompilationReferences>true</PreserveCompilationReferences>
-    <Version>0.8.8-beta</Version>
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="App_Data\" />
     <Folder Include="wwwroot\" />
     <Folder Include="Localization\" />
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Etch.OrchardCore.ContentPermissions" Version="0.3.0-rc2" />
+    <PackageReference Include="Etch.OrchardCore.ContentPermissions" Version="0.3.1-rc2" />
     <PackageReference Include="OrchardCore.Logging.NLog" Version="1.0.0-rc2-13450" />
     <PackageReference Include="OrchardCore.Application.Cms.Targets" Version="1.0.0-rc2-13450" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Module\OrchardCore.Transformalize.csproj" />
+    <ProjectReference Include="..\OrchardCore.Transformalize\OrchardCore.Transformalize.csproj" />
   </ItemGroup>
 
 </Project>

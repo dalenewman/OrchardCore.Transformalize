@@ -1,0 +1,50 @@
+<cfg name="Test Cascading Dropdowns">
+  
+  <parameters>
+     <add name="Category" prompt="true" map="Categories" value="1" v="map(Categories)" />
+     <add name="SubCategory" prompt="true" map="SubCategories" value="2" v="map(SubCategories)" />
+  </parameters>
+  
+  <connections>
+    <add name="JunkOnSqlite" />
+  </connections>
+  
+  <maps>
+    <!-- this is the map for the Category parameter -->
+    <add name="Categories"
+         connection="JunkOnSqlite"
+         query="SELECT Name, Id FROM Category WHERE ParentId = 0;" />
+    <!-- this is the map for the SubCategory parameter, it's query can use other parameters (e.g. @Category) -->
+    <add name="SubCategories"
+         connection="JunkOnSqlite"
+         query="SELECT Name, Id FROM Category WHERE ParentId = @Category;" />
+  </maps>
+  <actions>
+    <add type="run" 
+         connection="JunkOnSqlite"
+         mode="init"
+         before="true"
+         after="false"
+         command="DROP TABLE IF EXISTS Category;
+                  
+                  CREATE TABLE Category (
+                    Id INTEGER NOT NULL PRIMARY KEY,
+                    Name TEXT NOT NULL,
+                    ParentId INTEGER NOT NULL
+                  );
+                  
+                  INSERT INTO Category(Id,Name,ParentId) VALUES(1,'Colors',0);
+                  INSERT INTO Category(Id,Name,ParentId) VALUES(2,'Red',1);
+                  INSERT INTO Category(Id,Name,ParentId) VALUES(3,'Green',1);
+                  INSERT INTO Category(Id,Name,ParentId) VALUES(4,'Blue',1);
+                  
+                  INSERT INTO Category(Id,Name,ParentId) VALUES(5,'Shapes',0);
+                  INSERT INTO Category(Id,Name,ParentId) VALUES(6,'Rectangle',5);
+                  INSERT INTO Category(Id,Name,ParentId) VALUES(7,'Square',5);
+                  INSERT INTO Category(Id,Name,ParentId) VALUES(8,'Circle',5);
+                  INSERT INTO Category(Id,Name,ParentId) VALUES(9,'Triangle',5);
+                  
+                  " />
+      <add type="log" level="Info" message="Category = @[Category] and SubCategory = @[SubCategory]" />
+  </actions>
+</cfg>
