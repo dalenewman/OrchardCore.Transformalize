@@ -1,6 +1,6 @@
-using OrchardCore.TransformalizeModule.Models;
+using TransformalizeModule.Models;
 
-namespace OrchardCore.TransformalizeModule.ViewModels {
+namespace TransformalizeModule.ViewModels {
    public class EditTransformalizeTaskPartViewModel {
       public TransformalizeTaskPart TransformalizeTaskPart { get; set; }
       public string Arrangement { get; set; }

@@ -4,10 +4,10 @@ using OrchardCore.ContentManagement.Display.ContentDisplay;
 using OrchardCore.ContentManagement.Display.Models;
 using OrchardCore.DisplayManagement.ModelBinding;
 using OrchardCore.DisplayManagement.Views;
-using OrchardCore.TransformalizeModule.Models;
-using OrchardCore.TransformalizeModule.ViewModels;
+using TransformalizeModule.Models;
+using TransformalizeModule.ViewModels;
 
-namespace OrchardCore.TransformalizeModule.Drivers {
+namespace TransformalizeModule.Drivers {
    public class TransformalizeTaskPartDisplayDriver : ContentPartDisplayDriver<TransformalizeTaskPart> {
 
       private readonly IStringLocalizer S;

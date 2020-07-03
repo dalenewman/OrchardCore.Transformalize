@@ -1,18 +1,18 @@
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using OrchardCore.TransformalizeModule.Services.Contracts;
-using OrchardCore.TransformalizeModule.ViewModels;
+using TransformalizeModule.Services.Contracts;
+using TransformalizeModule.ViewModels;
 using System.Collections.Generic;
-using OrchardCore.TransformalizeModule.Models;
+using TransformalizeModule.Models;
 using System.Linq;
-using OrchardCore.TransformalizeModule.Services;
+using TransformalizeModule.Services;
 using System.Dynamic;
 using Transformalize.Configuration;
 using OrchardCore.Users.Services;
 using OrchardCore.Users.Models;
 using System.Text;
 
-namespace OrchardCore.TransformalizeModule.Controllers {
+namespace TransformalizeModule.Controllers {
 
    public class BulkActionController : Controller {
 

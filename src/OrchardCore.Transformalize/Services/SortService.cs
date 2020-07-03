@@ -1,11 +1,11 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using OrchardCore.TransformalizeModule.Models;
-using OrchardCore.TransformalizeModule.Services.Contracts;
+using TransformalizeModule.Models;
+using TransformalizeModule.Services.Contracts;
 using Transformalize.Configuration;
 
-namespace OrchardCore.TransformalizeModule.Services {
+namespace TransformalizeModule.Services {
 
     public class SortService : ISortService {
 

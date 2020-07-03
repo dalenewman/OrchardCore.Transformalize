@@ -4,7 +4,7 @@ using System;
 using System.Threading.Tasks;
 
 
-namespace OrchardCore.TransformalizeModule.Navigation {
+namespace TransformalizeModule.Navigation {
    public class TransformalizeSettingsAdminMenu : INavigationProvider {
       private readonly IStringLocalizer T;
 

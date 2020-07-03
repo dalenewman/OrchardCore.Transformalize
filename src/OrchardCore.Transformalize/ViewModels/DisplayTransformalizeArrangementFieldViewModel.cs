@@ -1,8 +1,8 @@
-using OrchardCore.TransformalizeModule.Fields;
+using TransformalizeModule.Fields;
 using OrchardCore.ContentManagement;
 using OrchardCore.ContentManagement.Metadata.Models;
 
-namespace OrchardCore.TransformalizeModule.ViewModels {
+namespace TransformalizeModule.ViewModels {
    public class DisplayTransformalizeArrangementFieldViewModel {
       public string Arrangement => Field.Arrangement;
       public TransformalizeArrangementField Field { get; set; }

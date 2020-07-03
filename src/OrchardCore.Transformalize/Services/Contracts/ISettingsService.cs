@@ -1,8 +1,8 @@
-using OrchardCore.TransformalizeModule.Models;
+using TransformalizeModule.Models;
 using System.Collections.Generic;
 using Transformalize.Configuration;
 
-namespace OrchardCore.TransformalizeModule.Services.Contracts {
+namespace TransformalizeModule.Services.Contracts {
    public interface ISettingsService {
       public Dictionary<string, Connection> Connections { get; }
       public Dictionary<string, Map> Maps { get; }

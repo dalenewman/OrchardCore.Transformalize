@@ -4,7 +4,7 @@ using Transformalize;
 using Transformalize.Contracts;
 using Transformalize.Transforms;
 
-namespace OrchardCore.TransformalizeModule.Transforms {
+namespace TransformalizeModule.Transforms {
    public class UsernameTransform : BaseTransform {
 
       private readonly string _username = string.Empty;

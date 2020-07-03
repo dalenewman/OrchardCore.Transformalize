@@ -4,7 +4,7 @@ using Cfg.Net.Contracts;
 using Cfg.Net.Reader;
 using Cfg.Net.Shorthand;
 using Microsoft.AspNetCore.Http;
-using OrchardCore.TransformalizeModule.Transforms;
+using TransformalizeModule.Transforms;
 using OrchardCore.Users.Services;
 using Transformalize.Configuration;
 using Transformalize.Containers.Autofac;
@@ -16,7 +16,7 @@ using Transformalize.Transforms.Jint.Autofac;
 using Transformalize.Transforms.Json.Autofac;
 using Transformalize.Validate.Jint.Autofac;
 
-namespace OrchardCore.TransformalizeModule.Services.Modules {
+namespace TransformalizeModule.Services.Modules {
 
    public class ShorthandModule : Autofac.Module {
 

@@ -2,7 +2,7 @@
 using System.Linq;
 using Parameter = Transformalize.Configuration.Parameter;
 
-namespace OrchardCore.TransformalizeModule.Ext {
+namespace TransformalizeModule.Ext {
 
    public static class ParameterExtensions {
 

@@ -1,7 +1,7 @@
-﻿using OrchardCore.TransformalizeModule.Models;
+﻿using TransformalizeModule.Models;
 using System.Threading.Tasks;
 
-namespace OrchardCore.TransformalizeModule.Services.Contracts {
+namespace TransformalizeModule.Services.Contracts {
    public interface IFormService : IFormLoadService, IArrangementService, IArrangementRunService {
       Task<TransformalizeResponse<TransformalizeTaskPart>> Validate(TransformalizeRequest request);
    }

@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace OrchardCore.TransformalizeModule {
+namespace TransformalizeModule {
    public static class Common {
 
       public const int IdLength = 26;

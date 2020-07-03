@@ -1,13 +1,13 @@
 using Autofac;
-using OrchardCore.TransformalizeModule.Services.Contracts;
+using TransformalizeModule.Services.Contracts;
 using StackExchange.Profiling;
 using System.Linq;
 using System.Threading.Tasks;
 using Transformalize.Configuration;
 using Transformalize.Contracts;
-using IContainer = OrchardCore.TransformalizeModule.Services.Contracts.IContainer;
+using IContainer = TransformalizeModule.Services.Contracts.IContainer;
 
-namespace OrchardCore.TransformalizeModule.Services {
+namespace TransformalizeModule.Services {
 
    public class ArrangementRunService : IArrangementRunService {
 

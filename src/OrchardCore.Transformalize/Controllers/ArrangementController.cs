@@ -1,11 +1,11 @@
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using OrchardCore.TransformalizeModule.Services;
-using OrchardCore.TransformalizeModule.Models;
-using OrchardCore.TransformalizeModule.Services.Contracts;
+using TransformalizeModule.Services;
+using TransformalizeModule.Models;
+using TransformalizeModule.Services.Contracts;
 using Transformalize.Configuration;
 
-namespace OrchardCore.TransformalizeModule.Controllers {
+namespace TransformalizeModule.Controllers {
    public class ArrangementController : Controller {
 
       private readonly CombinedLogger<ArrangementController> _logger;

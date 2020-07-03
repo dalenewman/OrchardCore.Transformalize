@@ -1,7 +1,7 @@
-﻿using OrchardCore.TransformalizeModule.Models;
+﻿using TransformalizeModule.Models;
 using Transformalize.Configuration;
 
-namespace OrchardCore.TransformalizeModule.Services.Contracts
+namespace TransformalizeModule.Services.Contracts
 {
     public interface ISortService {
         Direction Sort(int fieldNumber, string expression);

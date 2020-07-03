@@ -1,5 +1,5 @@
 using Autofac;
-using OrchardCore.TransformalizeModule.Services.Contracts;
+using TransformalizeModule.Services.Contracts;
 using System.Collections.Generic;
 using Transformalize.Configuration;
 using Transformalize.Contracts;
@@ -8,12 +8,12 @@ using OrchardCore.ContentManagement;
 using System.Linq;
 using System;
 using Cfg.Net.Contracts;
-using OrchardCore.TransformalizeModule.Models;
+using TransformalizeModule.Models;
 using Cfg.Net.Serializers;
 using Transformalize.Logging;
 using Transformalize.Impl;
 
-namespace OrchardCore.TransformalizeModule.Services {
+namespace TransformalizeModule.Services {
    public class ArrangementLoadService : IArrangementLoadService {
 
       private readonly IStickyParameterService _stickyParameterService;

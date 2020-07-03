@@ -1,6 +1,6 @@
 using OrchardCore.ContentManagement;
 
-namespace OrchardCore.TransformalizeModule.Fields {
+namespace TransformalizeModule.Fields {
    public class TransformalizeArrangementField : ContentField {
       public string Arrangement { get; set; }
    }

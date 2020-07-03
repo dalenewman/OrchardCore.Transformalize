@@ -2,7 +2,7 @@ using OrchardCore.Alias.Settings;
 using OrchardCore.ContentManagement.Metadata;
 using OrchardCore.ContentManagement.Metadata.Settings;
 using OrchardCore.Data.Migration;
-using OrchardCore.TransformalizeModule.Fields;
+using TransformalizeModule.Fields;
 using OrchardCore.ContentFields.Fields;
 using OrchardCore.ContentFields.Settings;
 using OrchardCore.Features.Services;
@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 using System.Linq;
 using Microsoft.Extensions.Logging;
 
-namespace OrchardCore.TransformalizeModule {
+namespace TransformalizeModule {
    public class Migrations : DataMigration {
 
       private readonly IContentDefinitionManager _contentDefinitionManager;

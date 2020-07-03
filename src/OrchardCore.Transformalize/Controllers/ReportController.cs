@@ -1,16 +1,16 @@
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using OrchardCore.ContentManagement;
-using OrchardCore.TransformalizeModule.Services.Contracts;
-using OrchardCore.TransformalizeModule.ViewModels;
+using TransformalizeModule.Services.Contracts;
+using TransformalizeModule.ViewModels;
 using OrchardCore.Liquid;
 using OrchardCore.Title.Models;
-using OrchardCore.TransformalizeModule.Services;
-using OrchardCore.TransformalizeModule.Models;
+using TransformalizeModule.Services;
+using TransformalizeModule.Models;
 using System.Collections.Generic;
 using Microsoft.AspNetCore.Authorization;
 
-namespace OrchardCore.TransformalizeModule.Controllers {
+namespace TransformalizeModule.Controllers {
 
    [Authorize]
    public class ReportController : Controller {

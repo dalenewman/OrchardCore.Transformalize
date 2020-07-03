@@ -20,7 +20,7 @@ using Transformalize.Providers.Ado;
 using System.Data;
 using System.Data.Common;
 
-namespace OrchardCore.TransformalizeModule.Services {
+namespace TransformalizeModule.Services {
    public class ProfiledConnectionFactory : IConnectionFactory {
       private readonly IConnectionFactory _original;
       public ProfiledConnectionFactory(IConnectionFactory original) {

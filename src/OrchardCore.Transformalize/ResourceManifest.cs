@@ -1,6 +1,6 @@
 using OrchardCore.ResourceManagement;
 
-namespace OrchardCore.TransformalizeModule {
+namespace TransformalizeModule {
    public class ResourceManifest : IResourceManifestProvider {
       public void BuildManifests(IResourceManifestBuilder builder) {
          var manifest = builder.Add();

@@ -1,10 +1,10 @@
 using System.Collections.Generic;
-using OrchardCore.TransformalizeModule.Models;
+using TransformalizeModule.Models;
 using OrchardCore.ContentManagement;
 using Transformalize.Configuration;
 using Transformalize.Logging;
 
-namespace OrchardCore.TransformalizeModule.ViewModels {
+namespace TransformalizeModule.ViewModels {
    public class LogViewModel {
 
       private Dictionary<string, Parameter> _parameterLookup;

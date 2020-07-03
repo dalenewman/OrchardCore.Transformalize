@@ -1,11 +1,11 @@
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using OrchardCore.TransformalizeModule.Services.Contracts;
-using OrchardCore.TransformalizeModule.ViewModels;
-using OrchardCore.TransformalizeModule.Services;
-using OrchardCore.TransformalizeModule.Models;
+using TransformalizeModule.Services.Contracts;
+using TransformalizeModule.ViewModels;
+using TransformalizeModule.Services;
+using TransformalizeModule.Models;
 
-namespace OrchardCore.TransformalizeModule.Controllers {
+namespace TransformalizeModule.Controllers {
    public class TaskController : Controller {
 
       private readonly ITaskService _taskService;

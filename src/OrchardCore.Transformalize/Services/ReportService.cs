@@ -3,12 +3,12 @@ using System.Linq;
 using System.Threading.Tasks;
 using AspNetCore;
 using Microsoft.AspNetCore.Http;
-using OrchardCore.TransformalizeModule.Models;
-using OrchardCore.TransformalizeModule.Services.Contracts;
+using TransformalizeModule.Models;
+using TransformalizeModule.Services.Contracts;
 using OrchardCore.ContentManagement;
 using Transformalize.Configuration;
 
-namespace OrchardCore.TransformalizeModule.Services {
+namespace TransformalizeModule.Services {
 
    public class ReportService : IReportService {
 

@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Transformalize.ConfigurationFacade;
 
-namespace OrchardCore.TransformalizeModule.Services {
+namespace TransformalizeModule.Services {
    public static class SessionExtensions {
       public static void SetCfg(this ISession session, string key, Process cfg) {
          session.SetString("tfl:"+key, cfg.Serialize());

@@ -22,7 +22,7 @@ using Transformalize.Context;
 using Transformalize.Contracts;
 using Process = Transformalize.Configuration.Process;
 
-namespace OrchardCore.TransformalizeModule.Services.Contracts {
+namespace TransformalizeModule.Services.Contracts {
    public interface IContainer {
       public Func<InputContext, IRowFactory, IRead> GetReaderAlternate { get; set; }
       public Func<IRead, InputContext, IRowFactory, IRead> GetReaderDecorator { get; set; }

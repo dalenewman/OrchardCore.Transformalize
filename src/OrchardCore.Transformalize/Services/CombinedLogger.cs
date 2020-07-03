@@ -6,7 +6,7 @@ using Transformalize.Context;
 using Transformalize.Contracts;
 using Transformalize.Logging;
 
-namespace OrchardCore.TransformalizeModule.Services {
+namespace TransformalizeModule.Services {
 
    /// <summary>
    /// Combined Orchard Core Logging (NLog) and Logging to Process itself

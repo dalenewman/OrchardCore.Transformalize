@@ -1,8 +1,8 @@
 ﻿using OrchardCore.ContentManagement;
-using OrchardCore.TransformalizeModule.Models;
+using TransformalizeModule.Models;
 using System.Threading.Tasks;
 
-namespace OrchardCore.TransformalizeModule.Services.Contracts {
+namespace TransformalizeModule.Services.Contracts {
    public interface IArrangementService {
       Task<ContentItem> GetByIdOrAliasAsync(string idOrAlias);
       bool CanAccess(ContentItem contentItem);

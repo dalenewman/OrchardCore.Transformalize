@@ -1,25 +1,25 @@
 using System.Threading.Tasks;
 using Microsoft.Extensions.Localization;
-using OrchardCore.TransformalizeModule.ViewModels;
+using TransformalizeModule.ViewModels;
 using OrchardCore.ContentManagement.Display.ContentDisplay;
 using OrchardCore.ContentManagement.Display.Models;
 using OrchardCore.ContentManagement.Metadata.Models;
 using OrchardCore.DisplayManagement.ModelBinding;
 using OrchardCore.DisplayManagement.Views;
-using OrchardCore.TransformalizeModule.Fields;
+using TransformalizeModule.Fields;
 using Transformalize.Configuration;
 using System.Linq;
 using System;
-using OrchardCore.TransformalizeModule.Models;
+using TransformalizeModule.Models;
 using Transformalize.Logging;
 using Transformalize.Contracts;
 using System.Collections.Generic;
 using Autofac;
 using OrchardCore.DisplayManagement.Notify;
 using Microsoft.AspNetCore.Mvc.Localization;
-using OrchardCore.TransformalizeModule.Services.Contracts;
+using TransformalizeModule.Services.Contracts;
 
-namespace OrchardCore.TransformalizeModule.Drivers {
+namespace TransformalizeModule.Drivers {
    
    public class TransformalizeArrangementFieldDisplayDriver : ContentFieldDisplayDriver<TransformalizeArrangementField> {
 

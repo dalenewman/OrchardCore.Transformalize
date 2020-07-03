@@ -1,8 +1,8 @@
 using OrchardCore.ContentManagement;
-using OrchardCore.TransformalizeModule.Fields;
+using TransformalizeModule.Fields;
 using OrchardCore.ContentFields.Fields;
 
-namespace OrchardCore.TransformalizeModule.Models {
+namespace TransformalizeModule.Models {
    public class TransformalizeReportPart : ContentPart {
       public TransformalizeReportPart() {
          Arrangement = new TransformalizeArrangementField() { Arrangement = @"<cfg name=""report"">

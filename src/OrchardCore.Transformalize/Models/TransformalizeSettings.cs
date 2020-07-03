@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace OrchardCore.TransformalizeModule.Models {
+namespace TransformalizeModule.Models {
    public class TransformalizeSettings {
 
       private List<int> _pageSizes;

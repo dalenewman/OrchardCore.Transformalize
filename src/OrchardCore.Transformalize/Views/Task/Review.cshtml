@@ -1,8 +1,8 @@
 @model TransformalizeResponse<TransformalizeTaskPart>
-@using OrchardCore.TransformalizeModule
+@using TransformalizeModule
 @using Microsoft.Extensions.DependencyInjection
 @using Microsoft.AspNetCore.Authorization
-@using OrchardCore.TransformalizeModule.Models
+@using TransformalizeModule.Models
 
 @{
    var auth = Context.RequestServices.GetService<IAuthorizationService>();

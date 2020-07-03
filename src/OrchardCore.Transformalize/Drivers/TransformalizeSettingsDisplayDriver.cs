@@ -1,10 +1,10 @@
 using System;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Localization;
-using OrchardCore.TransformalizeModule.ViewModels;
+using TransformalizeModule.ViewModels;
 using OrchardCore.DisplayManagement.Views;
 using OrchardCore.Settings;
-using OrchardCore.TransformalizeModule.Models;
+using TransformalizeModule.Models;
 using OrchardCore.DisplayManagement.Entities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -12,7 +12,7 @@ using OrchardCore.DisplayManagement.Handlers;
 using Transformalize.Configuration;
 using System.Linq;
 
-namespace OrchardCore.TransformalizeModule.Drivers {
+namespace TransformalizeModule.Drivers {
    public class TransformalizeSettingsDisplayDriver : SectionDisplayDriver<ISite, TransformalizeSettings> {
 
       private readonly IAuthorizationService _authorizationService;

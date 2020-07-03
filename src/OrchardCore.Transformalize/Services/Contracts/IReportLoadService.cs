@@ -1,7 +1,7 @@
 ﻿using OrchardCore.ContentManagement;
 using Transformalize.Configuration;
 
-namespace OrchardCore.TransformalizeModule.Services.Contracts {
+namespace TransformalizeModule.Services.Contracts {
    public interface IReportLoadService {
       Process LoadForReport(ContentItem contentItem, string format = null);
       Process LoadForStream(ContentItem contentItem);

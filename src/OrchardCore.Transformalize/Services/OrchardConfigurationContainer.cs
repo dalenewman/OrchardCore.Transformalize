@@ -20,9 +20,9 @@ using Autofac;
 using Cfg.Net.Contracts;
 using Cfg.Net.Environment;
 using Microsoft.AspNetCore.Http;
-using OrchardCore.TransformalizeModule.Services.Contracts;
-using OrchardCore.TransformalizeModule.Services.Modifiers;
-using OrchardCore.TransformalizeModule.Services.Modules;
+using TransformalizeModule.Services.Contracts;
+using TransformalizeModule.Services.Modifiers;
+using TransformalizeModule.Services.Modules;
 using OrchardCore.Users.Services;
 using System;
 using System.Collections.Generic;
@@ -31,7 +31,7 @@ using Transformalize.Containers.Autofac.Modules;
 using Transformalize.Contracts;
 using Process = Transformalize.Configuration.Process;
 
-namespace OrchardCore.TransformalizeModule.Services {
+namespace TransformalizeModule.Services {
 
    /// <summary>
    /// This container deals with the arrangement and how it becomes a process.

@@ -1,7 +1,7 @@
 ﻿using OrchardCore.ContentManagement;
-using OrchardCore.TransformalizeModule.Fields;
+using TransformalizeModule.Fields;
 
-namespace OrchardCore.TransformalizeModule.Models {
+namespace TransformalizeModule.Models {
    public class TransformalizeTaskPart : ContentPart {
 
       public TransformalizeTaskPart() {

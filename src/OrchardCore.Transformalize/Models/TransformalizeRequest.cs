@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace OrchardCore.TransformalizeModule.Models {
+namespace TransformalizeModule.Models {
    public class TransformalizeRequest {
       private string _format = null;
 

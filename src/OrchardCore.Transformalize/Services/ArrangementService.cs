@@ -2,14 +2,14 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
-using OrchardCore.TransformalizeModule.Models;
-using OrchardCore.TransformalizeModule.Services.Contracts;
-using OrchardCore.TransformalizeModule.ViewModels;
+using TransformalizeModule.Models;
+using TransformalizeModule.Services.Contracts;
+using TransformalizeModule.ViewModels;
 using OrchardCore.ContentManagement;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace OrchardCore.TransformalizeModule.Services {
+namespace TransformalizeModule.Services {
    public class ArrangementService : IArrangementService {
 
       private readonly IContentManager _contentManager;

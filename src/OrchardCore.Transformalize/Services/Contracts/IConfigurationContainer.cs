@@ -21,7 +21,7 @@ using Cfg.Net.Contracts;
 using System.Collections.Generic;
 using Transformalize.Contracts;
 
-namespace OrchardCore.TransformalizeModule.Services.Contracts {
+namespace TransformalizeModule.Services.Contracts {
 
    public interface IConfigurationContainer {
       ISerializer Serializer { get; set; }

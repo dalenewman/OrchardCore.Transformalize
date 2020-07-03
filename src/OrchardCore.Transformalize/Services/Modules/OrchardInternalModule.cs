@@ -27,7 +27,7 @@ using Transformalize.Impl;
 using Transformalize.Nulls;
 using Transformalize.Providers.Internal;
 
-namespace OrchardCore.TransformalizeModule.Services.Modules {
+namespace TransformalizeModule.Services.Modules {
 
    /// <inheritdoc />
    /// <summary>

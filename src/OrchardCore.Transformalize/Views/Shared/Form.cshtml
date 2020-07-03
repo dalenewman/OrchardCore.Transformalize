@@ -1,8 +1,8 @@
 @model TransformalizeResponse<TransformalizeTaskPart>
 @using Microsoft.Extensions.DependencyInjection;
 @using Microsoft.AspNetCore.Authorization
-@using OrchardCore.TransformalizeModule.Ext
-@using OrchardCore.TransformalizeModule.Models
+@using TransformalizeModule.Ext
+@using TransformalizeModule.Models
 
 @{
    Layout = null;
@@ -21,7 +21,7 @@
 
       var value = parameter.Value ?? string.Empty as object;
 
-      if (OrchardCore.TransformalizeModule.Common.SystemFields.Contains(parameter.Name)) {
+      if (TransformalizeModule.Common.SystemFields.Contains(parameter.Name)) {
          <input type="hidden" name="@parameter.Name" value="@parameter.Value" />
          continue;
       }

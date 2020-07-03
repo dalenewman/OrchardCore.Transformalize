@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace OrchardCore.TransformalizeModule {
+namespace TransformalizeModule {
 
    public class Permissions : IPermissionProvider {
 

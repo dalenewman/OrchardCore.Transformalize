@@ -7,7 +7,7 @@ using Transformalize;
 using Transformalize.Contracts;
 using Transformalize.Transforms;
 
-namespace OrchardCore.TransformalizeModule.Transforms {
+namespace TransformalizeModule.Transforms {
    public class UserIdTransform : BaseTransform {
 
       private readonly int _userId;

@@ -19,8 +19,8 @@
 using Autofac;
 using Cfg.Net.Shorthand;
 using Microsoft.AspNetCore.Http;
-using OrchardCore.TransformalizeModule.Services.Modules;
-using OrchardCore.TransformalizeModule.Transforms;
+using TransformalizeModule.Services.Modules;
+using TransformalizeModule.Transforms;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -56,9 +56,9 @@ using Transformalize.Transforms.Ado.Autofac;
 using Transformalize.Actions;
 using LogTransform = Transformalize.Transforms.System.LogTransform;
 using Process = Transformalize.Configuration.Process;
-using IContainer = OrchardCore.TransformalizeModule.Services.Contracts.IContainer;
+using IContainer = TransformalizeModule.Services.Contracts.IContainer;
 
-namespace OrchardCore.TransformalizeModule.Services {
+namespace TransformalizeModule.Services {
 
    public class OrchardContainer : IContainer {
 

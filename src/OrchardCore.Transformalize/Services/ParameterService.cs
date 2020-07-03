@@ -1,9 +1,9 @@
 ﻿using Microsoft.AspNetCore.Http;
-using OrchardCore.TransformalizeModule.Services.Contracts;
+using TransformalizeModule.Services.Contracts;
 using System;
 using System.Collections.Generic;
 
-namespace OrchardCore.TransformalizeModule.Services {
+namespace TransformalizeModule.Services {
    public class ParameterService : IParameterService {
 
       private readonly HttpRequest _request;

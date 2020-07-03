@@ -1,9 +1,9 @@
-﻿using OrchardCore.TransformalizeModule.Models;
+﻿using TransformalizeModule.Models;
 using OrchardCore.ContentManagement;
 using System.Threading.Tasks;
 using Transformalize.Configuration;
 
-namespace OrchardCore.TransformalizeModule.Services.Contracts {
+namespace TransformalizeModule.Services.Contracts {
    public interface ISchemaService: IArrangementService, IArrangementSchemaService {
       Process LoadForSchema(ContentItem contentItem, string format);
       Task<TransformalizeResponse<ContentPart>> Validate(TransformalizeRequest request);

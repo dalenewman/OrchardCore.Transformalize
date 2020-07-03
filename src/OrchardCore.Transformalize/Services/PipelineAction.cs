@@ -1,11 +1,11 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
-using OrchardCore.TransformalizeModule.Services.Contracts;
+using TransformalizeModule.Services.Contracts;
 using System;
 using Transformalize;
 using Transformalize.Contracts;
 using Action = Transformalize.Configuration.Action;
 
-namespace OrchardCore.TransformalizeModule.Services {
+namespace TransformalizeModule.Services {
    public class PipelineAction : IAction {
 
       private readonly IServiceProvider _serviceProvider;

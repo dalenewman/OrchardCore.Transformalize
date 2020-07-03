@@ -17,9 +17,9 @@
 #endregion
 
 using Cfg.Net.Contracts;
-using OrchardCore.TransformalizeModule.Models;
+using TransformalizeModule.Models;
 
-namespace OrchardCore.TransformalizeModule.Services.Contracts {
+namespace TransformalizeModule.Services.Contracts {
 
    public interface IArrangementModifier {
       ISerializer Serializer { get; set; }

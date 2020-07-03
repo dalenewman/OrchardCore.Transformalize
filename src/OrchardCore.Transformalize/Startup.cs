@@ -2,30 +2,30 @@ using System;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.DependencyInjection;
-using OrchardCore.TransformalizeModule.Fields;
-using OrchardCore.TransformalizeModule.Models;
+using TransformalizeModule.Fields;
+using TransformalizeModule.Models;
 using OrchardCore.ContentManagement;
 using OrchardCore.Modules;
 using OrchardCore.ResourceManagement;
 using Fluid;
 using OrchardCore.Data.Migration;
 using OrchardCore.ContentManagement.Display.ContentDisplay;
-using OrchardCore.TransformalizeModule.Drivers;
-using OrchardCore.TransformalizeModule.ViewModels;
-using OrchardCore.TransformalizeModule.Services.Contracts;
-using OrchardCore.TransformalizeModule.Services;
-using OrchardCore.TransformalizeModule.Handlers;
+using TransformalizeModule.Drivers;
+using TransformalizeModule.ViewModels;
+using TransformalizeModule.Services.Contracts;
+using TransformalizeModule.Services;
+using TransformalizeModule.Handlers;
 using OrchardCore.ContentManagement.Handlers;
 using Microsoft.AspNetCore.Http;
 using OrchardCore.DisplayManagement.Handlers;
 using OrchardCore.Settings;
 using OrchardCore.Navigation;
 using OrchardCore.Security.Permissions;
-using OrchardCore.TransformalizeModule.Navigation;
+using TransformalizeModule.Navigation;
 using Transformalize.Contracts;
 using Transformalize.Logging;
 
-namespace OrchardCore.TransformalizeModule {
+namespace TransformalizeModule {
    public class Startup : StartupBase {
 
       public Startup() {

@@ -1,11 +1,11 @@
-﻿using OrchardCore.TransformalizeModule.Models;
-using OrchardCore.TransformalizeModule.Services.Contracts;
+﻿using TransformalizeModule.Models;
+using TransformalizeModule.Services.Contracts;
 using OrchardCore.ContentManagement;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Transformalize.Configuration;
 
-namespace OrchardCore.TransformalizeModule.Services {
+namespace TransformalizeModule.Services {
    public class FormService : IFormService {
 
       private readonly IArrangementService _arrangementService;

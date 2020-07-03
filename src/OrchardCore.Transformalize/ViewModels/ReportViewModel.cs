@@ -1,11 +1,11 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using OrchardCore.TransformalizeModule.Models;
+using TransformalizeModule.Models;
 using OrchardCore.ContentManagement;
 using Transformalize.Configuration;
 
-namespace OrchardCore.TransformalizeModule.ViewModels {
+namespace TransformalizeModule.ViewModels {
    public class ReportViewModel {
 
       private Dictionary<string, Parameter> _parameterLookup;

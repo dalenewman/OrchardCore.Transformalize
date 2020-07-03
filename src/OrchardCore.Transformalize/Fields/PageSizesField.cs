@@ -2,7 +2,7 @@ using OrchardCore.ContentManagement;
 using System;
 using System.Collections.Generic;
 
-namespace OrchardCore.TransformalizeModule.Fields {
+namespace TransformalizeModule.Fields {
    public class PageSizesField : ContentField {
 
       private List<int> _pageSizes;

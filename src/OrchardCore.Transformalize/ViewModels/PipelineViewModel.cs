@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Html;
 
-namespace OrchardCore.TransformalizeModule.ViewModels {
+namespace TransformalizeModule.ViewModels {
    public class PipelineViewModel {
       private string _label;
       private string _title;

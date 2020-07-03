@@ -1,4 +1,4 @@
-namespace OrchardCore.TransformalizeModule.Services {
+namespace TransformalizeModule.Services {
    public enum Direction {
         None,
         Asc,

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Cfg.Net.Contracts;
 
-namespace OrchardCore.TransformalizeModule.Services.Modifiers {
+namespace TransformalizeModule.Services.Modifiers {
 
    /// <inheritdoc />
    public class TransferParameterModifier : ICustomizer {

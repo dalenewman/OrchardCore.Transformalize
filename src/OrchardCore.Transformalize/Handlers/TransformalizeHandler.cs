@@ -3,7 +3,7 @@ using OrchardCore.Alias.Models;
 using OrchardCore.ContentManagement;
 using OrchardCore.ContentManagement.Handlers;
 
-namespace OrchardCore.TransformalizeModule.Handlers {
+namespace TransformalizeModule.Handlers {
    public class TransformalizeHandler : ContentHandlerBase {
 
       public override Task GetContentItemAspectAsync(ContentItemAspectContext context) {

@@ -1,4 +1,4 @@
-using OrchardCore.TransformalizeModule.Services.Contracts;
+using TransformalizeModule.Services.Contracts;
 using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Generic;
@@ -6,7 +6,7 @@ using Transformalize.Configuration;
 using System.ComponentModel;
 using System.Linq;
 
-namespace OrchardCore.TransformalizeModule.Services {
+namespace TransformalizeModule.Services {
 
    //todo: refactor this to store in a sticky parameters instance serialized as json
    public class StickyParameterService : IStickyParameterService {

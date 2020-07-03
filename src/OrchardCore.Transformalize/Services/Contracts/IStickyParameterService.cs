@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using Transformalize.Configuration;
 
-namespace OrchardCore.TransformalizeModule.Services.Contracts {
+namespace TransformalizeModule.Services.Contracts {
 
     public interface IStickyParameterService {
       public void SetStickyParameters(string contentItemId, List<Parameter> parameters);

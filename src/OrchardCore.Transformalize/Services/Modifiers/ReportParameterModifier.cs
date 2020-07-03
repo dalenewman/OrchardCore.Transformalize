@@ -2,7 +2,7 @@
 using Cfg.Net.Contracts;
 using Cfg.Net.Parsers;
 
-namespace OrchardCore.TransformalizeModule.Services.Modifiers {
+namespace TransformalizeModule.Services.Modifiers {
 
    /// <summary>
    /// This creates parameters and filters for every field marked with parameter facet or search

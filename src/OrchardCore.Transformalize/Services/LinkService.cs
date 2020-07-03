@@ -1,11 +1,11 @@
 using Flurl;
-using OrchardCore.TransformalizeModule.Services.Contracts;
+using TransformalizeModule.Services.Contracts;
 using System.Linq;
 using Microsoft.AspNetCore.Html;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Extensions;
 
-namespace OrchardCore.TransformalizeModule.Services {
+namespace TransformalizeModule.Services {
    public class LinkService : ILinkService {
       private readonly IHttpContextAccessor _contextAccessor;
       private readonly IStickyParameterService _stickyParameterService;

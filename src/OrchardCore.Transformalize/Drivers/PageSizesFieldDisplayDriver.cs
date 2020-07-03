@@ -1,15 +1,15 @@
 using System;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Localization;
-using OrchardCore.TransformalizeModule.ViewModels;
+using TransformalizeModule.ViewModels;
 using OrchardCore.ContentManagement.Display.ContentDisplay;
 using OrchardCore.ContentManagement.Display.Models;
 using OrchardCore.ContentManagement.Metadata.Models;
 using OrchardCore.DisplayManagement.ModelBinding;
 using OrchardCore.DisplayManagement.Views;
-using OrchardCore.TransformalizeModule.Fields;
+using TransformalizeModule.Fields;
 
-namespace OrchardCore.TransformalizeModule.Drivers {
+namespace TransformalizeModule.Drivers {
    public class PageSizesFieldDisplayDriver : ContentFieldDisplayDriver<PageSizesField> {
       private readonly IStringLocalizer S;
 

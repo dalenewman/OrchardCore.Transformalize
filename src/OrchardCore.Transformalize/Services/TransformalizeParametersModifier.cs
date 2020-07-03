@@ -19,10 +19,10 @@
 using Autofac;
 using Cfg.Net.Contracts;
 using Microsoft.AspNetCore.Http;
-using OrchardCore.TransformalizeModule.Models;
-using OrchardCore.TransformalizeModule.Services.Contracts;
-using OrchardCore.TransformalizeModule.Services.Modifiers;
-using OrchardCore.TransformalizeModule.Services.Modules;
+using TransformalizeModule.Models;
+using TransformalizeModule.Services.Contracts;
+using TransformalizeModule.Services.Modifiers;
+using TransformalizeModule.Services.Modules;
 using OrchardCore.Users.Services;
 using System.Collections.Generic;
 using System.Linq;
@@ -31,9 +31,9 @@ using Transformalize.Containers.Autofac.Modules;
 using Transformalize.Contracts;
 using Transformalize.Impl;
 using Process = Transformalize.Configuration.Process;
-using IContainer = OrchardCore.TransformalizeModule.Services.Contracts.IContainer;
+using IContainer = TransformalizeModule.Services.Contracts.IContainer;
 
-namespace OrchardCore.TransformalizeModule.Services {
+namespace TransformalizeModule.Services {
 
    /// <summary>
    /// Takes the arrangement and validates and transforms the parameters in a transformalize process

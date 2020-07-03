@@ -1,12 +1,12 @@
-﻿using OrchardCore.TransformalizeModule.Models;
-using OrchardCore.TransformalizeModule.Services.Contracts;
+﻿using TransformalizeModule.Models;
+using TransformalizeModule.Services.Contracts;
 using OrchardCore.ContentManagement;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Transformalize.Configuration;
 
-namespace OrchardCore.TransformalizeModule.Services {
+namespace TransformalizeModule.Services {
    public class TaskService : ITaskService {
 
       private readonly IArrangementService _arrangementService;

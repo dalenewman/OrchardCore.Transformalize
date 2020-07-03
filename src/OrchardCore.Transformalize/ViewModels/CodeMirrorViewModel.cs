@@ -1,4 +1,4 @@
-﻿namespace OrchardCore.TransformalizeModule.ViewModels {
+﻿namespace TransformalizeModule.ViewModels {
    public class CodeMirrorViewModel {
 
       public CodeMirrorViewModel(string textAreaId, double portion) {

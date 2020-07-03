@@ -1,5 +1,5 @@
-using OrchardCore.TransformalizeModule.Models;
-using OrchardCore.TransformalizeModule.Services.Contracts;
+using TransformalizeModule.Models;
+using TransformalizeModule.Services.Contracts;
 using OrchardCore.ContentManagement;
 using OrchardCore.Entities;
 using OrchardCore.Settings;
@@ -8,7 +8,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Transformalize.Configuration;
 
-namespace OrchardCore.TransformalizeModule.Services {
+namespace TransformalizeModule.Services {
 
 
    /// <summary>

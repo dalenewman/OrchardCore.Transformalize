@@ -2,7 +2,7 @@
 using OrchardCore.ContentManagement;
 using Transformalize.Configuration;
 
-namespace OrchardCore.TransformalizeModule.Models {
+namespace TransformalizeModule.Models {
 
    public class TransformalizeResponse<T> {
 

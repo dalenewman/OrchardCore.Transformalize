@@ -4,7 +4,7 @@ using System.Linq;
 using Cfg.Net.Contracts;
 using Cfg.Net.Parsers;
 
-namespace OrchardCore.TransformalizeModule.Services.Modifiers {
+namespace TransformalizeModule.Services.Modifiers {
 
    /// <summary>
    /// This creates parameters for every input field

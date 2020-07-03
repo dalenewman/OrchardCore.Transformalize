@@ -1,7 +1,7 @@
-using OrchardCore.TransformalizeModule.Models;
+using TransformalizeModule.Models;
 using Transformalize.Configuration;
 
-namespace OrchardCore.TransformalizeModule.ViewModels {
+namespace TransformalizeModule.ViewModels {
    public class BulkActionViewModel {
       public Process Summary { get; set; }
       public TransformalizeResponse<TransformalizeTaskPart> Task { get; set; }

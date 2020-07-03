@@ -1,6 +1,6 @@
-﻿using OrchardCore.TransformalizeModule.Fields;
+﻿using TransformalizeModule.Fields;
 
-namespace OrchardCore.TransformalizeModule.ViewModels {
+namespace TransformalizeModule.ViewModels {
    public class TransformalizeSettingsViewModel {
       public string CommonArrangement { get; set; }
       public string DefaultPageSizes { get; set; }
