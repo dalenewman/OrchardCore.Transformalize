@@ -58,6 +58,7 @@ using LogTransform = Transformalize.Transforms.System.LogTransform;
 using Process = Transformalize.Configuration.Process;
 using IContainer = TransformalizeModule.Services.Contracts.IContainer;
 using Transformalize.Transforms.LambdaParser.Autofac;
+using Transformalize.Transforms.Razor.Autofac;
 
 namespace TransformalizeModule.Services {
 
@@ -156,6 +157,7 @@ namespace TransformalizeModule.Services {
          builder.RegisterModule(new FileModule());
          builder.RegisterModule(new AdoTransformModule());
          builder.RegisterModule(new LambdaParserModule());
+         builder.RegisterModule(new RazorTransformModule());
 
          // register validator modules here
          builder.RegisterModule(new JintValidateModule());

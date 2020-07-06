@@ -26,10 +26,11 @@ module for [Orchard Core](https://github.com/OrchardCMS/OrchardCore) rc2.
 #### Transforms
 - <strike>built-in [transforms](https://github.com/dalenewman/Transformalize/blob/master/Containers/Autofac/Transformalize.Container.Autofac.Shared/TransformBuilder.cs) and [validators](https://github.com/dalenewman/Transformalize/blob/master/Containers/Autofac/Transformalize.Container.Autofac.Shared/ValidateBuilder.cs)</strike>, <strike>[Jint](https://github.com/dalenewman/Transformalize.Transform.Jint
 )</strike>, <strike>JSON</strike>, <strike>[Humanize](https://github.com/dalenewman/Transformalize.Transform.Humanizer)</strike>
-- [Razor](https://github.com/dalenewman/Transformalize.Provider.Razor), [Liquid / Fluid](https://github.com/dalenewman/Transformalize.Transform.Fluid
-), [Lambda Parser](https://github.com/dalenewman/Transformalize.Transform.LambdaParser)
+- <strike>[Razor](https://github.com/dalenewman/Transformalize.Provider.Razor)</strike>, [Liquid / Fluid](https://github.com/dalenewman/Transformalize.Transform.Fluid
+), <strike>[Lambda Parser](https://github.com/dalenewman/Transformalize.Transform.LambdaParser)</strike>
 - Orchard transforms: <strike>username()</strike>, <strike>userid()</strike>, <strike>useremail()</strike>.
 - <strike>file related (get file name, file path, file extension)</strike>
+- IMemoryCache, ISignal Caching for Expensive Transforms
 
 #### Actions
 - <strike>file related (copy, move, archive, replace)</strike>

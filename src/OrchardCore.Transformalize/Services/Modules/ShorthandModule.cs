@@ -16,10 +16,11 @@ using Transformalize.Transforms.Jint.Autofac;
 using Transformalize.Transforms.Json.Autofac;
 using Transformalize.Validate.Jint.Autofac;
 using Transformalize.Transforms.LambdaParser.Autofac;
+using Transformalize.Transforms.Razor.Autofac;
 
 namespace TransformalizeModule.Services.Modules {
 
-   public class ShorthandModule : Autofac.Module {
+   public class ShorthandModule : Module {
 
       private readonly HashSet<string> _methods = new HashSet<string>();
       private readonly ShorthandRoot _shortHand = new ShorthandRoot();
@@ -78,6 +79,7 @@ namespace TransformalizeModule.Services.Modules {
          builder.RegisterModule(new HumanizeModule());
          builder.RegisterModule(new FileModule());
          builder.RegisterModule(new LambdaParserModule());
+         builder.RegisterModule(new RazorTransformModule());
 
          // register validator modules here so they can register their short-hand
          builder.RegisterModule(new JintValidateModule());
