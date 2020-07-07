@@ -17,15 +17,13 @@
 #endregion
 
 using Autofac;
-using System.Collections.Generic;
 using System.Linq;
 using Transformalize.Actions;
 using Transformalize.Configuration;
 using Transformalize.Context;
 using Transformalize.Contracts;
-using Transformalize.Impl;
 using Transformalize.Nulls;
-using Transformalize.Providers.Internal;
+using TransformalizeModule.Services.Writers;
 
 namespace TransformalizeModule.Services.Modules {
 
@@ -33,16 +31,16 @@ namespace TransformalizeModule.Services.Modules {
    /// <summary>
    /// Registers all the built-in transforms
    /// </summary>
-   public class OrchardInternalModule : Module {
+   public class OrchardLogModule : Module {
 
-      private const string Internal = "internal";
+      private const string LogProvider = "log";
       private readonly Process _process;
 
       /// <summary>
       /// Register internal actions, connections, readers, and writers
       /// </summary>
       /// <param name="process">the arrangement</param>
-      public OrchardInternalModule(Process process) {
+      public OrchardLogModule(Process process) {
          _process = process;
       }
 
@@ -51,18 +49,25 @@ namespace TransformalizeModule.Services.Modules {
          if (_process == null)
             return;
 
-         if (_process.Connections.All(c => c.Provider != Internal)) {
+         foreach (var action in _process.Templates.Where(t => t.Enabled).SelectMany(t => t.Actions).Where(a => a.Type == "log" && a.GetModes().Any(m => m == _process.Mode || m == "*"))) {
+            builder.Register(ctx => SwitchAction(ctx, _process, action)).Named<IAction>(action.Key);
+         }
+         foreach (var action in _process.Actions.Where(a => a.Type == "log" && a.GetModes().Any(m => m == _process.Mode || m == "*"))) {
+            builder.Register(ctx => SwitchAction(ctx, _process, action)).Named<IAction>(action.Key);
+         }
+
+         if (_process.Connections.All(c => c.Provider != LogProvider)) {
             return;
          }
 
          // add null schema reader for each internal connection
-         foreach (var connection in _process.Connections.Where(c => c.Provider == Internal)) {
+         foreach (var connection in _process.Connections.Where(c => c.Provider == LogProvider)) {
             builder.RegisterType<NullSchemaReader>().Named<ISchemaReader>(connection.Key);
          }
 
          // PROCESS AND ENTITY OUTPUT
          // if output is internal, setup internal output controllers for the process and each entity
-         if (_process.GetOutputConnection().Provider == Internal) {
+         if (_process.GetOutputConnection().Provider == LogProvider) {
 
             // PROCESS OUTPUT CONTROLLER
             builder.Register<IOutputController>(ctx => new NullOutputController()).As<IOutputController>();
@@ -70,35 +75,37 @@ namespace TransformalizeModule.Services.Modules {
             foreach (var entity in _process.Entities) {
 
                builder.Register<IOutputController>(ctx => new NullOutputController()).Named<IOutputController>(entity.Key);
-               builder.Register<IOutputProvider>(ctx => new InternalOutputProvider(ctx.ResolveNamed<OutputContext>(entity.Key), ctx.ResolveNamed<IWrite>(entity.Key))).Named<IOutputProvider>(entity.Key);
+               builder.Register<IOutputProvider>(ctx => new NullOutputProvider()).Named<IOutputProvider>(entity.Key);
 
                // WRITER
-               builder.Register<IWrite>(ctx => new InternalWriter(ctx.ResolveNamed<OutputContext>(entity.Key))).Named<IWrite>(entity.Key);
+               builder.Register<IWrite>(ctx => new LogWriter(ctx.ResolveNamed<OutputContext>(entity.Key))).Named<IWrite>(entity.Key);
             }
          }
 
          // ENTITY INPUT
          // setup internal input readers for each entity if necessary
-         foreach (var entity in _process.Entities.Where(e => _process.Connections.First(c => c.Name == e.Input).Provider == Internal)) {
+         foreach (var entity in _process.Entities.Where(e => _process.Connections.First(c => c.Name == e.Input).Provider == LogProvider)) {
 
             builder.RegisterType<NullInputProvider>().Named<IInputProvider>(entity.Key);
-
-            // handling internal deletes
-            if (entity.Delete) {
-               builder.Register<IReadInputKeysAndHashCodes>(ctx => {
-                  // note: i tried to just load keys but had a lot of troubles, this works (for now).
-                  var inputContext = ctx.ResolveNamed<InputContext>(entity.Key);
-                  var rowFactory = new RowFactory(inputContext.RowCapacity, entity.IsMaster, false);
-                  return new InternalKeysReader(new InternalReader(inputContext, rowFactory));
-               }).Named<IReadInputKeysAndHashCodes>(entity.Key);
-            }
 
             // READER
             builder.Register<IRead>(ctx => {
                var input = ctx.ResolveNamed<InputContext>(entity.Key);
-               var rowFactory = ctx.ResolveNamed<IRowFactory>(entity.Key, new NamedParameter("capacity", input.RowCapacity));
-               return new InternalReader(input, rowFactory);
+               return new NullReader(input);
             }).Named<IRead>(entity.Key);
+         }
+      }
+
+      private static IAction SwitchAction(IComponentContext ctx, Process process, Action action) {
+
+         var context = new PipelineContext(ctx.Resolve<IPipelineLogger>(), process);
+
+         switch (action.Type) {
+            case "log":
+               return new LogAction(context, action);
+            default:
+               context.Error("{0} action is not registered.", action.Type);
+               return new NullAction();
          }
       }
 

@@ -28,8 +28,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Transformalize.Containers.Autofac.Modules;
-using Transformalize.Contracts;
 using Process = Transformalize.Configuration.Process;
+using TransformalizeModule.Fields;
 
 namespace TransformalizeModule.Services {
 
@@ -42,7 +42,6 @@ namespace TransformalizeModule.Services {
 
       private readonly IUserService _userService;
       private readonly IHttpContextAccessor _httpContext;
-      private readonly ISettingsService _settings;
       private readonly CombinedLogger<OrchardConfigurationContainer> _logger;
       private readonly ITransformalizeParametersModifier _transformalizeParameters;
 
@@ -51,18 +50,16 @@ namespace TransformalizeModule.Services {
       public OrchardConfigurationContainer(
          IHttpContextAccessor httpContext,
          CombinedLogger<OrchardConfigurationContainer> logger,
-         ISettingsService settings,
          IUserService userService,
          ITransformalizeParametersModifier transformalizeParameters
       ) {
          _userService = userService;
          _httpContext = httpContext;
          _logger = logger;
-         _settings = settings;
          _transformalizeParameters = transformalizeParameters;
       }
 
-      public ILifetimeScope CreateScope(string cfg, IPipelineLogger logger, IDictionary<string, string> parameters = null) {
+      public ILifetimeScope CreateScope(string arrangement, int contentItemId, IDictionary<string, string> parameters = null) {
 
          var placeHolderStyle = "@[]";
 
@@ -75,10 +72,12 @@ namespace TransformalizeModule.Services {
 
          builder.Register(ctx => {
 
-            var response = _transformalizeParameters.Modify(cfg);
+            var response = _transformalizeParameters.Modify(arrangement);
 
-            cfg = response.Arrangement;
-            parameters = response.Parameters;  //todo: parameters may not even need to come in here anymore
+            var cfg = response.Arrangement;
+            foreach(var kv in response.Parameters) {
+               parameters[kv.Key] = kv.Value;
+            }
 
             var dependancies = new List<IDependency>();
             dependancies.Add(ctx.Resolve<IReader>());
@@ -100,6 +99,8 @@ namespace TransformalizeModule.Services {
                   _logger.Error(() => error);
                }
             }
+
+            process.Id = contentItemId;
 
             return process;
          }).As<Process>().InstancePerDependency();

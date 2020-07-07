@@ -18,6 +18,7 @@ using Autofac;
 using OrchardCore.DisplayManagement.Notify;
 using Microsoft.AspNetCore.Mvc.Localization;
 using TransformalizeModule.Services.Contracts;
+using OrchardCore.Environment.Cache;
 
 namespace TransformalizeModule.Drivers {
    
@@ -27,17 +28,20 @@ namespace TransformalizeModule.Drivers {
       private readonly IHtmlLocalizer<TransformalizeArrangementFieldDisplayDriver> H;
       private readonly IConfigurationContainer _container;
       private readonly INotifier _notifier;
+      private readonly ISignal _signal;
 
       public TransformalizeArrangementFieldDisplayDriver(
          IStringLocalizer<TransformalizeArrangementFieldDisplayDriver> localizer,
          IHtmlLocalizer<TransformalizeArrangementFieldDisplayDriver> htmlLocalizer,
          IConfigurationContainer container,
-         INotifier notifier
+         INotifier notifier,
+         ISignal signal
       ) {
          S = localizer;
          H = htmlLocalizer;
          _container = container;
          _notifier = notifier;
+         _signal = signal;
       }
 
       public override IDisplayResult Display(TransformalizeArrangementField field, BuildFieldDisplayContext context) {
@@ -71,7 +75,7 @@ namespace TransformalizeModule.Drivers {
             } else {
                try {
                   var logger = new MemoryLogger(LogLevel.Error);
-                  var process = _container.CreateScope(field.Arrangement, logger, new Dictionary<string, string>()).Resolve<Process>();
+                  var process = _container.CreateScope(field.Arrangement, context.ContentPart.ContentItem.Id, new Dictionary<string, string>()).Resolve<Process>();
                   if (process.Errors().Any()) {
                      foreach (var error in process.Errors()) {
                         updater.ModelState.AddModelError(Prefix, S[error]);
@@ -100,6 +104,10 @@ namespace TransformalizeModule.Drivers {
                }
             }
 
+         }
+
+         if (updater.ModelState.IsValid) {
+            _signal.SignalToken(Common.GetCacheKey(context.ContentPart.ContentItem.Id));
          }
 
          return Edit(field, context);

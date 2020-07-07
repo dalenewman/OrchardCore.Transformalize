@@ -16,15 +16,12 @@
 // limitations under the License.
 #endregion
 
-using Autofac;
-using Cfg.Net.Contracts;
-using System.Collections.Generic;
+using RazorEngineCore;
+using Transformalize.Configuration;
 
-namespace TransformalizeModule.Services.Contracts {
-
-   public interface IConfigurationContainer {
-      ISerializer Serializer { get; set; }
-      ILifetimeScope CreateScope(string arrangement, int contentItemId, IDictionary<string, string> parameters);
+namespace TransformalizeModule.Services.Transforms {
+   public class CachedRazorTransform {
+      public Field[] Input;
+      public RazorEngineCompiledTemplate Template;
    }
-
 }

@@ -4,7 +4,7 @@ using Transformalize;
 using Transformalize.Contracts;
 using Transformalize.Transforms;
 
-namespace TransformalizeModule.Transforms {
+namespace TransformalizeModule.Services.Transforms {
    public class UsernameTransform : BaseTransform {
 
       private readonly string _username = string.Empty;

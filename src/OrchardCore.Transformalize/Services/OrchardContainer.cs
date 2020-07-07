@@ -20,7 +20,7 @@ using Autofac;
 using Cfg.Net.Shorthand;
 using Microsoft.AspNetCore.Http;
 using TransformalizeModule.Services.Modules;
-using TransformalizeModule.Transforms;
+using TransformalizeModule.Services.Transforms;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -58,7 +58,9 @@ using LogTransform = Transformalize.Transforms.System.LogTransform;
 using Process = Transformalize.Configuration.Process;
 using IContainer = TransformalizeModule.Services.Contracts.IContainer;
 using Transformalize.Transforms.LambdaParser.Autofac;
-using Transformalize.Transforms.Razor.Autofac;
+using Microsoft.Extensions.Caching.Memory;
+using OrchardCore.Environment.Cache;
+using Transformalize.Extensions;
 
 namespace TransformalizeModule.Services {
 
@@ -70,6 +72,8 @@ namespace TransformalizeModule.Services {
       private readonly IUserService _userService;
       private readonly IServiceProvider _serviceProvider;
       private readonly CombinedLogger<OrchardContainer> _logger;
+      private readonly IMemoryCache _memoryCache;
+      private readonly ISignal _signal;
       private readonly HashSet<string> _adoProviders = new HashSet<string>() { "sqlserver", "postgresql", "sqlite", "mysql" };
 
       public Func<InputContext, IRowFactory, IRead> GetReaderAlternate { get; set; }
@@ -79,12 +83,16 @@ namespace TransformalizeModule.Services {
          IHttpContextAccessor httpContext,
          IUserService userService,
          IServiceProvider serviceProvider,
-         CombinedLogger<OrchardContainer> logger
+         CombinedLogger<OrchardContainer> logger,
+         IMemoryCache memoryCache,
+         ISignal signal
       ) {
          _httpContext = httpContext;
          _userService = userService;
          _serviceProvider = serviceProvider;
          _logger = logger;
+         _memoryCache = memoryCache;
+         _signal = signal;
       }
 
       public ILifetimeScope CreateScope(Process process, IPipelineLogger logger) {
@@ -103,6 +111,7 @@ namespace TransformalizeModule.Services {
          tm.AddTransform(new TransformHolder((c) => new UsernameTransform(_httpContext, c), new UsernameTransform().GetSignatures()));
          tm.AddTransform(new TransformHolder((c) => new UserIdTransform(_httpContext, _userService, c), new UserIdTransform().GetSignatures()));
          tm.AddTransform(new TransformHolder((c) => new UserEmailTransform(_httpContext, _userService, c), new UserEmailTransform().GetSignatures()));
+         tm.AddTransform(new TransformHolder((c) => new OrchardRazorTransform(c, _memoryCache, _signal), new OrchardRazorTransform().GetSignatures()));
          builder.RegisterModule(tm);
 
          // register short-hand for v attribute, allowing for additional validators
@@ -145,6 +154,7 @@ namespace TransformalizeModule.Services {
 
          // misc
          if (providers.Contains("bogus")) { builder.RegisterModule(new BogusModule()); }
+         if (providers.Contains("log") || process.Actions.Any(a => a.Type == "log")) { builder.RegisterModule(new OrchardLogModule(process)); }
 
          // transform and validation modules need these properties
          builder.Properties["ShortHand"] = _shortHand;
@@ -157,7 +167,6 @@ namespace TransformalizeModule.Services {
          builder.RegisterModule(new FileModule());
          builder.RegisterModule(new AdoTransformModule());
          builder.RegisterModule(new LambdaParserModule());
-         builder.RegisterModule(new RazorTransformModule());
 
          // register validator modules here
          builder.RegisterModule(new JintValidateModule());
@@ -213,6 +222,7 @@ namespace TransformalizeModule.Services {
 
             builder.Register(ctx => {
 
+               var output = process.GetOutputConnection();
                var context = ctx.ResolveNamed<IContext>(entity.Key);
                var outputController = ctx.IsRegisteredWithName<IOutputController>(entity.Key) ? ctx.ResolveNamed<IOutputController>(entity.Key) : new NullOutputController();
                var pipeline = new DefaultPipeline(outputController, context);
@@ -249,7 +259,7 @@ namespace TransformalizeModule.Services {
                pipeline.Register(TransformFactory.GetTransforms(ctx, context, entity.GetAllFields().Where(f => f.Transforms.Any())));
                pipeline.Register(ValidateFactory.GetValidators(ctx, context, entity.GetAllFields().Where(f => f.Validators.Any())));
 
-               if (!process.ReadOnly) {
+               if (!process.ReadOnly && !output.Provider.In("internal","log")) {
                   pipeline.Register(new StringTruncateTransfom(new PipelineContext(ctx.Resolve<IPipelineLogger>(), process, entity)));
                }
 
@@ -345,7 +355,7 @@ namespace TransformalizeModule.Services {
             var isAdo = _adoProviders.Contains(output.Provider);
             if (process.Flatten && isAdo) {
                if (ctx.IsRegisteredWithName<IAction>(output.Key)) {
-                  controller.PostActions.Add(ctx.ResolveNamed<IAction>(process.GetOutputConnection().Key));
+                  controller.PostActions.Add(ctx.ResolveNamed<IAction>(output.Key));
                } else {
                   context.Error($"Could not find ADO Flatten Action for provider {output.Provider}.");
                }

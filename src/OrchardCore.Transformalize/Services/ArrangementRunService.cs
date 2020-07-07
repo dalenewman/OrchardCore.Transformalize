@@ -26,11 +26,11 @@ namespace TransformalizeModule.Services {
 
          IProcessController controller;
 
-         using (StackExchange.Profiling.MiniProfiler.Current.Step("Run.Prepare")) {
+         using (MiniProfiler.Current.Step("Run.Prepare")) {
             controller = _container.CreateScope(process, _logger).Resolve<IProcessController>();
          }
 
-         using (StackExchange.Profiling.MiniProfiler.Current.Step("Run.Execute")) {
+         using (MiniProfiler.Current.Step("Run.Execute")) {
             await controller.ExecuteAsync();
          }
 

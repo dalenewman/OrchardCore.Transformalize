@@ -1,51 +1,50 @@
 ﻿using Microsoft.AspNetCore.Http;
 using OrchardCore.Users.Models;
 using OrchardCore.Users.Services;
-using System;
 using System.Collections.Generic;
 using Transformalize;
 using Transformalize.Contracts;
 using Transformalize.Transforms;
 
-namespace TransformalizeModule.Transforms {
-   public class UserIdTransform : BaseTransform {
+namespace TransformalizeModule.Services.Transforms {
+   public class UserEmailTransform : BaseTransform {
 
-      private readonly int _userId;
+      private readonly string _userEmail = string.Empty;
 
-      public UserIdTransform(
+      public UserEmailTransform(
          IHttpContextAccessor httpContext = null,
          IUserService userService = null,
          IContext context = null
-      ) : base(context, "int") {
+      ) : base(context, "string") {
 
          if (IsMissingContext()) {
             return;
          }
 
-         if (IsNotReceiving("int")) {
+         if (IsNotReceiving("string")) {
             return;
          }
          
          if (httpContext == null) {
             Run = false;
-            Context.Error($"{nameof(UserIdTransform)} requires an instance of IHttpContextAccessor");
+            Context.Error($"{nameof(UserEmailTransform)} requires an instance of IHttpContextAccessor");
          } else {
             var username = httpContext.HttpContext.User?.Identity?.Name ?? "Anonymous";
             if(username != "Anonymous") {
                if (userService.GetUserAsync(username).Result is User user) {
-                  _userId = user.Id;
+                  _userEmail = user.Email;
                }
             }
          }
 
       }
       public override IRow Operate(IRow row) {
-         row[Context.Field] = _userId;
+         row[Context.Field] = _userEmail;
          return row;
       }
 
       public override IEnumerable<OperationSignature> GetSignatures() {
-         yield return new OperationSignature("userid");
+         yield return new OperationSignature("useremail");
       }
    }
 }

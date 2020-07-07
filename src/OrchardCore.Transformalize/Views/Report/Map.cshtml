@@ -277,7 +277,7 @@
                         checked: "checked",
                         "class": "bulk-action",
                         style: "visibility: hidden",
-                        name: "row",
+                        name: "Records",
                         value: feature.properties["batch-value"]
                      }).appendTo("#id_report");
                   });
@@ -286,14 +286,16 @@
                   $(".bulk-action-link").each(function () {
                      var link = $(this);
                      $("input[name=bulk-action-length]").val(selected.features.length);
-                     link.html(link.attr('rel') + '&nbsp;&nbsp;<span class="badge">' + selected.features.length + "</span>");
+                     controls.bulkActionLength = selected.features.length;
+                     link.html(link.attr('rel') + ' <span class="badge badge-dark">' + selected.features.length + "</span>");
                   });
                } else {
                   // update the little badges
                   $(".bulk-action-link").each(function () {
                      var link = $(this);
                      $("input[name=bulk-action-length]").val(0);
-                     link.html(link.attr('rel') + '&nbsp;&nbsp;<span class="badge"></span>');
+                     controls.bulkActionLength = 0;
+                     link.html(link.attr('rel') + ' <span class="badge badge-dark"></span>');
                   });
                }
             }
@@ -368,7 +370,7 @@
         }
     }
 
-    function bulkAction(page,description,id) {
+    function bulkAction(page, name) {
         var length = $('.bulk-action:checked').length;
         if (length > 0) {
             $.blockUI({

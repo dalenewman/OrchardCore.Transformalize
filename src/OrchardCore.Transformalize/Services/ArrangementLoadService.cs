@@ -12,6 +12,7 @@ using TransformalizeModule.Models;
 using Cfg.Net.Serializers;
 using Transformalize.Logging;
 using Transformalize.Impl;
+using TransformalizeModule.Fields;
 
 namespace TransformalizeModule.Services {
    public class ArrangementLoadService : IArrangementLoadService {
@@ -45,7 +46,7 @@ namespace TransformalizeModule.Services {
             return new Process { Status = 500, Message = "Error", Log = new List<LogEntry>() { new LogEntry(LogLevel.Error, null, $"LoadForExport can't load {contentItem.ContentType}.") } };
          }
 
-         var process = LoadInternal(part.Arrangement.Arrangement);
+         var process = LoadInternal(part);
 
          process.Mode = "report";
          process.ReadOnly = true;
@@ -86,7 +87,7 @@ namespace TransformalizeModule.Services {
 
          _stickyParameterService.GetStickyParameters(contentItem.ContentItemId, _parameters);
 
-         var process = LoadInternal(part.Arrangement.Arrangement, null, format == "json" ? new JsonSerializer() : null);
+         var process = LoadInternal(part, null, format == "json" ? new JsonSerializer() : null);
 
          process.Mode = "report";
          process.ReadOnly = true;
@@ -110,7 +111,7 @@ namespace TransformalizeModule.Services {
          }
 
          // disable internal actions
-         foreach (var action in process.Actions.Where(a=>a.Type == "internal")) {
+         foreach (var action in process.Actions.Where(a => a.Type == "internal")) {
             action.Before = false;
             action.After = false;
          }
@@ -132,7 +133,7 @@ namespace TransformalizeModule.Services {
 
          _stickyParameterService.GetStickyParameters(contentItem.ContentItemId, _parameters);
 
-         var process = LoadInternal(part.Arrangement.Arrangement, null);
+         var process = LoadInternal(part, null);
 
          process.Mode = "map";
          process.ReadOnly = true;
@@ -171,7 +172,7 @@ namespace TransformalizeModule.Services {
             return new Process { Status = 500, Message = "Error", Log = new List<LogEntry>() { new LogEntry(LogLevel.Error, null, $"LoadForBatch can't load {contentItem.ContentType}.") } };
          }
 
-         var process = LoadInternal(part.Arrangement.Arrangement);
+         var process = LoadInternal(part);
 
          process.Mode = "report";
          process.ReadOnly = true;
@@ -197,7 +198,7 @@ namespace TransformalizeModule.Services {
             return new Process { Status = 500, Message = "Error", Log = new List<LogEntry>() { new LogEntry(LogLevel.Error, null, $"LoadForBatch can't load {contentItem.ContentType}.") } };
          }
 
-         var process = LoadInternal(part.Arrangement.Arrangement);
+         var process = LoadInternal(part);
 
          process.Mode = "stream-map";
          process.ReadOnly = true;
@@ -239,7 +240,7 @@ namespace TransformalizeModule.Services {
             return new Process { Status = 500, Message = "Error", Log = new List<LogEntry>() { new LogEntry(LogLevel.Error, null, $"LoadForTask can't load {contentItem.ContentType}.") } };
          }
 
-         process = LoadInternal(part.Arrangement.Arrangement, parameters, format == "json" ? new JsonSerializer() : null);
+         process = LoadInternal(part, parameters, format == "json" ? new JsonSerializer() : null);
 
          return process;
       }
@@ -247,17 +248,14 @@ namespace TransformalizeModule.Services {
       public Process LoadForSchema(ContentItem contentItem, string format = null) {
 
          Process process;
-         string arrangement;
 
          if (TryGetTaskPart(contentItem, out var taskPart)) {
-            arrangement = taskPart.Arrangement.Arrangement;
-         } else if(TryGetReportPart(contentItem, out var reportPart)) {
-            arrangement = reportPart.Arrangement.Arrangement;
+            process = LoadInternal(taskPart, null, format == "json" ? new JsonSerializer() : null);
+         } else if (TryGetReportPart(contentItem, out var reportPart)) {
+            process = LoadInternal(reportPart, null, format == "json" ? new JsonSerializer() : null);
          } else {
             return new Process { Status = 500, Message = "Error", Log = new List<LogEntry>() { new LogEntry(LogLevel.Error, null, $"LoadForSchema can't load {contentItem.DisplayText}.") } };
          }
-
-         process = LoadInternal(arrangement, null, format == "json" ? new JsonSerializer() : null);
 
          return process;
       }
@@ -270,7 +268,7 @@ namespace TransformalizeModule.Services {
             return new Process { Status = 500, Message = "Error", Log = new List<LogEntry>() { new LogEntry(LogLevel.Error, null, $"LoadForTask can't load {contentItem.ContentType}.") } };
          }
 
-         process = LoadInternal(part.Arrangement.Arrangement, parameters);
+         process = LoadInternal(part, parameters);
 
          // switch postback auto to true or false
          foreach (var parameter in process.Parameters.Where(p => p.Prompt && p.PostBack == "auto")) {
@@ -299,7 +297,15 @@ namespace TransformalizeModule.Services {
          return process;
       }
 
-      private Process LoadInternal(string arrangement, IDictionary<string, string> parameters = null, ISerializer serializer = null) {
+      private Process LoadInternal(TransformalizeTaskPart part, IDictionary<string, string> parameters = null, ISerializer serializer = null) {
+         return LoadInternal(part.Arrangement.Arrangement, part.ContentItem.Id, parameters, serializer);
+      }
+
+      private Process LoadInternal(TransformalizeReportPart part, IDictionary<string, string> parameters = null, ISerializer serializer = null) {
+         return LoadInternal(part.Arrangement.Arrangement, part.ContentItem.Id, parameters, serializer);
+      }
+
+      private Process LoadInternal(string arrangement, int contentItemId, IDictionary<string, string> parameters = null, ISerializer serializer = null) {
 
          Process process;
 
@@ -309,9 +315,9 @@ namespace TransformalizeModule.Services {
             }
          }
 
-         using (StackExchange.Profiling.MiniProfiler.Current.Step("Load")) {
+         using (MiniProfiler.Current.Step("Load")) {
             _configurationContainer.Serializer = serializer;
-            process = _configurationContainer.CreateScope(arrangement, _logger, _parameters).Resolve<Process>();
+            process = _configurationContainer.CreateScope(arrangement, contentItemId, _parameters).Resolve<Process>();
          }
 
          // _settings.ApplyCommonSettings(process); already loaded in cfg container
@@ -326,6 +332,7 @@ namespace TransformalizeModule.Services {
 
          return process;
       }
+
 
       /// <summary>
       /// don't let the users put size=100000000 on the url
