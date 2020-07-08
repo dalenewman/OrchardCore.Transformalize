@@ -7,7 +7,7 @@ module for [Orchard Core](https://github.com/OrchardCMS/OrchardCore) rc2.
    - <strike>Sortable, Filterable Table with pagination</strike>
    - <strike>CSV Extract</strike>
    - <strike>JSON Extract</strike>
-   - Map(Box) view
+   - Map(Box) view - 50%
    - Calendar view
 - <strike>Batches / Bulk Actions</strike>
   - <strike>Tasks (ETL Jobs) for running batches, etc</strike>
@@ -22,15 +22,19 @@ module for [Orchard Core](https://github.com/OrchardCMS/OrchardCore) rc2.
 #### Providers
 - <strike>[Elasticsearch](https://github.com/dalenewman/Transformalize.Provider.Elasticsearch)</strike>, <strike>[SQL Server](https://github.com/dalenewman/Transformalize.Provider.SqlServer)</strike>, <strike>[PostgreSQL](https://github.com/dalenewman/Transformalize.Provider.PostgreSql)</strike>, <strike>[SQLite](https://github.com/dalenewman/Transformalize.Provider.SQLite)</strike>, <strike>[MySql](https://github.com/dalenewman/Transformalize.Provider.MySql)</strike>, <strike>[JSON](https://github.com/dalenewman/Transformalize.Provider.JSON)</strike>, <strike>[CSV](https://github.com/dalenewman/Transformalize.Provider.CsvHelper)</strike>, <strike>[Bogus](https://github.com/dalenewman/Transformalize.Provider.Bogus)</strike>, <strike>[GeoJson](https://github.com/dalenewman/Transformalize.Provider.GeoJson)</strike>
 - [SOLR](https://github.com/dalenewman/Transformalize.Provider.SOLR), [KML](https://github.com/dalenewman/Transformalize/tree/master/Providers/Kml), [Lucene](https://github.com/dalenewman/Transformalize.Provider.Lucene)
+- Update SQL Server provider to use [Microsoft.Data.SqlClient](https://www.nuget.org/packages/Microsoft.Data.SqlClient/).
 
 #### Transforms
 - <strike>built-in [transforms](https://github.com/dalenewman/Transformalize/blob/master/Containers/Autofac/Transformalize.Container.Autofac.Shared/TransformBuilder.cs) and [validators](https://github.com/dalenewman/Transformalize/blob/master/Containers/Autofac/Transformalize.Container.Autofac.Shared/ValidateBuilder.cs)</strike>, <strike>[Jint](https://github.com/dalenewman/Transformalize.Transform.Jint
 )</strike>, <strike>JSON</strike>, <strike>[Humanize](https://github.com/dalenewman/Transformalize.Transform.Humanizer)</strike>
-- <strike>[Razor](https://github.com/dalenewman/Transformalize.Provider.Razor)</strike>, [Liquid / Fluid](https://github.com/dalenewman/Transformalize.Transform.Fluid
-), <strike>[Lambda Parser](https://github.com/dalenewman/Transformalize.Transform.LambdaParser)</strike>
+- <strike>[Razor](https://github.com/dalenewman/Transformalize.Provider.Razor)</strike>, <strike>[Liquid / Fluid](https://github.com/dalenewman/Transformalize.Transform.Fluid
+)</strike>, <strike>[Lambda Parser](https://github.com/dalenewman/Transformalize.Transform.LambdaParser)</strike>
 - Orchard transforms: <strike>username()</strike>, <strike>userid()</strike>, <strike>useremail()</strike>.
 - <strike>file related (get file name, file path, file extension)</strike>
 - IMemoryCache, ISignal Caching for Expensive Transforms
+  - <strike>Razor: Cache RazorTemplate</strike>
+  - Fluid: Cache `FluidTemplate`
+  - Jint: Combine script and cache result of `JavaScriptParser.Parse`
 
 #### Actions
 - <strike>file related (copy, move, archive, replace)</strike>
