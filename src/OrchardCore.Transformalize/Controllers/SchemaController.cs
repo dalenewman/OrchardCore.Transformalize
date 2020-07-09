@@ -4,8 +4,11 @@ using TransformalizeModule.Services.Contracts;
 using TransformalizeModule.ViewModels;
 using TransformalizeModule.Services;
 using TransformalizeModule.Models;
+using Microsoft.AspNetCore.Authorization;
 
 namespace TransformalizeModule.Controllers {
+
+   [Authorize]
    public class SchemaController : Controller {
 
       private readonly ISchemaService _schemaService;
@@ -21,13 +24,7 @@ namespace TransformalizeModule.Controllers {
 
       public async Task<ActionResult> Index(string contentItemId, string format = "xml") {
 
-         if (HttpContext == null || HttpContext.User == null || HttpContext.User.Identity == null || !HttpContext.User.Identity.IsAuthenticated) {
-            return Unauthorized();
-         }
-
-         var user = HttpContext.User?.Identity?.Name ?? "Anonymous";
-
-         var request = new TransformalizeRequest(contentItemId, user) { Format = format };
+         var request = new TransformalizeRequest(contentItemId, HttpContext.User.Identity.Name) { Format = format };
          var task = await _schemaService.Validate(request);
 
          if (task.Fails()) {

@@ -4,8 +4,11 @@ using TransformalizeModule.Services;
 using TransformalizeModule.Models;
 using TransformalizeModule.Services.Contracts;
 using Transformalize.Configuration;
+using Microsoft.AspNetCore.Authorization;
 
 namespace TransformalizeModule.Controllers {
+
+   [Authorize]
    public class ArrangementController : Controller {
 
       private readonly CombinedLogger<ArrangementController> _logger;
@@ -25,13 +28,7 @@ namespace TransformalizeModule.Controllers {
       [HttpGet]
       public async Task<ActionResult> TransformalizeParameters(string contentItemId) {
 
-         if (HttpContext == null || HttpContext.User == null || HttpContext.User.Identity == null || !HttpContext.User.Identity.IsAuthenticated) {
-            return Unauthorized();
-         }
-
-         var user = HttpContext.User?.Identity?.Name ?? "Anonymous";
-
-         var request = new TransformalizeRequest(contentItemId, user) { Format = "xml" };
+         var request = new TransformalizeRequest(contentItemId, HttpContext.User.Identity.Name) { Format = "xml" };
 
          var item = await _commonService.Validate(request);
 

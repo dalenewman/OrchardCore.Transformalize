@@ -16,12 +16,13 @@
 // limitations under the License.
 #endregion
 
-using RazorEngineCore;
+using Fluid;
 using Transformalize.Configuration;
 
-namespace TransformalizeModule.Services.Transforms {
-   public class CachedRazorTransform {
+namespace TransformalizeModule.Models {
+   public class CachedFluidTransform {
       public Field[] Input;
-      public RazorEngineCompiledTemplate Template;
+      public FluidTemplate Template;
    }
+
 }

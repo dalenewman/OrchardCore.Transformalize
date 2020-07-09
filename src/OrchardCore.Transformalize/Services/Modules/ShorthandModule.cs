@@ -17,6 +17,7 @@ using Transformalize.Transforms.Json.Autofac;
 using Transformalize.Validate.Jint.Autofac;
 using Transformalize.Transforms.LambdaParser.Autofac;
 using Transformalize.Transform.Fluid.Autofac;
+using Transformalize.Transform.Fluid;
 
 namespace TransformalizeModule.Services.Modules {
 
@@ -51,6 +52,8 @@ namespace TransformalizeModule.Services.Modules {
          tm.AddTransform(new TransformHolder((c) => new UserIdTransform(_httpContext, _userService, c), new UserIdTransform().GetSignatures()));
          tm.AddTransform(new TransformHolder((c) => new UserEmailTransform(_httpContext, _userService, c), new UserEmailTransform().GetSignatures()));
          tm.AddTransform(new TransformHolder((c) => new OrchardRazorTransform(c), new OrchardRazorTransform().GetSignatures()));
+         tm.AddTransform(new TransformHolder((c) => new OrchardFluidTransform(c), new OrchardFluidTransform().GetSignatures()));
+
          builder.RegisterModule(tm);
 
          // register short-hand for v attribute
@@ -80,7 +83,6 @@ namespace TransformalizeModule.Services.Modules {
          builder.RegisterModule(new HumanizeModule());
          builder.RegisterModule(new FileModule());
          builder.RegisterModule(new LambdaParserModule());
-         builder.RegisterModule(new FluidTransformModule());
 
          // register validator modules here so they can register their short-hand
          builder.RegisterModule(new JintValidateModule());

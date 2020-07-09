@@ -1,42 +1,22 @@
-#region license
-// Transformalize
-// Configurable Extract, Transform, and Load
-// Copyright 2013-2017 Dale Newman
-//  
-// Licensed under the Apache License, Version 2.0 (the "License");
-// you may not use this file except in compliance with the License.
-// You may obtain a copy of the License at
-//   
-//       http://www.apache.org/licenses/LICENSE-2.0
-//   
-// Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
-// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-// See the License for the specific language governing permissions and
-// limitations under the License.
-#endregion
-
+﻿using Fluid;
 using Microsoft.Extensions.Caching.Memory;
 using OrchardCore.Environment.Cache;
-using RazorEngineCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Transformalize;
 using Transformalize.Contracts;
 using Transformalize.Transforms;
+using TransformalizeModule;
 using TransformalizeModule.Models;
 
-namespace TransformalizeModule.Services.Transforms {
-
-   public class OrchardRazorTransform : BaseTransform {
+namespace Transformalize.Transform.Fluid {
+   public class OrchardFluidTransform : BaseTransform {
 
       private readonly Func<string, object> _convert;
       private readonly IMemoryCache _memoryCache;
       private readonly ISignal _signal;
 
-      public OrchardRazorTransform(IContext context = null, IMemoryCache memoryCache = null, ISignal signal = null) : base(context, null) {
-
+      public OrchardFluidTransform(IContext context = null, IMemoryCache memoryCache = null, ISignal signal = null) : base(context, null) {
          if (IsMissingContext()) {
             return;
          }
@@ -46,18 +26,20 @@ namespace TransformalizeModule.Services.Transforms {
 
          Returns = Context.Field.Type;
 
-         IsMissing(Context.Operation.Template);
+         if (IsMissing(Context.Operation.Template)) {
+            Run = false;
+            return;
+         }
 
          if (Returns == "string") {
             _convert = o => (o.Trim('\n', '\r'));
          } else {
             _convert = o => Context.Field.Convert(o.Trim(' ', '\n', '\r'));
          }
-
       }
 
       public override IRow Operate(IRow row) {
-         throw new NotImplementedException();
+         throw new NotImplementedException("Not implemented here so it can wait for file based templates to load.");
       }
 
       /// <summary>
@@ -72,9 +54,9 @@ namespace TransformalizeModule.Services.Transforms {
 
          var key = string.Join(':', Context.Process.Id, Context.Entity.Alias, Context.Field.Alias, Context.Operation.Method, Context.Operation.Index);
 
-         if (!_memoryCache.TryGetValue(key, out CachedRazorTransform transform)) {
+         if (!_memoryCache.TryGetValue(key, out CachedFluidTransform transform)) {
 
-            transform = new CachedRazorTransform();
+            transform = new CachedFluidTransform();
 
             var fileBasedTemplate = Context.Process.Templates.FirstOrDefault(t => t.Name == Context.Operation.Template);
 
@@ -86,39 +68,32 @@ namespace TransformalizeModule.Services.Transforms {
             var matches = Context.Entity.GetFieldMatches(Context.Operation.Template);
             transform.Input = input.Union(matches).ToArray();
 
-            var engine = new RazorEngine();
-
-            try {
-               transform.Template = engine.Compile(Context.Operation.Template);
+            if (FluidTemplate.TryParse(Context.Operation.Template, out transform.Template)) {
 
                // any changes to content item will invalidate cache
                _memoryCache.Set(key, transform, _signal.GetToken(Common.GetCacheKey(Context.Process.Id)));
 
-            } catch (RazorEngineCompilationException ex) {
-               
-               foreach (var error in ex.Errors) {
-                  var line = error.Location.GetLineSpan();
-                  Context.Error($"C# error on line {line.StartLinePosition.Line}, column {line.StartLinePosition.Character}.");
-                  Context.Error(error.GetMessage());
-               }
-               Context.Error(ex.Message.Replace("{", "{{").Replace("}", "}}"));
+            } else {
+               Context.Error("Failed to parse fluid template.");
                Utility.CodeToError(Context, Context.Operation.Template);
                yield break;
             }
-
          }
 
+         var context = new TemplateContext();
          foreach (var row in rows) {
-            var output = transform.Template.Run(row.ToFriendlyExpandoObject(transform.Input));
-            row[Context.Field] = _convert(output);
+            foreach (var field in transform.Input) {
+               context.SetValue(field.Alias, row[field]);
+            }
+            row[Context.Field] = _convert(transform.Template.Render(context));
             yield return row;
          }
 
       }
 
       public override IEnumerable<OperationSignature> GetSignatures() {
-         yield return new OperationSignature("razor") {
-            Parameters = new List<OperationParameter> {
+         yield return new OperationSignature("fluid") {
+            Parameters = new List<OperationParameter>(1) {
                new OperationParameter("template")
             }
          };

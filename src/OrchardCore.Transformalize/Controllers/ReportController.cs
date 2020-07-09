@@ -35,9 +35,7 @@ namespace TransformalizeModule.Controllers {
       [HttpGet]
       public async Task<ActionResult> Index(string contentItemId, bool log = false) {
 
-         var user = HttpContext.User?.Identity?.Name ?? "Anonymous";
-
-         var report = await _reportService.Validate(new TransformalizeRequest(contentItemId, user));
+         var report = await _reportService.Validate(new TransformalizeRequest(contentItemId, HttpContext.User.Identity.Name));
 
          if (report.Fails()) {
             return report.ActionResult;
@@ -60,8 +58,7 @@ namespace TransformalizeModule.Controllers {
       [HttpGet]
       public async Task<ActionResult> Map(string contentItemId) {
 
-         var user = HttpContext.User?.Identity?.Name ?? "Anonymous";
-         var request = new TransformalizeRequest(contentItemId, user) { Mode = "map" };
+         var request = new TransformalizeRequest(contentItemId, HttpContext.User.Identity.Name) { Mode = "map" };
          var map = await _reportService.Validate(request);
 
          if (map.Fails()) {
@@ -90,9 +87,7 @@ namespace TransformalizeModule.Controllers {
       [HttpGet]
       public async Task<ActionResult> Run(string contentItemId, string format = "json") {
 
-         var user = HttpContext.User?.Identity?.Name ?? "Anonymous";
-
-         var request = new TransformalizeRequest(contentItemId, user) { Format = format };
+         var request = new TransformalizeRequest(contentItemId, HttpContext.User.Identity.Name) { Format = format };
          var report = await _reportService.Validate(request);
 
          if (report.Fails()) {
@@ -109,8 +104,7 @@ namespace TransformalizeModule.Controllers {
       [HttpGet]
       public async Task<ActionResult> StreamJson(string contentItemId) {
 
-         var user = HttpContext.User?.Identity?.Name ?? "Anonymous";
-         var request = new TransformalizeRequest(contentItemId, user) { Mode = "stream" };
+         var request = new TransformalizeRequest(contentItemId, HttpContext.User.Identity.Name) { Mode = "stream" };
          var stream = await _reportService.Validate(request);
 
          if (stream.Fails()) {
@@ -134,8 +128,7 @@ namespace TransformalizeModule.Controllers {
       [HttpGet]
       public async Task<ActionResult> StreamGeoJson(string contentItemId) {
 
-         var user = HttpContext.User?.Identity?.Name ?? "Anonymous";
-         var request = new TransformalizeRequest(contentItemId, user) { Mode = "stream" };
+         var request = new TransformalizeRequest(contentItemId, HttpContext.User.Identity.Name) { Mode = "stream" };
          var stream = await _reportService.Validate(request);
 
          if (stream.Fails()) {
@@ -177,8 +170,7 @@ namespace TransformalizeModule.Controllers {
       [HttpGet]
       public async Task<ActionResult> StreamMap(string contentItemId) {
 
-         var user = HttpContext.User?.Identity?.Name ?? "Anonymous";
-         var request = new TransformalizeRequest(contentItemId, user) { Mode = "stream-map" };
+         var request = new TransformalizeRequest(contentItemId, HttpContext.User.Identity.Name) { Mode = "stream-map" };
          var map = await _reportService.Validate(request);
 
          if (map.Fails()) {
@@ -196,8 +188,7 @@ namespace TransformalizeModule.Controllers {
       [HttpGet]
       public async Task<ActionResult> StreamCsv(string contentItemId) {
 
-         var user = HttpContext.User?.Identity?.Name ?? "Anonymous";
-         var request = new TransformalizeRequest(contentItemId, user) { Mode = "stream" };
+         var request = new TransformalizeRequest(contentItemId, HttpContext.User.Identity.Name) { Mode = "stream" };
          var stream = await _reportService.Validate(request);
 
          if (stream.Fails()) {

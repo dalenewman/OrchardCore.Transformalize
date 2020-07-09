@@ -11,9 +11,11 @@ using Transformalize.Configuration;
 using OrchardCore.Users.Services;
 using OrchardCore.Users.Models;
 using System.Text;
+using Microsoft.AspNetCore.Authorization;
 
 namespace TransformalizeModule.Controllers {
 
+   [Authorize]
    public class BulkActionController : Controller {
 
       private readonly ITaskService _taskService;
@@ -39,12 +41,7 @@ namespace TransformalizeModule.Controllers {
       [HttpPost]
       public async Task<ActionResult> Create(BulkActionRequest request) {
 
-         if (HttpContext == null || HttpContext.User == null || HttpContext.User.Identity == null || !HttpContext.User.Identity.IsAuthenticated) {
-            return Unauthorized();
-         }
-
-         var userName = HttpContext.User.Identity.Name ?? "Anonymous";
-
+         var userName = HttpContext.User.Identity.Name;
          var report = await _reportService.Validate(new TransformalizeRequest(request.ContentItemId, userName));
          if (report.Fails()) {
             return report.ActionResult;
@@ -165,14 +162,8 @@ namespace TransformalizeModule.Controllers {
 
       public async Task<ActionResult> Review(BulkActionReviewRequest request) {
 
-         if (HttpContext == null || HttpContext.User == null || HttpContext.User.Identity == null || !HttpContext.User.Identity.IsAuthenticated) {
-            return Unauthorized();
-         }
-
-         var user = HttpContext.User.Identity.Name ?? "Anonymous";
-
          var batchSummaryAlias = "batch-summary";
-         var batchSummary = await _taskService.Validate(new TransformalizeRequest(batchSummaryAlias, user) { Secure = false });
+         var batchSummary = await _taskService.Validate(new TransformalizeRequest(batchSummaryAlias, HttpContext.User.Identity.Name) { Secure = false });
 
          if (batchSummary.Fails()) {
             return batchSummary.ActionResult;
@@ -188,7 +179,7 @@ namespace TransformalizeModule.Controllers {
             request.ReportContentItemId = GetFieldFromSummary(batchSummary.Process, "ReportContentItemId");
          }
 
-         var bulkAction = await _formService.Validate(new TransformalizeRequest(request.TaskContentItemId, user));
+         var bulkAction = await _formService.Validate(new TransformalizeRequest(request.TaskContentItemId, HttpContext.User.Identity.Name));
 
          if (bulkAction.Fails()) {
             return bulkAction.ActionResult;
@@ -204,12 +195,7 @@ namespace TransformalizeModule.Controllers {
 
       public async Task<ActionResult> Form(BulkActionReviewRequest request) {
 
-         if (HttpContext == null || HttpContext.User == null || HttpContext.User.Identity == null || !HttpContext.User.Identity.IsAuthenticated) {
-            return Unauthorized();
-         }
-
-         var user = HttpContext.User.Identity.Name ?? "Anonymous";
-         var bulkAction = await _formService.Validate(new TransformalizeRequest(request.TaskContentItemId, user));
+         var bulkAction = await _formService.Validate(new TransformalizeRequest(request.TaskContentItemId, HttpContext.User.Identity.Name));
 
          if (bulkAction.Fails()) {
             return bulkAction.ActionResult;
@@ -225,12 +211,7 @@ namespace TransformalizeModule.Controllers {
 
       public async Task<ActionResult> Run(BulkActionReviewRequest request) {
 
-         if (HttpContext == null || HttpContext.User == null || HttpContext.User.Identity == null || !HttpContext.User.Identity.IsAuthenticated) {
-            return Unauthorized();
-         }
-
-         var user = HttpContext.User.Identity.Name ?? "Anonymous";
-
+         var user = HttpContext.User.Identity.Name;
          var bulkAction = await _taskService.Validate(new TransformalizeRequest(request.TaskContentItemId, user));
 
          if (bulkAction.Fails()) {
@@ -272,14 +253,8 @@ namespace TransformalizeModule.Controllers {
 
       public async Task<ActionResult> Result() {
 
-         if (HttpContext == null || HttpContext.User == null || HttpContext.User.Identity == null || !HttpContext.User.Identity.IsAuthenticated) {
-            return Unauthorized();
-         }
-
-         var user = HttpContext.User.Identity.Name ?? "Anonymous";
-
          var batchSummaryAlias = "batch-summary";
-         var batchSummary = await _taskService.Validate(new TransformalizeRequest(batchSummaryAlias, user) { Secure = false });
+         var batchSummary = await _taskService.Validate(new TransformalizeRequest(batchSummaryAlias, HttpContext.User.Identity.Name) { Secure = false });
 
          if (batchSummary.Fails()) {
             return batchSummary.ActionResult;

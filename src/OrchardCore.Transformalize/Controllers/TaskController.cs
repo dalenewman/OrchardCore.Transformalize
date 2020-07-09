@@ -4,8 +4,11 @@ using TransformalizeModule.Services.Contracts;
 using TransformalizeModule.ViewModels;
 using TransformalizeModule.Services;
 using TransformalizeModule.Models;
+using Microsoft.AspNetCore.Authorization;
 
 namespace TransformalizeModule.Controllers {
+
+   [Authorize]
    public class TaskController : Controller {
 
       private readonly ITaskService _taskService;
@@ -24,13 +27,7 @@ namespace TransformalizeModule.Controllers {
 
       public async Task<ActionResult> Run(string contentItemId, string format = null) {
 
-         if (HttpContext == null || HttpContext.User == null || HttpContext.User.Identity == null || !HttpContext.User.Identity.IsAuthenticated) {
-            return Unauthorized();
-         }
-
-         var user = HttpContext.User?.Identity?.Name ?? "Anonymous";
-
-         var request = new TransformalizeRequest(contentItemId, user) { Format = format };
+         var request = new TransformalizeRequest(contentItemId, HttpContext.User.Identity.Name) { Format = format };
          var task = await _taskService.Validate(request);
 
          if (task.Fails()) {
@@ -50,12 +47,7 @@ namespace TransformalizeModule.Controllers {
 
       public async Task<ActionResult> Form(string contentItemId) {
 
-         if (HttpContext == null || HttpContext.User == null || HttpContext.User.Identity == null || !HttpContext.User.Identity.IsAuthenticated) {
-            return Unauthorized();
-         }
-
-         var user = HttpContext.User.Identity.Name ?? "Anonymous";
-         var bulkAction = await _formService.Validate(new TransformalizeRequest(contentItemId, user));
+         var bulkAction = await _formService.Validate(new TransformalizeRequest(contentItemId, HttpContext.User.Identity.Name));
 
          if (bulkAction.Fails()) {
             return bulkAction.ActionResult;
@@ -66,13 +58,7 @@ namespace TransformalizeModule.Controllers {
 
       public async Task<ActionResult> Review(string contentItemId) {
 
-         if (HttpContext == null || HttpContext.User == null || HttpContext.User.Identity == null || !HttpContext.User.Identity.IsAuthenticated) {
-            return Unauthorized();
-         }
-
-         var user = HttpContext.User.Identity.Name ?? "Anonymous";
-
-         var task = await _formService.Validate(new TransformalizeRequest(contentItemId, user));
+         var task = await _formService.Validate(new TransformalizeRequest(contentItemId, HttpContext.User.Identity.Name));
 
          if (task.Fails()) {
             return task.ActionResult;

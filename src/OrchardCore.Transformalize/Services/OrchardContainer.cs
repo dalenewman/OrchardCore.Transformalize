@@ -62,6 +62,7 @@ using Microsoft.Extensions.Caching.Memory;
 using OrchardCore.Environment.Cache;
 using Transformalize.Extensions;
 using Transformalize.Transform.Fluid.Autofac;
+using Transformalize.Transform.Fluid;
 
 namespace TransformalizeModule.Services {
 
@@ -113,6 +114,7 @@ namespace TransformalizeModule.Services {
          tm.AddTransform(new TransformHolder((c) => new UserIdTransform(_httpContext, _userService, c), new UserIdTransform().GetSignatures()));
          tm.AddTransform(new TransformHolder((c) => new UserEmailTransform(_httpContext, _userService, c), new UserEmailTransform().GetSignatures()));
          tm.AddTransform(new TransformHolder((c) => new OrchardRazorTransform(c, _memoryCache, _signal), new OrchardRazorTransform().GetSignatures()));
+         tm.AddTransform(new TransformHolder((c) => new OrchardFluidTransform(c, _memoryCache, _signal), new OrchardFluidTransform().GetSignatures()));
          builder.RegisterModule(tm);
 
          // register short-hand for v attribute, allowing for additional validators
@@ -168,7 +170,6 @@ namespace TransformalizeModule.Services {
          builder.RegisterModule(new FileModule());
          builder.RegisterModule(new AdoTransformModule());
          builder.RegisterModule(new LambdaParserModule());
-         builder.RegisterModule(new FluidTransformModule());
 
          // register validator modules here
          builder.RegisterModule(new JintValidateModule());
@@ -373,7 +374,9 @@ namespace TransformalizeModule.Services {
                      controller.PostActions.Add(ctx.ResolveNamed<IAction>(action.Key));
                   }
                } else {
-                  _logger.Warn(() => $"The action {action.Name} with type {action.Type} isn't registered.");
+                  if(action.Type != "internal") {
+                     _logger.Warn(() => $"The action {action.Name} with type {action.Type} isn't registered.");
+                  }
                }
             }
 
