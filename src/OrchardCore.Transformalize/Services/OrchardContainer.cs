@@ -61,6 +61,7 @@ using Transformalize.Transforms.LambdaParser.Autofac;
 using Microsoft.Extensions.Caching.Memory;
 using OrchardCore.Environment.Cache;
 using Transformalize.Extensions;
+using Transformalize.Transform.Fluid.Autofac;
 
 namespace TransformalizeModule.Services {
 
@@ -167,6 +168,7 @@ namespace TransformalizeModule.Services {
          builder.RegisterModule(new FileModule());
          builder.RegisterModule(new AdoTransformModule());
          builder.RegisterModule(new LambdaParserModule());
+         builder.RegisterModule(new FluidTransformModule());
 
          // register validator modules here
          builder.RegisterModule(new JintValidateModule());
