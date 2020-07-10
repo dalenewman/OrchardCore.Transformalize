@@ -18,12 +18,10 @@
 
 using Autofac;
 using Cfg.Net.Contracts;
-using Microsoft.AspNetCore.Http;
 using TransformalizeModule.Models;
 using TransformalizeModule.Services.Contracts;
 using TransformalizeModule.Services.Modifiers;
 using TransformalizeModule.Services.Modules;
-using OrchardCore.Users.Services;
 using System.Collections.Generic;
 using System.Linq;
 using Transformalize.Configuration;
@@ -45,8 +43,6 @@ namespace TransformalizeModule.Services {
       private const string _tpOutput = "tp-output";
       private readonly ISettingsService _settings;
       private readonly CombinedLogger<TransferParameterModifier> _logger;
-      private readonly IUserService _userService;
-      private readonly IHttpContextAccessor _httpContext;
       private readonly IParameterService _parametersService;
       private readonly IContainer _container;
 
@@ -55,15 +51,11 @@ namespace TransformalizeModule.Services {
       public TransformalizeParametersModifier(
          CombinedLogger<TransferParameterModifier> logger,
          ISettingsService settings,
-         IHttpContextAccessor httpContext,
-         IUserService userService,
          IParameterService parametersService,
          IContainer container
       ) {
          _logger = logger;
          _settings = settings;
-         _userService = userService;
-         _httpContext = httpContext;
          _container = container;
          _parametersService = parametersService;
       }
@@ -79,7 +71,7 @@ namespace TransformalizeModule.Services {
          // transformed before types are checked or place-holders are replaced
 
          var builder = new ContainerBuilder();
-         builder.RegisterModule(new ShorthandModule(_logger, _httpContext, _userService));
+         builder.RegisterModule(new ShorthandModule(_logger));
 
          Transformalize.ConfigurationFacade.Process facade;
 
@@ -88,7 +80,7 @@ namespace TransformalizeModule.Services {
                cfg,
                parameters: response.Parameters,
                dependencies: new List<IDependency> {
-                  new TransferParameterModifier("parameters", "name", "value"),  // consumes parameters
+                  new TransferParameterModifier(),  // consumes parameters
                   scope.ResolveNamed<IDependency>(TransformModule.ParametersName),
                   scope.ResolveNamed<IDependency>(ValidateModule.ParametersName)
                }.ToArray()

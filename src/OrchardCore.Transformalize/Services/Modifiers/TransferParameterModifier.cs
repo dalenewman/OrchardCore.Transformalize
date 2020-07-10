@@ -1,12 +1,19 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
+using Autofac.Core;
 using Cfg.Net.Contracts;
 
 namespace TransformalizeModule.Services.Modifiers {
 
    /// <inheritdoc />
    public class TransferParameterModifier : ICustomizer {
+
+      private const string ParametersElementName = "parameters";
+      private const string ParameterNameAttribute = "name";
+      private const string ParameterValueAttribute = "value";
+      private const string ParameterInputAttribute = "input";
 
       private class ValueAttribute : IAttribute {
          public ValueAttribute(string value) {
@@ -16,21 +23,6 @@ namespace TransformalizeModule.Services.Modifiers {
 
          public string Name { get; set; }
          public object Value { get; set; }
-      }
-
-      private readonly string _parametersElementName;
-      private readonly string _parameterNameAttribute;
-      private readonly string _parameterValueAttribute;
-
-      /// <inheritdoc />
-      public TransferParameterModifier(
-          string parametersElementName,
-          string parameterNameAttribute,
-          string parameterValueAttribute
-          ) {
-         _parametersElementName = parametersElementName;
-         _parameterNameAttribute = parameterNameAttribute;
-         _parameterValueAttribute = parameterValueAttribute;
       }
 
       /// <inheritdoc />
@@ -53,7 +45,7 @@ namespace TransformalizeModule.Services.Modifiers {
       /// <param name="logger"></param>
       public void Customize(INode root, IDictionary<string, string> parameters, ILogger logger) {
 
-         var rootParameters = root.SubNodes.FirstOrDefault(n => n.Name.Equals(_parametersElementName, StringComparison.OrdinalIgnoreCase));
+         var rootParameters = root.SubNodes.FirstOrDefault(n => n.Name.Equals(ParametersElementName, StringComparison.OrdinalIgnoreCase));
          if (rootParameters == null)
             return;
          if (rootParameters.SubNodes.Count == 0)
@@ -66,20 +58,24 @@ namespace TransformalizeModule.Services.Modifiers {
 
          foreach (var parameterNode in nodes) {
 
-            if (parameterNode.TryAttribute(_parameterNameAttribute, out var nameAttribute)) {
+            if (parameterNode.TryAttribute(ParameterNameAttribute, out var nameAttribute)) {
 
                if (nameAttribute.Value != null) {
 
                   var name = nameAttribute.Value.ToString();
                   if (parameters.ContainsKey(name)) {
 
-                     if (parameterNode.TryAttribute(_parameterValueAttribute, out var valueAttr)) {
+                     // respect the input attribute, if input is false, don't let it come in
+                     if (parameterNode.TryAttribute(ParameterInputAttribute, out var inputAttr) && inputAttr.Value.Equals("false")) {
+                        parameters.Remove(name);
+                        continue;
+                     }
+
+                     if (parameterNode.TryAttribute(ParameterValueAttribute, out var valueAttr)) {
                         valueAttr.Value = parameters[name];
                      } else {
                         parameterNode.Attributes.Add(new ValueAttribute(parameters[name]));
                      }
-
-                     parameters.Remove(name);
 
                   }
 

@@ -89,7 +89,9 @@ namespace TransformalizeModule.Services.Transforms {
             var engine = new RazorEngine();
 
             try {
-               transform.Template = engine.Compile(Context.Operation.Template);
+               transform.Template = engine.Compile(Context.Operation.Template, builder => {
+                  builder.AddUsing("System");
+               });
 
                // any changes to content item will invalidate cache
                _memoryCache.Set(key, transform, _signal.GetToken(Common.GetCacheKey(Context.Process.Id)));

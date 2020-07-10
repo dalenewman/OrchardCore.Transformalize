@@ -29,7 +29,6 @@ using System.Collections.Generic;
 using System.Linq;
 using Transformalize.Containers.Autofac.Modules;
 using Process = Transformalize.Configuration.Process;
-using TransformalizeModule.Fields;
 
 namespace TransformalizeModule.Services {
 
@@ -68,7 +67,7 @@ namespace TransformalizeModule.Services {
          }
 
          var builder = new ContainerBuilder();
-         builder.RegisterModule(new ShorthandModule(_logger, _httpContext, _userService));
+         builder.RegisterModule(new ShorthandModule(_logger));
 
          builder.Register(ctx => {
 

@@ -61,8 +61,7 @@ using Transformalize.Transforms.LambdaParser.Autofac;
 using Microsoft.Extensions.Caching.Memory;
 using OrchardCore.Environment.Cache;
 using Transformalize.Extensions;
-using Transformalize.Transform.Fluid.Autofac;
-using Transformalize.Transform.Fluid;
+using Cfg.Net.Reader;
 
 namespace TransformalizeModule.Services {
 
@@ -115,6 +114,7 @@ namespace TransformalizeModule.Services {
          tm.AddTransform(new TransformHolder((c) => new UserEmailTransform(_httpContext, _userService, c), new UserEmailTransform().GetSignatures()));
          tm.AddTransform(new TransformHolder((c) => new OrchardRazorTransform(c, _memoryCache, _signal), new OrchardRazorTransform().GetSignatures()));
          tm.AddTransform(new TransformHolder((c) => new OrchardFluidTransform(c, _memoryCache, _signal), new OrchardFluidTransform().GetSignatures()));
+         tm.AddTransform(new TransformHolder((c) => new OrchardJintTransform(c, new DefaultReader(new FileReader(), new WebReader()), _memoryCache, _signal), new OrchardJintTransform().GetSignatures()));
          builder.RegisterModule(tm);
 
          // register short-hand for v attribute, allowing for additional validators
@@ -164,7 +164,6 @@ namespace TransformalizeModule.Services {
          builder.Properties["Methods"] = _methods;
 
          // register transform modules here
-         builder.RegisterModule(new JintTransformModule());
          builder.RegisterModule(new JsonTransformModule());
          builder.RegisterModule(new HumanizeModule());
          builder.RegisterModule(new FileModule());

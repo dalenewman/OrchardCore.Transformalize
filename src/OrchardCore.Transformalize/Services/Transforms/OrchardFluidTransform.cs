@@ -4,12 +4,12 @@ using OrchardCore.Environment.Cache;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Transformalize;
 using Transformalize.Contracts;
 using Transformalize.Transforms;
-using TransformalizeModule;
 using TransformalizeModule.Models;
 
-namespace Transformalize.Transform.Fluid {
+namespace TransformalizeModule.Services.Transforms {
    public class OrchardFluidTransform : BaseTransform {
 
       private readonly Func<string, object> _convert;

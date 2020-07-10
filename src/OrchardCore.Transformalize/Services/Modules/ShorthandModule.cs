@@ -3,21 +3,16 @@ using Autofac;
 using Cfg.Net.Contracts;
 using Cfg.Net.Reader;
 using Cfg.Net.Shorthand;
-using Microsoft.AspNetCore.Http;
 using TransformalizeModule.Services.Transforms;
-using OrchardCore.Users.Services;
 using Transformalize.Configuration;
 using Transformalize.Containers.Autofac;
 using Transformalize.Containers.Autofac.Modules;
 using Transformalize.Contracts;
 using Transformalize.Providers.File.Autofac;
 using Transformalize.Transforms.Humanizer.Autofac;
-using Transformalize.Transforms.Jint.Autofac;
 using Transformalize.Transforms.Json.Autofac;
 using Transformalize.Validate.Jint.Autofac;
 using Transformalize.Transforms.LambdaParser.Autofac;
-using Transformalize.Transform.Fluid.Autofac;
-using Transformalize.Transform.Fluid;
 
 namespace TransformalizeModule.Services.Modules {
 
@@ -26,17 +21,11 @@ namespace TransformalizeModule.Services.Modules {
       private readonly HashSet<string> _methods = new HashSet<string>();
       private readonly ShorthandRoot _shortHand = new ShorthandRoot();
       private readonly IPipelineLogger _logger;
-      private readonly IUserService _userService;
-      private readonly IHttpContextAccessor _httpContext;
 
       public ShorthandModule(
-         IPipelineLogger logger,
-         IHttpContextAccessor httpContext,
-         IUserService userService
+         IPipelineLogger logger
       ) {
          _logger = logger;
-         _userService = userService;
-         _httpContext = httpContext;
       }
 
       protected override void Load(ContainerBuilder builder) {
@@ -48,11 +37,12 @@ namespace TransformalizeModule.Services.Modules {
          // register short-hand for t attribute
          var tm = new TransformModule(new Process { Name = "Transform Shorthand" }, _methods, _shortHand, _logger) { Plugins = false };
          // adding additional transforms here
-         tm.AddTransform(new TransformHolder((c) => new UsernameTransform(_httpContext, c), new UsernameTransform().GetSignatures()));
-         tm.AddTransform(new TransformHolder((c) => new UserIdTransform(_httpContext, _userService, c), new UserIdTransform().GetSignatures()));
-         tm.AddTransform(new TransformHolder((c) => new UserEmailTransform(_httpContext, _userService, c), new UserEmailTransform().GetSignatures()));
-         tm.AddTransform(new TransformHolder((c) => new OrchardRazorTransform(c), new OrchardRazorTransform().GetSignatures()));
-         tm.AddTransform(new TransformHolder((c) => new OrchardFluidTransform(c), new OrchardFluidTransform().GetSignatures()));
+         tm.AddTransform(new TransformHolder((c) => new UsernameTransform(), new UsernameTransform().GetSignatures()));
+         tm.AddTransform(new TransformHolder((c) => new UserIdTransform(), new UserIdTransform().GetSignatures()));
+         tm.AddTransform(new TransformHolder((c) => new UserEmailTransform(), new UserEmailTransform().GetSignatures()));
+         tm.AddTransform(new TransformHolder((c) => new OrchardRazorTransform(), new OrchardRazorTransform().GetSignatures()));
+         tm.AddTransform(new TransformHolder((c) => new OrchardFluidTransform(), new OrchardFluidTransform().GetSignatures()));
+         tm.AddTransform(new TransformHolder((c) => new OrchardJintTransform(), new OrchardJintTransform().GetSignatures()));
 
          builder.RegisterModule(tm);
 
@@ -78,7 +68,6 @@ namespace TransformalizeModule.Services.Modules {
          builder.Properties["Methods"] = _methods;
 
          // register transform modules here so they can add their shorthand
-         builder.RegisterModule(new JintTransformModule());
          builder.RegisterModule(new JsonTransformModule());
          builder.RegisterModule(new HumanizeModule());
          builder.RegisterModule(new FileModule());
