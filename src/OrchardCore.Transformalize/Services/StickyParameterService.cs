@@ -23,7 +23,8 @@ namespace TransformalizeModule.Services {
          if (!string.IsNullOrEmpty(_context.Request.Query[name].ToString())) {
             try {
                var queryValue = (T)tc.ConvertFromString(_context.Request.Query[name].ToString());
-               if (queryValue != null) {
+
+               if (queryValue != null && _context.Session.GetString(key) != null) {
                   if (!queryValue.Equals((T)tc.ConvertFromString(_context.Session.GetString(key)))) {
                      _context.Session.SetString(key, tc.ConvertToString(queryValue));
                   }

@@ -65,6 +65,8 @@ namespace TransformalizeModule.Services.Modifiers {
                         parameterNode.Attributes.Add(new Attribute("value", parameters[name]));
                      }
 
+                     parameters.Remove(name);  // "consumes" parameter because it's going to get transformed or validated
+
                   }
 
                }

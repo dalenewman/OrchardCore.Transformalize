@@ -52,22 +52,14 @@ namespace TransformalizeModule.Services {
          _transformalizeParameters = transformalizeParameters;
       }
 
-      public ILifetimeScope CreateScope(string arrangement, ContentItem item, IDictionary<string, string> internalParameters = null) {
+      public ILifetimeScope CreateScope(string arrangement, ContentItem item, IDictionary<string, string> parameters = null) {
 
-         var combinedParameters = internalParameters ?? new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+         var combinedParameters = parameters ?? new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
 
          var builder = new ContainerBuilder();
          builder.RegisterModule(new ShorthandModule(_logger));
 
          builder.Register(ctx => {
-
-            var response = _transformalizeParameters.Modify(arrangement);
-
-            // modifier above received all the external parameters (get/post) and may have transformed (consumed) them
-            // if any parameters were left over, they are combined with the internal parameters
-            foreach (var kv in response.Parameters) {
-               combinedParameters[kv.Key] = kv.Value;
-            }
 
             var dependancies = new List<IDependency>();
 
@@ -87,7 +79,7 @@ namespace TransformalizeModule.Services {
             dependancies.Add(ctx.ResolveNamed<IDependency>(ValidateModule.FieldsName));
             dependancies.Add(ctx.ResolveNamed<IDependency>(ValidateModule.ParametersName));
 
-            var process = new Process(response.Arrangement, combinedParameters, dependancies.ToArray());
+            var process = new Process(_transformalizeParameters.Modify(arrangement, combinedParameters), combinedParameters, dependancies.ToArray());
 
             if (process.Errors().Any()) {
                _logger.Error(() => "The configuration has errors.");

@@ -14,15 +14,18 @@ namespace TransformalizeModule.Controllers {
       private readonly CombinedLogger<ArrangementController> _logger;
       private readonly ICommonService _commonService;
       private readonly ITransformalizeParametersModifier _modifier;
+      private readonly IParameterService _parameterService;
 
       public ArrangementController(
          CombinedLogger<ArrangementController> logger,
          ICommonService common,
-         ITransformalizeParametersModifier modifier
+         ITransformalizeParametersModifier modifier,
+         IParameterService parameterService
       ) {
          _logger = logger;
          _commonService = common;
          _modifier = modifier;
+         _parameterService = parameterService;
       }
 
       [HttpGet]
@@ -39,9 +42,7 @@ namespace TransformalizeModule.Controllers {
             arrangement = item.ContentItem.Content.TransformalizeReportPart.Arrangement.Arrangement.Value;
          }
 
-         var response = _modifier.Modify(arrangement);
-
-         var process = new Process(response.Arrangement);
+         var process = new Process(_modifier.Modify(arrangement, _parameterService.GetParameters()));
          process.Connections.Clear();
 
          if (item.Fails()) {

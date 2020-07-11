@@ -44,7 +44,6 @@ namespace TransformalizeModule.Services {
       private const string _tpOutput = "tp-output";
       private readonly ISettingsService _settings;
       private readonly CombinedLogger<TransferParameterModifier> _logger;
-      private readonly IParameterService _parametersService;
       private readonly IContainer _container;
 
       public ISerializer Serializer { get; set; }
@@ -52,27 +51,20 @@ namespace TransformalizeModule.Services {
       public TransformalizeParametersModifier(
          CombinedLogger<TransferParameterModifier> logger,
          ISettingsService settings,
-         IParameterService parametersService,
          IContainer container
       ) {
          _logger = logger;
          _settings = settings;
          _container = container;
-         _parametersService = parametersService;
       }
 
-      public ArrangementModifierResponse Modify(string cfg) {
-         using (MiniProfiler.Current.Step("Apply Common Settings")) {
-            return ModifyInternal(cfg);
+      public string Modify(string cfg, IDictionary<string, string> parameters) {
+         using (MiniProfiler.Current.Step("TFL Parameters")) {
+            return ModifyInternal(cfg, parameters);
          }
       }
 
-      private ArrangementModifierResponse ModifyInternal(string cfg) {
-
-         var response = new ArrangementModifierResponse {
-            Arrangement = cfg,
-            Parameters = _parametersService.GetParameters()
-         };
+      private string ModifyInternal(string cfg, IDictionary<string,string> parameters) {
 
          // using facade (which is all string properties) so things can be 
          // transformed before types are checked or place-holders are replaced
@@ -85,7 +77,7 @@ namespace TransformalizeModule.Services {
          using (var scope = builder.Build().BeginLifetimeScope()) {
             facade = new Transformalize.ConfigurationFacade.Process(
                cfg,
-               parameters: response.Parameters,
+               parameters: parameters,
                dependencies: new List<IDependency> {
                   new TransferParameterModifier(),  // consumes parameters
                   scope.ResolveNamed<IDependency>(TransformModule.ParametersName),
@@ -95,7 +87,7 @@ namespace TransformalizeModule.Services {
          }
 
          if (!facade.Parameters.Any()) {
-            return response;
+            return cfg;
          }
 
          _settings.ApplyCommonSettings(facade);
@@ -169,13 +161,13 @@ namespace TransformalizeModule.Services {
          };
 
          // disable checking for invalid characters unless set
-         var parameters = new List<Parameter>();
+         var arrangementParameters = new List<Parameter>();
          foreach (var parameter in facade.Parameters) {
             var add = parameter.ToParameter();
             if (parameter.InvalidCharacters == null) {
                add.InvalidCharacters = string.Empty;
             }
-            parameters.Add(add);
+            arrangementParameters.Add(add);
          }
 
          // create process to transform and validate the parameter values
@@ -184,7 +176,7 @@ namespace TransformalizeModule.Services {
             ReadOnly = true,
             Mode = "form",  // causes auto post-back's to resolve to either true or false
             Output = _tpOutput,
-            Parameters = parameters,
+            Parameters = arrangementParameters,
             Maps = facade.Maps.Select(m => m.ToMap()).ToList(),
             Scripts = facade.Scripts.Select(m => m.ToScript()).ToList(),
             Entities = new List<Entity> { entity },
@@ -249,15 +241,14 @@ namespace TransformalizeModule.Services {
                }
             }
 
-            response.Arrangement = facade.Serialize();
-            return response;
+            return facade.Serialize();
          }
 
          foreach (var error in process.Errors()) {
             _logger.Error(() => error);
          }
 
-         return response;
+         return cfg;
       }
 
 

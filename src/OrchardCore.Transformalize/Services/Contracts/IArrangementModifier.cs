@@ -17,13 +17,13 @@
 #endregion
 
 using Cfg.Net.Contracts;
-using TransformalizeModule.Models;
+using System.Collections.Generic;
 
 namespace TransformalizeModule.Services.Contracts {
 
    public interface IArrangementModifier {
       ISerializer Serializer { get; set; }
-      ArrangementModifierResponse Modify(string cfg);
+      string Modify(string cfg, IDictionary<string, string> parameters);
    }
 
    // for dependency injection
