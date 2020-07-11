@@ -31,7 +31,6 @@ using Transformalize.Contracts;
 using Transformalize.Impl;
 using Transformalize.Nulls;
 using Transformalize.Transforms.Humanizer.Autofac;
-using Transformalize.Transforms.Jint.Autofac;
 using Transformalize.Transforms.Json.Autofac;
 using Transformalize.Transforms.System;
 using Transformalize.Validate.Jint.Autofac;

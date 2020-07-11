@@ -7,6 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Transformalize.Configuration;
+using StackExchange.Profiling;
 
 namespace TransformalizeModule.Services {
 
@@ -46,10 +47,10 @@ namespace TransformalizeModule.Services {
          }
 
          // parameters
-         foreach(var parameter in Process.Parameters) {
+         foreach (var parameter in Process.Parameters) {
             Parameters.Add(parameter.Name, parameter);
          }
-         foreach(var parameter in ProcessFacade.Parameters) {
+         foreach (var parameter in ProcessFacade.Parameters) {
             ParametersFacade.Add(parameter.Name, parameter);
          }
 
@@ -103,40 +104,44 @@ namespace TransformalizeModule.Services {
       /// <param name="process">the transformalize process</param>
       public void ApplyCommonSettings(Process process) {
 
-         // common parameters
-         for (int i = 0; i < process.Parameters.Count; i++) {
-            var parameter = process.Parameters[i];
-            if(Parameters.ContainsKey(parameter.Name) && string.IsNullOrEmpty(parameter.Value) && parameter.T == string.Empty && !parameter.Transforms.Any() && parameter.V == string.Empty && !parameter.Validators.Any()) {
-               process.Parameters[0] = Parameters[parameter.Name];
-            }
-         }
+         using (MiniProfiler.Current.Step("Common Settings (Process)")) {
 
-         // common maps
-         for (int i = 0; i < process.Maps.Count; i++) {
-            var map = process.Maps[i];
-            if (Maps.ContainsKey(map.Name) && !map.Items.Any() && map.Query == string.Empty) {
-               process.Maps[i] = Maps[map.Name];
+            // common parameters
+            for (int i = 0; i < process.Parameters.Count; i++) {
+               var parameter = process.Parameters[i];
+               if (Parameters.ContainsKey(parameter.Name) && string.IsNullOrEmpty(parameter.Value) && parameter.T == string.Empty && !parameter.Transforms.Any() && parameter.V == string.Empty && !parameter.Validators.Any()) {
+                  process.Parameters[0] = Parameters[parameter.Name];
+               }
             }
-         }
 
-         // common actions
-         for (int i = 0; i < process.Actions.Count; i++) {
-            var action = process.Actions[i];
-            if (action.Name != null && Actions.ContainsKey(action.Name) && action.Type == "internal") {
-               var key = action.Key;
-               process.Actions[i] = Actions[action.Name];
-               process.Actions[i].Key = key;
+            // common maps
+            for (int i = 0; i < process.Maps.Count; i++) {
+               var map = process.Maps[i];
+               if (Maps.ContainsKey(map.Name) && !map.Items.Any() && map.Query == string.Empty) {
+                  process.Maps[i] = Maps[map.Name];
+               }
             }
-         }
 
-         // common connections
-         for (int i = 0; i < process.Connections.Count; i++) {
-            var connection = process.Connections[i];
-            if (Connections.ContainsKey(connection.Name) && connection.Provider == Transformalize.Constants.DefaultSetting) {
-               var key = connection.Key;
-               process.Connections[i] = Connections[connection.Name];
-               process.Connections[i].Key = key;
+            // common actions
+            for (int i = 0; i < process.Actions.Count; i++) {
+               var action = process.Actions[i];
+               if (action.Name != null && Actions.ContainsKey(action.Name) && action.Type == "internal") {
+                  var key = action.Key;
+                  process.Actions[i] = Actions[action.Name];
+                  process.Actions[i].Key = key;
+               }
             }
+
+            // common connections
+            for (int i = 0; i < process.Connections.Count; i++) {
+               var connection = process.Connections[i];
+               if (Connections.ContainsKey(connection.Name) && connection.Provider == Transformalize.Constants.DefaultSetting) {
+                  var key = connection.Key;
+                  process.Connections[i] = Connections[connection.Name];
+                  process.Connections[i].Key = key;
+               }
+            }
+
          }
       }
 
@@ -147,38 +152,41 @@ namespace TransformalizeModule.Services {
       /// <param name="process">the transformalize report process</param>
       public void ApplyCommonSettings(Transformalize.ConfigurationFacade.Process process) {
 
-         // common parameters
-         for (int i = 0; i < process.Parameters.Count; i++) {
-            var parameter = process.Parameters[i];
-            if (parameter.Value == null && parameter.Name != null && ParametersFacade.ContainsKey(parameter.Name) && parameter.T == null && !parameter.Transforms.Any() && parameter.V == null && !parameter.Validators.Any()) {
-               process.Parameters[0] = ParametersFacade[parameter.Name];
-            }
-         }
+         using (MiniProfiler.Current.Step("Common Settings (facade)")) {
 
-         // common maps
-         for (int i = 0; i < process.Maps.Count; i++) {
-            var map = process.Maps[i];
-            if (map.Query == null && !map.Items.Any() && MapsFacade.ContainsKey(map.Name) ) {
-               process.Maps[i] = MapsFacade[map.Name];
+            // common parameters
+            for (int i = 0; i < process.Parameters.Count; i++) {
+               var parameter = process.Parameters[i];
+               if (parameter.Value == null && parameter.Name != null && ParametersFacade.ContainsKey(parameter.Name) && parameter.T == null && !parameter.Transforms.Any() && parameter.V == null && !parameter.Validators.Any()) {
+                  process.Parameters[0] = ParametersFacade[parameter.Name];
+               }
             }
-         }
 
-         // common actions
-         for (int i = 0; i < process.Actions.Count; i++) {
-            var action = process.Actions[i];
-            if (action.Type == null && action.Name != null && ActionsFacade.ContainsKey(action.Name)) {
-               process.Actions[i] = ActionsFacade[action.Name];
+            // common maps
+            for (int i = 0; i < process.Maps.Count; i++) {
+               var map = process.Maps[i];
+               if (map.Query == null && !map.Items.Any() && MapsFacade.ContainsKey(map.Name)) {
+                  process.Maps[i] = MapsFacade[map.Name];
+               }
             }
-         }
 
-         // common connections
-         for (int i = 0; i < process.Connections.Count; i++) {
-            var connection = process.Connections[i];
-            if (connection.Provider == null && ConnectionsFacade.ContainsKey(connection.Name)) {
-               process.Connections[i] = ConnectionsFacade[connection.Name];
+            // common actions
+            for (int i = 0; i < process.Actions.Count; i++) {
+               var action = process.Actions[i];
+               if (action.Type == null && action.Name != null && ActionsFacade.ContainsKey(action.Name)) {
+                  process.Actions[i] = ActionsFacade[action.Name];
+               }
             }
-         }
 
+            // common connections
+            for (int i = 0; i < process.Connections.Count; i++) {
+               var connection = process.Connections[i];
+               if (connection.Provider == null && ConnectionsFacade.ContainsKey(connection.Name)) {
+                  process.Connections[i] = ConnectionsFacade[connection.Name];
+               }
+            }
+
+         }
 
       }
    }

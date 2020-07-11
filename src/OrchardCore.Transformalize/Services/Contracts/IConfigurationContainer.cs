@@ -18,13 +18,14 @@
 
 using Autofac;
 using Cfg.Net.Contracts;
+using OrchardCore.ContentManagement;
 using System.Collections.Generic;
 
 namespace TransformalizeModule.Services.Contracts {
 
    public interface IConfigurationContainer {
       ISerializer Serializer { get; set; }
-      ILifetimeScope CreateScope(string arrangement, int contentItemId, IDictionary<string, string> parameters);
+      ILifetimeScope CreateScope(string arrangement, ContentItem item, IDictionary<string, string> parameters);
    }
 
 }

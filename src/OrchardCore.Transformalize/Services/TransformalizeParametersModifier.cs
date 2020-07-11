@@ -30,6 +30,7 @@ using Transformalize.Contracts;
 using Transformalize.Impl;
 using Process = Transformalize.Configuration.Process;
 using IContainer = TransformalizeModule.Services.Contracts.IContainer;
+using StackExchange.Profiling;
 
 namespace TransformalizeModule.Services {
 
@@ -61,6 +62,12 @@ namespace TransformalizeModule.Services {
       }
 
       public ArrangementModifierResponse Modify(string cfg) {
+         using (MiniProfiler.Current.Step("Apply Common Settings")) {
+            return ModifyInternal(cfg);
+         }
+      }
+
+      private ArrangementModifierResponse ModifyInternal(string cfg) {
 
          var response = new ArrangementModifierResponse {
             Arrangement = cfg,
@@ -87,11 +94,11 @@ namespace TransformalizeModule.Services {
             );
          }
 
-         _settings.ApplyCommonSettings(facade);
-
          if (!facade.Parameters.Any()) {
             return response;
          }
+
+         _settings.ApplyCommonSettings(facade);
 
          var fields = new List<Field>();
 
@@ -163,9 +170,9 @@ namespace TransformalizeModule.Services {
 
          // disable checking for invalid characters unless set
          var parameters = new List<Parameter>();
-         foreach(var parameter in facade.Parameters) {
+         foreach (var parameter in facade.Parameters) {
             var add = parameter.ToParameter();
-            if(parameter.InvalidCharacters == null) {
+            if (parameter.InvalidCharacters == null) {
                add.InvalidCharacters = string.Empty;
             }
             parameters.Add(add);

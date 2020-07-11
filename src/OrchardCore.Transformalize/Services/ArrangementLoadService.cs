@@ -298,14 +298,14 @@ namespace TransformalizeModule.Services {
       }
 
       private Process LoadInternal(TransformalizeTaskPart part, IDictionary<string, string> parameters = null, ISerializer serializer = null) {
-         return LoadInternal(part.Arrangement.Arrangement, part.ContentItem.Id, parameters, serializer);
+         return LoadInternal(part.Arrangement.Arrangement, part.ContentItem, parameters, serializer);
       }
 
       private Process LoadInternal(TransformalizeReportPart part, IDictionary<string, string> parameters = null, ISerializer serializer = null) {
-         return LoadInternal(part.Arrangement.Arrangement, part.ContentItem.Id, parameters, serializer);
+         return LoadInternal(part.Arrangement.Arrangement, part.ContentItem, parameters, serializer);
       }
 
-      private Process LoadInternal(string arrangement, int contentItemId, IDictionary<string, string> parameters = null, ISerializer serializer = null) {
+      private Process LoadInternal(string arrangement, ContentItem item, IDictionary<string, string> parameters = null, ISerializer serializer = null) {
 
          Process process;
 
@@ -317,10 +317,11 @@ namespace TransformalizeModule.Services {
 
          using (MiniProfiler.Current.Step("Load")) {
             _configurationContainer.Serializer = serializer;
-            process = _configurationContainer.CreateScope(arrangement, contentItemId, _parameters).Resolve<Process>();
+            process = _configurationContainer.CreateScope(arrangement, item, _parameters).Resolve<Process>();
          }
 
-         // _settings.ApplyCommonSettings(process); already loaded in cfg container
+         // in case common settings were not applied when transforming / validating parameters
+         _settings.ApplyCommonSettings(process);
 
          if (process.Errors().Any() || process.Log.Any(l => l.LogLevel == LogLevel.Error)) {
             process.Status = 500;

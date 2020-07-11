@@ -19,16 +19,16 @@
 using Autofac;
 using Cfg.Net.Contracts;
 using Cfg.Net.Environment;
-using Microsoft.AspNetCore.Http;
 using TransformalizeModule.Services.Contracts;
 using TransformalizeModule.Services.Modifiers;
 using TransformalizeModule.Services.Modules;
-using OrchardCore.Users.Services;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using Transformalize.Containers.Autofac.Modules;
 using Process = Transformalize.Configuration.Process;
+using ParameterModifier = TransformalizeModule.Services.Modifiers.ParameterModifier;
+using OrchardCore.ContentManagement;
 
 namespace TransformalizeModule.Services {
 
@@ -39,32 +39,22 @@ namespace TransformalizeModule.Services {
    /// </summary>
    public class OrchardConfigurationContainer : IConfigurationContainer {
 
-      private readonly IUserService _userService;
-      private readonly IHttpContextAccessor _httpContext;
       private readonly CombinedLogger<OrchardConfigurationContainer> _logger;
       private readonly ITransformalizeParametersModifier _transformalizeParameters;
 
       public ISerializer Serializer { get; set; }
 
       public OrchardConfigurationContainer(
-         IHttpContextAccessor httpContext,
          CombinedLogger<OrchardConfigurationContainer> logger,
-         IUserService userService,
          ITransformalizeParametersModifier transformalizeParameters
       ) {
-         _userService = userService;
-         _httpContext = httpContext;
          _logger = logger;
          _transformalizeParameters = transformalizeParameters;
       }
 
-      public ILifetimeScope CreateScope(string arrangement, int contentItemId, IDictionary<string, string> parameters = null) {
+      public ILifetimeScope CreateScope(string arrangement, ContentItem item, IDictionary<string, string> internalParameters = null) {
 
-         var placeHolderStyle = "@[]";
-
-         if (parameters == null) {
-            parameters = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
-         }
+         var combinedParameters = internalParameters ?? new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
 
          var builder = new ContainerBuilder();
          builder.RegisterModule(new ShorthandModule(_logger));
@@ -73,24 +63,31 @@ namespace TransformalizeModule.Services {
 
             var response = _transformalizeParameters.Modify(arrangement);
 
-            var cfg = response.Arrangement;
-            foreach(var kv in response.Parameters) {
-               parameters[kv.Key] = kv.Value;
+            // modifier above received all the external parameters (get/post) and may have transformed (consumed) them
+            // if any parameters were left over, they are combined with the internal parameters
+            foreach (var kv in response.Parameters) {
+               combinedParameters[kv.Key] = kv.Value;
             }
 
             var dependancies = new List<IDependency>();
-            dependancies.Add(ctx.Resolve<IReader>());
-            dependancies.Add(new ReportParameterModifier());
+
+            if (item.ContentItem.Has("TransformalizeReportPart")) {
+               dependancies.Add(new ReportParameterModifier());
+            }
+
             if (Serializer != null) {
                dependancies.Add(Serializer);
             }
-            dependancies.Add(new ParameterModifier(new PlaceHolderReplacer(placeHolderStyle[0], placeHolderStyle[1], placeHolderStyle[2]), "parameters", "name", "value"));
+
+            dependancies.Add(new ParameterModifier(new PlaceHolderReplacer('@', '[', ']')));
+
+            // these were registered by the ShorthandModule are are used to expand shorthand transforms and validators into "longhand".
             dependancies.Add(ctx.ResolveNamed<IDependency>(TransformModule.FieldsName));
             dependancies.Add(ctx.ResolveNamed<IDependency>(TransformModule.ParametersName));
             dependancies.Add(ctx.ResolveNamed<IDependency>(ValidateModule.FieldsName));
             dependancies.Add(ctx.ResolveNamed<IDependency>(ValidateModule.ParametersName));
 
-            var process = new Process(cfg, parameters, dependancies.ToArray());
+            var process = new Process(response.Arrangement, combinedParameters, dependancies.ToArray());
 
             if (process.Errors().Any()) {
                _logger.Error(() => "The configuration has errors.");
@@ -99,7 +96,7 @@ namespace TransformalizeModule.Services {
                }
             }
 
-            process.Id = contentItemId;
+            process.Id = item.Id;
 
             return process;
          }).As<Process>().InstancePerDependency();

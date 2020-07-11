@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.CompilerServices;
-using Autofac.Core;
 using Cfg.Net.Contracts;
 
 namespace TransformalizeModule.Services.Modifiers {
@@ -14,16 +12,6 @@ namespace TransformalizeModule.Services.Modifiers {
       private const string ParameterNameAttribute = "name";
       private const string ParameterValueAttribute = "value";
       private const string ParameterInputAttribute = "input";
-
-      private class ValueAttribute : IAttribute {
-         public ValueAttribute(string value) {
-            Name = "value";
-            Value = value;
-         }
-
-         public string Name { get; set; }
-         public object Value { get; set; }
-      }
 
       /// <inheritdoc />
       /// <summary>
@@ -74,7 +62,7 @@ namespace TransformalizeModule.Services.Modifiers {
                      if (parameterNode.TryAttribute(ParameterValueAttribute, out var valueAttr)) {
                         valueAttr.Value = parameters[name];
                      } else {
-                        parameterNode.Attributes.Add(new ValueAttribute(parameters[name]));
+                        parameterNode.Attributes.Add(new Attribute("value", parameters[name]));
                      }
 
                   }
