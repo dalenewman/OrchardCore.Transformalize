@@ -18,7 +18,6 @@
 
 using Autofac;
 using Cfg.Net.Contracts;
-using TransformalizeModule.Models;
 using TransformalizeModule.Services.Contracts;
 using TransformalizeModule.Services.Modifiers;
 using TransformalizeModule.Services.Modules;
@@ -59,7 +58,7 @@ namespace TransformalizeModule.Services {
       }
 
       public string Modify(string cfg, IDictionary<string, string> parameters) {
-         using (MiniProfiler.Current.Step("TFL Parameters")) {
+         using (MiniProfiler.Current.Step("Transformalize Parameters")) {
             return ModifyInternal(cfg, parameters);
          }
       }
@@ -99,7 +98,7 @@ namespace TransformalizeModule.Services {
             var field = new Field {
                Name = pr.Name,
                Alias = pr.Name,
-               Default = pr.Value,
+               // Default = pr.Value,  (something has changed, this value didn't cause problems before but it is now in DefaultRowReader)
                Label = pr.Label,
                PostBack = pr.PostBack,
                Type = pr.Type,

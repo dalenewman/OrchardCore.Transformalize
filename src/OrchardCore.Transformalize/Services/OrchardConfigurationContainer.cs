@@ -79,7 +79,9 @@ namespace TransformalizeModule.Services {
             dependancies.Add(ctx.ResolveNamed<IDependency>(ValidateModule.FieldsName));
             dependancies.Add(ctx.ResolveNamed<IDependency>(ValidateModule.ParametersName));
 
-            var process = new Process(_transformalizeParameters.Modify(arrangement, combinedParameters), combinedParameters, dependancies.ToArray());
+            var modified = _transformalizeParameters.Modify(arrangement, combinedParameters);
+
+            var process = new Process(modified, combinedParameters, dependancies.ToArray());
 
             if (process.Errors().Any()) {
                _logger.Error(() => "The configuration has errors.");

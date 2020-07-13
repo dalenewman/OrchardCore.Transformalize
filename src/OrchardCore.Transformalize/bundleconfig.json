@@ -1,0 +1,8 @@
+[
+  {
+    "outputFileName": "wwwroot/Scripts/mapbox-gl.min.js",
+    "inputFiles": [
+      "wwwroot/Scripts/mapbox-gl.js"
+    ]
+  }
+]

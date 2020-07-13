@@ -35,47 +35,51 @@ namespace TransformalizeModule.Services {
 
       public SettingsService(ISiteService siteService) {
 
-         var result = siteService.GetSiteSettingsAsync().Result;
-         Settings = result.As<TransformalizeSettings>();
+         using (MiniProfiler.Current.Step("Common Settings Setup")) {
 
-         if (Settings.CommonArrangement == string.Empty) {
-            Process = new Process();
-            ProcessFacade = new Transformalize.ConfigurationFacade.Process();
-         } else {
-            Process = new Process(Settings.CommonArrangement);
-            ProcessFacade = new Transformalize.ConfigurationFacade.Process(Settings.CommonArrangement);
-         }
+            var result = siteService.GetSiteSettingsAsync().Result;
+            Settings = result.As<TransformalizeSettings>();
 
-         // parameters
-         foreach (var parameter in Process.Parameters) {
-            Parameters.Add(parameter.Name, parameter);
-         }
-         foreach (var parameter in ProcessFacade.Parameters) {
-            ParametersFacade.Add(parameter.Name, parameter);
-         }
+            if (Settings.CommonArrangement == string.Empty) {
+               Process = new Process();
+               ProcessFacade = new Transformalize.ConfigurationFacade.Process();
+            } else {
+               Process = new Process(Settings.CommonArrangement);
+               ProcessFacade = new Transformalize.ConfigurationFacade.Process(Settings.CommonArrangement);
+            }
 
-         // maps
-         foreach (var map in Process.Maps) {
-            Maps.Add(map.Name, map);
-         }
-         foreach (var map in ProcessFacade.Maps) {
-            MapsFacade.Add(map.Name, map);
-         }
+            // parameters
+            foreach (var parameter in Process.Parameters) {
+               Parameters.Add(parameter.Name, parameter);
+            }
+            foreach (var parameter in ProcessFacade.Parameters) {
+               ParametersFacade.Add(parameter.Name, parameter);
+            }
 
-         // actions
-         foreach (var action in Process.Actions) {
-            Actions.Add(action.Name, action);
-         }
-         foreach (var action in ProcessFacade.Actions) {
-            ActionsFacade.Add(action.Name, action);
-         }
+            // maps
+            foreach (var map in Process.Maps) {
+               Maps.Add(map.Name, map);
+            }
+            foreach (var map in ProcessFacade.Maps) {
+               MapsFacade.Add(map.Name, map);
+            }
 
-         // connections
-         foreach (var connection in Process.Connections) {
-            Connections.Add(connection.Name, connection);
-         }
-         foreach (var connection in ProcessFacade.Connections) {
-            ConnectionsFacade.Add(connection.Name, connection);
+            // actions
+            foreach (var action in Process.Actions) {
+               Actions.Add(action.Name, action);
+            }
+            foreach (var action in ProcessFacade.Actions) {
+               ActionsFacade.Add(action.Name, action);
+            }
+
+            // connections
+            foreach (var connection in Process.Connections) {
+               Connections.Add(connection.Name, connection);
+            }
+            foreach (var connection in ProcessFacade.Connections) {
+               ConnectionsFacade.Add(connection.Name, connection);
+            }
+
          }
 
       }
