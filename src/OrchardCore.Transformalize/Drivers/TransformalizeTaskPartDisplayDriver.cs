@@ -21,7 +21,7 @@ namespace TransformalizeModule.Drivers {
       public override IDisplayResult Edit(TransformalizeTaskPart part) {
          return Initialize<EditTransformalizeTaskPartViewModel>("TransformalizeTaskPart_Edit", model => {
             model.TransformalizeTaskPart = part;
-            model.Arrangement = part.Arrangement.Arrangement;
+            model.Arrangement = part.Arrangement;
          }).Location("Content:1");
       }
 
@@ -29,11 +29,11 @@ namespace TransformalizeModule.Drivers {
 
          var model = new EditTransformalizeTaskPartViewModel();
 
-         await updater.TryUpdateModelAsync(model, Prefix);
+         if(await updater.TryUpdateModelAsync(model, Prefix)) {
+            part.Arrangement.Arrangement = model.Arrangement.Arrangement;
+         }
 
          // validations, add things to update.ModelState
-
-         part.Arrangement.Arrangement = model.Arrangement;
 
          return Edit(part, context);
 

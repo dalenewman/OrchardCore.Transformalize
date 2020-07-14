@@ -3,11 +3,13 @@
 @using TransformalizeModule 
 
 @{
-   var viewLink = Url.Action("Index", "Report", new { Area = Common.ModuleName, ContentItemId = Model.TransformalizeReportPart.ContentItem.ContentItemId });
-   var xmlLink = Url.Action("Run", "Report", new { Format = "xml", Area = Common.ModuleName, ContentItemId = Model.TransformalizeReportPart.ContentItem.ContentItemId });
-   var jsonLink = Url.Action("Run", "Report", new { Format = "json", Area = Common.ModuleName, ContentItemId = Model.TransformalizeReportPart.ContentItem.ContentItemId });
-   var logLink = Url.Action("Log", "Report", new { Format = "json", Area = Common.ModuleName, ContentItemId = Model.TransformalizeReportPart.ContentItem.ContentItemId });
-   var schemaLink = Url.Action("Index", "Schema", new { Format = "xml", Area = Common.ModuleName, ContentItemId = Model.TransformalizeReportPart.ContentItem.ContentItemId });
+   var Area = Common.ModuleName;
+   var ContentItemId = Model.TransformalizeReportPart.ContentItem.ContentItemId;
+   var viewLink = Url.Action("Index", "Report", new { Area , ContentItemId });
+   var xmlLink = Url.Action("Run", "Report", new { Format = "xml", Area, ContentItemId });
+   var jsonLink = Url.Action("Run", "Report", new { Format = "json", Area, ContentItemId });
+   var logLink = Url.Action("Log", "Report", new { Format = "json", Area, ContentItemId });
+   var schemaLink = Url.Action("Index", "Schema", new { Format = "xml", Area, ContentItemId });
 }
 
 <fieldset>

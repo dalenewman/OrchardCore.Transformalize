@@ -52,7 +52,7 @@ namespace TransformalizeModule.Services {
          _transformalizeParameters = transformalizeParameters;
       }
 
-      public ILifetimeScope CreateScope(string arrangement, ContentItem item, IDictionary<string, string> parameters = null) {
+      public ILifetimeScope CreateScope(string arrangement, ContentItem item, IDictionary<string, string> parameters, bool validateParameters = true) {
 
          var combinedParameters = parameters ?? new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
 
@@ -79,7 +79,7 @@ namespace TransformalizeModule.Services {
             dependancies.Add(ctx.ResolveNamed<IDependency>(ValidateModule.FieldsName));
             dependancies.Add(ctx.ResolveNamed<IDependency>(ValidateModule.ParametersName));
 
-            var modified = _transformalizeParameters.Modify(arrangement, combinedParameters);
+            var modified = validateParameters ? _transformalizeParameters.Modify(arrangement, combinedParameters) : arrangement;
 
             var process = new Process(modified, combinedParameters, dependancies.ToArray());
 

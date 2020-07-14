@@ -75,7 +75,7 @@ namespace TransformalizeModule.Drivers {
             } else {
                try {
                   var logger = new MemoryLogger(LogLevel.Error);
-                  var process = _container.CreateScope(field.Arrangement, context.ContentPart.ContentItem, new Dictionary<string, string>()).Resolve<Process>();
+                  var process = _container.CreateScope(field.Arrangement, context.ContentPart.ContentItem, new Dictionary<string, string>(), false).Resolve<Process>();
                   if (process.Errors().Any()) {
                      foreach (var error in process.Errors()) {
                         updater.ModelState.AddModelError(Prefix, S[error]);

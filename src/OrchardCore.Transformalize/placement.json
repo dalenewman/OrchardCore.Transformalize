@@ -1,0 +1,14 @@
+{
+   "BooleanField_Edit": [
+      {
+         "differentiator": "TransformalizeReportPart-BulkActions",
+         "place": "Parts:1#Bulk Actions"
+      }
+   ],
+   "TextField_Edit": [
+      {
+         "differentiator": "TransformalizeReportPart-BulkActionValueField",
+         "place": "Parts:1#Bulk Actions"
+      }
+   ]
+}

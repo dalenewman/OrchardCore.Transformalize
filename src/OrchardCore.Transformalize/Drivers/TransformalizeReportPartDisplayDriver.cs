@@ -6,16 +6,24 @@ using OrchardCore.DisplayManagement.ModelBinding;
 using OrchardCore.DisplayManagement.Views;
 using TransformalizeModule.Models;
 using TransformalizeModule.ViewModels;
+using Microsoft.AspNetCore.Mvc.Localization;
+using OrchardCore.DisplayManagement.Notify;
 
 namespace TransformalizeModule.Drivers {
    public class TransformalizeReportPartDisplayDriver : ContentPartDisplayDriver<TransformalizeReportPart> {
 
-      private readonly IStringLocalizer S;
+      private readonly IStringLocalizer<TransformalizeReportPartDisplayDriver> S;
+      private readonly IHtmlLocalizer<TransformalizeReportPartDisplayDriver> H;
+      private readonly INotifier _notifier;
 
       public TransformalizeReportPartDisplayDriver(
-         IStringLocalizer<TransformalizeReportPartDisplayDriver> localizer
+         IStringLocalizer<TransformalizeReportPartDisplayDriver> localizer,
+         IHtmlLocalizer<TransformalizeReportPartDisplayDriver> htmlLocalizer,
+         INotifier notifier
       ) {
          S = localizer;
+         H = htmlLocalizer;
+         _notifier = notifier;
       }
 
       // change display for admin content items view?
@@ -23,11 +31,12 @@ namespace TransformalizeModule.Drivers {
 
       public override IDisplayResult Edit(TransformalizeReportPart part) {
          return Initialize<EditTransformalizeReportPartViewModel>("TransformalizeReportPart_Edit", model => {
+            // it did not work out when i tried to flatten model (e.g. BulkActions.Value => BulkActions (a bool))
             model.TransformalizeReportPart = part;
-            model.Arrangement = part.Arrangement.Arrangement;
-            model.PageSizes = part.PageSizes.PageSizes;
-            model.BulkActions = part.BulkActions.Value;
-            model.BulkActionValueField = part.BulkActionValueField.Text;
+            model.Arrangement = part.Arrangement;
+            model.PageSizes = part.PageSizes;
+            model.BulkActions = part.BulkActions;
+            model.BulkActionValueField = part.BulkActionValueField;
          }).Location("Content:1");
       }
 
@@ -36,18 +45,24 @@ namespace TransformalizeModule.Drivers {
          // this driver override makes sure all the 
          // part fields are updated before the arrangement model is updated / validated
 
+         //_notifier.Information(H["Part - Bulk Actions:{0}", part.BulkActions.Value]);
+         //_notifier.Information(H["Part - Bulk Action Field:{0}", part.BulkActionValueField.Text]);
+
          var model = new EditTransformalizeReportPartViewModel();
 
-         await updater.TryUpdateModelAsync(model, Prefix, m => m.BulkActions, m => m.BulkActionValueField);
+         if (await updater.TryUpdateModelAsync(model, Prefix, m => m.BulkActions, m => m.BulkActionValueField)) {
+            //_notifier.Information(H["Model - Bulk Actions:{0}", model.BulkActions.Value]);
+            //_notifier.Information(H["Model - Bulk Action Field:{0}", model.BulkActionValueField.Text]);
 
-         if (model.BulkActions) {
-            if (string.IsNullOrEmpty(model.BulkActionValueField)) {
+            part.BulkActions.Value = model.BulkActions.Value;
+            part.BulkActionValueField.Text = model.BulkActionValueField.Text;
+         }
+
+         if (model.BulkActions.Value) {
+            if (string.IsNullOrEmpty(model.BulkActionValueField.Text)) {
                updater.ModelState.AddModelError(Prefix, S["Please set the bulk action value field for bulk actions."]);
             }
          }
-
-         part.BulkActions.Value = model.BulkActions;
-         part.BulkActionValueField.Text = model.BulkActionValueField;
 
          return Edit(part, context);
 
