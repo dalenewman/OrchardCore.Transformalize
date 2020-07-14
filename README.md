@@ -9,20 +9,23 @@ module for [Orchard Core](https://github.com/OrchardCMS/OrchardCore) rc2.
    - <strike>JSON Extract</strike>
    - Map(Box) view - 50%
    - Calendar view
+   - Issue: Tabs break on ModelState error
 - <strike>Batches / Bulk Actions</strike>
   - <strike>Tasks (ETL Jobs) for running batches, etc</strike>
   - <strike>Forms for accepting parameters for batches</strike>
+  - Bulk Action Common and Part Settings
 - <strike>Add Mini Profiler into ADO providers</strike>
 - <strike>Common Arrangement Settings</strike>
   - <strike>Parameters</strike>
   - <strike>Connections</strike>
   - <strike>Actions</strike>
   - <strike>Page Sizes</strike>
+  - Fields
 
 #### Providers
 - <strike>[Elasticsearch](https://github.com/dalenewman/Transformalize.Provider.Elasticsearch)</strike>, <strike>[SQL Server](https://github.com/dalenewman/Transformalize.Provider.SqlServer)</strike>, <strike>[PostgreSQL](https://github.com/dalenewman/Transformalize.Provider.PostgreSql)</strike>, <strike>[SQLite](https://github.com/dalenewman/Transformalize.Provider.SQLite)</strike>, <strike>[MySql](https://github.com/dalenewman/Transformalize.Provider.MySql)</strike>, <strike>[JSON](https://github.com/dalenewman/Transformalize.Provider.JSON)</strike>, <strike>[CSV](https://github.com/dalenewman/Transformalize.Provider.CsvHelper)</strike>, <strike>[Bogus](https://github.com/dalenewman/Transformalize.Provider.Bogus)</strike>, <strike>[GeoJson](https://github.com/dalenewman/Transformalize.Provider.GeoJson)</strike>
 - [SOLR](https://github.com/dalenewman/Transformalize.Provider.SOLR), [KML](https://github.com/dalenewman/Transformalize/tree/master/Providers/Kml), [Lucene](https://github.com/dalenewman/Transformalize.Provider.Lucene)
-- Update SQL Server provider to use [Microsoft.Data.SqlClient](https://www.nuget.org/packages/Microsoft.Data.SqlClient/).
+- <strike>Update SQL Server provider to use [Microsoft.Data.SqlClient](https://www.nuget.org/packages/Microsoft.Data.SqlClient/).</strike>
 
 #### Transforms
 - <strike>built-in [transforms](https://github.com/dalenewman/Transformalize/blob/master/Containers/Autofac/Transformalize.Container.Autofac.Shared/TransformBuilder.cs) and [validators](https://github.com/dalenewman/Transformalize/blob/master/Containers/Autofac/Transformalize.Container.Autofac.Shared/ValidateBuilder.cs)</strike>, <strike>[Jint](https://github.com/dalenewman/Transformalize.Transform.Jint
@@ -33,8 +36,8 @@ module for [Orchard Core](https://github.com/OrchardCMS/OrchardCore) rc2.
 - <strike>file related (get file name, file path, file extension)</strike>
 - IMemoryCache, ISignal Caching for Expensive Transforms
   - <strike>Razor: Cache RazorTemplate</strike>
-  - Fluid: Cache `FluidTemplate`
-  - Jint: Combine script and cache result of `JavaScriptParser.Parse`
+  - <strike>Fluid: Cache `FluidTemplate`</strike>
+  - <strike>Jint: Combine script and cache result of `JavaScriptParser.Parse`</strike>
 
 #### Actions
 - <strike>file related (copy, move, archive, replace)</strike>
