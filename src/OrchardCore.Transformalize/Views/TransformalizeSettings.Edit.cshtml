@@ -1,32 +1,101 @@
 @model TransformalizeModule.ViewModels.TransformalizeSettingsViewModel
 
-   <div class="form-group">
-      <label asp-for="CommonArrangement">@T["Common Arrangement"]</label>
-      <textarea asp-for="CommonArrangement" rows="5" class="form-control content-preview-text"></textarea>
-      <div class="hint" style="font-size: smaller;">
-         <strong>F11</strong>: <span>Full Screen</span>,
-         <strong>Esc</strong>: <span>Exit Full Screen</span>,
-         <strong>Ctrl-S</strong>: <span>Save</span>,
-         <strong>Ctrl-Space</strong>: <span>Auto Complete</span>,
-         <strong>Ctrl-F</strong>: <span>Find</span>,
-         <strong>Ctrl-G</strong>: <span>Find next</span>,
-         <strong>Shift-Ctrl-G</strong>: <span>Find previous</span>,
-         <strong>Shift-Ctrl-F</strong>: <span>Replace</span>,
-         <strong>Shift-Ctrl-R</strong>: <span>Replace all</span>.
+
+   <ul class="nav nav-tabs">
+      <li class="nav-item pr-md-2">
+         <a class="nav-link active" id="main-tab" data-toggle="tab" href="#main" role="tab" aria-controls="main" aria-selected="true">@T["Main"]</a>
+      </li>
+      <li class="nav-item pr-md-2">
+         <a class="nav-link" id="bulk-tab" data-toggle="tab" href="#bulk" role="tab" aria-controls="bulk">@T["Bulk Actions"]</a>
+      </li>
+      <li class="nav-item">
+         <a class="nav-link" id="map-tab" data-toggle="tab" href="#map" role="tab" aria-controls="map">@T["Maps"]</a>
+      </li>
+   </ul>
+
+<div class="tab-content" id="tabs">
+
+   <div class="tab-pane fade show active" id="main" role="tabpanel" aria-labelledby="main-tab">
+
+      <div class="form-group">
+         <label asp-for="CommonArrangement">@T["Common Arrangement"]</label>
+         <textarea asp-for="CommonArrangement" rows="5" class="form-control content-preview-text"></textarea>
+         <div class="hint" style="font-size: smaller;">
+            <strong>F11</strong>: <span>Full Screen</span>,
+            <strong>Esc</strong>: <span>Exit Full Screen</span>,
+            <strong>Ctrl-S</strong>: <span>Save</span>,
+            <strong>Ctrl-Space</strong>: <span>Auto Complete</span>,
+            <strong>Ctrl-F</strong>: <span>Find</span>,
+            <strong>Ctrl-G</strong>: <span>Find next</span>,
+            <strong>Shift-Ctrl-G</strong>: <span>Find previous</span>,
+            <strong>Shift-Ctrl-F</strong>: <span>Replace</span>,
+            <strong>Shift-Ctrl-R</strong>: <span>Replace all</span>.
+         </div>
+         <span class="hint">@T["This arrangement stores common items (i.e. connections) that may be referenced by name in other arrangements."]</span>
       </div>
-      <span class="hint">@T["This arrangement stores common items (i.e. connections) that may be referenced by name in other arrangements."]</span>
+
+      @Html.Partial("CodeMirror", new CodeMirrorViewModel(Html.IdFor(m => m.CommonArrangement), .5))
+
+      <div class="form-group">
+         <label asp-for="DefaultPageSizes">@T["Default Page Sizes"]</label>
+         <input asp-for="DefaultPageSizes" class="form-control" />
+         <span class="hint">@T["A comma delimited list of page sizes (integers).  These are used for all reports that do not set a page sizes."]</span>
+      </div>
+
    </div>
 
-@Html.Partial("CodeMirror", new CodeMirrorViewModel(Html.IdFor(m => m.CommonArrangement), .5))
+   <div class="tab-pane fade" id="bulk" role="tabpanel" aria-labelledby="bulk-tab">
 
-<div class="form-group">
-   <label asp-for="DefaultPageSizes">@T["Default Page Sizes"]</label>
-   <input asp-for="DefaultPageSizes" class="form-control" />
-   <span class="hint">@T["A comma delimited list of page sizes (integers).  These are used for all reports that do not set a page sizes."]</span>
+      <div class="form-group">
+         <label asp-for="BulkActionCreateTask">@T["Create Task"]</label>
+         <input asp-for="BulkActionCreateTask" class="form-control" />
+         <span class="hint">@T["Default task to create and return an identifier for a bulk action batch."]</span>
+      </div>
+
+      <div class="form-group">
+         <label asp-for="BulkActionWriteTask">@T["Write Task"]</label>
+         <input asp-for="BulkActionWriteTask" class="form-control" />
+         <span class="hint">@T["Default task to write the bulk action' values for a bulk action batch."]</span>
+      </div>
+
+      <div class="form-group">
+         <label asp-for="BulkActionSummaryTask">@T["Summary Task"]</label>
+         <input asp-for="BulkActionSummaryTask" class="form-control" />
+         <span class="hint">@T["Default task to gather summary for a bulk action's batch."]</span>
+      </div>
+
+      <div class="form-group">
+         <label asp-for="BulkActionRunTask">@T["Run Task"]</label>
+         <input asp-for="BulkActionRunTask" class="form-control" />
+         <span class="hint">@T["Default task to indicate the task is running."]</span>
+      </div>
+
+      <div class="form-group">
+         <label asp-for="BulkActionSuccessTask">@T["Success Task"]</label>
+         <input asp-for="BulkActionSuccessTask" class="form-control" />
+         <span class="hint">@T["Default task to indicate the task succeeded."]</span>
+      </div>
+
+      <div class="form-group">
+         <label asp-for="BulkActionFailTask">@T["Fail Task"]</label>
+         <input asp-for="BulkActionFailTask" class="form-control" />
+         <span class="hint">@T["Default task to indicate the task failed."]</span>
+      </div>
+
+   </div>
+
+   <div class="tab-pane fade" id="map" role="tabpanel" aria-labelledby="map-tab">
+
+      <div class="form-group">
+         <label asp-for="MapBoxToken">@T["MapBox Token"]</label>
+         <input asp-for="MapBoxToken" class="form-control" />
+         <span class="hint">@T["Get a token at "] <a href="https://www.mapbox.com" target="_blank">https://www.mapbox.com</a>.</span>
+      </div>
+
+   </div>
+
 </div>
 
-<div class="form-group">
-   <label asp-for="MapBoxToken">@T["MapBox Token"]</label>
-   <input asp-for="MapBoxToken" class="form-control" />
-   <span class="hint">@T["Get a token at "] <a href="https://www.mapbox.com" target="_blank">https://www.mapbox.com</a>.</span>
-</div>
+
+
+

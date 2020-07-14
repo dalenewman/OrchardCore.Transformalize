@@ -8,6 +8,12 @@ namespace TransformalizeModule.Models {
       private string _defaultPageSizes;
       private string _commonArrangement;
       private string _mapBoxToken;
+      private string _bulkActionCreateTask;
+      private string _bulkActionWriteTask;
+      private string _bulkActionSummaryTask;
+      private string _bulkActionRunTask;
+      private string _bulkActionSuccessTask;
+      private string _bulkActionFailTask;
 
       public string CommonArrangement {
          get => string.IsNullOrWhiteSpace(_commonArrangement) ? string.Empty : _commonArrangement;
@@ -35,6 +41,13 @@ namespace TransformalizeModule.Models {
          get => string.IsNullOrWhiteSpace(_mapBoxToken) ? string.Empty : _mapBoxToken;
          set => _mapBoxToken = string.IsNullOrWhiteSpace(value) ? string.Empty : value;
       }
+
+      public string BulkActionCreateTask { get => _bulkActionCreateTask ?? "batch-create"; set => _bulkActionCreateTask = value; }
+      public string BulkActionWriteTask { get => _bulkActionWriteTask ?? "batch-write"; set => _bulkActionWriteTask = value; }
+      public string BulkActionSummaryTask { get => _bulkActionSummaryTask ?? "batch-summary"; set => _bulkActionSummaryTask = value; }
+      public string BulkActionRunTask { get => _bulkActionRunTask ?? "batch-run"; set => _bulkActionRunTask = value; }
+      public string BulkActionSuccessTask { get => _bulkActionSuccessTask ?? "batch-success"; set => _bulkActionSuccessTask = value; }
+      public string BulkActionFailTask { get => _bulkActionFailTask ?? "batch-fail"; set => _bulkActionFailTask = value; }
 
    }
 }

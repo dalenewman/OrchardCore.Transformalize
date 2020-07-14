@@ -23,11 +23,13 @@ namespace TransformalizeModule.Controllers {
       private readonly IFormService _formService;
       private readonly CombinedLogger<BulkActionController> _logger;
       private readonly IUserService _userService;
+      private readonly ISettingsService _settingsService;
 
       public BulkActionController(
          ITaskService taskService,
          IReportService reportService,
          IFormService formService,
+         ISettingsService settingsService,
          IUserService userService,
          CombinedLogger<BulkActionController> logger
       ) {
@@ -35,6 +37,7 @@ namespace TransformalizeModule.Controllers {
          _reportService = reportService;
          _formService = formService;
          _userService = userService;
+         _settingsService = settingsService;
          _logger = logger;
       }
 
@@ -61,7 +64,6 @@ namespace TransformalizeModule.Controllers {
             #region batch creation
             var user = await _userService.GetUserAsync(userName) as User;
 
-            var createAlias = "batch-create";
             var createParameters = new Dictionary<string, string> {
 
                { "UserId", user.Id.ToString() },
@@ -81,7 +83,7 @@ namespace TransformalizeModule.Controllers {
                { "Description", report.Process.Actions.First(a=>a.Name == request.ActionName).Description }
             };
 
-            var create = await _taskService.Validate(new TransformalizeRequest(createAlias, userName) { Secure = false, InternalParameters = createParameters });
+            var create = await _taskService.Validate(new TransformalizeRequest(_settingsService.Settings.BulkActionCreateTask, userName) { Secure = false, InternalParameters = createParameters });
 
             if (create.Fails()) {
                return create.ActionResult;
@@ -89,31 +91,30 @@ namespace TransformalizeModule.Controllers {
 
             await _taskService.RunAsync(create.Process);
             if (create.Process.Status != 200) {
-               _logger.Warn(() => $"User {userName} received error running action {createAlias}.");
+               _logger.Warn(() => $"User {userName} received error running action {_settingsService.Settings.BulkActionCreateTask}.");
                return View("Log", new LogViewModel(_logger.Log, create.Process, create.ContentItem));
             }
 
             var entity = create.Process.Entities.FirstOrDefault();
 
             if (entity == null) {
-               _logger.Error(() => $"The {createAlias} task is missing an entity.  It needs an entity with at least one row that returns one row of data (e.g. the BatchId).");
+               _logger.Error(() => $"The {_settingsService.Settings.BulkActionCreateTask} task is missing an entity.  It needs an entity with at least one row that returns one row of data (e.g. the BatchId).");
                return View("Log", new LogViewModel(_logger.Log, create.Process, create.ContentItem));
             }
 
             if (!entity.Rows.Any()) {
-               _logger.Error(() => $"The {createAlias} task didn't produce a row (e.g. a single row with a BatchId need to associate the batch values with this batch).");
+               _logger.Error(() => $"The {_settingsService.Settings.BulkActionCreateTask} task didn't produce a row (e.g. a single row with a BatchId need to associate the batch values with this batch).");
                return View("Log", new LogViewModel(_logger.Log, create.Process, create.ContentItem));
             }
             #endregion
 
             #region batch writing
-            var writeAlias = "batch-write";
             var writeParameters = new Dictionary<string, string>();
             foreach (var field in entity.GetAllOutputFields()) {
                writeParameters[field.Alias] = entity.Rows[0][field.Alias].ToString();
             }
 
-            var write = await _taskService.Validate(new TransformalizeRequest(writeAlias, userName) { Secure = false, InternalParameters = writeParameters });
+            var write = await _taskService.Validate(new TransformalizeRequest(_settingsService.Settings.BulkActionWriteTask, userName) { Secure = false, InternalParameters = writeParameters });
 
             if (write.Fails()) {
                return write.ActionResult;
@@ -124,7 +125,7 @@ namespace TransformalizeModule.Controllers {
             var batchValueField = writeEntity.Fields.LastOrDefault(f => f.Input && f.Output);
 
             if (batchValueField == null) {
-               _logger.Error(() => $"Could not identify batch value field in {writeAlias}.");
+               _logger.Error(() => $"Could not identify batch value field in {_settingsService.Settings.BulkActionWriteTask}.");
                return View("Log", new LogViewModel(_logger.Log, write.Process, write.ContentItem));
             }
 
@@ -162,8 +163,7 @@ namespace TransformalizeModule.Controllers {
 
       public async Task<ActionResult> Review(BulkActionReviewRequest request) {
 
-         var batchSummaryAlias = "batch-summary";
-         var batchSummary = await _taskService.Validate(new TransformalizeRequest(batchSummaryAlias, HttpContext.User.Identity.Name) { Secure = false });
+         var batchSummary = await _taskService.Validate(new TransformalizeRequest(_settingsService.Settings.BulkActionSummaryTask, HttpContext.User.Identity.Name) { Secure = false });
 
          if (batchSummary.Fails()) {
             return batchSummary.ActionResult;
@@ -224,25 +224,23 @@ namespace TransformalizeModule.Controllers {
          var closeParameters = new Dictionary<string, string>() { { "RecordsAffected", recordsAffected.ToString() } };
 
          if (bulkAction.Process.Status == 200) {
-            var batchSuccessAlias = "batch-success";
-            var batchSuccess = await _taskService.Validate(new TransformalizeRequest(batchSuccessAlias, user) { InternalParameters = closeParameters });
+            var batchSuccess = await _taskService.Validate(new TransformalizeRequest(_settingsService.Settings.BulkActionSuccessTask, user) { InternalParameters = closeParameters });
 
             if (batchSuccess.Fails()) {
-               _logger.Warn(() => $"{bulkAction.ContentItem.DisplayText} succeeded but {batchSuccessAlias} failed to load.");
+               _logger.Warn(() => $"{bulkAction.ContentItem.DisplayText} succeeded but {_settingsService.Settings.BulkActionSuccessTask} failed to load.");
             } else {
                await _taskService.RunAsync(batchSuccess.Process);
             }
          } else {
-            var batchFailAlias = "batch-fail";
             var message = new StringBuilder(bulkAction.Process.Message);
             foreach(var error in _logger.Log.Where(l=>l.LogLevel == Transformalize.Contracts.LogLevel.Error)) {
                message.AppendLine(error.Message);
             }
             closeParameters["Message"] = message.ToString();
-            var batchFail = await _taskService.Validate(new TransformalizeRequest(batchFailAlias, user) { InternalParameters = closeParameters });
+            var batchFail = await _taskService.Validate(new TransformalizeRequest(_settingsService.Settings.BulkActionFailTask, user) { InternalParameters = closeParameters });
 
             if (batchFail.Fails()) {
-               _logger.Warn(() => $"{bulkAction.ContentItem.DisplayText} failed and {batchFailAlias} failed to load.");
+               _logger.Warn(() => $"{bulkAction.ContentItem.DisplayText} failed and {_settingsService.Settings.BulkActionFailTask} failed to load.");
             } else {
                await _taskService.RunAsync(batchFail.Process);
             }
@@ -253,8 +251,7 @@ namespace TransformalizeModule.Controllers {
 
       public async Task<ActionResult> Result() {
 
-         var batchSummaryAlias = "batch-summary";
-         var batchSummary = await _taskService.Validate(new TransformalizeRequest(batchSummaryAlias, HttpContext.User.Identity.Name) { Secure = false });
+         var batchSummary = await _taskService.Validate(new TransformalizeRequest(_settingsService.Settings.BulkActionSummaryTask, HttpContext.User.Identity.Name) { Secure = false });
 
          if (batchSummary.Fails()) {
             return batchSummary.ActionResult;

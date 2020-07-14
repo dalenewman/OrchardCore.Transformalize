@@ -36,9 +36,17 @@ namespace TransformalizeModule.Drivers {
          }
 
          return Initialize<TransformalizeSettingsViewModel>($"{nameof(TransformalizeSettings)}_Edit", model => {
+
             model.CommonArrangement = settings.CommonArrangement;
             model.DefaultPageSizes = settings.DefaultPageSizes;
             model.MapBoxToken = settings.MapBoxToken;
+
+            model.BulkActionCreateTask = settings.BulkActionCreateTask;
+            model.BulkActionWriteTask = settings.BulkActionWriteTask;
+            model.BulkActionSummaryTask = settings.BulkActionSummaryTask;
+            model.BulkActionRunTask = settings.BulkActionRunTask;
+            model.BulkActionSuccessTask = settings.BulkActionSuccessTask;
+            model.BulkActionFailTask = settings.BulkActionFailTask;
          })
          .Location("Content:1")
          .OnGroup(Common.SettingsGroupId);
@@ -55,9 +63,17 @@ namespace TransformalizeModule.Drivers {
 
             // this gets what's coming from the editor into model
             var model = new TransformalizeSettingsViewModel();
+
             await context.Updater.TryUpdateModelAsync(model, Prefix);
 
             settings.MapBoxToken = model.MapBoxToken;
+
+            settings.BulkActionCreateTask = model.BulkActionCreateTask;
+            settings.BulkActionWriteTask = model.BulkActionWriteTask;
+            settings.BulkActionSummaryTask = model.BulkActionSummaryTask;
+            settings.BulkActionRunTask = model.BulkActionRunTask;
+            settings.BulkActionSuccessTask = model.BulkActionSuccessTask;
+            settings.BulkActionFailTask = model.BulkActionFailTask;
 
             // common arrangement
             if (string.IsNullOrWhiteSpace(model.CommonArrangement)) {
