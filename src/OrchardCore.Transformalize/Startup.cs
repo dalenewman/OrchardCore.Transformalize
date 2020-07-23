@@ -24,6 +24,8 @@ using OrchardCore.Security.Permissions;
 using TransformalizeModule.Navigation;
 using Transformalize.Contracts;
 using Transformalize.Logging;
+using OrchardCore.Workflows.Helpers;
+using TransformalizeModule.Activities;
 
 namespace TransformalizeModule {
    public class Startup : StartupBase {
@@ -79,6 +81,8 @@ namespace TransformalizeModule {
          services.AddScoped<IDisplayDriver<ISite>, TransformalizeSettingsDisplayDriver>();
          services.AddScoped<INavigationProvider, TransformalizeSettingsAdminMenu>();
 
+         // activities
+         services.AddActivity<TransformalizeActivity, TransformalizeActivityDisplayDriver>();
       }
 
       public override void Configure(IApplicationBuilder builder, IEndpointRouteBuilder routes, IServiceProvider serviceProvider) {

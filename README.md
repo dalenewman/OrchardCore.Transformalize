@@ -23,6 +23,7 @@ module for [Orchard Core](https://github.com/OrchardCMS/OrchardCore) rc2.
   - Bulk Action Settings
     - <strike>Common</strike>
     - Part
+  - Workflow: Still learning, but bulk operations / batches might be helped by the Workflows module.
 - <strike>Add Mini Profiler into ADO providers</strike>
 - <strike>Common Arrangement Settings</strike>
   - <strike>Parameters</strike>
