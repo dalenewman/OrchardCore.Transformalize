@@ -359,19 +359,19 @@
       if (length > 0) {
          var $form = $('#id_report');
          $form.attr('method', 'POST');
-         $form.attr('target', '_blank');
+         // $form.attr('target', '_blank');
          $form.attr('action', '@(Url.Action("Create", "BulkAction", new { ContentItemId = Model.Item.ContentItemId }))');
          $form.append('@(Html.AntiForgeryToken())');
          $form.append('<input type="hidden" name="ActionName" value="'+name+'" />');
          $form.append('<input type="hidden" name="ActionCount" value="'+controls.bulkActionLength+'" />');
          controls.submit(page);
 
-         // clean up since now we've got everything messed up
-         $form.attr('method', 'GET');
-         $form.attr('target', '_self');
-         $form.attr('action', '@(Url.Action("Index", "Report", new { ContentItemId = Model.Item.ContentItemId }))');
+         // clean up if we posted to a _blank target (a new tab)
+         // $form.attr('method', 'GET');
+         // $form.attr('target', '_self');
+         // $form.attr('action', '@(Url.Action("Index", "Report", new { ContentItemId = Model.Item.ContentItemId }))');
          // just reset
-         controls.submit(page);
+         // controls.submit(page);
       }
    }
 

@@ -12,7 +12,11 @@ namespace TransformalizeModule {
       public const string CodeMirrorVersion = "5.52.2";
       public const string InvalidParametersMessage = "Parameter Validation Failed";
       public const string InvalidContentTypeMessage = "Invalid Content Type";
-      public static HashSet<string> SystemFields = new HashSet<string>(2, StringComparer.OrdinalIgnoreCase) { "TaskContentItemId", "ReportContentItemId" };
+
+      public const string TaskReferrer = "TaskReferrer";
+      public const string TaskContentItemId = "TaskContentItemId";
+      public const string ReportContentItemId = "ReportContentItemId";
+      public static HashSet<string> SystemFields = new HashSet<string>(3, StringComparer.OrdinalIgnoreCase) { TaskContentItemId, TaskReferrer, ReportContentItemId };
 
       public static string GetCacheKey(int contentItemId) {
          return contentItemId + KeySuffix;

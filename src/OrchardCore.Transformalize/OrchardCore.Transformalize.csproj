@@ -33,6 +33,7 @@
     <PackageReference Include="OrchardCore.Navigation" Version="1.0.0-rc2-13450" />
     <PackageReference Include="OrchardCore.Title" Version="1.0.0-rc2-13450" />
     <PackageReference Include="OrchardCore.Users" Version="1.0.0-rc2-13450" />
+    <PackageReference Include="OrchardCore.Workflows" Version="1.0.0-rc2-13450" />
     <PackageReference Include="Transformalize" Version="0.8.20-beta" />
     <PackageReference Include="Transformalize.Container.Autofac" Version="0.8.15-beta" />
     <PackageReference Include="Transformalize.Provider.Ado.Autofac" Version="0.8.15-beta" />

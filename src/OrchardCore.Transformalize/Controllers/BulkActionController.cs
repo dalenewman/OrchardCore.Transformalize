@@ -66,19 +66,22 @@ namespace TransformalizeModule.Controllers {
 
             var createParameters = new Dictionary<string, string> {
 
+               { Common.TaskReferrer, referrer },
+               { Common.TaskContentItemId, bulkAction.ContentItem.ContentItemId },
+               { Common.ReportContentItemId, report.ContentItem.ContentItemId },
+
                { "UserId", user.Id.ToString() },
                { "UserName", user.UserName },
                { "UserEmail", user.Email },
 
                { "ReportId", report.ContentItem.Id.ToString() },
-               { "ReportContentItemId", report.ContentItem.ContentItemId },
                { "ReportContentItemVersionId", report.ContentItem.ContentItemVersionId },
                { "ReportTitle", report.ContentItem.DisplayText },
 
                { "TaskId", bulkAction.ContentItem.ContentItemId },
-               { "TaskContentItemId", bulkAction.ContentItem.ContentItemId },
                { "TaskContentItemVersionId", bulkAction.ContentItem.ContentItemVersionId },
                { "TaskTitle", bulkAction.ContentItem.DisplayText },
+
 
                { "Description", report.Process.Actions.First(a=>a.Name == request.ActionName).Description }
             };
@@ -109,7 +112,12 @@ namespace TransformalizeModule.Controllers {
             #endregion
 
             #region batch writing
-            var writeParameters = new Dictionary<string, string>();
+            var writeParameters = new Dictionary<string, string> {
+               { Common.TaskReferrer, referrer },
+               { Common.TaskContentItemId, bulkAction.ContentItem.ContentItemId },
+               { Common.ReportContentItemId, report.ContentItem.ContentItemId } 
+            };
+
             foreach (var field in entity.GetAllOutputFields()) {
                writeParameters[field.Alias] = entity.Rows[0][field.Alias].ToString();
             }
@@ -149,8 +157,6 @@ namespace TransformalizeModule.Controllers {
             await _taskService.RunAsync(write.Process);
             #endregion
 
-            writeParameters["ReportContentItemId"] = bulkAction.ContentItem.ContentItemId;
-            writeParameters["TaskContentItemId"] = bulkAction.ContentItem.ContentItemId;
             return RedirectToAction("Review", ParametersToRouteValues(writeParameters));
 
          } else {
@@ -171,12 +177,15 @@ namespace TransformalizeModule.Controllers {
 
          await _taskService.RunAsync(batchSummary.Process);
 
-         // if batch summary can provide provide content item id(s)
+         // if they didn't run the batch immediately, this may be able to provide necessary info to run later
          if (request.TaskContentItemId == null) {
-            request.TaskContentItemId = GetFieldFromSummary(batchSummary.Process, "TaskContentItemId");
+            request.TaskContentItemId = GetFieldFromSummary(batchSummary.Process, Common.TaskContentItemId);
          }
          if (request.ReportContentItemId == null) {
-            request.ReportContentItemId = GetFieldFromSummary(batchSummary.Process, "ReportContentItemId");
+            request.ReportContentItemId = GetFieldFromSummary(batchSummary.Process, Common.ReportContentItemId);
+         }
+         if (request.TaskReferrer == null) {
+            request.TaskReferrer = GetFieldFromSummary(batchSummary.Process, Common.TaskReferrer);
          }
 
          var bulkAction = await _formService.Validate(new TransformalizeRequest(request.TaskContentItemId, HttpContext.User.Identity.Name));
@@ -185,13 +194,8 @@ namespace TransformalizeModule.Controllers {
             return bulkAction.ActionResult;
          }
 
-         // because they will need to come back to review page after validating their parameters
-         bulkAction.Process.Parameters.Add(new Parameter() { Name = "TaskContentItemId", Value = request.TaskContentItemId });
-         bulkAction.Process.Parameters.Add(new Parameter() { Name = "ReportContentItemId", Value = request.ReportContentItemId });
-
-         return View(new BulkActionViewModel(bulkAction, batchSummary.Process));
+         return View(new BulkActionViewModel(TransferRequiredParameters(request, bulkAction), batchSummary.Process));
       }
-
 
       public async Task<ActionResult> Form(BulkActionReviewRequest request) {
 
@@ -201,11 +205,7 @@ namespace TransformalizeModule.Controllers {
             return bulkAction.ActionResult;
          }
 
-         // because they will need to come back to review page after validating their parameters
-         bulkAction.Process.Parameters.Add(new Parameter() { Name = "TaskContentItemId", Value = request.TaskContentItemId });
-         bulkAction.Process.Parameters.Add(new Parameter() { Name = "ReportContentItemId", Value = request.ReportContentItemId });
-
-         return View("Form", bulkAction);
+         return View("Form", TransferRequiredParameters(request, bulkAction));
       }
 
 
@@ -233,7 +233,7 @@ namespace TransformalizeModule.Controllers {
             }
          } else {
             var message = new StringBuilder(bulkAction.Process.Message);
-            foreach(var error in _logger.Log.Where(l=>l.LogLevel == Transformalize.Contracts.LogLevel.Error)) {
+            foreach (var error in _logger.Log.Where(l => l.LogLevel == Transformalize.Contracts.LogLevel.Error)) {
                message.AppendLine(error.Message);
             }
             closeParameters["Message"] = message.ToString();
@@ -246,10 +246,12 @@ namespace TransformalizeModule.Controllers {
             }
          }
 
-         return RedirectToAction("Result", ParametersToRouteValues(bulkAction.Process.Parameters));
+         TransferRequiredParameters(request, bulkAction);
+
+         return RedirectToAction("Result", ParametersToRouteValues(bulkAction.Process.Parameters.Where(p => p.Input)));
       }
 
-      public async Task<ActionResult> Result() {
+      public async Task<ActionResult> Result(BulkActionReviewRequest request) {
 
          var batchSummary = await _taskService.Validate(new TransformalizeRequest(_settingsService.Settings.BulkActionSummaryTask, HttpContext.User.Identity.Name) { Secure = false });
 
@@ -259,12 +261,29 @@ namespace TransformalizeModule.Controllers {
 
          await _taskService.RunAsync(batchSummary.Process);
 
-         return View(batchSummary.Process);
+         return View(TransferRequiredParameters(request, batchSummary).Process);
       }
 
+      private static TransformalizeResponse<TransformalizeTaskPart> TransferRequiredParameters(BulkActionReviewRequest request, TransformalizeResponse<TransformalizeTaskPart> response) {
 
+         var existing = new HashSet<string>(response.Process.Parameters.Select(p => p.Name));
 
-      private dynamic ParametersToRouteValues(IDictionary<string, string> parameters) {
+         if (!existing.Contains(Common.TaskReferrer)) {
+            response.Process.Parameters.Add(new Parameter { Name = Common.TaskReferrer, Value = request.TaskReferrer });
+         }
+
+         if (!existing.Contains(Common.TaskContentItemId)) {
+            response.Process.Parameters.Add(new Parameter { Name = Common.TaskContentItemId, Value = request.TaskContentItemId });
+         }
+
+         if (!existing.Contains(Common.ReportContentItemId)) {
+            response.Process.Parameters.Add(new Parameter { Name = Common.ReportContentItemId, Value = request.ReportContentItemId });
+         }
+
+         return response;
+      }
+
+      private static dynamic ParametersToRouteValues(IDictionary<string, string> parameters) {
          var routeValues = new ExpandoObject();
          var editable = (ICollection<KeyValuePair<string, object>>)routeValues;
          foreach (var kvp in parameters) {
@@ -274,7 +293,7 @@ namespace TransformalizeModule.Controllers {
          return d;
       }
 
-      private dynamic ParametersToRouteValues(List<Parameter> parameters) {
+      private static dynamic ParametersToRouteValues(IEnumerable<Parameter> parameters) {
          var routeValues = new ExpandoObject();
          var editable = (ICollection<KeyValuePair<string, object>>)routeValues;
          foreach (var p in parameters) {
@@ -284,7 +303,7 @@ namespace TransformalizeModule.Controllers {
          return d;
       }
 
-      public string GetFieldFromSummary(Process process, string fieldName) {
+      private static string GetFieldFromSummary(Process process, string fieldName) {
          if (process != null) {
             if (process.Entities.Any() && process.Entities[0].Rows.Any()) {
                var fields = process.Entities[0].GetAllOutputFields();

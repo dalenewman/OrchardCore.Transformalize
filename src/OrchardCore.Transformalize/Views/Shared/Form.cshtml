@@ -33,19 +33,19 @@
                @Html.Raw(value)
             } else {
 
-               <label for="@parameter.Name">@parameter.Label</label>
-               @if (parameter.Hint != string.Empty) {
-                  <br /><span class="text-muted">@parameter.Hint</span>
-               }
+            <label for="@parameter.Name">@(parameter.Label == string.Empty ? parameter.Name : parameter.Label)</label>
+            @if (parameter.Hint != string.Empty) {
+               <br /><span class="text-muted">@parameter.Hint</span>
+            }
 
-               <input type="text"
-                      readonly="readonly"
-                      class="form-control @(parameter.Valid ? "is-valid" : "is-invalid")"
-                      name="@parameter.Name"
-                      id="id_@parameter.Name"
-                      placeholder="@parameter.Label"
-                      value="@value"
-                      data-tfl-post-back="false" />
+            <input type="text"
+                   readonly="readonly"
+                   class="form-control @(parameter.Valid ? "is-valid" : "is-invalid")"
+                   name="@parameter.Name"
+                   id="id_@parameter.Name"
+                   placeholder="@parameter.Label"
+                   value="@value"
+                   data-tfl-post-back="false" />
 
             @* if you change location you must update parsley error container *@
             <span class="help-container">

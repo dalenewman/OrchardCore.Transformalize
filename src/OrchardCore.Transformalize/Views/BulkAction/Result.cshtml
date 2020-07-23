@@ -1,5 +1,8 @@
 @model Transformalize.Configuration.Process
 
+@{ 
+   var referrer = Model.Parameters.FirstOrDefault(p => p.Name == "TaskReferrer");
+}
 <div class="container">
    <div class="row">
       <div class="col-md-4">
@@ -20,7 +23,13 @@
             </table>
          }
       </div>
-      <div class="8"> </div>
+      <div class="8">
+         <h4> </h4>
+
+         @if (referrer != null) {
+            <a href="@Html.Raw(referrer.Value)" class="btn btn-primary active" role="button" aria-pressed="true">Back</a>
+         }
+      </div>
    </div>
 </div>
 

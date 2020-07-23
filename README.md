@@ -7,13 +7,22 @@ module for [Orchard Core](https://github.com/OrchardCMS/OrchardCore) rc2.
    - <strike>Sortable, Filterable Table with pagination</strike>
    - <strike>CSV Extract</strike>
    - <strike>JSON Extract</strike>
-   - Map(Box) view - 50%
    - Calendar view
-   - Issue: Tabs break on ModelState error
+- Map(Box) view
+  - <strike>js libraries</strike>
+  - <strike>MapBox Key</strike>
+  - Dot Description Value/Field
+  - Dot Color Value/Field
+  - Dot Opacity Value/Field
+  - Dot Size Value/Field
+  - Paging (extended sizes or no paging)
+  - Only show shape selector if bulk actions enabled
 - <strike>Batches / Bulk Actions</strike>
   - <strike>Tasks (ETL Jobs) for running batches, etc</strike>
   - <strike>Forms for accepting parameters for batches</strike>
-  - Bulk Action Common and Part Settings
+  - Bulk Action Settings
+    - <strike>Common</strike>
+    - Part
 - <strike>Add Mini Profiler into ADO providers</strike>
 - <strike>Common Arrangement Settings</strike>
   - <strike>Parameters</strike>
@@ -34,7 +43,7 @@ module for [Orchard Core](https://github.com/OrchardCMS/OrchardCore) rc2.
 )</strike>, <strike>[Lambda Parser](https://github.com/dalenewman/Transformalize.Transform.LambdaParser)</strike>
 - Orchard transforms: <strike>username()</strike>, <strike>userid()</strike>, <strike>useremail()</strike>.
 - <strike>file related (get file name, file path, file extension)</strike>
-- IMemoryCache, ISignal Caching for Expensive Transforms
+- <strike>IMemoryCache, ISignal Caching for Expensive Transforms</strike>
   - <strike>Razor: Cache RazorTemplate</strike>
   - <strike>Fluid: Cache `FluidTemplate`</strike>
   - <strike>Jint: Combine script and cache result of `JavaScriptParser.Parse`</strike>
@@ -54,7 +63,7 @@ module for [Orchard Core](https://github.com/OrchardCMS/OrchardCore) rc2.
 - Optionally run Transformalize recipes in Dashboard > Configuration > Recipes
 
 #### Module Dependencies
-You may have to enable some of these manually.
+You may have to enable some of these manually if you're not installing from scratch.
 - `OrchardCore.Users`
 - `OrchardCore.Contents`
 - `OrchardCore.Title`
@@ -62,6 +71,10 @@ You may have to enable some of these manually.
 - `OrchardCore.MiniProfiler`
 - `OrchardCore.Alias`
 - `OrchardCore.ContentFields`
+- `OrchardCore.Workflows`
+
+#### Issues
+- Tabs in part editors break on ModelState error
 
 ---
 
