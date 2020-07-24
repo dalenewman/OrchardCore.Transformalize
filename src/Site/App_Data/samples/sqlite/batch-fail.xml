@@ -1,0 +1,21 @@
+<cfg name="Batch Fail">
+ 
+  <parameters>
+    <add name="BatchId" type="long" value="0" />
+    <add name="RecordsAffected" type="int" value="0" />
+    <add name="Message" value="" />
+  </parameters>
+  
+  <connections>
+    <add name="db" provider="sqlite" file="App_Data\batches.db" />
+  </connections>
+  
+  <actions>
+    <add name="Create" type="run" connection="db" 
+         command="UPDATE Batch 
+                  SET BatchStatusId = 4,
+                      Message = @RecordsAffected || ' Records Affected. ' || @Message
+                  WHERE Id = @BatchId;" />
+  </actions>
+
+</cfg>

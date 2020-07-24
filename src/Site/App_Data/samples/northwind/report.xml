@@ -1,0 +1,22 @@
+<cfg name="NorthWind">
+  <connections>
+    <!--<add name="input" provider="sqlite" file="App_Data\northwind.db" />-->
+    <add name="input" provider="sqlserver" database="TflNorthwind" />
+  </connections>
+  <entities>
+    <add name="NorthWindFlat" alias="NorthWind" sortable="true" >
+      <fields>
+        <add name="OrderYear" type="long" label="Year" parameter="facet" />
+        <add name="OrderMonthSortable" label="Month" parameter="facet" />
+        <add name="OrderDaySortable" label="Date" parameter="facet" />
+        <add name="CompanyName" label="Sold To" parameter="search" />
+        <add name="ProductName" label="Product" parameter="search" />
+        <add name="CategoryName" label="Category" parameter="facets" />
+        <add name="SuppliersCompanyName" label="Supplier" parameter="facet" />
+        <add name="Quantity" type="int" />
+        <add name="UnitPrice" label="Unit Price" type="decimal" format="#,###.00" />
+        <add name="Revenue" type="decimal" format="$#,###,###.00" />
+      </fields>
+    </add>
+  </entities>
+</cfg>

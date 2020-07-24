@@ -1,0 +1,55 @@
+<cfg name="report">
+  
+  <connections>
+    <add name="input" provider="sqlserver" database="Junk" />
+  </connections>
+  
+  <actions>
+    <add name="change-color" description="Change Color" />
+  </actions>
+  
+  <entities>
+    <add name="SacramentoCrime">
+      <filter>
+      </filter>
+      <fields>
+        <add name="Id" type="int" primary-key="true" />
+        <add name="address" parameter="search" />
+        <add name="district" length="2" parameter="facet" />
+        <add name="beat" length="11" parameter="facet" />
+        <add name="grid" length="5" parameter="facet" />
+        <add name="crimedescr" length="31" label="Description" parameter="search" />
+        <add name="ucr_ncic_code" length="5" label="Code" parameter="facet" />
+        <add name="year" type="int" output="false" parameter="facet" />
+        <add name="month" length="6" output="false" parameter="facet" />
+        <add name="day" length="10" output="false" parameter="facet" />
+        <add name="dayofweek" length="12" output="false" parameter="facet" />
+        <add name="hour" length="2" output="false" parameter="facet" />
+        <add name="cdatetime" type="datetime" label="Date" />
+        <add name="geojson-color" output="false" parameter="facet" />
+        <add name="latitude" type="double" output="false" />
+        <add name="longitude" type="double" output="false" />        
+      </fields>
+      <calculated-fields>
+        <add name="Color" raw="true" 
+             t='format(<span style="height: 15px; width: 15px; background-color: {geojson-color}; border-radius: 50%; display: inline-block; margin-bottom: -2px;"></span> {geojson-color})' />
+        
+        <add name="FluidTest" label="Fluid Test" raw="true"
+             t='fluid(
+                <span class="badge badge-danger">{{ latitude | round:4 }},{{ longitude | round:4 }}</span>
+                )' />
+        
+        <add name="RazorTest" label="Razor Test" raw="true"
+             t='razor(
+                <span class="badge badge-warning">@(Math.Round(Model.latitude,4)),@(Math.Round(Model.longitude,4))</span>
+                )' />
+        
+        <add name="JintTest" label="Jint Test" t="jint(latitude + longitude)" />
+        
+        <add name="geojson-description" raw="true" output="false"  
+             t='razor(Copy that, we got a @Model.ucr_ncic_code in progress at @Model.address)' />
+        <add name="BatchValue" t="copy(Id)" type="int" />
+      </calculated-fields>
+    </add>
+  </entities>
+</cfg>

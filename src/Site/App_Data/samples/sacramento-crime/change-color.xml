@@ -1,0 +1,44 @@
+<cfg name="Change Color">
+
+  <parameters>
+    <add name="BatchId" type="long" value="0" prompt="true" />
+    <add name="Color" map="Colors" prompt="true" value="#FF0000" post-back="true" v="map(Colors)" />
+    <add name="bsh" input="false" t='copy(Color).razor(<span style="height: 15px; width: 15px; background-color:@(Model.Color); border-radius: 50%; display: inline-block; margin-bottom: -2px;"></span>)' raw="true" invalid-characters="" />
+  </parameters>
+
+  <maps>
+    <add name="Colors">
+      <items>
+        <add from="Red" to="#FF0000" />
+        <add from="Green" to="#00FF00" />
+        <add from="Blue" to="#0000FF" />
+      </items>
+    </add>
+  </maps>
+
+  <connections>
+    <add name="input" provider="sqlite" file="App_Data\batches.db" />
+    <add name="target" provider="sqlserver" database="Junk" />
+  </connections>
+
+  <entities>
+    <add name="BatchRecord">
+      <filter>
+        <add field="BatchId" value="@[BatchId]" />
+      </filter>
+      <fields>
+        <add name="BatchId" type="long"/>
+        <add name="BatchValue" />
+      </fields>
+      <calculated-fields>
+        <add name="Id" type="int" t="copy(BatchValue).convert()" />
+        <add name="Dml">
+          <transforms>
+            <add method="run" connection="target" command="UPDATE SacramentoCrime SET [geojson-color] = @Color WHERE [Id] = @Id;" /> 
+          </transforms>
+        </add>
+      </calculated-fields>
+    </add>
+  </entities>
+
+</cfg>
