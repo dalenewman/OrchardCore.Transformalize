@@ -12,12 +12,11 @@ using TransformalizeModule.Models;
 using Cfg.Net.Serializers;
 using Transformalize.Logging;
 using Transformalize.Impl;
-using TransformalizeModule.Fields;
+using TransformalizeModule.Ext;
 
 namespace TransformalizeModule.Services {
    public class ArrangementLoadService : IArrangementLoadService {
 
-      private readonly IStickyParameterService _stickyParameterService;
       private readonly IDictionary<string, string> _parameters;
       private readonly ISortService _sortService;
       private readonly ISettingsService _settings;
@@ -26,13 +25,11 @@ namespace TransformalizeModule.Services {
 
       public ArrangementLoadService(
          IParameterService parameterService,
-         IStickyParameterService stickyParameterService,
          ISortService sortService,
          ISettingsService settings,
          IConfigurationContainer configurationContainer,
          CombinedLogger<ArrangementLoadService> logger
       ) {
-         _stickyParameterService = stickyParameterService;
          _parameters = parameterService.GetParameters();
          _sortService = sortService;
          _settings = settings;
@@ -85,20 +82,16 @@ namespace TransformalizeModule.Services {
             return new Process { Status = 500, Message = "Error", Log = new List<LogEntry>() { new LogEntry(LogLevel.Error, null, $"LoadForReport can't load {contentItem.ContentType}.") } };
          }
 
-         _stickyParameterService.GetStickyParameters(contentItem.ContentItemId, _parameters);
-
          var process = LoadInternal(part, null, format == "json" ? new JsonSerializer() : null);
 
          process.Mode = "report";
          process.ReadOnly = true;
 
-         _stickyParameterService.SetStickyParameters(contentItem.ContentItemId, process.Parameters);
 
          if (part.PageSizes.Enabled()) {
             var pageSizes = _settings.GetPageSizes(part);
 
-            var stickySize = _stickyParameterService.GetStickyParameter(contentItem.ContentItemId, "size", () => pageSizes.Min());
-            EnforcePageSize(process, _parameters, pageSizes.Min(), stickySize, pageSizes.Max());
+            EnforcePageSize(process, _parameters, pageSizes.Min(), _parameters.GetIntegerOrDefault("page", ()=>pageSizes.Min()) , pageSizes.Max());
 
             // modify connections to buffer (load page completely before processing)
             foreach (var connection in process.Connections) {
@@ -131,20 +124,16 @@ namespace TransformalizeModule.Services {
             return new Process { Status = 500, Message = "Error", Log = new List<LogEntry>() { new LogEntry(LogLevel.Error, null, $"LoadForMap can't load {contentItem.ContentType}.") } };
          }
 
-         _stickyParameterService.GetStickyParameters(contentItem.ContentItemId, _parameters);
-
          var process = LoadInternal(part, null);
 
          process.Mode = "map";
          process.ReadOnly = true;
 
-         _stickyParameterService.SetStickyParameters(contentItem.ContentItemId, process.Parameters);
-
          // TODO: Paging and Sorting may be handled differently for map view
          if (part.PageSizes.Enabled()) {
             var pageSizes = _settings.GetPageSizes(part);
-            var stickySize = _stickyParameterService.GetStickyParameter(contentItem.ContentItemId, "size", () => pageSizes.Min());
-            EnforcePageSize(process, _parameters, pageSizes.Min(), stickySize, pageSizes.Max());
+            
+            EnforcePageSize(process, _parameters, pageSizes.Min(), _parameters.GetIntegerOrDefault("page", () => pageSizes.Min()), pageSizes.Max());
          }
 
          if (_parameters.ContainsKey("sort") && _parameters["sort"] != null) {

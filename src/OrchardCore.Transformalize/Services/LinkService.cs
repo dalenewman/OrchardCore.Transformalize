@@ -8,11 +8,9 @@ using Microsoft.AspNetCore.Http.Extensions;
 namespace TransformalizeModule.Services {
    public class LinkService : ILinkService {
       private readonly IHttpContextAccessor _contextAccessor;
-      private readonly IStickyParameterService _stickyParameterService;
 
-      public LinkService(IHttpContextAccessor contextAccessor, IStickyParameterService stickyParameterService) {
+      public LinkService(IHttpContextAccessor contextAccessor) {
          _contextAccessor = contextAccessor;
-         _stickyParameterService = stickyParameterService;
       }
 
       public HtmlString Create(string contentItemId, string actionUrl, bool everything) {
@@ -24,7 +22,7 @@ namespace TransformalizeModule.Services {
             url.SetQueryParam("page", 0);
          } else {
             if (_contextAccessor.HttpContext.Request.Query["size"].ToString() == null) {
-               url.SetQueryParam("size", _stickyParameterService.GetStickyParameter(contentItemId, "size", () => 20));
+               url.SetQueryParam("size", 20);
             }
          }
 

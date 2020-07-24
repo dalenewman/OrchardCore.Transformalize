@@ -33,12 +33,11 @@ namespace TransformalizeModule {
       public Startup() {
          TemplateContext.GlobalMemberAccessStrategy.Register<TransformalizeArrangementField>();
          TemplateContext.GlobalMemberAccessStrategy.Register<DisplayTransformalizeArrangementFieldViewModel>();
-         TemplateContext.GlobalMemberAccessStrategy.Register<PageSizesField>();
          TemplateContext.GlobalMemberAccessStrategy.Register<DisplayPageSizesFieldViewModel>();
       }
       public override void ConfigureServices(IServiceCollection services) {
 
-         services.AddSession();
+         // services.AddSession();
          services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 
          // transformalize services
@@ -46,7 +45,6 @@ namespace TransformalizeModule {
          services.AddScoped(typeof(CombinedLogger<>));
          services.AddScoped<ILinkService, LinkService>();
          services.AddScoped<ISortService, SortService>();
-         services.AddScoped<IStickyParameterService, StickyParameterService>();
          services.AddScoped<IArrangementService, ArrangementService>();
          services.AddScoped<IArrangementLoadService, ArrangementLoadService>();
          services.AddScoped<IArrangementRunService, ArrangementRunService>();
@@ -71,7 +69,6 @@ namespace TransformalizeModule {
 
          // fields (also see global template access above)
          services.AddContentField<TransformalizeArrangementField>().UseDisplayDriver<TransformalizeArrangementFieldDisplayDriver>();
-         services.AddContentField<PageSizesField>().UseDisplayDriver<PageSizesFieldDisplayDriver>();
 
          // parts
          services.AddContentPart<TransformalizeReportPart>().UseDisplayDriver<TransformalizeReportPartDisplayDriver>();
@@ -105,7 +102,7 @@ namespace TransformalizeModule {
              defaults: new { controller = "Schema", action = "Index", format = "xml" }
          );
 
-         builder.UseSession();
+         // builder.UseSession();
       }
 
       public void RouteBulkActions(IEndpointRouteBuilder routes) {

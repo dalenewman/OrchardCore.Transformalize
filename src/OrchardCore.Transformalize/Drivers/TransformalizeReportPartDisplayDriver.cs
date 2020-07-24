@@ -8,6 +8,7 @@ using TransformalizeModule.Models;
 using TransformalizeModule.ViewModels;
 using Microsoft.AspNetCore.Mvc.Localization;
 using OrchardCore.DisplayManagement.Notify;
+using System;
 
 namespace TransformalizeModule.Drivers {
    public class TransformalizeReportPartDisplayDriver : ContentPartDisplayDriver<TransformalizeReportPart> {
@@ -50,17 +51,28 @@ namespace TransformalizeModule.Drivers {
 
          var model = new EditTransformalizeReportPartViewModel();
 
-         if (await updater.TryUpdateModelAsync(model, Prefix, m => m.BulkActions, m => m.BulkActionValueField)) {
+         if (await updater.TryUpdateModelAsync(model, Prefix, m => m.BulkActions, m => m.BulkActionValueField, m => m.PageSizes)) {
             //_notifier.Information(H["Model - Bulk Actions:{0}", model.BulkActions.Value]);
             //_notifier.Information(H["Model - Bulk Action Field:{0}", model.BulkActionValueField.Text]);
 
             part.BulkActions.Value = model.BulkActions.Value;
             part.BulkActionValueField.Text = model.BulkActionValueField.Text;
+            part.PageSizes.Text = model.PageSizes.Text;
          }
 
          if (model.BulkActions.Value) {
             if (string.IsNullOrEmpty(model.BulkActionValueField.Text)) {
                updater.ModelState.AddModelError(Prefix, S["Please set the bulk action value field for bulk actions."]);
+            }
+         }
+
+         if (string.IsNullOrWhiteSpace(model.PageSizes.Text)) {
+            model.PageSizes.Text = string.Empty;
+         } else {
+            foreach (var size in model.PageSizes.Text.Split(',', StringSplitOptions.RemoveEmptyEntries)) {
+               if (!int.TryParse(size, out int result)) {
+                  updater.ModelState.AddModelError(Prefix, S["{0} is not a valid integer in page sizes.", size]);
+               }
             }
          }
 

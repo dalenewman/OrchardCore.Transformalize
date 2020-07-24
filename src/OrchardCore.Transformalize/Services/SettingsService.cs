@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Transformalize.Configuration;
 using StackExchange.Profiling;
+using TransformalizeModule.Ext;
 
 namespace TransformalizeModule.Services {
 
@@ -91,7 +92,7 @@ namespace TransformalizeModule.Services {
       public IEnumerable<int> GetPageSizes(TransformalizeReportPart part) {
          if (part.PageSizes.Enabled()) {
             if (part.PageSizes.OverrideDefaults()) {
-               return part.PageSizes.AsEnumerable();
+               return part.PageSizes.SplitIntegers(',');
             } else {
                return Settings.DefaultPageSizesAsEnumerable();
             }

@@ -37,9 +37,14 @@ namespace TransformalizeModule {
                  .WithDisplayName("Arrangement")
                  .WithPosition("1")
              ).WithField("PageSizes", field => field
-                 .OfType(nameof(PageSizesField))
+                 .OfType(nameof(TextField))
                  .WithDisplayName("Page Sizes")
                  .WithPosition("2")
+                 .WithSettings(new TextFieldSettings {
+                    Required = false,
+                    Hint = "To overide default page sizes, specify a comma delimited list of page sizes (integers). To use the common page sizes defined in settings, leave it blank.  To disable pagination altogether, set this to 0."
+                 }
+                )
              ).WithField("BulkActions", field => field
                 .OfType(nameof(BooleanField))
                 .WithDisplayName("Bulk Actions")
