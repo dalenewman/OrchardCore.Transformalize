@@ -33,7 +33,6 @@ namespace TransformalizeModule {
       public Startup() {
          TemplateContext.GlobalMemberAccessStrategy.Register<TransformalizeArrangementField>();
          TemplateContext.GlobalMemberAccessStrategy.Register<DisplayTransformalizeArrangementFieldViewModel>();
-         TemplateContext.GlobalMemberAccessStrategy.Register<DisplayPageSizesFieldViewModel>();
       }
       public override void ConfigureServices(IServiceCollection services) {
 

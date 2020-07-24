@@ -33,6 +33,9 @@ namespace TransformalizeModule.Services {
       public Dictionary<string, Connection> Connections { get; } = new Dictionary<string, Connection>();
       private readonly Dictionary<string, Transformalize.ConfigurationFacade.Connection> ConnectionsFacade = new Dictionary<string, Transformalize.ConfigurationFacade.Connection>(StringComparer.OrdinalIgnoreCase);
 
+      public Dictionary<string, Field> Fields { get; } = new Dictionary<string, Field>();
+      private readonly Dictionary<string, Transformalize.ConfigurationFacade.Field> FieldsFacade = new Dictionary<string, Transformalize.ConfigurationFacade.Field>(StringComparer.OrdinalIgnoreCase);
+
       public SettingsService(ISiteService siteService) {
 
          using (MiniProfiler.Current.Step("Common Settings Setup")) {
@@ -80,6 +83,17 @@ namespace TransformalizeModule.Services {
                ConnectionsFacade.Add(connection.Name, connection);
             }
 
+            if (Process.Entities.Any()) {
+               foreach (var field in Process.Entities.First().Fields) {
+                  Fields.Add(field.Name, field);
+               }
+            }
+            if (ProcessFacade.Entities.Any()) {
+               foreach (var field in ProcessFacade.Entities.First().Fields) {
+                  FieldsFacade.Add(field.Name, field);
+               }
+            }
+
          }
 
       }
@@ -103,7 +117,7 @@ namespace TransformalizeModule.Services {
 
       /// <summary>
       /// This method transfers module defined parameters, maps, connections, and actions into a process.
-      /// This is used to consolidate such things for easy maintenance.
+      /// This is used to consolidate such things for easier maintenance.
       /// </summary>
       /// <param name="process">the transformalize process</param>
       public void ApplyCommonSettings(Process process) {
@@ -141,6 +155,42 @@ namespace TransformalizeModule.Services {
                var key = connection.Key;
                process.Connections[i] = Connections[connection.Name];
                process.Connections[i].Key = key;
+            }
+         }
+
+         // common fields
+         if (Fields.Any() && process.Entities.Any()) {
+
+            for (int x = 0; x < process.Entities.Count; x++) {
+               var entity = process.Entities[x];
+
+               for (int y = 0; y < entity.Fields.Count; y++) {
+                  var field = process.Entities[x].Fields[y];
+
+                  if (Fields.ContainsKey(field.Name) && !field.System && !field.Input && !field.Transforms.Any() && !field.Validators.Any()) {
+
+                     var index = field.Index;
+                     var masterIndex = field.MasterIndex;
+                     process.Entities[x].Fields[y] = Fields[field.Name];
+                     process.Entities[x].Fields[y].Index = index;
+                     process.Entities[x].Fields[y].MasterIndex = masterIndex;
+
+                  }
+               }
+
+               for (int y = 0; y < entity.CalculatedFields.Count; y++) {
+                  var field = process.Entities[x].CalculatedFields[y];
+
+                  if (Fields.ContainsKey(field.Name) && !field.System && !field.Input && !field.Transforms.Any() && !field.Validators.Any()) {
+
+                     var index = field.Index;
+                     var masterIndex = field.MasterIndex;
+                     process.Entities[x].CalculatedFields[y] = Fields[field.Name];
+                     process.Entities[x].CalculatedFields[y].Index = index;
+                     process.Entities[x].CalculatedFields[y].MasterIndex = masterIndex;
+
+                  }
+               }
             }
          }
 
@@ -182,6 +232,30 @@ namespace TransformalizeModule.Services {
             var connection = process.Connections[i];
             if (connection.Provider == null && ConnectionsFacade.ContainsKey(connection.Name)) {
                process.Connections[i] = ConnectionsFacade[connection.Name];
+            }
+         }
+
+         // common fields
+         if (FieldsFacade.Any() && process.Entities.Any()) {
+
+            for (int x = 0; x < process.Entities.Count; x++) {
+               var entity = process.Entities[x];
+
+               for (int y = 0; y < entity.Fields.Count; y++) {
+                  var field = process.Entities[x].Fields[y];
+
+                  if (FieldsFacade.ContainsKey(field.Name) && field.System != "true" && field.Input != "true" && !field.Transforms.Any() && !field.Validators.Any()) {
+                     process.Entities[x].Fields[y] = FieldsFacade[field.Name];
+                  }
+               }
+
+               for (int y = 0; y < entity.CalculatedFields.Count; y++) {
+                  var field = process.Entities[x].CalculatedFields[y];
+
+                  if (FieldsFacade.ContainsKey(field.Name) && field.System != "true" && field.Input != "true" && !field.Transforms.Any() && !field.Validators.Any()) {
+                     process.Entities[x].CalculatedFields[y] = FieldsFacade[field.Name];
+                  }
+               }
             }
          }
 
