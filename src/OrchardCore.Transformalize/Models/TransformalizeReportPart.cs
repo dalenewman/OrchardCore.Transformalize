@@ -1,11 +1,10 @@
 using OrchardCore.ContentManagement;
-using TransformalizeModule.Fields;
 using OrchardCore.ContentFields.Fields;
 
 namespace TransformalizeModule.Models {
    public class TransformalizeReportPart : ContentPart {
       public TransformalizeReportPart() {
-         Arrangement = new TransformalizeArrangementField() { Arrangement = @"<cfg name=""report"">
+         Arrangement = new TextField() { Text = @"<cfg name=""report"">
    <parameters>
    </parameters>
    <connections>
@@ -29,7 +28,7 @@ namespace TransformalizeModule.Models {
          BulkActionSuccessTask = new TextField();
          BulkActionFailTask = new TextField();
       }
-      public TransformalizeArrangementField Arrangement { get; set; }
+      public TextField Arrangement { get; set; }
       public TextField PageSizes { get; set; }
       public BooleanField BulkActions { get; set; }
       public TextField BulkActionValueField { get; set; }

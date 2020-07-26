@@ -9,22 +9,36 @@ using TransformalizeModule.ViewModels;
 using Microsoft.AspNetCore.Mvc.Localization;
 using OrchardCore.DisplayManagement.Notify;
 using System;
+using Transformalize.Logging;
+using Transformalize.Contracts;
+using System.Collections.Generic;
+using TransformalizeModule.Services.Contracts;
+using OrchardCore.Environment.Cache;
+using Autofac;
+using Transformalize.Configuration;
+using System.Linq;
 
 namespace TransformalizeModule.Drivers {
    public class TransformalizeReportPartDisplayDriver : ContentPartDisplayDriver<TransformalizeReportPart> {
 
       private readonly IStringLocalizer<TransformalizeReportPartDisplayDriver> S;
       private readonly IHtmlLocalizer<TransformalizeReportPartDisplayDriver> H;
+      private readonly IConfigurationContainer _container;
       private readonly INotifier _notifier;
+      private readonly ISignal _signal;
 
       public TransformalizeReportPartDisplayDriver(
          IStringLocalizer<TransformalizeReportPartDisplayDriver> localizer,
          IHtmlLocalizer<TransformalizeReportPartDisplayDriver> htmlLocalizer,
-         INotifier notifier
+         IConfigurationContainer container,
+         INotifier notifier,
+         ISignal signal
       ) {
          S = localizer;
          H = htmlLocalizer;
+         _container = container;
          _notifier = notifier;
+         _signal = signal;
       }
 
       // change display for admin content items view?
@@ -51,7 +65,7 @@ namespace TransformalizeModule.Drivers {
 
          var model = new EditTransformalizeReportPartViewModel();
 
-         if (await updater.TryUpdateModelAsync(model, Prefix, m => m.BulkActions, m => m.BulkActionValueField, m => m.PageSizes)) {
+         if (await updater.TryUpdateModelAsync(model, Prefix, m => m.BulkActions, m => m.BulkActionValueField, m => m.PageSizes, m => m.Arrangement)) {
             //_notifier.Information(H["Model - Bulk Actions:{0}", model.BulkActions.Value]);
             //_notifier.Information(H["Model - Bulk Action Field:{0}", model.BulkActionValueField.Text]);
 
@@ -74,6 +88,39 @@ namespace TransformalizeModule.Drivers {
                   updater.ModelState.AddModelError(Prefix, S["{0} is not a valid integer in page sizes.", size]);
                }
             }
+         }
+
+         try {
+            var logger = new MemoryLogger(LogLevel.Error);
+            var process = _container.CreateScope(model.Arrangement.Text, part.ContentItem, new Dictionary<string, string>(), false).Resolve<Process>();
+            if (process.Errors().Any()) {
+               foreach (var error in process.Errors()) {
+                  updater.ModelState.AddModelError(Prefix, S[error]);
+               }
+            }
+            if (process.Warnings().Any()) {
+               foreach (var warning in process.Warnings()) {
+                  _notifier.Warning(H[warning]);
+               }
+            }
+            if (process.Entities.Any()) {
+               if (part.BulkActions.Value) {
+                  if (!string.IsNullOrEmpty(part.BulkActionValueField.Text)) {
+                     if (process.Entities[0].GetAllFields().All(f => f.Alias != part.BulkActionValueField.Text)) {
+                        updater.ModelState.AddModelError(Prefix, S["The field {0} does not exist.", part.BulkActionValueField.Text]);
+                     }
+                  }
+               }
+            } else {
+               updater.ModelState.AddModelError(Prefix, S["Please define an entity."]);
+            }
+
+         } catch (Exception ex) {
+            updater.ModelState.AddModelError(Prefix, S[ex.Message]);
+         }
+
+         if (updater.ModelState.IsValid) {
+            _signal.SignalToken(Common.GetCacheKey(part.ContentItem.Id));
          }
 
          return Edit(part, context);

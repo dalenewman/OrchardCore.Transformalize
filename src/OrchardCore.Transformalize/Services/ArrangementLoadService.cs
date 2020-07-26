@@ -287,11 +287,11 @@ namespace TransformalizeModule.Services {
       }
 
       private Process LoadInternal(TransformalizeTaskPart part, IDictionary<string, string> parameters = null, ISerializer serializer = null) {
-         return LoadInternal(part.Arrangement.Arrangement, part.ContentItem, parameters, serializer);
+         return LoadInternal(part.Arrangement.Text, part.ContentItem, parameters, serializer);
       }
 
       private Process LoadInternal(TransformalizeReportPart part, IDictionary<string, string> parameters = null, ISerializer serializer = null) {
-         return LoadInternal(part.Arrangement.Arrangement, part.ContentItem, parameters, serializer);
+         return LoadInternal(part.Arrangement.Text, part.ContentItem, parameters, serializer);
       }
 
       private Process LoadInternal(string arrangement, ContentItem item, IDictionary<string, string> parameters = null, ISerializer serializer = null) {

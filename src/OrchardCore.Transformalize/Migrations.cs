@@ -2,7 +2,6 @@ using OrchardCore.Alias.Settings;
 using OrchardCore.ContentManagement.Metadata;
 using OrchardCore.ContentManagement.Metadata.Settings;
 using OrchardCore.Data.Migration;
-using TransformalizeModule.Fields;
 using OrchardCore.ContentFields.Fields;
 using OrchardCore.ContentFields.Settings;
 using OrchardCore.Features.Services;
@@ -33,9 +32,15 @@ namespace TransformalizeModule {
              .WithDisplayName("Transformalize Report Part")
              .WithDescription("Provides fields for Transformalize Report content type")
              .WithField("Arrangement", field => field
-                 .OfType(nameof(TransformalizeArrangementField))
+                 .OfType(nameof(TextField))
                  .WithDisplayName("Arrangement")
                  .WithPosition("1")
+                 .WithEditor("TransformalizeArrangement")
+                 .WithSettings(new TextFieldSettings {
+                     Hint = string.Empty,
+                     Required = true
+                  }
+                 )
              ).WithField("PageSizes", field => field
                  .OfType(nameof(TextField))
                  .WithDisplayName("Page Sizes")
@@ -85,10 +90,16 @@ namespace TransformalizeModule {
              .WithDisplayName("Transformalize Task Part")
              .WithDescription("Provides fields for Transformalize Task content type")
              .WithField("Arrangement", field => field
-                 .OfType(nameof(TransformalizeArrangementField))
+                 .OfType(nameof(TextField))
                  .WithDisplayName("Arrangement")
                  .WithPosition("1")
-             )
+                 .WithEditor("TransformalizeArrangement")
+                 .WithSettings(new TextFieldSettings {
+                    Hint = string.Empty,
+                    Required = true
+                 }
+               )
+            )
          );
 
          _contentDefinitionManager.AlterTypeDefinition("TransformalizeTask", builder => builder

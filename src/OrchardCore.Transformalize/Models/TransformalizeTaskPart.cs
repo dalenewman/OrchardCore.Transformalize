@@ -1,12 +1,12 @@
-﻿using OrchardCore.ContentManagement;
-using TransformalizeModule.Fields;
+﻿using OrchardCore.ContentFields.Fields;
+using OrchardCore.ContentManagement;
 
 namespace TransformalizeModule.Models {
    public class TransformalizeTaskPart : ContentPart {
 
       public TransformalizeTaskPart() {
-         Arrangement = new TransformalizeArrangementField();
+         Arrangement = new TextField();
       }
-      public TransformalizeArrangementField Arrangement { get; set; }
+      public TextField Arrangement { get; set; }
    }
 }

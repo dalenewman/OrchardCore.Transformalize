@@ -2,16 +2,13 @@ using System;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.DependencyInjection;
-using TransformalizeModule.Fields;
 using TransformalizeModule.Models;
 using OrchardCore.ContentManagement;
 using OrchardCore.Modules;
 using OrchardCore.ResourceManagement;
-using Fluid;
 using OrchardCore.Data.Migration;
 using OrchardCore.ContentManagement.Display.ContentDisplay;
 using TransformalizeModule.Drivers;
-using TransformalizeModule.ViewModels;
 using TransformalizeModule.Services.Contracts;
 using TransformalizeModule.Services;
 using TransformalizeModule.Handlers;
@@ -30,10 +27,6 @@ using TransformalizeModule.Activities;
 namespace TransformalizeModule {
    public class Startup : StartupBase {
 
-      public Startup() {
-         TemplateContext.GlobalMemberAccessStrategy.Register<TransformalizeArrangementField>();
-         TemplateContext.GlobalMemberAccessStrategy.Register<DisplayTransformalizeArrangementFieldViewModel>();
-      }
       public override void ConfigureServices(IServiceCollection services) {
 
          // services.AddSession();
@@ -65,9 +58,6 @@ namespace TransformalizeModule {
          services.AddScoped<IPermissionProvider, Permissions>();
          services.AddScoped<IResourceManifestProvider, ResourceManifest>();
          services.AddScoped<IContentHandler, TransformalizeHandler>();
-
-         // fields (also see global template access above)
-         services.AddContentField<TransformalizeArrangementField>().UseDisplayDriver<TransformalizeArrangementFieldDisplayDriver>();
 
          // parts
          services.AddContentPart<TransformalizeReportPart>().UseDisplayDriver<TransformalizeReportPartDisplayDriver>();
