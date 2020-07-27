@@ -1,5 +1,5 @@
 @model TransformalizeModule.ViewModels.TransformalizeSettingsViewModel
-
+@using TransformalizeModule 
 
    <ul class="nav nav-tabs">
       <li class="nav-item pr-md-2">
@@ -49,37 +49,37 @@
       <div class="form-group">
          <label asp-for="BulkActionCreateTask">@T["Create Task"]</label>
          <input asp-for="BulkActionCreateTask" class="form-control" />
-         <span class="hint">@T["Default task to create and return an identifier for a bulk action batch."]</span>
+         <span class="hint">@T[Common.BulkActionCreateTaskHint]</span>
       </div>
 
       <div class="form-group">
          <label asp-for="BulkActionWriteTask">@T["Write Task"]</label>
          <input asp-for="BulkActionWriteTask" class="form-control" />
-         <span class="hint">@T["Default task to write the bulk action' values for a bulk action batch."]</span>
+         <span class="hint">@T[Common.BulkActionWriteTaskHint]</span>
       </div>
 
       <div class="form-group">
          <label asp-for="BulkActionSummaryTask">@T["Summary Task"]</label>
          <input asp-for="BulkActionSummaryTask" class="form-control" />
-         <span class="hint">@T["Default task to gather summary for a bulk action's batch."]</span>
+         <span class="hint">@T[Common.BulkActionSummaryTaskHint]</span>
       </div>
 
       <div class="form-group">
          <label asp-for="BulkActionRunTask">@T["Run Task"]</label>
          <input asp-for="BulkActionRunTask" class="form-control" />
-         <span class="hint">@T["Default task to indicate the task is running."]</span>
+         <span class="hint">@T[Common.BulkActionRunTaskHint]</span>
       </div>
 
       <div class="form-group">
          <label asp-for="BulkActionSuccessTask">@T["Success Task"]</label>
          <input asp-for="BulkActionSuccessTask" class="form-control" />
-         <span class="hint">@T["Default task to indicate the task succeeded."]</span>
+         <span class="hint">@T[Common.BulkActionSuccessTaskHint]</span>
       </div>
 
       <div class="form-group">
          <label asp-for="BulkActionFailTask">@T["Fail Task"]</label>
          <input asp-for="BulkActionFailTask" class="form-control" />
-         <span class="hint">@T["Default task to indicate the task failed."]</span>
+         <span class="hint">@T[Common.BulkActionFailTaskHint]</span>
       </div>
 
    </div>

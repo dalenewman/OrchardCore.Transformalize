@@ -34,17 +34,17 @@ namespace TransformalizeModule {
              .WithField("Arrangement", field => field
                  .OfType(nameof(TextField))
                  .WithDisplayName("Arrangement")
-                 .WithPosition("1")
+                 .WithPosition("01")
                  .WithEditor("TransformalizeArrangement")
                  .WithSettings(new TextFieldSettings {
-                     Hint = string.Empty,
-                     Required = true
-                  }
+                    Hint = string.Empty,
+                    Required = true
+                 }
                  )
              ).WithField("PageSizes", field => field
                  .OfType(nameof(TextField))
                  .WithDisplayName("Page Sizes")
-                 .WithPosition("2")
+                 .WithPosition("02")
                  .WithSettings(new TextFieldSettings {
                     Required = false,
                     Hint = "To overide default page sizes, specify a comma delimited list of page sizes (integers). To use the common page sizes defined in settings, leave it blank.  To disable pagination altogether, set this to 0."
@@ -53,24 +53,78 @@ namespace TransformalizeModule {
              ).WithField("BulkActions", field => field
                 .OfType(nameof(BooleanField))
                 .WithDisplayName("Bulk Actions")
-                .WithPosition("3")
+                .WithPosition("03")
                 .WithSettings(new BooleanFieldSettings {
                    DefaultValue = false,
                    Hint = "Allow user to select one, many, or all records for a bulk action?",
                    Label = "Bulk Actions"
-                  }
+                }
                 )
               ).WithField("BulkActionValueField", field => field
                 .OfType(nameof(TextField))
                 .WithDisplayName("Bulk Action Value Field")
-                .WithPosition("4")
+                .WithPosition("04")
                 .WithSettings(new TextFieldSettings {
                    Required = false,
                    Hint = "Specify which field or calculated field provides the value for bulk actions."
-                  }
+                }
                 )
+              ).WithField("BulkActionCreateTask", field => field
+                  .OfType(nameof(TextField))
+                  .WithDisplayName("Bulk Action Create Task")
+                  .WithPosition("05")
+                  .WithSettings(new TextFieldSettings {
+                     Required = false,
+                     Hint = Common.BulkActionCreateTaskHint
+                  })
+              ).WithField("BulkActionWriteTask", field => field
+                  .OfType(nameof(TextField))
+                  .WithDisplayName("Bulk Action Write Task")
+                  .WithPosition("06")
+                  .WithSettings(new TextFieldSettings {
+                     Required = false,
+                     Hint = Common.BulkActionWriteTaskHint
+                  })
+              ).WithField("BulkActionSummaryTask", field => field
+                  .OfType(nameof(TextField))
+                  .WithDisplayName("Bulk Action Summary Task")
+                  .WithPosition("07")
+                  .WithSettings(new TextFieldSettings {
+                     Required = false,
+                     Hint = Common.BulkActionSummaryTaskHint
+                  })
+              ).WithField("BulkActionRunTask", field => field
+                  .OfType(nameof(TextField))
+                  .WithDisplayName("Bulk Action Run Task")
+                  .WithPosition("08")
+                  .WithSettings(new TextFieldSettings {
+                     Required = false,
+                     Hint = Common.BulkActionRunTaskHint
+                  })
+              ).WithField("BulkActionSuccessTask", field => field
+                  .OfType(nameof(TextField))
+                  .WithDisplayName("Bulk Action Success Task")
+                  .WithPosition("09")
+                  .WithSettings(new TextFieldSettings {
+                     Required = false,
+                     Hint = Common.BulkActionSuccessTaskHint
+                  })
+              ).WithField("BulkActionFailTask", field => field
+                  .OfType(nameof(TextField))
+                  .WithDisplayName("Bulk Action Fail Task")
+                  .WithPosition("10")
+                  .WithSettings(new TextFieldSettings {
+                     Required = false,
+                     Hint = Common.BulkActionFailTaskHint
+                  })
               )
          );
+
+         /*
+         BulkActionRunTask = new TextField();  Default task to indicate the task is running.
+         BulkActionSuccessTask = new TextField(); Default task to indicate the task succeeded.
+         BulkActionFailTask = new TextField(); Default task to indicate the task failed.
+         */
 
          _contentDefinitionManager.AlterTypeDefinition("TransformalizeReport", builder => builder
              .Creatable()

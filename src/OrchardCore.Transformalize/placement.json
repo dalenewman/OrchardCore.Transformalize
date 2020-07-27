@@ -1,14 +1,20 @@
 {
    "BooleanField_Edit": [
       {
+         "displayType": "Edit",
          "differentiator": "TransformalizeReportPart-BulkActions",
-         "place": "Parts:1#Bulk Actions"
+         "place": "Parts:1#Bulk Actions",
+         "contentType": [ "TransformalizeReport" ],
+         "contentPart": [ "TransformalizeReportPart" ]
       }
    ],
    "TextField_Edit": [
       {
+         "displayType": "Edit",
          "differentiator": "TransformalizeReportPart-BulkActionValueField",
-         "place": "Parts:1#Bulk Actions"
+         "place": "Parts:1#Bulk Actions",
+         "contentType": [ "TransformalizeReport" ],
+         "contentPart": [ "TransformalizeReportPart" ]
       }
    ]
 }

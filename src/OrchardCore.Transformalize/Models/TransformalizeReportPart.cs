@@ -19,6 +19,7 @@ namespace TransformalizeModule.Models {
    </entities>
 </cfg>" };
          PageSizes = new TextField();
+
          BulkActions = new BooleanField();
          BulkActionValueField = new TextField();
          BulkActionCreateTask = new TextField();
