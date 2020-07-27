@@ -75,7 +75,7 @@ namespace TransformalizeModule {
                   .WithPosition("05")
                   .WithSettings(new TextFieldSettings {
                      Required = false,
-                     Hint = Common.BulkActionCreateTaskHint
+                     Hint = Common.BulkActionCreateTaskHint + " Leave blank to use default task defined in settings."
                   })
               ).WithField("BulkActionWriteTask", field => field
                   .OfType(nameof(TextField))
@@ -83,7 +83,7 @@ namespace TransformalizeModule {
                   .WithPosition("06")
                   .WithSettings(new TextFieldSettings {
                      Required = false,
-                     Hint = Common.BulkActionWriteTaskHint
+                     Hint = Common.BulkActionWriteTaskHint + " Leave blank to use default task defined in settings."
                   })
               ).WithField("BulkActionSummaryTask", field => field
                   .OfType(nameof(TextField))
@@ -91,7 +91,7 @@ namespace TransformalizeModule {
                   .WithPosition("07")
                   .WithSettings(new TextFieldSettings {
                      Required = false,
-                     Hint = Common.BulkActionSummaryTaskHint
+                     Hint = Common.BulkActionSummaryTaskHint + " Leave blank to use default task defined in settings."
                   })
               ).WithField("BulkActionRunTask", field => field
                   .OfType(nameof(TextField))
@@ -99,7 +99,7 @@ namespace TransformalizeModule {
                   .WithPosition("08")
                   .WithSettings(new TextFieldSettings {
                      Required = false,
-                     Hint = Common.BulkActionRunTaskHint
+                     Hint = Common.BulkActionRunTaskHint + " Leave blank to use default task defined in settings."
                   })
               ).WithField("BulkActionSuccessTask", field => field
                   .OfType(nameof(TextField))
@@ -107,7 +107,7 @@ namespace TransformalizeModule {
                   .WithPosition("09")
                   .WithSettings(new TextFieldSettings {
                      Required = false,
-                     Hint = Common.BulkActionSuccessTaskHint
+                     Hint = Common.BulkActionSuccessTaskHint + " Leave blank to use default task defined in settings."
                   })
               ).WithField("BulkActionFailTask", field => field
                   .OfType(nameof(TextField))
@@ -115,7 +115,7 @@ namespace TransformalizeModule {
                   .WithPosition("10")
                   .WithSettings(new TextFieldSettings {
                      Required = false,
-                     Hint = Common.BulkActionFailTaskHint
+                     Hint = Common.BulkActionFailTaskHint + " Leave blank to use default task defined in settings."
                   })
               )
          );

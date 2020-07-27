@@ -116,6 +116,36 @@ namespace TransformalizeModule.Services {
       }
 
       /// <summary>
+      /// Get bulk action tasks from module settings unless overridden by report settings
+      /// </summary>
+      /// <param name="part">the report part being displayed</param>
+      /// <returns>bulk action tasks</returns>
+      public BulkActionTaskNames GetBulkActionTaskNames(TransformalizeReportPart part) {
+
+         var names = new BulkActionTaskNames();
+
+         if (string.IsNullOrWhiteSpace(part.BulkActionCreateTask.Text)) {
+            names.Create = Settings.BulkActionCreateTask;
+         }
+         if (string.IsNullOrWhiteSpace(part.BulkActionWriteTask.Text)) {
+            names.Write = Settings.BulkActionWriteTask;
+         }
+         if (string.IsNullOrWhiteSpace(part.BulkActionSummaryTask.Text)) {
+            names.Summary = Settings.BulkActionSummaryTask;
+         }
+         if (string.IsNullOrWhiteSpace(part.BulkActionRunTask.Text)) {
+            names.Run = Settings.BulkActionRunTask;
+         }
+         if (string.IsNullOrWhiteSpace(part.BulkActionSuccessTask.Text)) {
+            names.Success = Settings.BulkActionSuccessTask;
+         }
+         if (string.IsNullOrWhiteSpace(part.BulkActionFailTask.Text)) {
+            names.Fail = Settings.BulkActionFailTask;
+         }
+         return names;
+      }
+
+      /// <summary>
       /// This method transfers module defined parameters, maps, connections, and actions into a process.
       /// This is used to consolidate such things for easier maintenance.
       /// </summary>

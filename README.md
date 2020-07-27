@@ -79,26 +79,26 @@ You may have to enable some of these manually if you're not installing from scra
 
 ---
 
+#### GIF
+![bogus report](src/Site/App_Data/samples/sacramento-crime/criminal-bulk-actions.gif)
+
 #### Reporting
 Using [Transformalize](https://github.com/dalenewman/Transformalize) for reporting basically means you 
-read from one entity and do not specify an output.  The [bogus](https://github.com/dalenewman/Transformalize.Provider.Bogus) provider 
-(see below) is fun to play with if you don't have any data sources.  To find out 
+read from one entity and do not specify an output.  To find out 
 more about the providers, click on the links above.  Also, be sure to read 
 the main [Transformalize](https://github.com/dalenewman/Transformalize) read me page.
 
-![bogus report](bogus.gif)
-
 #### Tasks
 Tasks can transform, validate, or de-normalize data (as seen in the [Transformalize](https://github.com/dalenewman/Transformalize) read me).
-They can also run actions or other tasks.  You can use them to write and run SQL scripts 
-or manipulate every row (e.g. with an ADO run transform).
+They can prompt the user for input (which should be validated).  
+They may be used to modify data (e.g. with an ADO run transform).
 
 #### Bulk Actions
 When you enable Bulk Actions on a report, you designate a field or calculated field 
 in your arrangement as the Bulk Action Value Field.  Each row's value from 
 this field is sent to the bulk action.
 
-Bulk actions you run correspond to previously defined tasks.  Tasks are added to 
+Bulk actions are processed by tasks.  Tasks are added to 
 an arrangement like this:
 
 ```xml
@@ -111,17 +111,15 @@ an arrangement like this:
 </cfg>
 ```
 
-In order for bulk actions to work in a flexible way, 6 tasks must be 
-defined:
+Six tasks must be defined in order to run bulk actions:
 
-1. `batch-create`: creates and returns a batch id
-2. `batch-write`: writes batch id and bulk action's values.
-3. `batch-summary`: Returns a batch summary for Review and Result page.
-4. `batch-success`: runs on success
-5. `batch-fail`: runs on failure
-6. `batch-running`: runs when bulk action is sent to background or queue
+1. `batch-create`: create and return a batch identifier
+1. `batch-write`: write batch values.
+1. `batch-summary`: gather review and result summary for a batch.
+1. `batch-run`: indicate the task is running.
+1. `batch-success`: indicate the task succeeded
+1. `batch-fail`: indicate the task failed
 
-A recipe named "Transformalize Batches SQLite" provides a SQLite 
-example.  These task names (aliases) are hard-coded 
-right now but will be put into settings.
+A recipe named "Transformalize Batches SQLite" provides a 
+set of SQLite batch tasks.
 

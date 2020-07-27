@@ -12,6 +12,7 @@
         <add from="Red" to="#FF0000" />
         <add from="Green" to="#00FF00" />
         <add from="Blue" to="#0000FF" />
+        <add from="Default" to="#48C9B0" />
       </items>
     </add>
   </maps>
