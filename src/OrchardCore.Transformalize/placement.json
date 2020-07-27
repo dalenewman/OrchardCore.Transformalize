@@ -3,18 +3,44 @@
       {
          "displayType": "Edit",
          "differentiator": "TransformalizeReportPart-BulkActions",
-         "place": "Parts:1#Bulk Actions",
-         "contentType": [ "TransformalizeReport" ],
-         "contentPart": [ "TransformalizeReportPart" ]
+         "place": "Parts:1#Bulk Actions"
       }
    ],
    "TextField_Edit": [
-      {
+      { 
          "displayType": "Edit",
          "differentiator": "TransformalizeReportPart-BulkActionValueField",
-         "place": "Parts:1#Bulk Actions",
-         "contentType": [ "TransformalizeReport" ],
-         "contentPart": [ "TransformalizeReportPart" ]
+         "place": "Parts:1#Bulk Actions"
+      },
+      {
+         "displayType": "Edit",
+         "differentiator": "TransformalizeReportPart-BulkActionCreateTask",
+         "place": "Parts:1#Bulk Actions"
+      },
+      {
+         "displayType": "Edit",
+         "differentiator": "TransformalizeReportPart-BulkActionWriteTask",
+         "place": "Parts:1#Bulk Actions"
+      },
+      {
+         "displayType": "Edit",
+         "differentiator": "TransformalizeReportPart-BulkActionSummaryTask",
+         "place": "Parts:1#Bulk Actions"
+      },
+      {
+         "displayType": "Edit",
+         "differentiator": "TransformalizeReportPart-BulkActionRunTask",
+         "place": "Parts:1#Bulk Actions"
+      },
+      {
+         "displayType": "Edit",
+         "differentiator": "TransformalizeReportPart-BulkActionSuccessTask",
+         "place": "Parts:1#Bulk Actions"
+      },
+      {
+         "displayType": "Edit",
+         "differentiator": "TransformalizeReportPart-BulkActionFailTask",
+         "place": "Parts:1#Bulk Actions"
       }
    ]
 }

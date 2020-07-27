@@ -52,6 +52,12 @@ namespace TransformalizeModule.Drivers {
             model.PageSizes = part.PageSizes;
             model.BulkActions = part.BulkActions;
             model.BulkActionValueField = part.BulkActionValueField;
+            model.BulkActionCreateTask = part.BulkActionCreateTask;
+            model.BulkActionWriteTask = part.BulkActionWriteTask;
+            model.BulkActionSummaryTask = part.BulkActionSummaryTask;
+            model.BulkActionRunTask = part.BulkActionRunTask;
+            model.BulkActionSuccessTask = part.BulkActionSuccessTask;
+            model.BulkActionFailTask = part.BulkActionFailTask;
          }).Location("Content:1");
       }
 
@@ -65,13 +71,22 @@ namespace TransformalizeModule.Drivers {
 
          var model = new EditTransformalizeReportPartViewModel();
 
-         if (await updater.TryUpdateModelAsync(model, Prefix, m => m.BulkActions, m => m.BulkActionValueField, m => m.PageSizes, m => m.Arrangement)) {
+         if (await updater.TryUpdateModelAsync(model, Prefix)) {
             //_notifier.Information(H["Model - Bulk Actions:{0}", model.BulkActions.Value]);
             //_notifier.Information(H["Model - Bulk Action Field:{0}", model.BulkActionValueField.Text]);
 
+            part.Arrangement.Text = model.Arrangement.Text;
+            part.PageSizes.Text = model.PageSizes.Text;
+
             part.BulkActions.Value = model.BulkActions.Value;
             part.BulkActionValueField.Text = model.BulkActionValueField.Text;
-            part.PageSizes.Text = model.PageSizes.Text;
+            part.BulkActionCreateTask.Text = model.BulkActionCreateTask.Text;
+            part.BulkActionWriteTask.Text = model.BulkActionWriteTask.Text;
+            part.BulkActionSummaryTask.Text = model.BulkActionSummaryTask.Text;
+            part.BulkActionRunTask.Text = model.BulkActionRunTask.Text;
+            part.BulkActionSuccessTask.Text = model.BulkActionSuccessTask.Text;
+            part.BulkActionFailTask.Text = model.BulkActionFailTask.Text;
+
          }
 
          if (model.BulkActions.Value) {

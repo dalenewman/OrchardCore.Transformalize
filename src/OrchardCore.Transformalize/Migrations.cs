@@ -30,7 +30,7 @@ namespace TransformalizeModule {
 
          _contentDefinitionManager.AlterPartDefinition("TransformalizeReportPart", part => part
              .WithDisplayName("Transformalize Report Part")
-             .WithDescription("Provides fields for Transformalize Report content type")
+             .WithDescription("Fields for Transformalize Report content type")
              .WithField("Arrangement", field => field
                  .OfType(nameof(TextField))
                  .WithDisplayName("Arrangement")
@@ -119,12 +119,6 @@ namespace TransformalizeModule {
                   })
               )
          );
-
-         /*
-         BulkActionRunTask = new TextField();  Default task to indicate the task is running.
-         BulkActionSuccessTask = new TextField(); Default task to indicate the task succeeded.
-         BulkActionFailTask = new TextField(); Default task to indicate the task failed.
-         */
 
          _contentDefinitionManager.AlterTypeDefinition("TransformalizeReport", builder => builder
              .Creatable()
