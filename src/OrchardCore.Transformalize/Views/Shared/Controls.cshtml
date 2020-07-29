@@ -26,9 +26,8 @@
    var hasCoordinates = allFields.Any(f => f.Alias.StartsWith("lat", StringComparison.OrdinalIgnoreCase)) && allFields.Any(f => f.Alias.StartsWith("lon", StringComparison.OrdinalIgnoreCase));
 
    var linkService = Context.RequestServices.GetService<ILinkService>();
-   var alias = Model.Item.As<OrchardCore.Alias.Models.AliasPart>().Alias;
-   var exportCsvLink = linkService.Create(Model.Item.ContentItemId, Url.Action("StreamCsv", new { ContentItemId = alias }), true);
-   var exportJsonLink = linkService.Create(Model.Item.ContentItemId, Url.Action("StreamJson", new { ContentItemId = alias }), true);
+   var exportCsvLink = linkService.Create(Model.Item.ContentItemId, Url.Action("StreamCsv", new { ContentItemId = Model.IdOrAlias }), true);
+   var exportJsonLink = linkService.Create(Model.Item.ContentItemId, Url.Action("StreamJson", new { ContentItemId = Model.IdOrAlias }), true);
 
    var views = new List<PipelineViewModel>();
 
@@ -132,26 +131,26 @@
             var headless = Context.Request.GetDisplayUrl().Contains("Headless");
 
             // not using Url.Action because I don't want the autoroute (friendly slug name) here
-            var reportUrl = Url.Content("~/t/report/" + Model.Item.ContentItemId);
+            var reportUrl = Url.Content("~/t/report/" + Model.IdOrAlias);
             if (headless) {
                reportUrl = reportUrl.Replace("/t/report/", "/t/headless/report/");
             }
             views.Add(new PipelineViewModel("report") {
                Active = Model.Process.Mode == "report",
                Glyphicon = "list",
-               Link = linkService.Create(Model.Item.ContentItemId, reportUrl, false)
+               Link = linkService.Create(Model.IdOrAlias, reportUrl, false)
             });
 
             if (hasCoordinates) {
 
-               var mapUrl = Url.Action("Map", "Report", new { Model.Item.ContentItemId });
+               var mapUrl = Url.Action("Map", "Report", new { ContentItemId = Model.IdOrAlias });
                if (headless) {
                   mapUrl = mapUrl.Replace("/t/report/map/", "/t/headless/report/map/");
                }
                views.Add(new PipelineViewModel("map") {
                   Active = Model.Process.Mode == "map",
                   Glyphicon = "map-marker",
-                  Link = linkService.Create(Model.Item.ContentItemId, mapUrl, false)
+                  Link = linkService.Create(Model.IdOrAlias, mapUrl, false)
                });
             }
             //if (Model.Part.CalendarEnabled) {
@@ -197,8 +196,8 @@
                   <a class="dropdown-item" href="@exportJsonLink" title="save to json file">JSON</a>
                   @{
                      if (hasCoordinates) {
-                        var exportGeoJsonLink = linkService.Create(Model.Item.ContentItemId, Url.Action("StreamGeoJson", new { ContentItemId = alias }), true);
-                        /* var exportKmlLink = linkService.Create(Model.Item.ContentItemId, Url.Action("Index", "Kml", new { ContentItemId = Model.Item.ContentItemId }), true); */
+                        var exportGeoJsonLink = linkService.Create(Model.Item.ContentItemId, Url.Action("StreamGeoJson", new { ContentItemId = Model.IdOrAlias }), true);
+                        /* var exportKmlLink = linkService.Create(Model.Item.ContentItemId, Url.Action("Index", "Kml", new { ContentItemId = Model.IdOrAlias }), true); */
                         <a class="dropdown-item" href="@exportGeoJsonLink" title="save to geojson file">GEOJSON</a>
                         @*<a class="dropdown-item" href="@exportKmlLink" title="save to kml file">KML</a>*@
                      }

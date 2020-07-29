@@ -46,7 +46,7 @@ namespace TransformalizeModule.Controllers {
             return View("Log", new LogViewModel(_logger.Log, report.Process, report.ContentItem));
          }
 
-         return log ? View("Log", new LogViewModel(_logger.Log, report.Process, report.ContentItem)) : View(new ReportViewModel(report.Process, report.ContentItem));
+         return log ? View("Log", new LogViewModel(_logger.Log, report.Process, report.ContentItem)) : View(new ReportViewModel(report.Process, report.ContentItem, contentItemId));
 
       }
 
@@ -80,7 +80,7 @@ namespace TransformalizeModule.Controllers {
             return View("Log", new LogViewModel(_logger.Log, map.Process, map.ContentItem));
          }
 
-         return View(new ReportViewModel(map.Process, map.ContentItem) { Settings = _settings.Settings });
+         return View(new ReportViewModel(map.Process, map.ContentItem, contentItemId) { Settings = _settings.Settings });
 
       }
 

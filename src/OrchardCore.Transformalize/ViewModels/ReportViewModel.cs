@@ -21,6 +21,7 @@ namespace TransformalizeModule.ViewModels {
       public bool EnableInlineParameters { get; set; } = true;
       public bool MapEnabled { get; set; }
       public bool CalendarEnabled { get; set; }
+      public string IdOrAlias { get; set; }
 
       public Process Process {
          get {
@@ -37,10 +38,11 @@ namespace TransformalizeModule.ViewModels {
       public ContentItem Item { get; set; }
       public TransformalizeReportPart Part { get; set;}
 
-      public ReportViewModel(Process process, ContentItem item) {
+      public ReportViewModel(Process process, ContentItem item, string idOrAlias) {
          Process = process;
          Item = item;
          Part = item.As<TransformalizeReportPart>();
+         IdOrAlias = idOrAlias;
       }
 
       public Dictionary<string, Parameter> InlineParameters {
