@@ -21,5 +21,7 @@ namespace TransformalizeModule.ViewModels {
       public TextField MapDescriptionField { get; set; }
       public TextField MapLatitudeField { get; set; }
       public TextField MapLongitudeField { get; set; }
+      public TextField MapRadiusField { get; set; }
+      public TextField MapOpacityField { get; set; }
    }
 }

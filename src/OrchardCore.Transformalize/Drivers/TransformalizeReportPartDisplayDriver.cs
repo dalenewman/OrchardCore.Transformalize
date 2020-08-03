@@ -65,6 +65,8 @@ namespace TransformalizeModule.Drivers {
             model.MapDescriptionField = part.MapDescriptionField;
             model.MapLatitudeField = part.MapLatitudeField;
             model.MapLongitudeField = part.MapLongitudeField;
+            model.MapRadiusField = part.MapRadiusField;
+            model.MapOpacityField = part.MapOpacityField;
 
          }).Location("Content:1");
       }
@@ -100,6 +102,8 @@ namespace TransformalizeModule.Drivers {
             part.MapDescriptionField.Text = model.MapDescriptionField.Text;
             part.MapLatitudeField.Text = model.MapLatitudeField.Text;
             part.MapLongitudeField.Text = model.MapLongitudeField.Text;
+            part.MapRadiusField.Text = model.MapRadiusField.Text;
+            part.MapOpacityField.Text = model.MapOpacityField.Text;
 
          }
 
@@ -134,26 +138,61 @@ namespace TransformalizeModule.Drivers {
             }
             if (process.Entities.Any()) {
 
+               var fields = process.Entities[0].GetAllFields().ToArray();
+
                if (part.BulkActions.Value) {
                   if (!string.IsNullOrEmpty(part.BulkActionValueField.Text)) {
-                     if (process.Entities[0].GetAllFields().All(f => f.Alias != part.BulkActionValueField.Text)) {
+                     if (fields.All(f => f.Alias != part.BulkActionValueField.Text)) {
                         updater.ModelState.AddModelError(Prefix, S["The field {0} does not exist.", part.BulkActionValueField.Text]);
                      }
                   }
                }
 
                if (part.Map.Value) {
-                  if (process.Entities[0].GetAllFields().All(f => f.Alias != part.MapColorField.Text)) {
-                     updater.ModelState.AddModelError(Prefix, S["The field {0} used for map color does not exist.", part.MapColorField.Text]);
-                  }
-                  if (process.Entities[0].GetAllFields().All(f => f.Alias != part.MapDescriptionField.Text)) {
+
+                  if (fields.All(f => f.Alias != part.MapDescriptionField.Text)) {
                      updater.ModelState.AddModelError(Prefix, S["The field {0} used for map description does not exist.", part.MapDescriptionField.Text]);
                   }
-                  if (process.Entities[0].GetAllFields().All(f => f.Alias != part.MapLatitudeField.Text)) {
+                  if (fields.All(f => f.Alias != part.MapLatitudeField.Text)) {
                      updater.ModelState.AddModelError(Prefix, S["The field {0} used for map latitude does not exist.", part.MapLatitudeField.Text]);
                   }
-                  if (process.Entities[0].GetAllFields().All(f => f.Alias != part.MapLongitudeField.Text)) {
+                  if (fields.All(f => f.Alias != part.MapLongitudeField.Text)) {
                      updater.ModelState.AddModelError(Prefix, S["The field {0} used for map longitude does not exist.", part.MapLongitudeField.Text]);
+                  }
+
+                  // Map Color #ffc0cb
+                  if (string.IsNullOrWhiteSpace(part.MapColorField.Text)) {
+                     part.MapColorField.Text = "#ffc0cb";
+                  } else {
+                     if (fields.All(f => f.Alias != part.MapColorField.Text)) {
+                        updater.ModelState.AddModelError(Prefix, S["The field {0} used for map color does not exist.", part.MapColorField.Text]);
+                     }
+                  }
+
+                  // Map Opacity
+                  if (string.IsNullOrWhiteSpace(part.MapOpacityField.Text)) {
+                     part.MapOpacityField.Text = "0.8";
+                  } else {
+                     if (double.TryParse(part.MapOpacityField.Text, out double opacity)) {
+                        if (opacity < 0 || opacity > 1) {
+                           updater.ModelState.AddModelError(Prefix, S["Map opacity must be between 0 and 1."]);
+                        }
+                     } else {
+                        if (fields.All(f => f.Alias != part.MapOpacityField.Text)) {
+                           updater.ModelState.AddModelError(Prefix, S["The field {0} used for map opacity does not exist.", part.MapOpacityField.Text]);
+                        }
+                     }
+                  }
+
+                  // Map Radius
+                  if (string.IsNullOrWhiteSpace(part.MapRadiusField.Text)) {
+                     part.MapRadiusField.Text = "7";
+                  } else {
+                     if (!int.TryParse(part.MapRadiusField.Text, out int radius)) {
+                        if (fields.All(f => f.Alias != part.MapRadiusField.Text)) {
+                           updater.ModelState.AddModelError(Prefix, S["The field {0} used for map radius does not exist.", part.MapRadiusField.Text]);
+                        }
+                     }
                   }
                }
 

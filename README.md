@@ -13,8 +13,8 @@ module for [Orchard Core](https://github.com/OrchardCMS/OrchardCore) rc2.
   - <strike>MapBox Key</strike>
   - <strike>Dot Description Value/Field</strike>
   - <strike>Dot Color Value/Field</strike>
-  - Dot Opacity Value/Field
-  - Dot Size Value/Field
+  - <strike>Dot Opacity Value/Field</strike>
+  - <strike>Dot Size Value/Field</strike>
   - Paging (extended sizes or no paging)
   - Only show shape selector if bulk actions enabled
 - <strike>Batches / Bulk Actions</strike>

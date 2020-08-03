@@ -186,7 +186,7 @@ namespace TransformalizeModule {
              .WithPosition("2")
              .WithSettings(new TextFieldSettings {
                 Required = false,
-                Hint = "This field's value controls the dot color on the map.  It should contain a hex representation of a color (e.g. #ffc0cb)."
+                Hint = "Specify a field to control the color of the dots on the map.  Or, specify a hex representation of a color (e.g. #ffc0cb)."
              }
              )
            ).WithField("MapDescriptionField", field => field
@@ -218,6 +218,33 @@ namespace TransformalizeModule {
 
          return 2;
       }
+
+      public int UpdateFrom2() {
+         _contentDefinitionManager.AlterPartDefinition("TransformalizeReportPart", part => part
+          .WithField("MapRadiusField", field => field
+             .OfType(nameof(TextField))
+             .WithDisplayName("Map Radius Field")
+             .WithPosition("7")
+             .WithSettings(new TextFieldSettings {
+                Required = false,
+                Hint = "Specify a field to control the radius of the dots on the map.  Or, just set an integer value (e.g. 7)."
+             }
+             )
+           ).WithField("MapOpacityField", field => field
+             .OfType(nameof(TextField))
+             .WithDisplayName("Map Opacity Field")
+             .WithPosition("8")
+             .WithSettings(new TextFieldSettings {
+                Required = false,
+                Hint = "Specify a field to control the opacity of the dots on the map.  Or, just set a numeric value between 0.1 and 1.0 (e.g. 0.8)."
+             }
+             )
+           )
+         );
+
+         return 3;
+      }
+
 
       private async Task EnableFeature(string id) {
 

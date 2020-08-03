@@ -30,10 +30,12 @@ namespace TransformalizeModule.Models {
          BulkActionFailTask = new TextField();
 
          Map = new BooleanField();
-         MapColorField = new TextField() { Text = "geojson-color" };
          MapDescriptionField = new TextField() { Text = "geojson-description" };
          MapLatitudeField = new TextField() { Text = "latitude" };
          MapLongitudeField = new TextField() { Text = "longitude" };
+         MapColorField = new TextField() { Text = "geojson-color" };
+         MapRadiusField = new TextField() { Text = "7" };
+         MapOpacityField = new TextField() { Text = "0.8" };
       }
       public TextField Arrangement { get; set; }
       public TextField PageSizes { get; set; }
@@ -48,9 +50,12 @@ namespace TransformalizeModule.Models {
       public TextField BulkActionFailTask { get; set; }
 
       public BooleanField Map { get; set; }
-      public TextField MapColorField { get; set; }
       public TextField MapDescriptionField { get; set; }
       public TextField MapLatitudeField { get; set; }
       public TextField MapLongitudeField { get; set; }
+
+      public TextField MapColorField { get; set; }
+      public TextField MapRadiusField { get; set; }
+      public TextField MapOpacityField { get; set; }
    }
 }

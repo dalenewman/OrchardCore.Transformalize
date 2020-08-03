@@ -205,12 +205,30 @@ namespace TransformalizeModule.Services {
          // [Ll]on* used in feature's coordinates
          // batchvalue as batch-value property (and my js depends on this)
          var mapFields = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase) {
-            { string.IsNullOrWhiteSpace(part.MapColorField.Text) ? "geojson-color" : part.MapColorField.Text, "geojson-color" },  // becomes marker-color property
             { string.IsNullOrWhiteSpace(part.MapDescriptionField.Text) ? "geojson-description" : part.MapDescriptionField.Text, "geojson-description" }, // becomes description property
             { string.IsNullOrWhiteSpace(part.MapLatitudeField.Text) ? "latitude" : part.MapLatitudeField.Text, "latitude" }, // used in feature coordinate
             { string.IsNullOrWhiteSpace(part.MapLongitudeField.Text) ? "longitude" : part.MapLongitudeField.Text, "longitude" } // used in feature coordinate
          };
 
+         //             { string.IsNullOrWhiteSpace(part.MapColorField.Text) ? "geojson-color" : part.MapColorField.Text, "geojson-color" },  // becomes marker-color property
+
+         // todo: refactor the next three things
+         if(part.MapColorField.Text != null && !part.MapColorField.Text.StartsWith("#")) {
+            mapFields[part.MapColorField.Text] = part.MapColorField.Text;
+            process.GetAllFields().First(f => f.Alias.Equals(part.MapColorField.Text, StringComparison.OrdinalIgnoreCase)).Property = true;
+         }
+
+         if (part.MapRadiusField.Text != null && !int.TryParse(part.MapRadiusField.Text, out _)) {
+            mapFields[part.MapRadiusField.Text] = part.MapRadiusField.Text;
+            process.GetAllFields().First(f => f.Alias.Equals(part.MapRadiusField.Text, StringComparison.OrdinalIgnoreCase)).Property = true;
+         }
+
+         if (part.MapOpacityField.Text != null && !double.TryParse(part.MapOpacityField.Text, out _)) {
+            mapFields[part.MapOpacityField.Text] = part.MapOpacityField.Text;
+            process.GetAllFields().First(f => f.Alias.Equals(part.MapOpacityField.Text, StringComparison.OrdinalIgnoreCase)).Property = true;
+         }
+
+         // for batch operations - currently hard-coded to batchvalue
          if (!string.IsNullOrEmpty(part.BulkActionValueField.Text)) {
             mapFields[part.BulkActionValueField.Text] = "batchvalue";
          }
