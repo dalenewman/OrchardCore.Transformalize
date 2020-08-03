@@ -50,6 +50,7 @@ namespace TransformalizeModule.Drivers {
             model.TransformalizeReportPart = part;
             model.Arrangement = part.Arrangement;
             model.PageSizes = part.PageSizes;
+
             model.BulkActions = part.BulkActions;
             model.BulkActionValueField = part.BulkActionValueField;
             model.BulkActionCreateTask = part.BulkActionCreateTask;
@@ -58,6 +59,13 @@ namespace TransformalizeModule.Drivers {
             model.BulkActionRunTask = part.BulkActionRunTask;
             model.BulkActionSuccessTask = part.BulkActionSuccessTask;
             model.BulkActionFailTask = part.BulkActionFailTask;
+
+            model.Map = part.Map;
+            model.MapColorField = part.MapColorField;
+            model.MapDescriptionField = part.MapDescriptionField;
+            model.MapLatitudeField = part.MapLatitudeField;
+            model.MapLongitudeField = part.MapLongitudeField;
+
          }).Location("Content:1");
       }
 
@@ -86,6 +94,12 @@ namespace TransformalizeModule.Drivers {
             part.BulkActionRunTask.Text = model.BulkActionRunTask.Text;
             part.BulkActionSuccessTask.Text = model.BulkActionSuccessTask.Text;
             part.BulkActionFailTask.Text = model.BulkActionFailTask.Text;
+
+            part.Map.Value = model.Map.Value;
+            part.MapColorField.Text = model.MapColorField.Text;
+            part.MapDescriptionField.Text = model.MapDescriptionField.Text;
+            part.MapLatitudeField.Text = model.MapLatitudeField.Text;
+            part.MapLongitudeField.Text = model.MapLongitudeField.Text;
 
          }
 
@@ -119,6 +133,7 @@ namespace TransformalizeModule.Drivers {
                }
             }
             if (process.Entities.Any()) {
+
                if (part.BulkActions.Value) {
                   if (!string.IsNullOrEmpty(part.BulkActionValueField.Text)) {
                      if (process.Entities[0].GetAllFields().All(f => f.Alias != part.BulkActionValueField.Text)) {
@@ -126,6 +141,22 @@ namespace TransformalizeModule.Drivers {
                      }
                   }
                }
+
+               if (part.Map.Value) {
+                  if (process.Entities[0].GetAllFields().All(f => f.Alias != part.MapColorField.Text)) {
+                     updater.ModelState.AddModelError(Prefix, S["The field {0} used for map color does not exist.", part.MapColorField.Text]);
+                  }
+                  if (process.Entities[0].GetAllFields().All(f => f.Alias != part.MapDescriptionField.Text)) {
+                     updater.ModelState.AddModelError(Prefix, S["The field {0} used for map description does not exist.", part.MapDescriptionField.Text]);
+                  }
+                  if (process.Entities[0].GetAllFields().All(f => f.Alias != part.MapLatitudeField.Text)) {
+                     updater.ModelState.AddModelError(Prefix, S["The field {0} used for map latitude does not exist.", part.MapLatitudeField.Text]);
+                  }
+                  if (process.Entities[0].GetAllFields().All(f => f.Alias != part.MapLongitudeField.Text)) {
+                     updater.ModelState.AddModelError(Prefix, S["The field {0} used for map longitude does not exist.", part.MapLongitudeField.Text]);
+                  }
+               }
+
             } else {
                updater.ModelState.AddModelError(Prefix, S["Please define an entity."]);
             }

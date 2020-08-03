@@ -34,7 +34,7 @@ namespace TransformalizeModule {
              .WithField("Arrangement", field => field
                  .OfType(nameof(TextField))
                  .WithDisplayName("Arrangement")
-                 .WithPosition("01")
+                 .WithPosition("3")
                  .WithEditor("TransformalizeArrangement")
                  .WithSettings(new TextFieldSettings {
                     Hint = string.Empty,
@@ -44,7 +44,7 @@ namespace TransformalizeModule {
              ).WithField("PageSizes", field => field
                  .OfType(nameof(TextField))
                  .WithDisplayName("Page Sizes")
-                 .WithPosition("02")
+                 .WithPosition("4")
                  .WithSettings(new TextFieldSettings {
                     Required = false,
                     Hint = "To overide default page sizes, specify a comma delimited list of page sizes (integers). To use the common page sizes defined in settings, leave it blank.  To disable pagination altogether, set this to 0."
@@ -53,7 +53,7 @@ namespace TransformalizeModule {
              ).WithField("BulkActions", field => field
                 .OfType(nameof(BooleanField))
                 .WithDisplayName("Bulk Actions")
-                .WithPosition("03")
+                .WithPosition("1")
                 .WithSettings(new BooleanFieldSettings {
                    DefaultValue = false,
                    Hint = "Allow user to select one, many, or all records for a bulk action?",
@@ -63,7 +63,7 @@ namespace TransformalizeModule {
               ).WithField("BulkActionValueField", field => field
                 .OfType(nameof(TextField))
                 .WithDisplayName("Bulk Action Value Field")
-                .WithPosition("04")
+                .WithPosition("2")
                 .WithSettings(new TextFieldSettings {
                    Required = false,
                    Hint = "Specify which field or calculated field provides the value for bulk actions."
@@ -72,7 +72,7 @@ namespace TransformalizeModule {
               ).WithField("BulkActionCreateTask", field => field
                   .OfType(nameof(TextField))
                   .WithDisplayName("Bulk Action Create Task")
-                  .WithPosition("05")
+                  .WithPosition("3")
                   .WithSettings(new TextFieldSettings {
                      Required = false,
                      Hint = Common.BulkActionCreateTaskHint + " Leave blank to use default task defined in settings."
@@ -80,7 +80,7 @@ namespace TransformalizeModule {
               ).WithField("BulkActionWriteTask", field => field
                   .OfType(nameof(TextField))
                   .WithDisplayName("Bulk Action Write Task")
-                  .WithPosition("06")
+                  .WithPosition("4")
                   .WithSettings(new TextFieldSettings {
                      Required = false,
                      Hint = Common.BulkActionWriteTaskHint + " Leave blank to use default task defined in settings."
@@ -88,7 +88,7 @@ namespace TransformalizeModule {
               ).WithField("BulkActionSummaryTask", field => field
                   .OfType(nameof(TextField))
                   .WithDisplayName("Bulk Action Summary Task")
-                  .WithPosition("07")
+                  .WithPosition("5")
                   .WithSettings(new TextFieldSettings {
                      Required = false,
                      Hint = Common.BulkActionSummaryTaskHint + " Leave blank to use default task defined in settings."
@@ -96,7 +96,7 @@ namespace TransformalizeModule {
               ).WithField("BulkActionRunTask", field => field
                   .OfType(nameof(TextField))
                   .WithDisplayName("Bulk Action Run Task")
-                  .WithPosition("08")
+                  .WithPosition("6")
                   .WithSettings(new TextFieldSettings {
                      Required = false,
                      Hint = Common.BulkActionRunTaskHint + " Leave blank to use default task defined in settings."
@@ -104,7 +104,7 @@ namespace TransformalizeModule {
               ).WithField("BulkActionSuccessTask", field => field
                   .OfType(nameof(TextField))
                   .WithDisplayName("Bulk Action Success Task")
-                  .WithPosition("09")
+                  .WithPosition("7")
                   .WithSettings(new TextFieldSettings {
                      Required = false,
                      Hint = Common.BulkActionSuccessTaskHint + " Leave blank to use default task defined in settings."
@@ -112,7 +112,7 @@ namespace TransformalizeModule {
               ).WithField("BulkActionFailTask", field => field
                   .OfType(nameof(TextField))
                   .WithDisplayName("Bulk Action Fail Task")
-                  .WithPosition("10")
+                  .WithPosition("8")
                   .WithSettings(new TextFieldSettings {
                      Required = false,
                      Hint = Common.BulkActionFailTaskHint + " Leave blank to use default task defined in settings."
@@ -140,7 +140,7 @@ namespace TransformalizeModule {
              .WithField("Arrangement", field => field
                  .OfType(nameof(TextField))
                  .WithDisplayName("Arrangement")
-                 .WithPosition("1")
+                 .WithPosition("3")
                  .WithEditor("TransformalizeArrangement")
                  .WithSettings(new TextFieldSettings {
                     Hint = string.Empty,
@@ -167,7 +167,60 @@ namespace TransformalizeModule {
          return 1;
       }
 
+      public int UpdateFrom1() {
+         _contentDefinitionManager.AlterPartDefinition("TransformalizeReportPart", part => part
+          .WithField("Map", field => field
+             .OfType(nameof(BooleanField))
+             .WithDisplayName("Map")
+             .WithPosition("1")
+             .WithSettings(new BooleanFieldSettings {
+                DefaultValue = false,
+                Hint = "Allow user to view a map of the report's records.",
+                Label = "Map"
+             }
+             )
+           )
+          .WithField("MapColorField", field => field
+             .OfType(nameof(TextField))
+             .WithDisplayName("Map Color Field")
+             .WithPosition("2")
+             .WithSettings(new TextFieldSettings {
+                Required = false,
+                Hint = "This field's value controls the dot color on the map.  It should contain a hex representation of a color (e.g. #ffc0cb)."
+             }
+             )
+           ).WithField("MapDescriptionField", field => field
+               .OfType(nameof(TextField))
+               .WithDisplayName("Map Description Field")
+               .WithPosition("3")
+               .WithSettings(new TextFieldSettings {
+                  Required = false,
+                  Hint = "This field's content is placed in the GEO JSON Description property, and is used in the pop up.  This is usually an HTML snippet you want to display."
+               })
+           ).WithField("MapLatitudeField", field => field
+               .OfType(nameof(TextField))
+               .WithDisplayName("Map Latititude Field")
+               .WithPosition("4")
+               .WithSettings(new TextFieldSettings {
+                  Required = false,
+                  Hint = "This field's value is used as the record's latitude on the map."
+               })
+           ).WithField("MapLongitudeField", field => field
+               .OfType(nameof(TextField))
+               .WithDisplayName("Map Longitude Field")
+               .WithPosition("5")
+               .WithSettings(new TextFieldSettings {
+                  Required = false,
+                  Hint = "This field's value is used as the record's longitude on the map."
+               })
+            )
+         );
+
+         return 2;
+      }
+
       private async Task EnableFeature(string id) {
+
          var availableFeatures = await _moduleService.GetAvailableFeaturesAsync();
 
          var contentFields = availableFeatures.FirstOrDefault(f => f.Descriptor.Id == id);

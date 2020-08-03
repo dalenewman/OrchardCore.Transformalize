@@ -141,8 +141,8 @@ namespace TransformalizeModule.Controllers {
          o.File = _slugService.Slugify(stream.ContentItem.As<TitlePart>().Title) + ".geo.json";
 
          // todo: these will have to be put in report part
-         var suppress = new HashSet<string>() { stream.Part.BulkActionValueField.Text, "geojson-color", "geojson-description" };
-         var coordinates = new HashSet<string>() { "latitude", "longitude" };
+         var suppress = new HashSet<string>() { stream.Part.BulkActionValueField.Text, stream.Part.MapColorField.Text, stream.Part.MapDescriptionField.Text };
+         var coordinates = new HashSet<string>() { stream.Part.MapLatitudeField.Text, stream.Part.MapLongitudeField.Text };
 
          foreach (var entity in stream.Process.Entities) {
             foreach (var field in entity.GetAllFields()) {

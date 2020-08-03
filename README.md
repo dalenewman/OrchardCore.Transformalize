@@ -11,8 +11,8 @@ module for [Orchard Core](https://github.com/OrchardCMS/OrchardCore) rc2.
 - Map(Box) view
   - <strike>js libraries</strike>
   - <strike>MapBox Key</strike>
-  - Dot Description Value/Field
-  - Dot Color Value/Field
+  - <strike>Dot Description Value/Field</strike>
+  - <strike>Dot Color Value/Field</strike>
   - Dot Opacity Value/Field
   - Dot Size Value/Field
   - Paging (extended sizes or no paging)
@@ -22,7 +22,7 @@ module for [Orchard Core](https://github.com/OrchardCMS/OrchardCore) rc2.
   - <strike>Forms for accepting parameters for batches</strike>
   - Bulk Action Settings
     - <strike>Common</strike>
-    - Part
+    - <strike>Part</strike>
   - Workflow: Still learning, but bulk operations / batches might be helped by the Workflows module.
 - <strike>Add Mini Profiler into ADO providers</strike>
 - <strike>Common Arrangement Settings</strike>

@@ -196,21 +196,27 @@ namespace TransformalizeModule.Services {
          o.Stream = true;
          o.Provider = "geojson";
 
-         // todo: these will have to be put in report part
+         // some hard-coded requirements for geojson provider...
+         // geojson-color used as marker-color property
+         // geojson-symbol as marker-symbol property
+         // geojson-size as marker-size property
+         // geojson-description used as description property
+         // [Ll]at* used in feature's coordinates
+         // [Ll]on* used in feature's coordinates
+         // batchvalue as batch-value property (and my js depends on this)
          var mapFields = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase) {
-            { "geojson-color", "geojson-color" },
-            { "geojson-description", "geojson-description" },
-            { "latitude", "latitude" },
-            { "longitude", "longitude" }
+            { string.IsNullOrWhiteSpace(part.MapColorField.Text) ? "geojson-color" : part.MapColorField.Text, "geojson-color" },  // becomes marker-color property
+            { string.IsNullOrWhiteSpace(part.MapDescriptionField.Text) ? "geojson-description" : part.MapDescriptionField.Text, "geojson-description" }, // becomes description property
+            { string.IsNullOrWhiteSpace(part.MapLatitudeField.Text) ? "latitude" : part.MapLatitudeField.Text, "latitude" }, // used in feature coordinate
+            { string.IsNullOrWhiteSpace(part.MapLongitudeField.Text) ? "longitude" : part.MapLongitudeField.Text, "longitude" } // used in feature coordinate
          };
 
          if (!string.IsNullOrEmpty(part.BulkActionValueField.Text)) {
-            mapFields[part.BulkActionValueField.Text] = part.BulkActionValueField.Text;
+            mapFields[part.BulkActionValueField.Text] = "batchvalue";
          }
 
          // restrict fields to only what is needed for map
          ConfineData(process, mapFields);
-
 
          // disable actions
          foreach (var action in process.Actions) {

@@ -4,15 +4,15 @@ using OrchardCore.ContentFields.Fields;
 namespace TransformalizeModule.Models {
    public class TransformalizeReportPart : ContentPart {
       public TransformalizeReportPart() {
+
          Arrangement = new TextField() { Text = @"<cfg name=""report"">
    <parameters>
    </parameters>
    <connections>
+      <add name=""input"" provider="""" />
    </connections>
    <entities>
       <add name=""entity"">
-         <filter>
-         </filter>
          <fields>
          </fields>
       </add>
@@ -28,9 +28,16 @@ namespace TransformalizeModule.Models {
          BulkActionRunTask = new TextField();
          BulkActionSuccessTask = new TextField();
          BulkActionFailTask = new TextField();
+
+         Map = new BooleanField();
+         MapColorField = new TextField() { Text = "geojson-color" };
+         MapDescriptionField = new TextField() { Text = "geojson-description" };
+         MapLatitudeField = new TextField() { Text = "latitude" };
+         MapLongitudeField = new TextField() { Text = "longitude" };
       }
       public TextField Arrangement { get; set; }
       public TextField PageSizes { get; set; }
+      
       public BooleanField BulkActions { get; set; }
       public TextField BulkActionValueField { get; set; }
       public TextField BulkActionCreateTask { get; set; }
@@ -40,5 +47,10 @@ namespace TransformalizeModule.Models {
       public TextField BulkActionSuccessTask { get; set; }
       public TextField BulkActionFailTask { get; set; }
 
+      public BooleanField Map { get; set; }
+      public TextField MapColorField { get; set; }
+      public TextField MapDescriptionField { get; set; }
+      public TextField MapLatitudeField { get; set; }
+      public TextField MapLongitudeField { get; set; }
    }
 }

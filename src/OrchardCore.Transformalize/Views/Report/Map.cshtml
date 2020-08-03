@@ -105,6 +105,17 @@
    }
 </style>
 
+<script type="text/javascript">
+   //<!--
+   var server = {
+      entity: {
+         page: @firstEntity.Page
+      },
+      bulkActionUrl: '@(Url.Action("Create", "BulkAction", new { ContentItemId = Model.Item.ContentItemId }))'
+   };
+   //-->
+</script>
+
 @foreach (var logEntry in Model.Process.Log.Where(le => le.LogLevel == LogLevel.Error)) {
    <div class="alert alert-danger" role="alert">@logEntry.Message</div>
 }
@@ -328,14 +339,6 @@
 
 <script type="text/javascript">
    //<!--
-
-   var server = {
-      entity: {
-         page: @firstEntity.Page
-      },
-      bulkActionUrl: '@(Url.Action("Create", "BulkAction", new { ContentItemId = Model.Item.ContentItemId }))'
-   };
-
    @foreach (var script in Model.Process.Scripts.Where(s => s.Global && string.IsNullOrEmpty(s.File) && s.Language == "js")) {
       <text>/* @script.Name */</text>
       @Html.Raw(script.Content)

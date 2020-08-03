@@ -126,7 +126,8 @@
                    }
                }*@
 
-         if (hasCoordinates) {
+         // for now, if map is not enabled, you don't need this because there is only map and report views so far (no calendar)
+         if (Model.Part.Map.Value && hasCoordinates) {
 
             var headless = Context.Request.GetDisplayUrl().Contains("Headless");
 
@@ -135,6 +136,7 @@
             if (headless) {
                reportUrl = reportUrl.Replace("/t/report/", "/t/headless/report/");
             }
+
             views.Add(new PipelineViewModel("report") {
                Active = Model.Process.Mode == "report",
                Glyphicon = "list",
@@ -153,6 +155,7 @@
                   Link = linkService.Create(Model.IdOrAlias, mapUrl, false)
                });
             }
+
             //if (Model.Part.CalendarEnabled) {
 
             //   var calendarUrl = Url.Action("Index", "Calendar", new RouteValueDictionary { { "Id", Model.Part.Id } });
@@ -165,24 +168,25 @@
             //      Link = linkService.Create(Request, Session, Model.Part.Id, calendarUrl, "calendar", false)
             //   });
             //}
+
             var defaultView = views.First(v => v.Mode != Model.Process.Mode);
 
-               <div class="btn-group btn-group-sm" role="group">
-                  <button type="button" class="btn btn-primary btn-sm" title="@defaultView.Title" onclick="javascript:window.open('@defaultView.Link','_self');">
-                     <span class="fas fa-@defaultView.Glyphicon"></span>
-                  </button>
-                  <button type="button" class="btn btn-primary btn-sm dropdown-toggle" title="other views" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                     <span class="caret"></span>
-                  </button>
-                  <div class="dropdown-menu">
-                     @foreach (var export in views) {
-                        <a class="dropdown-item @(export.Active ? "active" : string.Empty)" href="@(export.Link)" title="@export.Title">
-                           <span class="fas fa-@export.Glyphicon"></span>&nbsp;&nbsp;@export.Label
-                        </a>
-                     }
-                  </div>
+            <div class="btn-group btn-group-sm" role="group">
+               <button type="button" class="btn btn-primary btn-sm" title="@defaultView.Title" onclick="javascript:window.open('@defaultView.Link','_self');">
+                  <span class="fas fa-@defaultView.Glyphicon"></span>
+               </button>
+               <button type="button" class="btn btn-primary btn-sm dropdown-toggle" title="other views" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                  <span class="caret"></span>
+               </button>
+               <div class="dropdown-menu">
+                  @foreach (var export in views) {
+                     <a class="dropdown-item @(export.Active ? "active" : string.Empty)" href="@(export.Link)" title="@export.Title">
+                        <span class="fas fa-@export.Glyphicon"></span>&nbsp;&nbsp;@export.Label
+                     </a>
+                  }
                </div>
-            }
+            </div>
+         }
 
             <div class="btn-group btn-group-sm">
                <button type="button" class="btn btn-sm btn-info" title="save to csv file" onclick="javascript:window.open('@exportCsvLink','_self');">

@@ -4,10 +4,15 @@
          "displayType": "Edit",
          "differentiator": "TransformalizeReportPart-BulkActions",
          "place": "Parts:1#Bulk Actions"
+      },
+      {
+         "displayType": "Edit",
+         "differentiator": "TransformalizeReportPart-Map",
+         "place": "Parts:1#Map"
       }
    ],
    "TextField_Edit": [
-      { 
+      {
          "displayType": "Edit",
          "differentiator": "TransformalizeReportPart-BulkActionValueField",
          "place": "Parts:1#Bulk Actions"
@@ -41,6 +46,26 @@
          "displayType": "Edit",
          "differentiator": "TransformalizeReportPart-BulkActionFailTask",
          "place": "Parts:1#Bulk Actions"
+      },
+      {
+         "displayType": "Edit",
+         "differentiator": "TransformalizeReportPart-MapColorField",
+         "place": "Parts:1#Map"
+      },
+      {
+         "displayType": "Edit",
+         "differentiator": "TransformalizeReportPart-MapDescriptionField",
+         "place": "Parts:1#Map"
+      },
+      {
+         "displayType": "Edit",
+         "differentiator": "TransformalizeReportPart-MapLatitudeField",
+         "place": "Parts:1#Map"
+      },
+      {
+         "displayType": "Edit",
+         "differentiator": "TransformalizeReportPart-MapLongitudeField",
+         "place": "Parts:1#Map"
       }
    ]
 }

@@ -6,6 +6,7 @@ namespace TransformalizeModule.ViewModels {
       public TransformalizeReportPart TransformalizeReportPart { get; set; }
       public TextField Arrangement { get; set; }
       public TextField PageSizes { get; set; }
+      
       public BooleanField BulkActions { get; set; }
       public TextField BulkActionValueField { get; set; }
       public TextField BulkActionCreateTask { get; set; }
@@ -14,5 +15,11 @@ namespace TransformalizeModule.ViewModels {
       public TextField BulkActionRunTask { get; set; }
       public TextField BulkActionSuccessTask { get; set; }
       public TextField BulkActionFailTask { get; set; }
+
+      public BooleanField Map { get; set; }
+      public TextField MapColorField { get; set; }
+      public TextField MapDescriptionField { get; set; }
+      public TextField MapLatitudeField { get; set; }
+      public TextField MapLongitudeField { get; set; }
    }
 }
