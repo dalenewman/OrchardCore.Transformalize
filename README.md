@@ -15,8 +15,7 @@ module for [Orchard Core](https://github.com/OrchardCMS/OrchardCore) rc2.
   - <strike>Dot Color Value/Field</strike>
   - <strike>Dot Opacity Value/Field</strike>
   - <strike>Dot Size Value/Field</strike>
-  - Paging (extended sizes or no paging)
-  - Only show shape selector if bulk actions enabled
+  - <strike>Paging (extended sizes or no paging)</strike>
 - <strike>Batches / Bulk Actions</strike>
   - <strike>Tasks (ETL Jobs) for running batches, etc</strike>
   - <strike>Forms for accepting parameters for batches</strike>
