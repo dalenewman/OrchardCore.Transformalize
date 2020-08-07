@@ -1,11 +1,14 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace TransformalizeModule.Models {
    public class TransformalizeSettings {
 
       private List<int> _pageSizes;
+      private List<int> _pageSizesExtended;
       private string _defaultPageSizes;
+      private string _defaultPageSizesExtended;
       private string _commonArrangement;
       private string _mapBoxToken;
       private string _bulkActionCreateTask;
@@ -24,6 +27,11 @@ namespace TransformalizeModule.Models {
          set => _defaultPageSizes = string.IsNullOrEmpty(value) ? "20,50,100" : value;
       }
 
+      public string DefaultPageSizesExtended {
+         get => string.IsNullOrEmpty(_defaultPageSizesExtended) ? "1000,5000,10000" : _defaultPageSizesExtended;
+         set => _defaultPageSizesExtended = string.IsNullOrEmpty(value) ? "1000,5000,10000" : value;
+      }
+
       public IEnumerable<int> DefaultPageSizesAsEnumerable() {
          if (_pageSizes != null) {
             return _pageSizes;
@@ -36,6 +44,20 @@ namespace TransformalizeModule.Models {
          }
          return _pageSizes;
       }
+
+      public IEnumerable<int> DefaultPageSizesExtendedAsEnumerable() {
+         if (_pageSizesExtended != null) {
+            return _pageSizesExtended;
+         }
+         _pageSizesExtended = new List<int>();
+         foreach (var size in DefaultPageSizesExtended.Split(',', StringSplitOptions.RemoveEmptyEntries)) {
+            if (int.TryParse(size, out int result)) {
+               _pageSizesExtended.Add(result);
+            }
+         }
+         return _pageSizesExtended;
+      }
+
 
       public string MapBoxToken {
          get => string.IsNullOrWhiteSpace(_mapBoxToken) ? string.Empty : _mapBoxToken;

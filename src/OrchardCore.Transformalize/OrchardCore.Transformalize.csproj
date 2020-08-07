@@ -40,9 +40,9 @@
     <PackageReference Include="Transformalize.Provider.Bogus.Autofac" Version="0.8.22-beta" />
     <PackageReference Include="Transformalize.Provider.CsvHelper.Autofac" Version="0.8.18-beta" />
     <PackageReference Include="Transformalize.Provider.Elasticsearch.Autofac" Version="0.8.22-beta" />
-    <PackageReference Include="Transformalize.Provider.File.Autofac" Version="0.8.14-beta" />
-    <PackageReference Include="Transformalize.Provider.GeoJson.Autofac" Version="0.8.15-beta" />
-    <PackageReference Include="Transformalize.Provider.Json.Autofac" Version="0.8.1-beta" />
+    <PackageReference Include="Transformalize.Provider.File.Autofac" Version="0.8.22-beta" />
+    <PackageReference Include="Transformalize.Provider.GeoJson.Autofac" Version="0.8.24-beta" />
+    <PackageReference Include="Transformalize.Provider.Json.Autofac" Version="0.8.25-beta" />
     <PackageReference Include="Transformalize.Provider.MySql.Autofac" Version="0.8.15-beta" />
     <PackageReference Include="Transformalize.Provider.PostgreSql.Autofac" Version="0.8.15-beta" />
     <PackageReference Include="Transformalize.Provider.Sqlite.Autofac" Version="0.8.1-beta" />
@@ -51,7 +51,7 @@
     <PackageReference Include="Transformalize.Transform.Fluid.Autofac" Version="0.8.17-beta" />
     <PackageReference Include="Transformalize.Transform.Humanizer.Autofac" Version="0.8.1-beta" />
     <PackageReference Include="Transformalize.Transform.Jint.3.Autofac" Version="0.8.16-beta" />
-    <PackageReference Include="Transformalize.Transform.Json.Autofac" Version="0.8.1-beta" />
+    <PackageReference Include="Transformalize.Transform.Json.Autofac" Version="0.8.25-beta" />
     <PackageReference Include="Transformalize.Transform.LambdaParser.Autofac" Version="0.8.15-beta" />
     <PackageReference Include="Transformalize.Transform.Razor.Autofac" Version="0.8.16-beta" />
     <PackageReference Include="Transformalize.Validate.Jint.3.Autofac" Version="0.8.16-beta" />

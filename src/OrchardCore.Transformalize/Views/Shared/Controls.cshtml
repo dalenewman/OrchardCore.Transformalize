@@ -4,8 +4,8 @@
 @using TransformalizeModule.Services.Contracts
 @using TransformalizeModule
 @using Microsoft.AspNetCore.Authorization
-@using OrchardCore.ContentManagement
 @using Microsoft.AspNetCore.Http.Extensions
+@using TransformalizeModule.Ext 
 
 @model ReportViewModel
 
@@ -18,9 +18,14 @@
    var pageSizes = new List<int>();
    if (Model.Part != null) {
       pageSizes.AddRange(settings.GetPageSizes(Model.Part));
+      if(Model.Process.Mode == "map" || Model.Process.Mode == "calendar") {
+         if (Model.Part.PageSizesExtended.Enabled()) {
+            pageSizes.AddRange(settings.GetPageSizesExtended(Model.Part));
+         } else {
+            pageSizes.Clear();
+         }
+      }
    }
-   // pageSizes.AddRange(entity.Page > 0 && (Model.Process.Mode == "map" || Model.Process.Mode == "calendar") ? Model.Part.Sizes(Model.Part.MapSizes) : new int[0]);
-   // pageSizes.AddRange(entity.Page > 0 && (Model.Process.Mode == "map" || Model.Process.Mode == "calendar") ? new int[] { 20, 50, 100 } : new int[0]);
 
    var allFields = entity.GetAllFields().Where(f => !f.System).ToArray();
    var hasCoordinates = allFields.Any(f => f.Alias.StartsWith("lat", StringComparison.OrdinalIgnoreCase)) && allFields.Any(f => f.Alias.StartsWith("lon", StringComparison.OrdinalIgnoreCase));
@@ -62,7 +67,7 @@
    </div>
 
    <div class="col-md-6">
-      @if (entity.Page == 0 || Model.Process.Mode == "map" && !Model.MapPaging || Model.Process.Mode == "calendar" && !Model.CalendarPaging) {
+      @if (entity.Page == 0 || Model.Process.Mode == "map" && !Model.Part.PageSizesExtended.Enabled() || Model.Process.Mode == "calendar" && !Model.Part.PageSizesExtended.Enabled()) {
          <h3 class="text-primary" style="margin: 2px 0px 0px 0px;">@(entity.Label == string.Empty ? entity.Alias : entity.Label)</h3>
       } else {
          <nav aria-label="...">
@@ -140,7 +145,7 @@
             views.Add(new PipelineViewModel("report") {
                Active = Model.Process.Mode == "report",
                Glyphicon = "list",
-               Link = linkService.Create(Model.IdOrAlias, reportUrl, false)
+               Link = linkService.Create(Model.IdOrAlias, reportUrl, !Model.Part.PageSizes.Enabled())
             });
 
             if (hasCoordinates) {
@@ -152,7 +157,7 @@
                views.Add(new PipelineViewModel("map") {
                   Active = Model.Process.Mode == "map",
                   Glyphicon = "map-marker",
-                  Link = linkService.Create(Model.IdOrAlias, mapUrl, false)
+                  Link = linkService.Create(Model.IdOrAlias, mapUrl, !Model.Part.PageSizesExtended.Enabled())
                });
             }
 
@@ -209,7 +214,7 @@
                </div>
             </div>
 
-            if (pageSizes.Count < 2 || Model.Process.Mode == "map" && !Model.MapPaging || Model.Process.Mode == "calendar" && !Model.CalendarPaging) {
+            if (pageSizes.Count < 2) {
                <!-- paging is disabled -->
             } else {
                <div class="btn-group btn-group-sm">

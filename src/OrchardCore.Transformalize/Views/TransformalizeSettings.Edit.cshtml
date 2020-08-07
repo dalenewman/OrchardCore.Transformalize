@@ -42,6 +42,12 @@
          <span class="hint">@T["A comma delimited list of page sizes (integers).  These are used for all reports that do not set a page sizes."]</span>
       </div>
 
+      <div class="form-group">
+         <label asp-for="DefaultPageSizesExtended">@T["Default Page Sizes Extended"]</label>
+         <input asp-for="DefaultPageSizesExtended" class="form-control" />
+         <span class="hint">@T["A comma delimited list of extended page sizes (integers).  These are used for all calendars and/or maps that do not set page sizes."]</span>
+      </div>
+
    </div>
 
    <div class="tab-pane fade" id="bulk" role="tabpanel" aria-labelledby="bulk-tab">

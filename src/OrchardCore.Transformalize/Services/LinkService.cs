@@ -21,8 +21,21 @@ namespace TransformalizeModule.Services {
          if (everything) {
             url.SetQueryParam("page", 0);
          } else {
-            if (_contextAccessor.HttpContext.Request.Query["size"].ToString() == null) {
-               url.SetQueryParam("size", 20);
+            if (_contextAccessor.HttpContext.Request.Query.ContainsKey("size")) {
+               var qSize = _contextAccessor.HttpContext.Request.Query["size"].ToString() ?? string.Empty;
+               if (!int.TryParse(qSize, out _)) {
+                  url.SetQueryParam("size", 20);
+               }
+            }
+            if (_contextAccessor.HttpContext.Request.Query.ContainsKey("page")) {
+               var qPage = _contextAccessor.HttpContext.Request.Query["page"].ToString() ?? string.Empty;
+               if (int.TryParse(qPage, out int page)) {
+                  if(page == 0) {
+                     url.RemoveQueryParam("page");
+                  }
+               } else {
+                  url.RemoveQueryParam("page");
+               }
             }
          }
 

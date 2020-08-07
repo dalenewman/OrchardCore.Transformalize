@@ -6,6 +6,7 @@ namespace TransformalizeModule.ViewModels {
       public TransformalizeReportPart TransformalizeReportPart { get; set; }
       public TextField Arrangement { get; set; }
       public TextField PageSizes { get; set; }
+      public TextField PageSizesExtended { get; set; }
       
       public BooleanField BulkActions { get; set; }
       public TextField BulkActionValueField { get; set; }

@@ -245,6 +245,24 @@ namespace TransformalizeModule {
          return 3;
       }
 
+      public int UpdateFrom3() {
+         _contentDefinitionManager.AlterPartDefinition("TransformalizeReportPart", part => part
+          .WithField("PageSizesExtended", field => field
+                 .OfType(nameof(TextField))
+                 .WithDisplayName("Page Sizes Extended")
+                 .WithPosition("4")
+                 .WithSettings(new TextFieldSettings {
+                    Required = false,
+                    Hint = "To overide default extended page sizes, specify a comma delimited list of page sizes (integers). To use the common extended page sizes defined in settings, leave it blank. To disable pagination for calendar or map, set this to 0."
+                 }
+                )
+             )
+         );
+
+         return 4;
+      }
+
+
 
       private async Task EnableFeature(string id) {
 

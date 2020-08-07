@@ -17,6 +17,7 @@ using OrchardCore.Environment.Cache;
 using Autofac;
 using Transformalize.Configuration;
 using System.Linq;
+using OrchardCore.ContentFields.Fields;
 
 namespace TransformalizeModule.Drivers {
    public class TransformalizeReportPartDisplayDriver : ContentPartDisplayDriver<TransformalizeReportPart> {
@@ -50,6 +51,7 @@ namespace TransformalizeModule.Drivers {
             model.TransformalizeReportPart = part;
             model.Arrangement = part.Arrangement;
             model.PageSizes = part.PageSizes;
+            model.PageSizesExtended = part.PageSizesExtended;
 
             model.BulkActions = part.BulkActions;
             model.BulkActionValueField = part.BulkActionValueField;
@@ -87,6 +89,7 @@ namespace TransformalizeModule.Drivers {
 
             part.Arrangement.Text = model.Arrangement.Text;
             part.PageSizes.Text = model.PageSizes.Text;
+            part.PageSizesExtended.Text = model.PageSizes.Text;
 
             part.BulkActions.Value = model.BulkActions.Value;
             part.BulkActionValueField.Text = model.BulkActionValueField.Text;
@@ -113,15 +116,8 @@ namespace TransformalizeModule.Drivers {
             }
          }
 
-         if (string.IsNullOrWhiteSpace(model.PageSizes.Text)) {
-            model.PageSizes.Text = string.Empty;
-         } else {
-            foreach (var size in model.PageSizes.Text.Split(',', StringSplitOptions.RemoveEmptyEntries)) {
-               if (!int.TryParse(size, out int result)) {
-                  updater.ModelState.AddModelError(Prefix, S["{0} is not a valid integer in page sizes.", size]);
-               }
-            }
-         }
+         CheckPageSizes(model.PageSizes, updater);
+         CheckPageSizes(model.PageSizesExtended, updater);
 
          try {
             var logger = new MemoryLogger(LogLevel.Error);
@@ -210,6 +206,18 @@ namespace TransformalizeModule.Drivers {
 
          return Edit(part, context);
 
+      }
+
+      public void CheckPageSizes(TextField field, IUpdateModel updater) {
+         if (string.IsNullOrWhiteSpace(field.Text)) {
+            field.Text = string.Empty;
+         } else {
+            foreach (var size in field.Text.Split(',', StringSplitOptions.RemoveEmptyEntries)) {
+               if (!int.TryParse(size, out _)) {
+                  updater.ModelState.AddModelError(Prefix, S["{0} is not a valid integer in page sizes.", size]);
+               }
+            }
+         }
       }
 
 

@@ -16,10 +16,7 @@ namespace TransformalizeModule.ViewModels {
       public TransformalizeSettings Settings { get; set; }
 
       // temps
-      public bool MapPaging { get; set; }
-      public bool CalendarPaging { get; set; }
       public bool EnableInlineParameters { get; set; } = true;
-      public bool MapEnabled { get; set; }
       public bool CalendarEnabled { get; set; }
       public string IdOrAlias { get; set; }
 

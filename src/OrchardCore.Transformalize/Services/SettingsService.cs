@@ -9,6 +9,9 @@ using System.Linq;
 using Transformalize.Configuration;
 using StackExchange.Profiling;
 using TransformalizeModule.Ext;
+using OrchardCore.ContentFields.Fields;
+using System.Security.Cryptography.Xml;
+using Microsoft.AspNetCore.Mvc.RazorPages;
 
 namespace TransformalizeModule.Services {
 
@@ -109,6 +112,23 @@ namespace TransformalizeModule.Services {
                return part.PageSizes.SplitIntegers(',');
             } else {
                return Settings.DefaultPageSizesAsEnumerable();
+            }
+         } else {
+            return Enumerable.Empty<int>();
+         }
+      }
+
+      /// <summary>
+      /// Get extended page sizes from module settings unless overridden by report settings
+      /// </summary>
+      /// <param name="part">the report part being displayed</param>
+      /// <returns>a list of available page sizes</returns>
+      public IEnumerable<int> GetPageSizesExtended(TransformalizeReportPart part) {
+         if (part.PageSizesExtended.Enabled()) {
+            if (part.PageSizesExtended.OverrideDefaults()) {
+               return part.PageSizesExtended.SplitIntegers(',');
+            } else {
+               return Settings.DefaultPageSizesExtendedAsEnumerable();
             }
          } else {
             return Enumerable.Empty<int>();

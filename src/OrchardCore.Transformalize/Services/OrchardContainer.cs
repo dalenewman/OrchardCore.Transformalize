@@ -151,8 +151,8 @@ namespace TransformalizeModule.Services {
          // exporting
          var stream = _httpContext.HttpContext.Response.Body;
          if (providers.Contains("file")) { builder.RegisterModule(new CsvHelperProviderModule(stream)); }
-         if (providers.Contains("json")) { builder.RegisterModule(new JsonProviderModule(stream)); }
-         if (providers.Contains("geojson")) { builder.RegisterModule(new GeoJsonProviderModule(stream)); }
+         if (providers.Contains("json")) { builder.RegisterModule(new JsonProviderModule(stream) { UseAsyncMethods = true }); }
+         if (providers.Contains("geojson")) { builder.RegisterModule(new GeoJsonProviderModule(stream) { UseAsyncMethods = true }); }
 
          // misc
          if (providers.Contains("bogus")) { builder.RegisterModule(new BogusModule()); }

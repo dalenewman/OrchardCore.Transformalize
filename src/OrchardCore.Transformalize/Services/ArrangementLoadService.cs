@@ -91,7 +91,7 @@ namespace TransformalizeModule.Services {
          if (part.PageSizes.Enabled()) {
             var pageSizes = _settings.GetPageSizes(part);
 
-            EnforcePageSize(process, _parameters, pageSizes.Min(), _parameters.GetIntegerOrDefault("page", ()=>pageSizes.Min()) , pageSizes.Max());
+            EnforcePageSize(process, _parameters, pageSizes.Min(), _parameters.GetIntegerOrDefault("size", ()=>pageSizes.Min()) , pageSizes.Max());
 
             // modify connections to buffer (load page completely before processing)
             foreach (var connection in process.Connections) {
@@ -130,10 +130,13 @@ namespace TransformalizeModule.Services {
          process.ReadOnly = true;
 
          // TODO: Paging and Sorting may be handled differently for map view
-         if (part.PageSizes.Enabled()) {
-            var pageSizes = _settings.GetPageSizes(part);
-            
-            EnforcePageSize(process, _parameters, pageSizes.Min(), _parameters.GetIntegerOrDefault("page", () => pageSizes.Min()), pageSizes.Max());
+         if (part.PageSizesExtended.Enabled()) {
+            var pageSizes = new List<int>();
+
+            pageSizes.AddRange(_settings.GetPageSizes(part));
+            pageSizes.AddRange(_settings.GetPageSizesExtended(part));
+
+            EnforcePageSize(process, _parameters, pageSizes.Min(), _parameters.GetIntegerOrDefault("size", () => pageSizes.Min()), pageSizes.Max());
          }
 
          if (_parameters.ContainsKey("sort") && _parameters["sort"] != null) {
@@ -191,6 +194,16 @@ namespace TransformalizeModule.Services {
 
          process.Mode = "stream-map";
          process.ReadOnly = true;
+
+         // TODO: Paging and Sorting may be handled differently for map view
+         if (part.PageSizesExtended.Enabled()) {
+            var pageSizes = new List<int>();
+
+            pageSizes.AddRange(_settings.GetPageSizes(part));
+            pageSizes.AddRange(_settings.GetPageSizesExtended(part));
+
+            EnforcePageSize(process, _parameters, pageSizes.Min(), _parameters.GetIntegerOrDefault("size", () => pageSizes.Min()), pageSizes.Max());
+         }
 
          var o = process.GetOutputConnection();
          o.Stream = true;
@@ -369,7 +382,7 @@ namespace TransformalizeModule.Services {
                page = 1;
             }
 
-            entity.Page = page;
+            entity.Page = page == 0 ? 1 : page;
 
             var size = chosen;
             if (parameters.ContainsKey("size")) {

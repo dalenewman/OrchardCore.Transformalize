@@ -39,6 +39,7 @@ namespace TransformalizeModule.Drivers {
 
             model.CommonArrangement = settings.CommonArrangement;
             model.DefaultPageSizes = settings.DefaultPageSizes;
+            model.DefaultPageSizesExtended = settings.DefaultPageSizesExtended;
             model.MapBoxToken = settings.MapBoxToken;
 
             model.BulkActionCreateTask = settings.BulkActionCreateTask;
@@ -93,7 +94,7 @@ namespace TransformalizeModule.Drivers {
                }
             }
 
-            // default page sizes
+            // default page sizes, todo: de-duplicate code with default page sizes extended
             if (string.IsNullOrWhiteSpace(model.DefaultPageSizes)) {
                context.Updater.ModelState.AddModelError(Prefix, S["Default Page Sizes must be a comma delimited list of integers."]);
             } else {
@@ -106,6 +107,22 @@ namespace TransformalizeModule.Drivers {
                }
                if (clean) {
                   settings.DefaultPageSizes = model.DefaultPageSizes;
+               }
+            }
+
+            // default page sizes extended, todo: de-duplicate code with default page sizes
+            if (string.IsNullOrWhiteSpace(model.DefaultPageSizesExtended)) {
+               context.Updater.ModelState.AddModelError(Prefix, S["Default Page Sizes Extended must be a comma delimited list of integers."]);
+            } else {
+               var clean = true;
+               foreach (var size in model.DefaultPageSizesExtended.Split(',', StringSplitOptions.RemoveEmptyEntries)) {
+                  if (!int.TryParse(size, out int result)) {
+                     context.Updater.ModelState.AddModelError(Prefix, S["Default Page Sizes Extended value {0} is not a valid integer.", size]);
+                     clean = false;
+                  }
+               }
+               if (clean) {
+                  settings.DefaultPageSizesExtended = model.DefaultPageSizesExtended;
                }
             }
          }
