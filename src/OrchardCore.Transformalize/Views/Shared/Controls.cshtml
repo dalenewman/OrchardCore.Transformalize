@@ -131,50 +131,50 @@
                    }
                }*@
 
-         // for now, if map is not enabled, you don't need this because there is only map and report views so far (no calendar)
-         if (Model.Part.Map.Value && hasCoordinates) {
+            // for now, if map is not enabled, you don't need this because there is only map and report views so far (no calendar)
+            if (Model.Part.Map.Value && hasCoordinates) {
 
-            var headless = Context.Request.GetDisplayUrl().Contains("Headless");
+               var headless = Context.Request.GetDisplayUrl().Contains("Headless");
 
-            // not using Url.Action because I don't want the autoroute (friendly slug name) here
-            var reportUrl = Url.Content("~/t/report/" + Model.IdOrAlias);
-            if (headless) {
-               reportUrl = reportUrl.Replace("/t/report/", "/t/headless/report/");
-            }
-
-            views.Add(new PipelineViewModel("report") {
-               Active = Model.Process.Mode == "report",
-               Glyphicon = "list",
-               Link = linkService.Create(Model.IdOrAlias, reportUrl, !Model.Part.PageSizes.Enabled())
-            });
-
-            if (hasCoordinates) {
-
-               var mapUrl = Url.Action("Map", "Report", new { ContentItemId = Model.IdOrAlias });
+               // not using Url.Action because I don't want the autoroute (friendly slug name) here
+               var reportUrl = Url.Content("~/t/report/" + Model.IdOrAlias);
                if (headless) {
-                  mapUrl = mapUrl.Replace("/t/report/map/", "/t/headless/report/map/");
+                  reportUrl = reportUrl.Replace("/t/report/", "/t/headless/report/");
                }
-               views.Add(new PipelineViewModel("map") {
-                  Active = Model.Process.Mode == "map",
-                  Glyphicon = "map-marker",
-                  Link = linkService.Create(Model.IdOrAlias, mapUrl, !Model.Part.PageSizesExtended.Enabled())
+
+               views.Add(new PipelineViewModel("report") {
+                  Active = Model.Process.Mode == "report",
+                  Glyphicon = "list",
+                  Link = linkService.Create(Model.IdOrAlias, reportUrl, !Model.Part.PageSizes.Enabled())
                });
-            }
 
-            //if (Model.Part.CalendarEnabled) {
+               if (hasCoordinates) {
 
-            //   var calendarUrl = Url.Action("Index", "Calendar", new RouteValueDictionary { { "Id", Model.Part.Id } });
-            //   if (headless) {
-            //      calendarUrl = calendarUrl.Replace("/Pipeline/Calendar/", "/Pipeline/Headless/Calendar/");
-            //   }
-            //   views.Add(new PipelineViewModel("calendar") {
-            //      Active = Model.Process.Mode == "calendar",
-            //      Glyphicon = "calendar",
-            //      Link = linkService.Create(Request, Session, Model.Part.Id, calendarUrl, "calendar", false)
-            //   });
-            //}
+                  var mapUrl = Url.Action("Map", "Report", new { ContentItemId = Model.IdOrAlias });
+                  if (headless) {
+                     mapUrl = mapUrl.Replace("/t/report/map/", "/t/headless/report/map/");
+                  }
+                  views.Add(new PipelineViewModel("map") {
+                     Active = Model.Process.Mode == "map",
+                     Glyphicon = "map-marker",
+                     Link = linkService.Create(Model.IdOrAlias, mapUrl, !Model.Part.PageSizesExtended.Enabled())
+                  });
+               }
 
-            var defaultView = views.First(v => v.Mode != Model.Process.Mode);
+               if (Model.Part.Calendar.Value) {
+
+                  var calendarUrl = Url.Action("Calendar", "Report", new { ContentItemId = Model.IdOrAlias });
+                  if (headless) {
+                     calendarUrl = calendarUrl.Replace("/t/report/calendar/", "/t/headless/report/calendar/");
+                  }
+                  views.Add(new PipelineViewModel("calendar") {
+                     Active = Model.Process.Mode == "calendar",
+                     Glyphicon = "calendar",
+                     Link = linkService.Create(Model.IdOrAlias, calendarUrl, !Model.Part.PageSizesExtended.Enabled())
+                  });
+               }
+
+               var defaultView = views.First(v => v.Mode != Model.Process.Mode);
 
             <div class="btn-group btn-group-sm" role="group">
                <button type="button" class="btn btn-primary btn-sm" title="@defaultView.Title" onclick="javascript:window.open('@defaultView.Link','_self');">

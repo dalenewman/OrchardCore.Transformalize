@@ -1,7 +1,5 @@
-using System.Collections;
 using System.Linq;
 using System.Threading.Tasks;
-using AspNetCore;
 using Microsoft.AspNetCore.Http;
 using TransformalizeModule.Models;
 using TransformalizeModule.Services.Contracts;
@@ -57,6 +55,14 @@ namespace TransformalizeModule.Services {
          return _loadService.LoadForMapStream(contentItem);
       }
 
+      public Process LoadForCalendar(ContentItem contentItem) {
+         return _loadService.LoadForCalendar(contentItem);
+      }
+
+      public Process LoadForCalendarStream(ContentItem contentItem) {
+         return _loadService.LoadForCalendarStream(contentItem);
+      }
+
       public async Task RunAsync(Process process) {
          await _runService.RunAsync(process);
       }
@@ -84,6 +90,12 @@ namespace TransformalizeModule.Services {
          }
 
          switch (request.Mode) {
+            case "calendar":
+               response.Process = LoadForCalendar(response.ContentItem);
+               break;
+            case "stream-calendar":
+               response.Process = LoadForCalendarStream(response.ContentItem);
+               break;
             case "map":
                response.Process = LoadForMap(response.ContentItem);
                break;

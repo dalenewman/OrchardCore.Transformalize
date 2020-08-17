@@ -2,7 +2,6 @@
 @using Transformalize.Contracts
 @using Microsoft.Extensions.DependencyInjection
 @using TransformalizeModule.Services.Contracts
-@using OrchardCore.ContentManagement
 @using TransformalizeModule
 @using TransformalizeModule.Ext 
 
@@ -14,7 +13,6 @@
 
    var linkService = Context.RequestServices.GetService<ILinkService>();
    var hasActions = Model.Process.Actions.Any(a => !a.Before && !a.After && !string.IsNullOrEmpty(a.Description) && !a.Description.StartsWith("Batch", StringComparison.OrdinalIgnoreCase));
-   var alias = Model.Item.As<OrchardCore.Alias.Models.AliasPart>().Alias;
    var firstEntity = Model.Process.Entities.First();
    var sortService = Context.RequestServices.GetService<ISortService>();
 
@@ -85,10 +83,6 @@
         height: 100%;
     }
 
-    .form-inline .multiselect-container label.checkbox, .form-inline .multiselect-container label.radio {
-        padding: 0px 20px 0px 10px;
-    }
-
     .mapboxgl-popup {
         max-width: 400px;
     }
@@ -153,7 +147,7 @@
       <script>
       //<!--
       mapboxgl.accessToken = '@Model.Settings.MapBoxToken';
-      var url = '@(linkService.Create(Model.Item.ContentItemId, Url.Action("StreamMap", new { ContentItemId = alias }), !Model.Part.PageSizesExtended.Enabled()))';
+      var url = '@(linkService.Create(Model.Item.ContentItemId, Url.Action("StreamMap", new { ContentItemId = Model.IdOrAlias }), !Model.Part.PageSizesExtended.Enabled()))';
 
       $(document).ready(function() {
 
@@ -199,28 +193,28 @@
             console.log('fitting bounds');
             if (fitBounds) {
                if (window.data.features.length > 0) {
-                     var bounds = new mapboxgl.LngLatBounds();
-                     window.data.features.forEach(function(feature) {
-                        bounds.extend(feature.geometry.coordinates);
-                     });
-                     map.fitBounds(bounds, { padding: 100 });
+                  var bounds = new mapboxgl.LngLatBounds();
+                  window.data.features.forEach(function(feature) {
+                     bounds.extend(feature.geometry.coordinates);
+                  });
+                  map.fitBounds(bounds, { padding: 100 });
                }
             }
 
             console.log('setting up popups');
             map.on('click', layerId, function (e) {
-                  var coordinates = e.features[0].geometry.coordinates.slice();
-                  while (Math.abs(e.lngLat.lng - coordinates[0]) > 180) {
-                     coordinates[0] += e.lngLat.lng > coordinates[0] ? 360 : -360;
-                  }
-                  new mapboxgl.Popup().setLngLat(coordinates).setHTML(e.features[0].properties.description).addTo(map);
+               var coordinates = e.features[0].geometry.coordinates.slice();
+               while (Math.abs(e.lngLat.lng - coordinates[0]) > 180) {
+                  coordinates[0] += e.lngLat.lng > coordinates[0] ? 360 : -360;
+               }
+               new mapboxgl.Popup().setLngLat(coordinates).setHTML(e.features[0].properties.description).addTo(map);
             });
 
             map.on('mouseenter', layerId, function () {
-                  map.getCanvas().style.cursor = 'pointer';
+               map.getCanvas().style.cursor = 'pointer';
             });
             map.on('mouseleave', layerId, function () {
-                  map.getCanvas().style.cursor = '';
+               map.getCanvas().style.cursor = '';
             });
 
             }
@@ -317,7 +311,7 @@
                      var link = $(this);
                      $("input[name=bulk-action-length]").val(selected.features.length);
                      controls.bulkActionLength = selected.features.length;
-                     link.html(link.attr('rel') + ' <span class="badge badge-dark">' + selected.features.length + "</span>");
+                     link.html(link.attr('rel') + ' <span class="badge badge-pill badge-dark">' + selected.features.length + "</span>");
                   });
                } else {
                   // update the little badges
@@ -325,7 +319,7 @@
                      var link = $(this);
                      $("input[name=bulk-action-length]").val(0);
                      controls.bulkActionLength = 0;
-                     link.html(link.attr('rel') + ' <span class="badge badge-dark"></span>');
+                     link.html(link.attr('rel') + ' <span class="badge badge-pill badge-dark"></span>');
                   });
                }
             }

@@ -158,6 +158,47 @@ namespace TransformalizeModule.Services {
          return process;
       }
 
+      public Process LoadForCalendar(ContentItem contentItem) {
+
+         if (!TryGetReportPart(contentItem, out var part)) {
+            return new Process { Status = 500, Message = "Error", Log = new List<LogEntry>() { new LogEntry(LogLevel.Error, null, $"LoadForCalendar can't load {contentItem.ContentType}.") } };
+         }
+
+         var process = LoadInternal(part, null);
+
+         process.Mode = "calendar";
+         process.ReadOnly = true;
+
+         // TODO: Paging and Sorting may be handled differently for calendar view
+         if (part.PageSizesExtended.Enabled()) {
+            var pageSizes = new List<int>();
+
+            pageSizes.AddRange(_settings.GetPageSizes(part));
+            pageSizes.AddRange(_settings.GetPageSizesExtended(part));
+
+            EnforcePageSize(process, _parameters, pageSizes.Min(), _parameters.GetIntegerOrDefault("size", () => pageSizes.Min()), pageSizes.Max());
+         }
+
+         if (_parameters.ContainsKey("sort") && _parameters["sort"] != null) {
+            _sortService.AddSortToEntity(part, process.Entities.First(), _parameters["sort"]);
+         }
+
+         // disable internal actions
+         foreach (var action in process.Actions.Where(a => a.Type == "internal")) {
+            action.Before = false;
+            action.After = false;
+         }
+
+         // special handling of bulk action value field
+         if (part.BulkActions.Value && process.TryGetField(part.BulkActionValueField.Text, out Field bulkActionValueField)) {
+            bulkActionValueField.Output = true;
+            bulkActionValueField.Export = "false";
+         }
+
+         return process;
+      }
+
+
       public Process LoadForBatch(ContentItem contentItem) {
 
          if (!TryGetReportPart(contentItem, out var part)) {
@@ -223,7 +264,7 @@ namespace TransformalizeModule.Services {
             { string.IsNullOrWhiteSpace(part.MapLongitudeField.Text) ? "longitude" : part.MapLongitudeField.Text, "longitude" } // used in feature coordinate
          };
 
-         //             { string.IsNullOrWhiteSpace(part.MapColorField.Text) ? "geojson-color" : part.MapColorField.Text, "geojson-color" },  // becomes marker-color property
+         // { string.IsNullOrWhiteSpace(part.MapColorField.Text) ? "geojson-color" : part.MapColorField.Text, "geojson-color" },  // becomes marker-color property
 
          // todo: refactor the next three things
          if(part.MapColorField.Text != null && !part.MapColorField.Text.StartsWith("#")) {
@@ -248,6 +289,65 @@ namespace TransformalizeModule.Services {
 
          // restrict fields to only what is needed for map
          ConfineData(process, mapFields);
+
+         // disable actions
+         foreach (var action in process.Actions) {
+            action.Before = false;
+            action.After = false;
+         }
+
+         return process;
+      }
+
+      public Process LoadForCalendarStream(ContentItem contentItem) {
+
+         if (!TryGetReportPart(contentItem, out var part)) {
+            return new Process { Status = 500, Message = "Error", Log = new List<LogEntry>() { new LogEntry(LogLevel.Error, null, $"LoadForBatch can't load {contentItem.ContentType}.") } };
+         }
+
+         var process = LoadInternal(part);
+
+         process.Mode = "stream-calendar";
+         process.ReadOnly = true;
+
+         // TODO: Paging and Sorting may be handled differently for calendar view
+         if (part.PageSizesExtended.Enabled()) {
+            var pageSizes = new List<int>();
+
+            pageSizes.AddRange(_settings.GetPageSizes(part));
+            pageSizes.AddRange(_settings.GetPageSizesExtended(part));
+
+            EnforcePageSize(process, _parameters, pageSizes.Min(), _parameters.GetIntegerOrDefault("size", () => pageSizes.Min()), pageSizes.Max());
+         }
+
+         var o = process.GetOutputConnection();
+         o.Stream = true;
+         o.Provider = "json";
+
+         //var calendarFields = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase) {
+         //   { part.CalendarIdField, "id" },
+         //   { part.CalendarTitleField, "title" },
+         //   { part.CalendarUrlField, "url" },
+         //   { part.CalendarClassField, "class" },
+         //   { part.CalendarStartField, "start" },
+         //   { part.CalendarEndField, "end" }
+         //};
+
+         var calendarFields = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase) {
+            { "id", "id" },
+            { "title", "title" },
+            { "url", "url" },
+            { "class", "class" },
+            { "start", "start" },
+            { "end", "end" }
+         };
+
+         // for batch operations - currently hard-coded to batchvalue
+         if (!string.IsNullOrEmpty(part.BulkActionValueField.Text)) {
+            calendarFields[part.BulkActionValueField.Text] = "batchvalue";
+         }
+
+         ConfineData(process, calendarFields);
 
          // disable actions
          foreach (var action in process.Actions) {
@@ -399,7 +499,7 @@ namespace TransformalizeModule.Services {
       }
 
       /// <summary>
-      /// removes unnecessary stuff from the main report for batching, geo-json, etc.
+      /// removes unnecessary fields to make the export faster
       /// </summary>
       /// <param name="process"></param>
       /// <param name="required"></param>

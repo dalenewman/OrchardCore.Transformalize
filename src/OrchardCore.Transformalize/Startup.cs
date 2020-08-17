@@ -182,6 +182,13 @@ namespace TransformalizeModule {
          );
 
          routes.MapAreaControllerRoute(
+             name: "Report Calendar",
+             areaName: Common.ModuleName,
+             pattern: "t/report/calendar/{ContentItemId}",
+             defaults: new { controller = "Report", action = "Calendar" }
+         );
+
+         routes.MapAreaControllerRoute(
             name: "Stream CSV",
             areaName: Common.ModuleName,
             pattern: "t/report/stream/csv/{ContentItemId}",
@@ -207,6 +214,13 @@ namespace TransformalizeModule {
             areaName: Common.ModuleName,
             pattern: "t/report/stream/map/{ContentItemId}",
             defaults: new { controller = "Report", action = "StreamMap" }
+         );
+
+         routes.MapAreaControllerRoute(
+            name: "Stream JSON to Calendar",
+            areaName: Common.ModuleName,
+            pattern: "t/report/stream/calendar/{ContentItemId}",
+            defaults: new { controller = "Report", action = "StreamCalendar" }
          );
 
          routes.MapAreaControllerRoute(

@@ -76,7 +76,7 @@ function updateBulkActions() {
       var link = $(this);
       var len = (all ? "All" : $('#select-all:checked').length > 0 ? length - 1 : length);
       controls.bulkActionLength = len;
-      link.html(link.attr('rel') + ' <span class="badge badge-dark">' + len + "</span>");
+      link.html(link.attr('rel') + ' <span class="badge badge-pill badge-dark">' + len + "</span>");
    });
 }
 

@@ -4,5 +4,23 @@
     "inputFiles": [
       "wwwroot/Scripts/mapbox-gl.js"
     ]
+  },
+  {
+    "outputFileName": "wwwroot/Scripts/calendar.min.js",
+    "inputFiles": [
+      "wwwroot/Scripts/calendar.js"
+    ]
+  },
+  {
+    "outputFileName": "wwwroot/Styles/calendar.min.css",
+    "inputFiles": [
+      "wwwroot/Styles/calendar.css"
+    ]
+  },
+  {
+    "outputFileName": "wwwroot/Scripts/underscore.min.js",
+    "inputFiles": [
+      "wwwroot/Scripts/underscore.js"
+    ]
   }
 ]

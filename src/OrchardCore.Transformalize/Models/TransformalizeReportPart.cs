@@ -37,6 +37,8 @@ namespace TransformalizeModule.Models {
          MapColorField = new TextField() { Text = "geojson-color" };
          MapRadiusField = new TextField() { Text = "7" };
          MapOpacityField = new TextField() { Text = "0.8" };
+
+         Calendar = new BooleanField();  // for now
       }
       public TextField Arrangement { get; set; }
       public TextField PageSizes { get; set; }
@@ -59,5 +61,7 @@ namespace TransformalizeModule.Models {
       public TextField MapColorField { get; set; }
       public TextField MapRadiusField { get; set; }
       public TextField MapOpacityField { get; set; }
+
+      public BooleanField Calendar { get; set; }
    }
 }

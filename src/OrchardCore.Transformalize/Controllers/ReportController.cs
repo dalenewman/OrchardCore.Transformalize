@@ -85,6 +85,26 @@ namespace TransformalizeModule.Controllers {
       }
 
       [HttpGet]
+      public async Task<ActionResult> Calendar(string contentItemId) {
+
+         var request = new TransformalizeRequest(contentItemId, HttpContext.User.Identity.Name) { Mode = "calendar" };
+         var calendar = await _reportService.Validate(request);
+
+         if (calendar.Fails()) {
+            return calendar.ActionResult;
+         }
+
+         await _reportService.RunAsync(calendar.Process);
+
+         if (calendar.Process.Status != 200) {
+            return View("Log", new LogViewModel(_logger.Log, calendar.Process, calendar.ContentItem));
+         }
+
+         return View(new ReportViewModel(calendar.Process, calendar.ContentItem, contentItemId) { Settings = _settings.Settings });
+
+      }
+
+      [HttpGet]
       public async Task<ActionResult> Run(string contentItemId, string format = "json") {
 
          var request = new TransformalizeRequest(contentItemId, HttpContext.User.Identity.Name) { Format = format };
@@ -184,6 +204,25 @@ namespace TransformalizeModule.Controllers {
          return new EmptyResult();
 
       }
+
+      [HttpGet]
+      public async Task<ActionResult> StreamCalendar(string contentItemId) {
+
+         var request = new TransformalizeRequest(contentItemId, HttpContext.User.Identity.Name) { Mode = "stream-calendar" };
+         var map = await _reportService.Validate(request);
+
+         if (map.Fails()) {
+            return map.ActionResult;
+         }
+         
+         Response.ContentType = "application/json";
+
+         await _reportService.RunAsync(map.Process);
+
+         return new EmptyResult();
+
+      }
+
 
       [HttpGet]
       public async Task<ActionResult> StreamCsv(string contentItemId) {

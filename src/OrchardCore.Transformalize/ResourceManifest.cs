@@ -290,6 +290,26 @@ namespace TransformalizeModule {
             .SetCdnIntegrity("sha256-Nhtik+K3xORhs5S9o0qlol4eRNB9O5OyTOJqbLucPk8=", "sha256-9WY2IAez52ncSmDHF2+kRA47S3/U9rBcRB6x2bUpfR4=")
             .SetVersion("5.1.6");
 
+         manifest
+            .DefineScript("bootstrap-calendar")
+            .SetUrl($"~/{Common.ModuleName}/Scripts/calendar.min.js", $"~/{Common.ModuleName}/Scripts/calendar.js")
+            .SetCdn("https://cdnjs.cloudflare.com/ajax/libs/bootstrap-calendar/0.2.5/js/calendar.min.js", "https://cdnjs.cloudflare.com/ajax/libs/bootstrap-calendar/0.2.5/js/calendar.js")
+            .SetCdnIntegrity("sha512-1tpLJ4USZ1V/MWwEfikVjpCMnKv9uy0jVWs+jX7Hl9Uca129P9lrFXyBcMx2ckIm6MM1MlELeK2dLIo5nHhP7A==", "sha512-oXhFBLw3n73Zt5berP4kOmKksbaFi4NdO4/yoDJid4u5zk8vmOQVZ0QTCGh95L+hsKMgt7d31KqmSm3FdRO9kQ==")
+            .SetVersion("0.2.5");
+
+         manifest
+             .DefineStyle("bootstrap-calendar")
+             .SetUrl($"~/{Common.ModuleName}/Styles/calendar.min.css", $"~/{Common.ModuleName}/Styles/calendar.css")
+             .SetCdn("https://cdnjs.cloudflare.com/ajax/libs/bootstrap-calendar/0.2.5/css/calendar.min.css", "https://cdnjs.cloudflare.com/ajax/libs/bootstrap-calendar/0.2.5/css/calendar.css")
+             .SetCdnIntegrity("sha512-zmbBaOaW0O7Zo4gYPd/Ef9sAMiv1doq5erbIWhuYcfGacLP4hscq/V45c5CwYKhqO9ffFW+YYCyhqY+WJJyO4g==", "sha512-z3HKbBdaba6ixpItVs/TjdnOEQvJO6Zf3pK4T7zzncPYNz10J4y/4CeJ+2iGmut86H7PMAK74duJP9KLKCT3UA==")             
+             .SetVersion("0.2.5");
+
+         manifest
+            .DefineScript("underscore")
+            .SetUrl($"~/{Common.ModuleName}/Scripts/underscore.min.js", $"~/{Common.ModuleName}/Scripts/underscore.js")
+            .SetCdn("https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.4.1/underscore-min.js", "https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.4.1/underscore.js")
+            .SetCdnIntegrity("sha512-xHPfYya0Ac9NYcp0d6YKVnP/n7dcRGiQCsGKC+BMpziXwgg/6VogplMOS+nqUXQIPmtuGwZ25fAcSgtjBxBVfg==", "sha512-qbJl2/KyecDVJdgAwr0Gzhm5KBmkzdUouG+sKmCWP1Idb144ZnfSmCRReuYXPEHIa4j38TwrR2ySeGoFH5gKzA==")
+            .SetVersion("1.4.1");
       }
    }
 }
