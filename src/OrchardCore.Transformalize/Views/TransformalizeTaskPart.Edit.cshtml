@@ -1,6 +1,6 @@
 ﻿@model EditTransformalizeTaskPartViewModel
 @using TransformalizeModule.ViewModels
-@using TransformalizeModule 
+@using TransformalizeModule
 
 @{
    var Area = Common.ModuleName;
@@ -14,36 +14,36 @@
 
 <fieldset>
    <div class="btn-group float-right" role="group">
-      <button title="view this task"
-              type="button"
-              class="btn btn-success btn-sm"
-              onclick="window.open('@viewLink', '_blank');">
+      <a title="view this task"
+         role="button"
+         class="btn btn-success btn-sm"
+         href="@viewLink">
          <span class="fas fa-eye"></span>
-      </button>
-      <button title="run this task"
-              type="button"
-              class="btn btn-warning btn-sm"
-              onclick="window.open('@runLink', '_blank');">
+      </a>
+      <a title="run this task"
+         role="button"
+         class="btn btn-warning btn-sm"
+         href="@runLink">
          <span class="fas fa-play"></span>
-      </button>
-      <button title="run this task as xml"
-              type="button"
-              class="btn btn-primary btn-sm"
-              onclick="window.open('@xmlLink', '_blank');">
+      </a>
+      <a title="run this task as xml"
+         role="button"
+         class="btn btn-primary btn-sm"
+         href="@xmlLink">
          <span class="fas fa-code"></span>
-      </button>
-      <button title="run this task as json"
-              type="button"
-              class="btn btn-secondary btn-sm"
-              onclick="window.open('@jsonLink', '_blank');">
+      </a>
+      <a title="run this task as json"
+         role="button"
+         class="btn btn-secondary btn-sm"
+         href="@jsonLink">
          <span class="fas fa-exchange-alt"></span>
-      </button>
-      <button title="query schema for the entities in this task"
-              type="button"
-              class="btn btn-info btn-sm"
-              onclick="window.open('@schemaLink', '_blank');">
+      </a>
+      <a title="query schema for the entities in this task"
+         role="button"
+         class="btn btn-info btn-sm"
+         href="@schemaLink">
          <span class="fas fa-search-plus"></span>
-      </button>
+      </a>
    </div>
 </fieldset>
 

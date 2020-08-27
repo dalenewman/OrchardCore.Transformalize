@@ -106,7 +106,7 @@ namespace TransformalizeModule.Services {
                response.Process = LoadForStream(response.ContentItem);
                break;
             default:
-               response.Process = LoadForReport(response.ContentItem);
+               response.Process = LoadForReport(response.ContentItem, request.Format);
                break;
          }
          
