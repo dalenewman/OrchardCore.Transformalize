@@ -19,7 +19,7 @@ module for [Orchard Core](https://github.com/OrchardCMS/OrchardCore) rc2.
 - <strike>Batches / Bulk Actions</strike>
   - <strike>Tasks (ETL Jobs) for running batches, etc</strike>
   - <strike>Forms for accepting parameters for batches</strike>
-  - Bulk Action Settings
+  - <strike>Bulk Action Settings</strike>
     - <strike>Common</strike>
     - <strike>Part</strike>
   - Workflow: Still learning, but bulk operations / batches might be helped by the Workflows module.
@@ -57,10 +57,10 @@ module for [Orchard Core](https://github.com/OrchardCMS/OrchardCore) rc2.
 - Visual Studio 2019 with ASP.NET Core related workloads:
   - ASP.NET and Web Development
   - .NET Core Cross-Platform Development
-- Add nuget package source https://www.myget.org/F/transformalize/api/v3/index.json
+- <strike>Add nuget package source https://www.myget.org/F/transformalize/api/v3/index.json</strike>
 - Set the Site as the startup project and run.
-- Enable Transformalize in Dashboard > Configuration > Features
-- Optionally run Transformalize recipes in Dashboard > Configuration > Recipes
+- Enable Transformalize
+- Optionally run Transformalize recipes
 
 #### Module Dependencies
 You may have to enable some of these manually if you're not installing from scratch.
@@ -68,7 +68,7 @@ You may have to enable some of these manually if you're not installing from scra
 - `OrchardCore.Contents`
 - `OrchardCore.Title`
 - [`Etch.OrchardCore.ContentPermissions`](https://github.com/EtchUK/Etch.OrchardCore.ContentPermissions)
-- `OrchardCore.MiniProfiler`
+- `OrchardCore.MiniProfiler` (not required anymore)
 - `OrchardCore.Alias`
 - `OrchardCore.ContentFields`
 - `OrchardCore.Workflows`
@@ -79,25 +79,26 @@ You may have to enable some of these manually if you're not installing from scra
 ---
 
 #### GIF
-![bogus report](src/Site/App_Data/samples/sacramento-crime/criminal-bulk-actions.gif)
+!bogus report](src/Site/App_Data/samples/sacramento-crime/criminal-bulk-actions.gif)
+
+> Prerequisite Reading: [Transformalize](https://github.com/dalenewman/Transformalize) read me page.
 
 #### Reporting
 Using [Transformalize](https://github.com/dalenewman/Transformalize) for reporting basically means you 
 read from one entity and do not specify an output.  To find out 
-more about the providers, click on the links above.  Also, be sure to read 
-the main [Transformalize](https://github.com/dalenewman/Transformalize) read me page.
+more about the providers, click on the links above.
 
 #### Tasks
-Tasks can transform, validate, or de-normalize data (as seen in the [Transformalize](https://github.com/dalenewman/Transformalize) read me).
-They can prompt the user for input (which should be validated).  
-They may be used to modify data (e.g. with an ADO run transform).
+Tasks can transform, validate, or de-normalize data.
+They can prompt the user for and validate input. They 
+may be used to modify data.
 
 #### Bulk Actions
 When you enable Bulk Actions on a report, you designate a field or calculated field 
-in your arrangement as the Bulk Action Value Field.  Each row's value from 
+in your arrangement as the `Bulk Action Value Field`.  Each row's value from 
 this field is sent to the bulk action.
 
-Bulk actions are processed by tasks.  Tasks are added to 
+Bulk actions are processed by tasks (above).  Tasks are added to 
 an arrangement like this:
 
 ```xml
@@ -110,12 +111,12 @@ an arrangement like this:
 </cfg>
 ```
 
-Six tasks must be defined in order to run bulk actions:
+Five tasks must be defined in order to run bulk actions:
 
 1. `batch-create`: create and return a batch identifier
 1. `batch-write`: write batch values.
 1. `batch-summary`: gather review and result summary for a batch.
-1. `batch-run`: indicate the task is running.
+1. `batch-run`: indicate the task is running (not yet implemented)
 1. `batch-success`: indicate the task succeeded
 1. `batch-fail`: indicate the task failed
 
