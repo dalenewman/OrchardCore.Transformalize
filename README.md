@@ -79,7 +79,7 @@ You may have to enable some of these manually if you're not installing from scra
 ---
 
 #### GIF
-!bogus report](src/Site/App_Data/samples/sacramento-crime/criminal-bulk-actions.gif)
+![bogus report](src/Site/App_Data/samples/sacramento-crime/criminal-bulk-actions.gif)
 
 > Prerequisite Reading: [Transformalize](https://github.com/dalenewman/Transformalize) read me page.
 
