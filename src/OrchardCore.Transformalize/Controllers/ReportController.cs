@@ -56,35 +56,6 @@ namespace TransformalizeModule.Controllers {
       }
 
       [HttpGet]
-      public async Task<ActionResult> Map(string contentItemId) {
-
-         var request = new TransformalizeRequest(contentItemId, HttpContext.User.Identity.Name) { Mode = "map" };
-         var map = await _reportService.Validate(request);
-
-         if (map.Fails()) {
-            return map.ActionResult;
-         }
-
-         if (string.IsNullOrEmpty(_settings.Settings.MapBoxToken)) {
-            _logger.Warn(() => $"User {request.User} requested map without mapbox token {request.ContentItemId}.");
-
-            map.Process.Status = 404;
-            map.Process.Message = "MapBox Token Not Found";
-
-            return View("Log", new LogViewModel(_logger.Log, map.Process, map.ContentItem));
-         }
-
-         await _reportService.RunAsync(map.Process);
-
-         if (map.Process.Status != 200) {
-            return View("Log", new LogViewModel(_logger.Log, map.Process, map.ContentItem));
-         }
-
-         return View(new ReportViewModel(map.Process, map.ContentItem, contentItemId) { Settings = _settings.Settings });
-
-      }
-
-      [HttpGet]
       public async Task<ActionResult> Calendar(string contentItemId) {
 
          var request = new TransformalizeRequest(contentItemId, HttpContext.User.Identity.Name) { Mode = "calendar" };
@@ -182,24 +153,6 @@ namespace TransformalizeModule.Controllers {
          Response.Headers.Add("content-disposition", "attachment; filename=" + o.File);
 
          await _reportService.RunAsync(stream.Process);
-
-         return new EmptyResult();
-
-      }
-
-      [HttpGet]
-      public async Task<ActionResult> StreamMap(string contentItemId) {
-
-         var request = new TransformalizeRequest(contentItemId, HttpContext.User.Identity.Name) { Mode = "stream-map" };
-         var map = await _reportService.Validate(request);
-
-         if (map.Fails()) {
-            return map.ActionResult;
-         }
-
-         Response.ContentType = "application/vnd.geo+json";
-
-         await _reportService.RunAsync(map.Process);
 
          return new EmptyResult();
 

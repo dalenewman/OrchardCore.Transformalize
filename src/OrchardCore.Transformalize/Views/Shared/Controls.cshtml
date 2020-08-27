@@ -150,7 +150,7 @@
 
                if (hasCoordinates) {
 
-                  var mapUrl = Url.Action("Map", "Report", new { ContentItemId = Model.IdOrAlias });
+                  var mapUrl = Url.Action("Index", "Map", new { ContentItemId = Model.IdOrAlias });
                   if (headless) {
                      mapUrl = mapUrl.Replace("/t/report/map/", "/t/headless/report/map/");
                   }

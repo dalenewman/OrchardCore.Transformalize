@@ -147,7 +147,7 @@
       <script>
       //<!--
       mapboxgl.accessToken = '@Model.Settings.MapBoxToken';
-      var url = '@(linkService.Create(Model.Item.ContentItemId, Url.Action("StreamMap", new { ContentItemId = Model.IdOrAlias }), !Model.Part.PageSizesExtended.Enabled()))';
+      var url = '@(linkService.Create(Model.Item.ContentItemId, Url.Action("StreamMap", "Map", new { ContentItemId = Model.IdOrAlias }), !Model.Part.PageSizesExtended.Enabled()))';
 
       $(document).ready(function() {
 
@@ -243,7 +243,8 @@
 
          var loadData = function (fitBounds) {
             $('#busy').show();
-            $.getJSON(url + '&random=' + Math.random(), function (data) {
+            url = url + (url.indexOf('?') > -1 ? '&' : '?') + 'random=' + Math.random();
+            $.getJSON(url, function (data) {
 
                // filter out zeroes
                var zeroes = 0;

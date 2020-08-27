@@ -74,6 +74,7 @@ namespace TransformalizeModule {
       public override void Configure(IApplicationBuilder builder, IEndpointRouteBuilder routes, IServiceProvider serviceProvider) {
 
          RouteReporting(routes);
+         RouteMap(routes);
          RouteTasks(routes);
          RouteBulkActions(routes);
 
@@ -175,13 +176,6 @@ namespace TransformalizeModule {
          );
 
          routes.MapAreaControllerRoute(
-             name: "Report Map",
-             areaName: Common.ModuleName,
-             pattern: "t/report/map/{ContentItemId}",
-             defaults: new { controller = "Report", action = "Map" }
-         );
-
-         routes.MapAreaControllerRoute(
              name: "Report Calendar",
              areaName: Common.ModuleName,
              pattern: "t/report/calendar/{ContentItemId}",
@@ -210,13 +204,6 @@ namespace TransformalizeModule {
          );
 
          routes.MapAreaControllerRoute(
-            name: "Stream Geo JSON to Map",
-            areaName: Common.ModuleName,
-            pattern: "t/report/stream/map/{ContentItemId}",
-            defaults: new { controller = "Report", action = "StreamMap" }
-         );
-
-         routes.MapAreaControllerRoute(
             name: "Stream JSON to Calendar",
             areaName: Common.ModuleName,
             pattern: "t/report/stream/calendar/{ContentItemId}",
@@ -238,5 +225,24 @@ namespace TransformalizeModule {
          );
 
       }
+
+      public void RouteMap(IEndpointRouteBuilder routes) {
+
+         routes.MapAreaControllerRoute(
+             name: "Report Map",
+             areaName: Common.ModuleName,
+             pattern: "t/report/map/{ContentItemId}",
+             defaults: new { controller = "Map", action = "Index" }
+         );
+
+         routes.MapAreaControllerRoute(
+            name: "Stream Geo JSON to Map",
+            areaName: Common.ModuleName,
+            pattern: "t/report/stream/map/{ContentItemId}",
+            defaults: new { controller = "Map", action = "StreamMap" }
+         );
+
+      }
+
    }
 }
