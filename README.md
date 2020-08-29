@@ -3,12 +3,15 @@ module for [Orchard Core](https://github.com/OrchardCMS/OrchardCore) rc2.
 
 #### Features
 - <strike>Code Mirror XML Editor for arrangements</strike>
-- Reporting
+- <strike>Reporting</strike>
    - <strike>Sortable, Filterable Table with pagination</strike>
    - <strike>CSV Extract</strike>
    - <strike>JSON Extract</strike>
-   - Calendar view
-- Map(Box) view
+- <strike>Calendar view</strike>
+  - <strike>js libraries</strike>
+  - <strike>convert templates to Bootstrap 4</strike>
+  - <strike>Paging (extended sizes or no paging)</strike>
+- <strike>Map(Box) view</strike>
   - <strike>js libraries</strike>
   - <strike>MapBox Key</strike>
   - <strike>Dot Description Value/Field</strike>
@@ -22,7 +25,6 @@ module for [Orchard Core](https://github.com/OrchardCMS/OrchardCore) rc2.
   - <strike>Bulk Action Settings</strike>
     - <strike>Common</strike>
     - <strike>Part</strike>
-  - Workflow: Still learning, but bulk operations / batches might be helped by the Workflows module.
 - <strike>Add Mini Profiler into ADO providers</strike>
 - <strike>Common Arrangement Settings</strike>
   - <strike>Parameters</strike>
@@ -30,6 +32,11 @@ module for [Orchard Core](https://github.com/OrchardCMS/OrchardCore) rc2.
   - <strike>Actions</strike>
   - <strike>Page Sizes</strike>
   - <strike>Fields</strike> (no short-hand yet)
+- Forms
+  - add ability to setup a "form" in transformalize
+    - old implementation only works on SQL Server, perhaps abstract to use task to get the next key (for adding form submissions)
+  - implement file uploading (could be used for task parameters as well)
+- Figure out how to disable navigation for Running in IFrame (or perhaps Widget)
 
 #### Providers
 - <strike>[Elasticsearch](https://github.com/dalenewman/Transformalize.Provider.Elasticsearch)</strike>, <strike>[SQL Server](https://github.com/dalenewman/Transformalize.Provider.SqlServer)</strike>, <strike>[PostgreSQL](https://github.com/dalenewman/Transformalize.Provider.PostgreSql)</strike>, <strike>[SQLite](https://github.com/dalenewman/Transformalize.Provider.SQLite)</strike>, <strike>[MySql](https://github.com/dalenewman/Transformalize.Provider.MySql)</strike>, <strike>[JSON](https://github.com/dalenewman/Transformalize.Provider.JSON)</strike>, <strike>[CSV](https://github.com/dalenewman/Transformalize.Provider.CsvHelper)</strike>, <strike>[Bogus](https://github.com/dalenewman/Transformalize.Provider.Bogus)</strike>, <strike>[GeoJson](https://github.com/dalenewman/Transformalize.Provider.GeoJson)</strike>
@@ -41,7 +48,11 @@ module for [Orchard Core](https://github.com/OrchardCMS/OrchardCore) rc2.
 )</strike>, <strike>JSON</strike>, <strike>[Humanize](https://github.com/dalenewman/Transformalize.Transform.Humanizer)</strike>
 - <strike>[Razor](https://github.com/dalenewman/Transformalize.Provider.Razor)</strike>, <strike>[Liquid / Fluid](https://github.com/dalenewman/Transformalize.Transform.Fluid
 )</strike>, <strike>[Lambda Parser](https://github.com/dalenewman/Transformalize.Transform.LambdaParser)</strike>
-- Orchard transforms: <strike>username()</strike>, <strike>userid()</strike>, <strike>useremail()</strike>.
+- Orchard transforms
+  - <strike>`username()`: get current user name</strike>
+  - <strike>`userid()`: get current user id</strike>
+  - <strike>`useremail()`: get current user email address</strike>
+  - `resolveUrl()`: resolve the tilda ~ to root of site
 - <strike>file related (get file name, file path, file extension)</strike>
 - <strike>IMemoryCache, ISignal Caching for Expensive Transforms</strike>
   - <strike>Razor: Cache RazorTemplate</strike>
@@ -68,10 +79,8 @@ You may have to enable some of these manually if you're not installing from scra
 - `OrchardCore.Contents`
 - `OrchardCore.Title`
 - [`Etch.OrchardCore.ContentPermissions`](https://github.com/EtchUK/Etch.OrchardCore.ContentPermissions)
-- `OrchardCore.MiniProfiler` (not required anymore)
 - `OrchardCore.Alias`
 - `OrchardCore.ContentFields`
-- `OrchardCore.Workflows`
 
 #### Issues
 - Tabs in part editors break on ModelState error
