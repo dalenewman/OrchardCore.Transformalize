@@ -1,13 +1,10 @@
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using OrchardCore.ContentManagement;
 using TransformalizeModule.Services.Contracts;
 using TransformalizeModule.ViewModels;
 using OrchardCore.Liquid;
-using OrchardCore.Title.Models;
 using TransformalizeModule.Services;
 using TransformalizeModule.Models;
-using System.Collections.Generic;
 using Microsoft.AspNetCore.Authorization;
 
 namespace TransformalizeModule.Controllers {
@@ -16,7 +13,6 @@ namespace TransformalizeModule.Controllers {
    public class MapController : Controller {
 
       private readonly IReportService _reportService;
-      private readonly ISlugService _slugService;
       private readonly CombinedLogger<ReportController> _logger;
       private readonly ISettingsService _settings;
 
@@ -27,7 +23,6 @@ namespace TransformalizeModule.Controllers {
          CombinedLogger<ReportController> logger
       ) {
          _reportService = reportService;
-         _slugService = slugService;
          _settings = settings;
          _logger = logger;
       }
@@ -62,7 +57,7 @@ namespace TransformalizeModule.Controllers {
       }
 
       [HttpGet]
-      public async Task<ActionResult> StreamMap(string contentItemId) {
+      public async Task<ActionResult> Stream(string contentItemId) {
 
          var request = new TransformalizeRequest(contentItemId, HttpContext.User.Identity.Name) { Mode = "stream-map" };
          var map = await _reportService.Validate(request);

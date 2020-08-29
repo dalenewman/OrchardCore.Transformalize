@@ -2,7 +2,6 @@
 @using Transformalize.Contracts
 @using Microsoft.Extensions.DependencyInjection
 @using TransformalizeModule.Services.Contracts
-@using OrchardCore.ContentManagement
 @using TransformalizeModule
 @using TransformalizeModule.Ext
 
@@ -148,7 +147,7 @@
    <script>
       /* using calendar from here: https://github.com/Serhioromano/bootstrap-calendar */
       //<!--
-      var dataUrl = '@(linkService.Create(Model.Item.ContentItemId, Url.Action("StreamCalendar", new { ContentItemId = Model.IdOrAlias }), !Model.Part.PageSizesExtended.Enabled()))';
+      var dataUrl = '@(linkService.Create(Model.Item.ContentItemId, Url.Action("Stream", "Calendar", new { ContentItemId = Model.IdOrAlias }), !Model.Part.PageSizesExtended.Enabled()))';
 
       var templatePath = '@Url.Content($"~/{Common.ModuleName}/Scripts/tmpls/")';
 
@@ -157,6 +156,7 @@
          $('#id_calendar').height(Math.round($(window).height() * .71));
 
          var renderCalendar = function () {
+            dataUrl = dataUrl + (dataUrl.indexOf('?') > -1 ? '&' : '?') + 'random=' + Math.random();
             $.getJSON( dataUrl, function(data) {
                var options = {
                   format12: true,

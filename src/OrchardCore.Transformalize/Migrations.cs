@@ -53,7 +53,7 @@ namespace TransformalizeModule {
              ).WithField("BulkActions", field => field
                 .OfType(nameof(BooleanField))
                 .WithDisplayName("Bulk Actions")
-                .WithPosition("1")
+                .WithPosition("10")
                 .WithSettings(new BooleanFieldSettings {
                    DefaultValue = false,
                    Hint = "Allow user to select one, many, or all records for a bulk action?",
@@ -63,7 +63,7 @@ namespace TransformalizeModule {
               ).WithField("BulkActionValueField", field => field
                 .OfType(nameof(TextField))
                 .WithDisplayName("Bulk Action Value Field")
-                .WithPosition("2")
+                .WithPosition("11")
                 .WithSettings(new TextFieldSettings {
                    Required = false,
                    Hint = "Specify which field or calculated field provides the value for bulk actions."
@@ -72,7 +72,7 @@ namespace TransformalizeModule {
               ).WithField("BulkActionCreateTask", field => field
                   .OfType(nameof(TextField))
                   .WithDisplayName("Bulk Action Create Task")
-                  .WithPosition("3")
+                  .WithPosition("12")
                   .WithSettings(new TextFieldSettings {
                      Required = false,
                      Hint = Common.BulkActionCreateTaskHint + " Leave blank to use default task defined in settings."
@@ -80,7 +80,7 @@ namespace TransformalizeModule {
               ).WithField("BulkActionWriteTask", field => field
                   .OfType(nameof(TextField))
                   .WithDisplayName("Bulk Action Write Task")
-                  .WithPosition("4")
+                  .WithPosition("13")
                   .WithSettings(new TextFieldSettings {
                      Required = false,
                      Hint = Common.BulkActionWriteTaskHint + " Leave blank to use default task defined in settings."
@@ -88,7 +88,7 @@ namespace TransformalizeModule {
               ).WithField("BulkActionSummaryTask", field => field
                   .OfType(nameof(TextField))
                   .WithDisplayName("Bulk Action Summary Task")
-                  .WithPosition("5")
+                  .WithPosition("14")
                   .WithSettings(new TextFieldSettings {
                      Required = false,
                      Hint = Common.BulkActionSummaryTaskHint + " Leave blank to use default task defined in settings."
@@ -96,7 +96,7 @@ namespace TransformalizeModule {
               ).WithField("BulkActionRunTask", field => field
                   .OfType(nameof(TextField))
                   .WithDisplayName("Bulk Action Run Task")
-                  .WithPosition("6")
+                  .WithPosition("15")
                   .WithSettings(new TextFieldSettings {
                      Required = false,
                      Hint = Common.BulkActionRunTaskHint + " Leave blank to use default task defined in settings."
@@ -104,7 +104,7 @@ namespace TransformalizeModule {
               ).WithField("BulkActionSuccessTask", field => field
                   .OfType(nameof(TextField))
                   .WithDisplayName("Bulk Action Success Task")
-                  .WithPosition("7")
+                  .WithPosition("16")
                   .WithSettings(new TextFieldSettings {
                      Required = false,
                      Hint = Common.BulkActionSuccessTaskHint + " Leave blank to use default task defined in settings."
@@ -112,7 +112,7 @@ namespace TransformalizeModule {
               ).WithField("BulkActionFailTask", field => field
                   .OfType(nameof(TextField))
                   .WithDisplayName("Bulk Action Fail Task")
-                  .WithPosition("8")
+                  .WithPosition("17")
                   .WithSettings(new TextFieldSettings {
                      Required = false,
                      Hint = Common.BulkActionFailTaskHint + " Leave blank to use default task defined in settings."
@@ -172,7 +172,7 @@ namespace TransformalizeModule {
           .WithField("Map", field => field
              .OfType(nameof(BooleanField))
              .WithDisplayName("Map")
-             .WithPosition("1")
+             .WithPosition("20")
              .WithSettings(new BooleanFieldSettings {
                 DefaultValue = false,
                 Hint = "Allow user to view a map of the report's records.",
@@ -180,27 +180,10 @@ namespace TransformalizeModule {
              }
              )
            )
-          .WithField("MapColorField", field => field
-             .OfType(nameof(TextField))
-             .WithDisplayName("Map Color Field")
-             .WithPosition("2")
-             .WithSettings(new TextFieldSettings {
-                Required = false,
-                Hint = "Specify a field to control the color of the dots on the map.  Or, specify a hex representation of a color (e.g. #ffc0cb)."
-             }
-             )
-           ).WithField("MapDescriptionField", field => field
-               .OfType(nameof(TextField))
-               .WithDisplayName("Map Description Field")
-               .WithPosition("3")
-               .WithSettings(new TextFieldSettings {
-                  Required = false,
-                  Hint = "This field's content is placed in the GEO JSON Description property, and is used in the pop up.  This is usually an HTML snippet you want to display."
-               })
-           ).WithField("MapLatitudeField", field => field
+          .WithField("MapLatitudeField", field => field
                .OfType(nameof(TextField))
                .WithDisplayName("Map Latititude Field")
-               .WithPosition("4")
+               .WithPosition("21")
                .WithSettings(new TextFieldSettings {
                   Required = false,
                   Hint = "This field's value is used as the record's latitude on the map."
@@ -208,12 +191,29 @@ namespace TransformalizeModule {
            ).WithField("MapLongitudeField", field => field
                .OfType(nameof(TextField))
                .WithDisplayName("Map Longitude Field")
-               .WithPosition("5")
+               .WithPosition("22")
                .WithSettings(new TextFieldSettings {
                   Required = false,
                   Hint = "This field's value is used as the record's longitude on the map."
                })
-            )
+            ).WithField("MapDescriptionField", field => field
+               .OfType(nameof(TextField))
+               .WithDisplayName("Map Description Field")
+               .WithPosition("23")
+               .WithSettings(new TextFieldSettings {
+                  Required = false,
+                  Hint = "This field's content is placed in the GEO JSON Description property, and is used in the pop up.  This is usually an HTML snippet you want to display."
+               })
+           ).WithField("MapColorField", field => field
+             .OfType(nameof(TextField))
+             .WithDisplayName("Map Color Field")
+             .WithPosition("24")
+             .WithSettings(new TextFieldSettings {
+                Required = false,
+                Hint = "Specify a field to control the color of the dots on the map.  Or, specify a hex representation of a color (e.g. #ffc0cb)."
+             }
+             )
+           )
          );
 
          return 2;
@@ -224,7 +224,7 @@ namespace TransformalizeModule {
           .WithField("MapRadiusField", field => field
              .OfType(nameof(TextField))
              .WithDisplayName("Map Radius Field")
-             .WithPosition("7")
+             .WithPosition("25")
              .WithSettings(new TextFieldSettings {
                 Required = false,
                 Hint = "Specify a field to control the radius of the dots on the map.  Or, just set an integer value (e.g. 7)."
@@ -233,7 +233,7 @@ namespace TransformalizeModule {
            ).WithField("MapOpacityField", field => field
              .OfType(nameof(TextField))
              .WithDisplayName("Map Opacity Field")
-             .WithPosition("8")
+             .WithPosition("26")
              .WithSettings(new TextFieldSettings {
                 Required = false,
                 Hint = "Specify a field to control the opacity of the dots on the map.  Or, just set a numeric value between 0.1 and 1.0 (e.g. 0.8)."
@@ -250,7 +250,7 @@ namespace TransformalizeModule {
           .WithField("PageSizesExtended", field => field
                  .OfType(nameof(TextField))
                  .WithDisplayName("Page Sizes Extended")
-                 .WithPosition("4")
+                 .WithPosition("5")
                  .WithSettings(new TextFieldSettings {
                     Required = false,
                     Hint = "To overide default extended page sizes, specify a comma delimited list of page sizes (integers). To use the common extended page sizes defined in settings, leave it blank. To disable pagination for calendar or map, set this to 0."
@@ -262,7 +262,78 @@ namespace TransformalizeModule {
          return 4;
       }
 
+      public int UpdateFrom4() {
+         _contentDefinitionManager.AlterPartDefinition("TransformalizeReportPart", part => part
+         .WithField("Calendar", field => field
+                .OfType(nameof(BooleanField))
+                .WithDisplayName("Calendar")
+                .WithPosition("30")
+                .WithSettings(new BooleanFieldSettings {
+                   DefaultValue = false,
+                   Hint = "Allow user to view calendar?",
+                   Label = "Calendar"
+                }
+                )
+              )
+          .WithField("CalendarIdField", field => field
+             .OfType(nameof(TextField))
+             .WithDisplayName("Calendar Id Field")
+             .WithPosition("31")
+             .WithSettings(new TextFieldSettings {
+                Required = false,
+                Hint = "Specify the field that contains a unique id for each calendar item."
+             }
+             )
+           ).WithField("CalendarTitleField", field => field
+             .OfType(nameof(TextField))
+             .WithDisplayName("Calendar Title Field")
+             .WithPosition("32")
+             .WithSettings(new TextFieldSettings {
+                Required = false,
+                Hint = "Specify the field that contains a title for each calendar item."
+             }
+             )
+           ).WithField("CalendarUrlField", field => field
+             .OfType(nameof(TextField))
+             .WithDisplayName("Calendar URL Field")
+             .WithPosition("33")
+             .WithSettings(new TextFieldSettings {
+                Required = false,
+                Hint = "Specify the field that contains a title for each calendar item."
+             }
+             )
+           ).WithField("CalendarClassField", field => field
+             .OfType(nameof(TextField))
+             .WithDisplayName("Calendar Class Field")
+             .WithPosition("34")
+             .WithSettings(new TextFieldSettings {
+                Required = false,
+                Hint = "Specify the field that contains a CSS class for each calendar item.  Current implementation expects event-important, event-success, event-warning, event-info, event-inverse or event-special."
+             }
+             )
+           ).WithField("CalendarStartField", field => field
+             .OfType(nameof(TextField))
+             .WithDisplayName("Calendar Start Field")
+             .WithPosition("35")
+             .WithSettings(new TextFieldSettings {
+                Required = false,
+                Hint = "Specify the field that contains the starting time for each calendar item.  Current implementation expects a UTC date/time converted to unix time (a long integer indicatng milliseconds since 1970-01-01)."
+             }
+             )
+           ).WithField("CalendarEndField", field => field
+             .OfType(nameof(TextField))
+             .WithDisplayName("Calendar End Field")
+             .WithPosition("36")
+             .WithSettings(new TextFieldSettings {
+                Required = false,
+                Hint = "Specify the field that contains the ending time for each calendar item.  Current implementation expects a UTC date/time converted to unix time (a long integer indicatng milliseconds since 1970-01-01)."
+             }
+             )
+           )
+         );
 
+         return 5;
+      }
 
       private async Task EnableFeature(string id) {
 

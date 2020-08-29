@@ -18,6 +18,7 @@ using Autofac;
 using Transformalize.Configuration;
 using System.Linq;
 using OrchardCore.ContentFields.Fields;
+using GraphQL;
 
 namespace TransformalizeModule.Drivers {
    public class TransformalizeReportPartDisplayDriver : ContentPartDisplayDriver<TransformalizeReportPart> {
@@ -70,6 +71,14 @@ namespace TransformalizeModule.Drivers {
             model.MapRadiusField = part.MapRadiusField;
             model.MapOpacityField = part.MapOpacityField;
 
+            model.Calendar = part.Calendar;
+            model.CalendarIdField = part.CalendarIdField;
+            model.CalendarTitleField = part.CalendarTitleField;
+            model.CalendarUrlField = part.CalendarUrlField;
+            model.CalendarClassField = part.CalendarClassField;
+            model.CalendarStartField = part.CalendarStartField;
+            model.CalendarEndField = part.CalendarEndField;
+
          }).Location("Content:1");
       }
 
@@ -108,6 +117,14 @@ namespace TransformalizeModule.Drivers {
             part.MapRadiusField.Text = model.MapRadiusField.Text;
             part.MapOpacityField.Text = model.MapOpacityField.Text;
 
+            part.Calendar.Value = model.Calendar.Value;
+            part.CalendarClassField.Text = model.CalendarClassField.Text;
+            part.CalendarIdField.Text = model.CalendarIdField.Text;
+            part.CalendarTitleField.Text = model.CalendarTitleField.Text;
+            part.CalendarUrlField.Text = model.CalendarUrlField.Text;
+            part.CalendarStartField.Text = model.CalendarStartField.Text;
+            part.CalendarEndField.Text = model.CalendarEndField.Text;
+
          }
 
          if (model.BulkActions.Value) {
@@ -141,6 +158,27 @@ namespace TransformalizeModule.Drivers {
                      if (fields.All(f => f.Alias != part.BulkActionValueField.Text)) {
                         updater.ModelState.AddModelError(Prefix, S["The field {0} does not exist.", part.BulkActionValueField.Text]);
                      }
+                  }
+               }
+
+               if (part.Calendar.Value) {
+                  if (fields.All(f => f.Alias != part.CalendarIdField.Text)) {
+                     updater.ModelState.AddModelError(Prefix, S["The field {0} used for calendar id does not exist.", part.CalendarIdField.Text]);
+                  }
+                  if (fields.All(f => f.Alias != part.CalendarUrlField.Text)) {
+                     updater.ModelState.AddModelError(Prefix, S["The field {0} used for calendar URL does not exist.", part.CalendarUrlField.Text]);
+                  }
+                  if (fields.All(f => f.Alias != part.CalendarTitleField.Text)) {
+                     updater.ModelState.AddModelError(Prefix, S["The field {0} used for calendar title does not exist.", part.CalendarTitleField.Text]);
+                  }
+                  if (fields.All(f => f.Alias != part.CalendarClassField.Text)) {
+                     updater.ModelState.AddModelError(Prefix, S["The field {0} used for calendar class does not exist.", part.CalendarClassField.Text]);
+                  }
+                  if (fields.All(f => f.Alias != part.CalendarStartField.Text)) {
+                     updater.ModelState.AddModelError(Prefix, S["The field {0} used for calendar start does not exist.", part.CalendarStartField.Text]);
+                  }
+                  if (fields.All(f => f.Alias != part.CalendarEndField.Text)) {
+                     updater.ModelState.AddModelError(Prefix, S["The field {0} used for calendar end does not exist.", part.CalendarEndField.Text]);
                   }
                }
 

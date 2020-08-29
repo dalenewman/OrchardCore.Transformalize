@@ -24,5 +24,13 @@ namespace TransformalizeModule.ViewModels {
       public TextField MapLongitudeField { get; set; }
       public TextField MapRadiusField { get; set; }
       public TextField MapOpacityField { get; set; }
+
+      public BooleanField Calendar { get; set; }
+      public TextField CalendarIdField { get; set; }
+      public TextField CalendarTitleField { get; set; }
+      public TextField CalendarUrlField { get; set; }
+      public TextField CalendarClassField { get; set; }
+      public TextField CalendarStartField { get; set; }
+      public TextField CalendarEndField { get; set; }
    }
 }

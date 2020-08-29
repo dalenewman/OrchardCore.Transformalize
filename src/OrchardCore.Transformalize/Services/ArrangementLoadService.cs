@@ -48,11 +48,6 @@ namespace TransformalizeModule.Services {
          process.Mode = "report";
          process.ReadOnly = true;
 
-         if (part.PageSizes.Enabled()) {
-            var size = process.Connections.First().Provider == "bogus" ? _settings.GetPageSizes(part).Max() : 0;
-            EnforcePageSize(process, _parameters, size, size, size);
-         }
-
          if (_parameters.ContainsKey("sort") && _parameters["sort"] != null) {
             _sortService.AddSortToEntity(part, process.Entities.First(), _parameters["sort"]);
          }
@@ -324,22 +319,13 @@ namespace TransformalizeModule.Services {
          o.Stream = true;
          o.Provider = "json";
 
-         //var calendarFields = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase) {
-         //   { part.CalendarIdField, "id" },
-         //   { part.CalendarTitleField, "title" },
-         //   { part.CalendarUrlField, "url" },
-         //   { part.CalendarClassField, "class" },
-         //   { part.CalendarStartField, "start" },
-         //   { part.CalendarEndField, "end" }
-         //};
-
          var calendarFields = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase) {
-            { "id", "id" },
-            { "title", "title" },
-            { "url", "url" },
-            { "class", "class" },
-            { "start", "start" },
-            { "end", "end" }
+            { part.CalendarIdField.Text, "id" },
+            { part.CalendarTitleField.Text, "title" },
+            { part.CalendarUrlField.Text, "url" },
+            { part.CalendarClassField.Text, "class" },
+            { part.CalendarStartField.Text, "start" },
+            { part.CalendarEndField.Text, "end" }
          };
 
          // for batch operations - currently hard-coded to batchvalue

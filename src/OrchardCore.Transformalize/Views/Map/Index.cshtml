@@ -147,7 +147,7 @@
       <script>
       //<!--
       mapboxgl.accessToken = '@Model.Settings.MapBoxToken';
-      var url = '@(linkService.Create(Model.Item.ContentItemId, Url.Action("StreamMap", "Map", new { ContentItemId = Model.IdOrAlias }), !Model.Part.PageSizesExtended.Enabled()))';
+      var url = '@(linkService.Create(Model.Item.ContentItemId, Url.Action("Stream", "Map", new { ContentItemId = Model.IdOrAlias }), !Model.Part.PageSizesExtended.Enabled()))';
 
       $(document).ready(function() {
 

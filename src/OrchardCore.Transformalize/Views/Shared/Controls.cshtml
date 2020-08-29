@@ -132,7 +132,7 @@
                }*@
 
             // for now, if map is not enabled, you don't need this because there is only map and report views so far (no calendar)
-            if (Model.Part.Map.Value && hasCoordinates) {
+            if (Model.Part.Map.Value && hasCoordinates || Model.Part.Calendar.Value) {
 
                var headless = Context.Request.GetDisplayUrl().Contains("Headless");
 
@@ -148,7 +148,7 @@
                   Link = linkService.Create(Model.IdOrAlias, reportUrl, !Model.Part.PageSizes.Enabled())
                });
 
-               if (hasCoordinates) {
+               if (Model.Part.Map.Value && hasCoordinates) {
 
                   var mapUrl = Url.Action("Index", "Map", new { ContentItemId = Model.IdOrAlias });
                   if (headless) {
@@ -163,7 +163,7 @@
 
                if (Model.Part.Calendar.Value) {
 
-                  var calendarUrl = Url.Action("Calendar", "Report", new { ContentItemId = Model.IdOrAlias });
+                  var calendarUrl = Url.Action("Index", "Calendar", new { ContentItemId = Model.IdOrAlias });
                   if (headless) {
                      calendarUrl = calendarUrl.Replace("/t/report/calendar/", "/t/headless/report/calendar/");
                   }
