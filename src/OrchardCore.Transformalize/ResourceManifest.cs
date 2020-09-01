@@ -254,6 +254,20 @@ namespace TransformalizeModule {
             .SetCdnIntegrity("sha256-WpEr1Ovyxho8DRYP1DyZgjVonSAGF4uDVVZXoe379vw=", "sha256-4jRSfwItZuLvFKlnkeHM+vL0bWgvrVbIF8peMhB7t2Q=")
             .SetVersion("3.6.4");
 
+         manifest
+            .DefineStyle("pickadate-themes-default")
+            .SetUrl($"~/{Common.ModuleName}/Styles/pickadate/themes/default.css", $"~/{Common.ModuleName}/Styles/pickadate/themes/default.min.css")
+            .SetCdn("https://cdnjs.cloudflare.com/ajax/libs/pickadate.js/3.6.4/compressed/themes/default.css", "https://cdnjs.cloudflare.com/ajax/libs/pickadate.js/3.6.4/themes/default.css")
+            .SetCdnIntegrity("sha512-5T7eDTBgFKRXiH39mhR6fKpzW6b79Y5VlEFz4Qv2zQds46pyhO1F7Rv0KcVhm0SAi8mKDuThX1e1c0fC/WEfoA==", "sha512-x9ZSPqJJfUhtPuo+fw6331wHeC3vhDpNI3Iu4KC05zJrxx7MWYewaDaASGxAUgWyrwU50oFn6Xk0CrQnTSuoOA==")
+            .SetVersion("3.6.4");
+
+         manifest
+            .DefineStyle("pickadate-themes-default-date")
+            .SetUrl($"~/{Common.ModuleName}/Styles/pickadate/themes/default.date.css", $"~/{Common.ModuleName}/Styles/pickadate/themes/default.date.min.css")
+            .SetCdn("https://cdnjs.cloudflare.com/ajax/libs/pickadate.js/3.6.4/compressed/themes/default.date.css", "https://cdnjs.cloudflare.com/ajax/libs/pickadate.js/3.6.4/themes/default.date.css")
+            .SetCdnIntegrity("sha512-KUP5BIvEUWCw+9FbI4LJz+0J6tG6+V+ZY2Lzpzx48YtPitTypKSy1U+yzcOBymRv2isdItYcYCTgLDtHw0Z3rA==", "sha512-Ix4qjGzOeoBtc8sdu1i79G1Gxy6azm56P4z+KFl+po7kOtlKhYSJdquftaI4hj1USIahQuZq5xpg7WgRykDJPA==")
+            .SetVersion("3.6.4");
+
          // mapbox-gl 
          manifest
             .DefineScript("mapbox-gl")
@@ -310,6 +324,52 @@ namespace TransformalizeModule {
             .SetCdn("https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.4.1/underscore-min.js", "https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.4.1/underscore.js")
             .SetCdnIntegrity("sha512-xHPfYya0Ac9NYcp0d6YKVnP/n7dcRGiQCsGKC+BMpziXwgg/6VogplMOS+nqUXQIPmtuGwZ25fAcSgtjBxBVfg==", "sha512-qbJl2/KyecDVJdgAwr0Gzhm5KBmkzdUouG+sKmCWP1Idb144ZnfSmCRReuYXPEHIa4j38TwrR2ySeGoFH5gKzA==")
             .SetVersion("1.4.1");
+
+         /* scripts for jquery file upload (blueimp) */
+
+         manifest
+            .DefineScript("load-image-all")
+            .SetUrl($"~/{Common.ModuleName}/Scripts/load-image.all.min.js", $"~/{Common.ModuleName}/Scripts/load-image.all.min.js")
+            .SetCdn("https://cdnjs.cloudflare.com/ajax/libs/blueimp-load-image/5.14.0/load-image.all.min.js", "https://cdnjs.cloudflare.com/ajax/libs/blueimp-load-image/5.14.0/load-image.all.min.js")
+            .SetCdnIntegrity("sha512-HZg0q8NV+VTxnU6hdkK0rL+fSmTGCbXZ3mHjqCCi87St5QRdvXENfRxkMK692inskRsCPee07d7VwcKNWaByCQ==", "sha512-HZg0q8NV+VTxnU6hdkK0rL+fSmTGCbXZ3mHjqCCi87St5QRdvXENfRxkMK692inskRsCPee07d7VwcKNWaByCQ==")
+            .SetVersion("5.14.0");
+
+         manifest
+            .DefineScript("canvas-to-blob")
+            .SetUrl($"~/{Common.ModuleName}/Scripts/canvas-to-blob.js", $"~/{Common.ModuleName}/Scripts/canvas-to-blob.min.js")
+            .SetCdn("https://cdnjs.cloudflare.com/ajax/libs/javascript-canvas-to-blob/3.28.0/js/canvas-to-blob.min.js", "https://cdnjs.cloudflare.com/ajax/libs/javascript-canvas-to-blob/3.28.0/js/canvas-to-blob.js")
+            .SetCdnIntegrity("sha512-Q0RYciuNUJLzUgA9T0A0yj1A5wR+rM7MDr3hKBJuNBaSW5O2TqRyBMMLswe7Z/M9czXRnD/5mh1/xQpDpxFZaA==", "sha512-QinObFNs7mVBtipyw8BEERLHKQ1P2n5Wbxd8Kt+G9ST/lp99qZKlJUUsNSZYSPf/yGL7eNN0UCcDaMiZjXMtGg==")
+            .SetVersion("3.28.0");
+
+         manifest
+            .DefineScript("jquery-iframe-transport")
+            .SetUrl($"~/{Common.ModuleName}/Scripts/jquery.iframe-transport.js", $"~/{Common.ModuleName}/Scripts/jquery.iframe-transport.min.js")
+            .SetCdn("https://cdnjs.cloudflare.com/ajax/libs/blueimp-file-upload/10.31.0/js/jquery.iframe-transport.min.js", "https://cdnjs.cloudflare.com/ajax/libs/blueimp-file-upload/10.31.0/js/jquery.iframe-transport.js")
+            .SetCdnIntegrity("sha512-nPWpXBDIYz79dENtnSj+4vttX5zcmZ4RE2pLj24hdMjFqNxEh5TNwjnyhpdJJxq9cxMy7NLgG06w5s6wytsOiw==", "sha512-0Qbkur+WwOSY3vH1iE0Q7dEZPQGqjtyjaO5u2FoRKNfBGXv2Fjxv8pysarhgHxRXBlr9Yc9Bbi58m4k0qxmYhw==")
+            .SetVersion("10.31.0");
+
+         manifest
+            .DefineScript("jquery-fileupload")
+            .SetUrl($"~/{Common.ModuleName}/Scripts/jquery.fileupload.js", $"~/{Common.ModuleName}/Scripts/jquery.fileupload.min.js")
+            .SetCdn("https://cdnjs.cloudflare.com/ajax/libs/blueimp-file-upload/10.31.0/js/jquery.fileupload.min.js", "https://cdnjs.cloudflare.com/ajax/libs/blueimp-file-upload/10.31.0/js/jquery.fileupload.js")
+            .SetCdnIntegrity("sha512-qPkNWpUqYz8bhO5bGNPBvlCB9hPZBil2ez5Mo8yVmpCKI315UDDPQeg/TE7KwZ+U/wdSO8JguwVxYY/Ha7U+vQ==", "sha512-mPBKSUQd9V0RWuHe31Q2nvLSUSBOh4yjW21MBFIYdR8PPZL1mDU9clClGv9SwVSJC9m44+wcfljUPSqWTv91Xg==")
+            .SetVersion("10.31.0");
+
+         manifest
+            .DefineScript("jquery-fileupload-process")
+            .SetUrl($"~/{Common.ModuleName}/Scripts/jquery.fileupload-process.js", $"~/{Common.ModuleName}/Scripts/jquery.fileupload-process.min.js")
+            .SetCdn("https://cdnjs.cloudflare.com/ajax/libs/blueimp-file-upload/10.31.0/js/jquery.fileupload-process.min.js", "https://cdnjs.cloudflare.com/ajax/libs/blueimp-file-upload/10.31.0/js/jquery.fileupload-process.js")
+            .SetCdnIntegrity("sha512-/PpB/cqFe0WgMQRLimSpDJtdyl3sRyo0bxwtiapDaYhs3AkEeNnDUBKtdLKpEEE2X/Xr2YzfCZTdLIOSC2JHVA==", "sha512-nSNTn7MSa1e/I0wf7fi4vbSAQVgO1x3Tum/spzI00lOV+Yd9uJWH18jjYiwx4WHVj3p7UR6tF2de7U094x5rCw==")
+            .SetVersion("10.31.0");
+
+         manifest
+            .DefineScript("jquery-fileupload-image")
+            .SetUrl($"~/{Common.ModuleName}/Scripts/jquery.fileupload-image.js", $"~/{Common.ModuleName}/Scripts/jquery.fileupload-image.min.js")
+            .SetCdn("https://cdnjs.cloudflare.com/ajax/libs/blueimp-file-upload/10.31.0/js/jquery.fileupload-image.min.js", "https://cdnjs.cloudflare.com/ajax/libs/blueimp-file-upload/10.31.0/js/jquery.fileupload-image.js")
+            .SetCdnIntegrity("sha512-/zXq+I7ihnFX2Jw9+7lNZX9/oZ323b3rOMtwtowHN2VS3xoeLY1srC11oiQidw1YDTxrHVLWp9dehlZqqLKqhg==", "sha512-e0MZer7eLu4GULyhtYxafD0hyDK9anMSL27EqC4H/c1paOzw0xT4d7nuat2KG+Np65HQzz9fmO1HeW1bt6P9MQ==")
+            .SetVersion("10.31.0");
+
+
       }
    }
 }

@@ -22,5 +22,53 @@
     "inputFiles": [
       "wwwroot/Scripts/underscore.js"
     ]
+  },
+  {
+    "outputFileName": "wwwroot/Scripts/canvas-to-blob.min.js",
+    "inputFiles": [
+      "wwwroot/Scripts/canvas-to-blob.js"
+    ]
+  },
+  {
+    "outputFileName": "wwwroot/Scripts/jquery.iframe-transport.min.js",
+    "inputFiles": [
+      "wwwroot/Scripts/jquery.iframe-transport.js"
+    ]
+  },
+  {
+    "outputFileName": "wwwroot/Scripts/jquery.fileupload.min.js",
+    "inputFiles": [
+      "wwwroot/Scripts/jquery.fileupload.js"
+    ]
+  },
+  {
+    "outputFileName": "wwwroot/Scripts/jquery.fileupload-process.min.js",
+    "inputFiles": [
+      "wwwroot/Scripts/jquery.fileupload-process.js"
+    ]
+  },
+  {
+    "outputFileName": "wwwroot/Scripts/jquery.fileupload-image.min.js",
+    "inputFiles": [
+      "wwwroot/Scripts/jquery.fileupload-image.js"
+    ]
+  },
+  {
+    "outputFileName": "wwwroot/Styles/pickadate/themes/default.min.css",
+    "inputFiles": [
+      "wwwroot/Styles/pickadate/themes/default.css"
+    ]
+  },
+  {
+    "outputFileName": "wwwroot/Styles/pickadate/themes/default.date.min.css",
+    "inputFiles": [
+      "wwwroot/Styles/pickadate/themes/default.date.css"
+    ]
+  },
+  {
+    "outputFileName": "wwwroot/Scripts/file.handler.min.js",
+    "inputFiles": [
+      "wwwroot/Scripts/file.handler.js"
+    ]
   }
 ]
