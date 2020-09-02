@@ -1,0 +1,81 @@
+@model TransformalizeResponse<TransformalizeFormPart>
+@using TransformalizeModule
+@using Microsoft.Extensions.DependencyInjection
+@using Microsoft.AspNetCore.Authorization
+@using TransformalizeModule.Models
+
+@{
+   var auth = Context.RequestServices.GetService<IAuthorizationService>();
+}
+
+<script asp-name="jQuery" at="Head"></script>
+<script asp-name="jQuery-ui" at="Foot"></script>
+<script asp-name="block-ui" version="2.70.0" at="Foot"></script>
+<script asp-name="pickadate-picker-date" version="3.6.4" at="Foot"></script>
+<script asp-name="parsley" version="2.9.2" at="Foot"></script>
+<script asp-name="moment" version="2.26.0" at="Foot"></script>
+<script asp-src="~/@Common.ModuleName/Scripts/form.js?v=1" at="Foot"></script>
+
+<style asp-name="pickadate-themes-default" version="3.6.4"></style>
+<style asp-name="pickadate-themes-default-date" version="3.6.4"></style>
+
+<style>
+   #busy {
+      position: fixed;
+      left: 46%;
+      top: 40%;
+      display: none;
+      background: transparent url(@Url.Content($"~/{Common.ModuleName}/Styles/busy.gif"));
+      background-size: 149px 149px;
+      background-repeat: no-repeat;
+      z-index: 1020;
+      height: 150px;
+      width: 150px;
+   }
+
+   #busy-holder {
+      background: transparent;
+      width: 100%;
+      height: 100%;
+   }
+
+   .help-block {
+      color: red;
+   }
+
+   input:invalid {
+      border-color: red;
+   }
+</style>
+
+<script type="text/javascript" language="javascript">
+    //<!--
+   var settings = {
+      ajaxUrl: "@(Url.Action("Form", "Form", new { Area = Common.ModuleName, ContentItemId = Model.ContentItem.ContentItemId }))",
+      updateUrl: "@(Url.Action("Index", "Form", new { Area = Common.ModuleName, ContentItemId = Model.ContentItem.ContentItemId }))",
+      uploadUrl: "@(Url.Action("Upload", "Form", new { Area = Common.ModuleName }))",
+      scanUrl: "@(Url.Action("Scan", "Form", new { Area = Common.ModuleName }))"
+   }
+   //-->
+</script>
+
+<div class="container">
+   @if (Model.ContentItem != null && await auth.AuthorizeAsync(Context.User, OrchardCore.Contents.Permissions.EditContent, Model.ContentItem)) {
+      <button title="edit this task" type="button" class="btn btn-warning btn-sm float-right" onclick="window.open('@(Url.Content("~/Admin/Contents/ContentItems/" + Model.ContentItem.ContentItemId + "/Edit?" + Common.ReturnUrlName + "=" + System.Net.WebUtility.UrlEncode(Context.Request.Path + Context.Request.QueryString)))', '_self');">
+         <span class="fas fa-edit"></span>
+      </button>
+   }
+   <div class="row">
+      <div class="col-md-12">
+         <h4>@(@Model.ContentItem.DisplayText)</h4>
+         <div id="id_content">
+            @{ Html.RenderPartial("Form", Model.Process); }
+         </div>
+      </div>
+   </div>
+</div>
+
+<div id="busy_holder">
+   <div id="busy"></div>
+</div>
+

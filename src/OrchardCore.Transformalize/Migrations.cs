@@ -335,6 +335,42 @@ namespace TransformalizeModule {
          return 5;
       }
 
+      public int UpdateFrom5() {
+
+         _contentDefinitionManager.AlterPartDefinition("TransformalizeFormPart", part => part
+             .WithDisplayName("Transformalize Form Part")
+             .WithDescription("Provides fields for Transformalize Form content type")
+             .WithField("Arrangement", field => field
+                 .OfType(nameof(TextField))
+                 .WithDisplayName("Arrangement")
+                 .WithPosition("3")
+                 .WithEditor("TransformalizeArrangement")
+                 .WithSettings(new TextFieldSettings {
+                    Hint = string.Empty,
+                    Required = true
+                 }
+               )
+            )
+         );
+
+         _contentDefinitionManager.AlterTypeDefinition("TransformalizeForm", builder => builder
+             .Creatable()
+             .Listable()
+             .WithPart("TitlePart", part => part.WithPosition("1"))
+             .WithPart("AliasPart", part => part
+                 .WithPosition("2")
+                 .WithSettings(new AliasPartSettings {
+                    Pattern = "{{ ContentItem | title | slugify }}"
+                 })
+             )
+             .WithPart("TransformalizeFormPart", part => part.WithPosition("3"))
+             .WithPart("CommonPart", part => part.WithPosition("4"))
+         );
+
+         return 6;
+
+      }
+
       private async Task EnableFeature(string id) {
 
          var availableFeatures = await _moduleService.GetAvailableFeaturesAsync();

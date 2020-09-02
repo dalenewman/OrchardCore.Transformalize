@@ -62,6 +62,7 @@ namespace TransformalizeModule {
          // parts
          services.AddContentPart<TransformalizeReportPart>().UseDisplayDriver<TransformalizeReportPartDisplayDriver>();
          services.AddContentPart<TransformalizeTaskPart>().UseDisplayDriver<TransformalizeTaskPartDisplayDriver>();
+         services.AddContentPart<TransformalizeFormPart>().UseDisplayDriver<TransformalizeFormPartDisplayDriver>();
 
          // settings
          services.AddScoped<IDisplayDriver<ISite>, TransformalizeSettingsDisplayDriver>();
@@ -76,6 +77,7 @@ namespace TransformalizeModule {
          RouteReporting(routes);
          RouteMap(routes);
          RouteCalendar(routes);
+         RouteForms(routes);
          RouteTasks(routes);
          RouteBulkActions(routes);
 
@@ -163,6 +165,31 @@ namespace TransformalizeModule {
              areaName: Common.ModuleName,
              pattern: "t/task/run/{format}/{ContentItemId}",
              defaults: new { controller = "Task", action = "Run", format = "json" }
+         );
+
+      }
+
+      public void RouteForms(IEndpointRouteBuilder routes) {
+
+         routes.MapAreaControllerRoute(
+            name: "Form Page",
+            areaName: Common.ModuleName,
+            pattern: "t/form/{ContentItemId}",
+            defaults: new { controller = "Form", action = "Index" }
+         );
+
+         routes.MapAreaControllerRoute(
+             name: "Form Content",
+             areaName: Common.ModuleName,
+             pattern: "t/form/content/{ContentItemId}",
+             defaults: new { controller = "Form", action = "Form" }
+         );
+
+         routes.MapAreaControllerRoute(
+             name: "Form File Upload",
+             areaName: Common.ModuleName,
+             pattern: "t/form/file/{ContentItemId}",
+             defaults: new { controller = "Form", action = "Upload" }
          );
 
       }

@@ -1,23 +1,28 @@
-@model TransformalizeResponse<TransformalizeTaskPart>
+@model Transformalize.Configuration.Process
 @using Microsoft.Extensions.DependencyInjection;
 @using Microsoft.AspNetCore.Authorization
 @using TransformalizeModule.Ext
-@using TransformalizeModule.Models
 
 @{
    Layout = null;
    var auth = Context.RequestServices.GetService<IAuthorizationService>();
 }
 
-@if (!Model.Process.Parameters.Any()) {
+@if (!Model.Parameters.Any()) {
    <p class="text-muted">No parameters are defined for this task.</p>
 }
 
+<style>
+   span.fas {
+      padding-top: 10px;
+   }
+</style>
+
 <form id="id_form" method="post" role="form" enctype="multipart/form-data">
    @Html.AntiForgeryToken()
-   <input type="hidden" id="id_focus" name="Orchard.Focus" value="@(Model.Process.Parameters.FirstOrDefault(p=>p.Prompt && !p.Valid)?.Name ?? string.Empty)" />
+   <input type="hidden" id="id_focus" name="Orchard.Focus" value="@(Model.Parameters.FirstOrDefault(p=>p.Prompt && !p.Valid)?.Name ?? string.Empty)" />
 
-   @foreach (var parameter in Model.Process.Parameters) {
+   @foreach (var parameter in Model.Parameters) {
 
       var value = parameter.Value ?? string.Empty as object;
 
@@ -58,7 +63,7 @@
          continue;
       }
 
-      var map = Model.Process.Maps.FirstOrDefault(m => m.Name == parameter.Map);
+      var map = Model.Maps.FirstOrDefault(m => m.Name == parameter.Map);
       if (map != null) {
 
          <div class="form-group @(parameter.Valid ? "is-valid" : "is-invalid") @parameter.Class">
@@ -122,8 +127,8 @@
                            <span class="text-muted"> @parameter.Hint</span>
                         }
                         <div class="input-group">
-                           <div class="input-group-addon" id="id_dp_@parameter.Name" style="cursor: pointer;">
-                              <span class="glyphicon glyphicon-calendar"></span>
+                           <div class="input-group-prepend" id="id_dp_@parameter.Name" style="cursor: pointer;">
+                              <span class="input-group-text fas fa-calendar"></span>
                            </div>
                            <input type="text"
                                   class="form-control @(parameter.Valid ? "is-valid" : "is-invalid")"
@@ -148,7 +153,7 @@
                                     if (picker.get('open')) {
                                        picker.close()
                                     } else {
-                                    picker.open()
+                                       picker.open()
                                     }
                               });
                            });
@@ -170,8 +175,8 @@
                            <span class="text-muted"> @parameter.Hint</span>
                         }
                         <div class="input-group">
-                           <div class="input-group-addon" id="id_dp_@parameter.Name" style="cursor: pointer;">
-                              <span class="glyphicon glyphicon-time"></span>
+                           <div class="input-group-prepend" id="id_dp_@parameter.Name" style="cursor: pointer;">
+                              <span class="input-group-text fas fa-clock"></span>
                            </div>
                            <input type="time"
                                   class="form-control @(parameter.Valid ? "is-valid" : "is-invalid")"
@@ -212,8 +217,8 @@
                         <div id="id_@(parameter.Name)" class="file-options">
                            <div class="has-file" style="@(file == null ? "display:none" : string.Empty)">
                               <div class="input-group">
-                                 <div class="input-group-addon removeButton" style="cursor: pointer;">
-                                    <span class="glyphicon glyphicon-remove"></span>
+                                 <div class="input-group-prepend removeButton" style="cursor: pointer;">
+                                    <span class="input-group-text fas fa-times"></span>
                                  </div>
                                  <input type="text"
                                         class="form-control @(parameter.Valid ? "is-valid" : "is-invalid")"
@@ -231,7 +236,7 @@
                                  <tr>
                                     <td style="width:auto;">
                                        <span class="btn btn-primary btn-sm fileinput-button">
-                                          <i class="glyphicon glyphicon-plus"></i>
+                                          <i class="input-group-text fas fa-plus"></i>
                                           <span>Upload</span>
                                           <input name="@(parameter.Name)"
                                                  type="file"
@@ -282,8 +287,8 @@
                         <div id="id_@(parameter.Name)" class="file-options">
                            <div class="has-file" style="@(hasScan ? string.Empty : "display:none")">
                               <div class="input-group">
-                                 <div class="input-group-addon removeButton" style="cursor: pointer;">
-                                    <span class="glyphicon glyphicon-remove"></span>
+                                 <div class="input-group-prepend removeButton" style="cursor: pointer;">
+                                    <span class="input-group-text fas fa-times"></span>
                                  </div>
                                  <input type="text"
                                         class="form-control @(parameter.Valid ? "is-valid" : "is-invalid")"
@@ -299,7 +304,7 @@
                                  <tr>
                                     <td style="width:auto;">
                                        <span class="btn btn-warning btn-sm fileinput-button">
-                                          <i class="glyphicon glyphicon glyphicon-barcode"></i>
+                                          <i class="input-group-text fas fa-barcode"></i>
                                           <span> Scan </span>
                                           <input name="@(parameter.Name)"
                                                  type="file"
@@ -387,7 +392,7 @@
             }
          }
 
-   @if (Model.Process.Parameters.All(p => p.Valid)) {
+   @if (Model.Parameters.All(p => p.Valid)) {
       <input name="Orchard.Submit" id="id_submit" type="submit" value="Run" class="btn btn-success btn-block" />
    } else {
       <input name="Orchard.Submit" id="id_submit" type="submit" value="Update" class="btn btn-primary btn-block" />

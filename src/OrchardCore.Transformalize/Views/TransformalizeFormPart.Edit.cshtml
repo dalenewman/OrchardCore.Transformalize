@@ -1,0 +1,21 @@
+﻿@model EditTransformalizeFormPartViewModel
+@using TransformalizeModule.ViewModels
+@using TransformalizeModule
+
+@{
+   var Area = Common.ModuleName;
+   var ContentItemId = Model.TransformalizeFormPart.ContentItem.ContentItemId;
+   var viewLink = Url.Action("Index", "Form", new { Area, ContentItemId });
+}
+
+<fieldset>
+   <div class="btn-group float-right" role="group">
+      <a title="view this task"
+         role="button"
+         class="btn btn-success btn-sm"
+         href="@viewLink">
+         <span class="fas fa-eye"></span>
+      </a>
+   </div>
+</fieldset>
+

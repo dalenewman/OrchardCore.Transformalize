@@ -47,18 +47,18 @@ namespace TransformalizeModule.Controllers {
 
       public async Task<ActionResult> Form(string contentItemId) {
 
-         var bulkAction = await _formService.Validate(new TransformalizeRequest(contentItemId, HttpContext.User.Identity.Name));
+         var bulkAction = await _formService.ValidateTaskForm(new TransformalizeRequest(contentItemId, HttpContext.User.Identity.Name));
 
          if (bulkAction.Fails()) {
             return bulkAction.ActionResult;
          }
 
-         return View("Form", bulkAction);
+         return View("Form", bulkAction.Process);
       }
 
       public async Task<ActionResult> Review(string contentItemId) {
 
-         var task = await _formService.Validate(new TransformalizeRequest(contentItemId, HttpContext.User.Identity.Name));
+         var task = await _formService.ValidateTaskForm(new TransformalizeRequest(contentItemId, HttpContext.User.Identity.Name));
 
          if (task.Fails()) {
             return task.ActionResult;

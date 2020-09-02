@@ -372,7 +372,7 @@ namespace TransformalizeModule.Services {
          return process;
       }
 
-      public Process LoadForForm(ContentItem contentItem, IDictionary<string, string> parameters = null) {
+      public Process LoadForTaskForm(ContentItem contentItem, IDictionary<string, string> parameters = null) {
 
          Process process;
 
@@ -409,11 +409,52 @@ namespace TransformalizeModule.Services {
          return process;
       }
 
+      public Process LoadForForm(ContentItem contentItem, IDictionary<string, string> parameters = null) {
+
+         Process process;
+
+         if (!TryGetFormPart(contentItem, out var part)) {
+            return new Process { Status = 500, Message = "Error", Log = new List<LogEntry>() { new LogEntry(LogLevel.Error, null, $"LoadForForm can't load {contentItem.ContentType}.") } };
+         }
+
+         process = LoadInternal(part, parameters);
+
+         // switch postback auto to true or false
+         foreach (var parameter in process.Parameters.Where(p => p.Prompt && p.PostBack == "auto")) {
+
+            parameter.PostBack = parameter.Validators.Any() ? "true" : "false";
+
+            if (parameter.Map == string.Empty)
+               continue;
+
+            var map = process.Maps.FirstOrDefault(m => m.Name == parameter.Map);
+            if (map == null)
+               continue;
+
+            if (!map.Query.Contains("@"))
+               continue;
+
+            // it is possible for this map to affect other field's post-back setting
+            foreach (var p in new ParameterFinder().Find(map.Query).Distinct()) {
+               var parameterField = process.Parameters.FirstOrDefault(f => f.Name == p);
+               if (parameterField != null) {
+                  parameterField.PostBack = "true";
+               }
+            }
+         }
+
+         return process;
+      }
+
       private Process LoadInternal(TransformalizeTaskPart part, IDictionary<string, string> parameters = null, ISerializer serializer = null) {
          return LoadInternal(part.Arrangement.Text, part.ContentItem, parameters, serializer);
       }
 
       private Process LoadInternal(TransformalizeReportPart part, IDictionary<string, string> parameters = null, ISerializer serializer = null) {
+         return LoadInternal(part.Arrangement.Text, part.ContentItem, parameters, serializer);
+      }
+
+      private Process LoadInternal(TransformalizeFormPart part, IDictionary<string, string> parameters = null, ISerializer serializer = null) {
          return LoadInternal(part.Arrangement.Text, part.ContentItem, parameters, serializer);
       }
 
@@ -530,5 +571,9 @@ namespace TransformalizeModule.Services {
          return part != null;
       }
 
+      private bool TryGetFormPart(ContentItem contentItem, out TransformalizeFormPart part) {
+         part = contentItem?.As<TransformalizeFormPart>();
+         return part != null;
+      }
    }
 }

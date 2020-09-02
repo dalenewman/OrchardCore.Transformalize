@@ -39,6 +39,20 @@ namespace TransformalizeModule.Handlers {
                   }
                   return Task.CompletedTask;
                });
+            case "TransformalizeForm":
+               return context.ForAsync<ContentItemMetadata>(metadata => {
+                  if (metadata.DisplayRouteValues != null) {
+                     metadata.DisplayRouteValues.Remove("Area");
+                     metadata.DisplayRouteValues.Add("Area", Common.ModuleName);
+                     metadata.DisplayRouteValues.Remove("Controller");
+                     metadata.DisplayRouteValues.Add("Controller", "Form");
+                     metadata.DisplayRouteValues.Remove("Action");
+                     metadata.DisplayRouteValues.Add("Action", "Index");
+                     metadata.DisplayRouteValues.Remove("ContentItemId");
+                     metadata.DisplayRouteValues.Add("ContentItemId", context.ContentItem.As<AliasPart>().Alias);
+                  }
+                  return Task.CompletedTask;
+               });
             default:
                return Task.CompletedTask;
          }

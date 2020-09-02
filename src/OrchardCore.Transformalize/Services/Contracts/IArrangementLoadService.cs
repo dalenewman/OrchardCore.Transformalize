@@ -12,7 +12,8 @@ namespace TransformalizeModule.Services.Contracts {
       Process LoadForBatch(ContentItem contentItem);
       Process LoadForMapStream(ContentItem contentItem);
       Process LoadForCalendarStream(ContentItem contentItem);
-      Process LoadForForm(ContentItem contentItem, IDictionary<string,string> parameters = null);
+      Process LoadForTaskForm(ContentItem contentItem, IDictionary<string,string> parameters = null);
+      Process LoadForForm(ContentItem contentItem, IDictionary<string, string> parameters = null);
       Process LoadForSchema(ContentItem contentItem, string format = "xml");
    }
 }

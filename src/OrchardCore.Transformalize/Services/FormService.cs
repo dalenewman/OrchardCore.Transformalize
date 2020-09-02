@@ -30,7 +30,11 @@ namespace TransformalizeModule.Services {
          return _arrangementService.GetByIdOrAliasAsync(idOrAlias);
       }
 
-      public Process LoadForForm(ContentItem contentItem, IDictionary<string,string> parameters = null) {
+      public Process LoadForTaskForm(ContentItem contentItem, IDictionary<string,string> parameters = null) {
+         return _loadService.LoadForTaskForm(contentItem, parameters);
+      }
+
+      public Process LoadForForm(ContentItem contentItem, IDictionary<string, string> parameters = null) {
          return _loadService.LoadForForm(contentItem, parameters);
       }
 
@@ -38,9 +42,35 @@ namespace TransformalizeModule.Services {
          await _runService.RunAsync(process);
       }
 
-      public async Task<TransformalizeResponse<TransformalizeTaskPart>> Validate(TransformalizeRequest request) {
+      public async Task<TransformalizeResponse<TransformalizeTaskPart>> ValidateTaskForm(TransformalizeRequest request) {
 
          var response = new TransformalizeResponse<TransformalizeTaskPart>(request.Format) {
+            ContentItem = await GetByIdOrAliasAsync(request.ContentItemId)
+         };
+
+         if (response.ContentItem == null) {
+            SetupNotFoundResponse(request, response);
+            return response;
+         }
+
+         if (request.Secure && !CanAccess(response.ContentItem)) {
+            SetupPermissionsResponse(request, response);
+            return response;
+         }
+
+         response.Process = LoadForTaskForm(response.ContentItem, request.InternalParameters);
+         if (response.Process.Status != 200) {
+            SetupLoadErrorResponse(request, response);
+            return response;
+         }
+
+         response.Valid = true;
+         return response;
+      }
+
+      public async Task<TransformalizeResponse<TransformalizeFormPart>> ValidateForm(TransformalizeRequest request) {
+
+         var response = new TransformalizeResponse<TransformalizeFormPart>(request.Format) {
             ContentItem = await GetByIdOrAliasAsync(request.ContentItemId)
          };
 
