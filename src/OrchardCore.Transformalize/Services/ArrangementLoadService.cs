@@ -372,7 +372,7 @@ namespace TransformalizeModule.Services {
          return process;
       }
 
-      public Process LoadForTaskForm(ContentItem contentItem, IDictionary<string, string> parameters = null) {
+      public Process LoadForParameters(ContentItem contentItem, IDictionary<string, string> parameters = null) {
 
          Process process;
 
@@ -409,7 +409,7 @@ namespace TransformalizeModule.Services {
          return process;
       }
 
-      public Process LoadForForm(ContentItem contentItem, IDictionary<string, string> parameters = null) {
+      public Process LoadForForm(ContentItem contentItem, IDictionary<string, string> parameters = null, string format = null) {
 
          Process process;
 
@@ -417,7 +417,7 @@ namespace TransformalizeModule.Services {
             return new Process { Status = 500, Message = "Error", Log = new List<LogEntry>() { new LogEntry(LogLevel.Error, null, $"LoadForForm can't load {contentItem.ContentType}.") } };
          }
 
-         process = LoadInternal(part, parameters);
+         process = LoadInternal(part, parameters, format == "json" ? new JsonSerializer() : null);
 
          // switch postback auto to true or false
          foreach (var parameter in process.Parameters.Where(p => p.Prompt && p.PostBack == "auto")) {

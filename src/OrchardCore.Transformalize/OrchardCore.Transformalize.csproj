@@ -25,6 +25,7 @@
     <PackageReference Include="OrchardCore.ContentFields" Version="1.0.0-rc2-13450" />
     <PackageReference Include="OrchardCore.Contents" Version="1.0.0-rc2-13450" />
     <PackageReference Include="OrchardCore.Features" Version="1.0.0-rc2-13450" />
+    <PackageReference Include="OrchardCore.FileStorage.FileSystem" Version="1.0.0-rc2-13450" />
     <PackageReference Include="OrchardCore.MiniProfiler" Version="1.0.0-rc2-13450" />
     <PackageReference Include="OrchardCore.Module.Targets" Version="1.0.0-rc2-13450" />
     <PackageReference Include="OrchardCore.ContentManagement" Version="1.0.0-rc2-13450" />

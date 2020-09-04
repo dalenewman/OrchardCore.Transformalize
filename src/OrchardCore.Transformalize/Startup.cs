@@ -23,6 +23,9 @@ using Transformalize.Contracts;
 using Transformalize.Logging;
 using OrchardCore.Workflows.Helpers;
 using TransformalizeModule.Activities;
+using Microsoft.Extensions.Options;
+using OrchardCore.Environment.Shell;
+using System.IO;
 
 namespace TransformalizeModule {
    public class Startup : StartupBase {
@@ -70,6 +73,15 @@ namespace TransformalizeModule {
 
          // activities
          services.AddActivity<TransformalizeActivity, TransformalizeActivityDisplayDriver>();
+
+         // file system, see https://github.com/Lombiq/Orchard-Training-Demo-Module/blob/dev/Startup.cs
+         services.AddSingleton<IFormFileStore>(serviceProvider => {
+            var options = serviceProvider.GetRequiredService<IOptions<ShellOptions>>().Value;
+            var settings = serviceProvider.GetRequiredService<ShellSettings>();
+            var folderPath = PathExtensions.Combine(options.ShellsApplicationDataPath, options.ShellsContainerName, settings.Name);
+            var formFolderPath = PathExtensions.Combine(folderPath, "FormFiles");
+            return new FormFileStore(formFolderPath);
+         });
       }
 
       public override void Configure(IApplicationBuilder builder, IEndpointRouteBuilder routes, IServiceProvider serviceProvider) {
@@ -190,6 +202,13 @@ namespace TransformalizeModule {
              areaName: Common.ModuleName,
              pattern: "t/form/file/{ContentItemId}",
              defaults: new { controller = "Form", action = "Upload" }
+         );
+
+         routes.MapAreaControllerRoute(
+            name: "Run Report API",
+            areaName: Common.ModuleName,
+            pattern: "t/form/{format}/{ContentItemId}",
+            defaults: new { controller = "Form", action = "Run", format = "json" }
          );
 
       }

@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 
 namespace TransformalizeModule {
    public static class Common {
@@ -27,6 +28,12 @@ namespace TransformalizeModule {
 
       public static string GetCacheKey(int contentItemId) {
          return contentItemId + KeySuffix;
+      }
+
+      public static string GetSafeFilePath(string user, string name) {
+         var now = DateTime.UtcNow;
+         var path = Path.Combine(now.Year.ToString(), now.ToString("MM-MMM").ToUpper(), now.ToString("dd"));
+         return Path.Combine(path, string.Format("{0}-{1:yyyy-MM-dd-HH-mm-ss}-{2}", user, now, name));
       }
 
    }

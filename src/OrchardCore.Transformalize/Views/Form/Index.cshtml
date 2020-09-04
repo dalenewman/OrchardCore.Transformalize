@@ -9,12 +9,21 @@
 }
 
 <script asp-name="jQuery" at="Head"></script>
-<script asp-name="jQuery-ui" at="Foot"></script>
+<script asp-name="jQuery-ui" at="Head"></script>
 <script asp-name="block-ui" version="2.70.0" at="Foot"></script>
 <script asp-name="pickadate-picker-date" version="3.6.4" at="Foot"></script>
 <script asp-name="parsley" version="2.9.2" at="Foot"></script>
 <script asp-name="moment" version="2.26.0" at="Foot"></script>
 <script asp-src="~/@Common.ModuleName/Scripts/form.js?v=1" at="Foot"></script>
+
+@*the order of these file handling scripts matters*@
+<script asp-name="load-image-all" version="5.14.0" at="Head" ></script>
+<script asp-name="canvas-to-blob" version="3.28.0" at="Head" ></script>
+<script asp-name="jquery-iframe-transport" version="10.31.0" at="Head" ></script>
+<script asp-name="jquery-fileupload" version="10.31.0" at="Head"></script>
+<script asp-name="jquery-fileupload-process" version="10.31.0" at="Head"></script>
+<script asp-name="jquery-fileupload-image" version="10.31.0" at="Head"></script>
+<script asp-src="~/@Common.ModuleName/Scripts/file.handler.js?v=1" at="Foot"></script>
 
 <style asp-name="pickadate-themes-default" version="3.6.4"></style>
 <style asp-name="pickadate-themes-default-date" version="3.6.4"></style>

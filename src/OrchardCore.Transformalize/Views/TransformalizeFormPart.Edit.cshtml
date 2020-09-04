@@ -5,6 +5,8 @@
 @{
    var Area = Common.ModuleName;
    var ContentItemId = Model.TransformalizeFormPart.ContentItem.ContentItemId;
+   var xmlLink = Url.Action("Run", "Form", new { Format = "xml", Area, ContentItemId });
+   var jsonLink = Url.Action("Run", "Form", new { Format = "json", Area, ContentItemId });
    var viewLink = Url.Action("Index", "Form", new { Area, ContentItemId });
 }
 
@@ -15,6 +17,18 @@
          class="btn btn-success btn-sm"
          href="@viewLink">
          <span class="fas fa-eye"></span>
+      </a>
+      <a title="run this report as xml"
+         href="@xmlLink" 
+         class="btn btn-primary btn-sm" 
+         role="button">
+         <span class="fas fa-code"></span>
+      </a>
+      <a title="run this report as json" 
+         role="button" 
+         class="btn btn-secondary btn-sm" 
+         href="@jsonLink">
+         <span class="fas fa-exchange-alt"></span>
       </a>
    </div>
 </fieldset>

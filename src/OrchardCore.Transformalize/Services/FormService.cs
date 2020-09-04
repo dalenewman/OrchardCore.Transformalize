@@ -30,19 +30,19 @@ namespace TransformalizeModule.Services {
          return _arrangementService.GetByIdOrAliasAsync(idOrAlias);
       }
 
-      public Process LoadForTaskForm(ContentItem contentItem, IDictionary<string,string> parameters = null) {
-         return _loadService.LoadForTaskForm(contentItem, parameters);
+      public Process LoadForParameters(ContentItem contentItem, IDictionary<string,string> parameters = null) {
+         return _loadService.LoadForParameters(contentItem, parameters);
       }
 
-      public Process LoadForForm(ContentItem contentItem, IDictionary<string, string> parameters = null) {
-         return _loadService.LoadForForm(contentItem, parameters);
+      public Process LoadForForm(ContentItem contentItem, IDictionary<string, string> parameters = null, string format = null) {
+         return _loadService.LoadForForm(contentItem, parameters, format);
       }
 
       public async Task RunAsync(Process process) {
          await _runService.RunAsync(process);
       }
 
-      public async Task<TransformalizeResponse<TransformalizeTaskPart>> ValidateTaskForm(TransformalizeRequest request) {
+      public async Task<TransformalizeResponse<TransformalizeTaskPart>> ValidateParameters(TransformalizeRequest request) {
 
          var response = new TransformalizeResponse<TransformalizeTaskPart>(request.Format) {
             ContentItem = await GetByIdOrAliasAsync(request.ContentItemId)
@@ -58,7 +58,7 @@ namespace TransformalizeModule.Services {
             return response;
          }
 
-         response.Process = LoadForTaskForm(response.ContentItem, request.InternalParameters);
+         response.Process = LoadForParameters(response.ContentItem, request.InternalParameters);
          if (response.Process.Status != 200) {
             SetupLoadErrorResponse(request, response);
             return response;
@@ -84,7 +84,7 @@ namespace TransformalizeModule.Services {
             return response;
          }
 
-         response.Process = LoadForForm(response.ContentItem, request.InternalParameters);
+         response.Process = LoadForForm(response.ContentItem, request.InternalParameters, request.Format);
          if (response.Process.Status != 200) {
             SetupLoadErrorResponse(request, response);
             return response;

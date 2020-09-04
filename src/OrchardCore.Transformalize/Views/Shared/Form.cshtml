@@ -38,26 +38,26 @@
                @Html.Raw(value)
             } else {
 
-            <label for="@parameter.Name">@(parameter.Label == string.Empty ? parameter.Name : parameter.Label)</label>
-            @if (parameter.Hint != string.Empty) {
-               <span class="text-muted"> @parameter.Hint</span>
-            }
-
-            <input type="text"
-                   readonly="readonly"
-                   class="form-control @(parameter.Valid ? "is-valid" : "is-invalid")"
-                   name="@parameter.Name"
-                   id="id_@parameter.Name"
-                   placeholder="@parameter.Label"
-                   value="@value"
-                   data-tfl-post-back="false" />
-
-            @* if you change location you must update parsley error container *@
-            <span class="help-container">
-               @if (!parameter.Valid) {
-                  <span class="help-block">@(parameter.Message.Replace('|', ' '))</span>
+               <label for="@parameter.Name">@(parameter.Label == string.Empty ? parameter.Name : parameter.Label)</label>
+               @if (parameter.Hint != string.Empty) {
+                  <span class="text-muted"> @parameter.Hint</span>
                }
-            </span>
+
+               <input type="text"
+                      readonly="readonly"
+                      class="form-control @(parameter.Valid ? "is-valid" : "is-invalid")"
+                      name="@parameter.Name"
+                      id="id_@parameter.Name"
+                      placeholder="@parameter.Label"
+                      value="@value"
+                      data-tfl-post-back="false" />
+
+               @* if you change location you must update parsley error container *@
+               <span class="help-container">
+                  @if (!parameter.Valid) {
+                     <span class="help-block">@(parameter.Message.Replace('|', ' '))</span>
+                  }
+               </span>
             }
          </div>
          continue;
@@ -85,10 +85,10 @@
                   }
                </select>
             } else {
-               <br/>
+               <br />
                foreach (var item in map.Items) {
                   <div class="form-check form-check-inline">
-                     <input type="radio" name="@parameter.Name" class="form-check-input" value="@item.To" checked="@(value.Equals(item.To))" data-tfl-post-back="@(parameter.PostBack)"/>
+                     <input type="radio" name="@parameter.Name" class="form-check-input" value="@item.To" checked="@(value.Equals(item.To))" data-tfl-post-back="@(parameter.PostBack)" />
                      <label for="@parameter.Name" class="form-check-label">@item.From</label>
                   </div>
                }
@@ -204,7 +204,7 @@
                      break;
                   case "file":
 
-                     var file = "x"; // Model.GetFile(field, value);
+                     object file = null; // Model.GetFile(field, value);
 
                      @* if change this markup you'll need to update filehandler jquery selectors *@
                      <div class="form-group @(parameter.Valid ? "is-valid" : "is-invalid") @parameter.Class">
@@ -235,21 +235,21 @@
                               <table>
                                  <tr>
                                     <td style="width:auto;">
-                                       <span class="btn btn-primary btn-sm fileinput-button">
-                                          <i class="input-group-text fas fa-plus"></i>
-                                          <span>Upload</span>
-                                          <input name="@(parameter.Name)"
-                                                 type="file"
-                                                 class="form-control @(parameter.Valid ? "is-valid" : "is-invalid")"
-                                                 data-tfl-post-back="false"
-                                                 disabled="@(file != null)"
-                                                 @(Html.Raw(parameter.InputAccept == string.Empty ? string.Empty : "accept=\"" + parameter.InputAccept + "\""))
-                                                 @(Html.Raw(parameter.InputCapture == string.Empty ? string.Empty : "capture=\"" + parameter.InputCapture + "\"")) />
-                                       </span>
+                                       <label class="btn btn-primary btn-file" style="width:100px; margin-bottom:0px;">
+                                          <i class="fas fa-plus"></i>
+                                          Browse <input name="@(parameter.Name)"
+                                                        type="file"
+                                                        style="display: none;"
+                                                        class="form-control custom-file-input @(parameter.Valid ? "is-valid" : "is-invalid")"
+                                                        data-tfl-post-back="false"
+                                                        disabled="@(file != null)"
+                                                        @(Html.Raw(parameter.InputAccept == string.Empty ? string.Empty : "accept=\"" + parameter.InputAccept + "\""))
+                                                        @(Html.Raw(parameter.InputCapture == string.Empty ? string.Empty : "capture=\"" + parameter.InputCapture + "\"")) />
+                                       </label>
                                     </td>
                                     <td style="width:100%;">
-                                       <div class="progress">
-                                          <div class="progress-bar progress-bar-striped progress-bar-success"></div>
+                                       <div class="progress" style="height:38px;">
+                                          <div class="progress-bar progress-bar-striped progress-bar-success" style="height:38px;"></div>
                                        </div>
                                     </td>
                                  </tr>
