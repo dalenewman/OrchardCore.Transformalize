@@ -371,6 +371,48 @@ namespace TransformalizeModule {
 
       }
 
+      public int UpdateFrom6() {
+
+         _contentDefinitionManager.AlterPartDefinition("TransformalizeFilePart", part => part
+             .WithDisplayName("Transformalize File Part")
+             .WithDescription("Provides fields for Transformalize File content type")
+             .WithField("OriginalName", field => field
+                 .OfType(nameof(TextField))
+                 .WithDisplayName("Original File Name")
+                 .WithPosition("3")
+                 .WithSettings(new TextFieldSettings {
+                        Hint = "This is the original name of the file uploaded to the server.",
+                        Required = true
+                     }
+                  )
+            ).WithField("FullPath", field => field
+               .OfType(nameof(TextField))
+               .WithDisplayName("Full File Path")
+               .WithPosition("4")
+               .WithSettings(new TextFieldSettings {
+                     Hint = "This is the full path of the file stored on the server.",
+                     Required = true
+                  }
+               )
+            )
+         );
+
+         _contentDefinitionManager.AlterTypeDefinition("TransformalizeFile", builder => builder
+             .WithPart("AliasPart", part => part
+                 .WithPosition("1")
+                 .WithSettings(new AliasPartSettings {
+                    Pattern = "{{ ContentItem | title | slugify }}"
+                 })
+             )
+             .WithPart("TransformalizeFilePart", part => part.WithPosition("2"))
+             .WithPart("CommonPart", part => part.WithPosition("3"))
+         );
+
+         return 7;
+
+      }
+
+
       private async Task EnableFeature(string id) {
 
          var availableFeatures = await _moduleService.GetAvailableFeaturesAsync();

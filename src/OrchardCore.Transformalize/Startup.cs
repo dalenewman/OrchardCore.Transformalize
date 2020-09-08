@@ -52,6 +52,7 @@ namespace TransformalizeModule {
          services.AddScoped<ISchemaService, SchemaService>();
          services.AddScoped<ISettingsService, SettingsService>();
          services.AddScoped<ITransformalizeParametersModifier, TransformalizeParametersModifier>();
+         services.AddScoped<IFileService, FileService>();
 
          services.AddTransient<IConfigurationContainer, OrchardConfigurationContainer>();
          services.AddTransient<IContainer, OrchardContainer>();
@@ -66,6 +67,7 @@ namespace TransformalizeModule {
          services.AddContentPart<TransformalizeReportPart>().UseDisplayDriver<TransformalizeReportPartDisplayDriver>();
          services.AddContentPart<TransformalizeTaskPart>().UseDisplayDriver<TransformalizeTaskPartDisplayDriver>();
          services.AddContentPart<TransformalizeFormPart>().UseDisplayDriver<TransformalizeFormPartDisplayDriver>();
+         services.AddContentPart<TransformalizeFilePart>().UseDisplayDriver<TransformalizeFilePartDisplayDriver>();
 
          // settings
          services.AddScoped<IDisplayDriver<ISite>, TransformalizeSettingsDisplayDriver>();
@@ -79,7 +81,7 @@ namespace TransformalizeModule {
             var options = serviceProvider.GetRequiredService<IOptions<ShellOptions>>().Value;
             var settings = serviceProvider.GetRequiredService<ShellSettings>();
             var folderPath = PathExtensions.Combine(options.ShellsApplicationDataPath, options.ShellsContainerName, settings.Name);
-            var formFolderPath = PathExtensions.Combine(folderPath, "FormFiles");
+            var formFolderPath = PathExtensions.Combine(folderPath, "Transformalize", "Files");
             return new FormFileStore(formFolderPath);
          });
       }

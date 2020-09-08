@@ -1,11 +1,14 @@
 @model Transformalize.Configuration.Process
-@using Microsoft.Extensions.DependencyInjection;
+@using Microsoft.Extensions.DependencyInjection
 @using Microsoft.AspNetCore.Authorization
 @using TransformalizeModule.Ext
+@using TransformalizeModule.Services.Contracts
+@using TransformalizeModule.Models
 
 @{
    Layout = null;
    var auth = Context.RequestServices.GetService<IAuthorizationService>();
+   var fileService = Context.RequestServices.GetService<IFileService>();
 }
 
 @if (!Model.Parameters.Any()) {
@@ -204,7 +207,20 @@
                      break;
                   case "file":
 
-                     object file = null; // Model.GetFile(field, value);
+                     TransformalizeFilePart file = null;
+                     string oldFileId = string.Empty;
+
+                     if (Context.Request.HasFormContentType) {
+                        oldFileId = Context.Request.Form[parameter.Name + "_Old"].ToString();
+                     }
+
+                     if (!string.IsNullOrWhiteSpace(oldFileId)) {
+                        file = await fileService.GetFilePart(oldFileId);
+                     } else {
+                        if (value is string strValue) {
+                           file = await fileService.GetFilePart(strValue);
+                        }
+                     }
 
                      @* if change this markup you'll need to update filehandler jquery selectors *@
                      <div class="form-group @(parameter.Valid ? "is-valid" : "is-invalid") @parameter.Class">
@@ -226,8 +242,7 @@
                                         id="id_@parameter.Name"
                                         disabled="@(file == null)"
                                         data-tfl-post-back="@(parameter.PostBack)"
-                                        @*value="@(file == null ? string.Empty : file.OriginalName)"*@
-                                        value="x"
+                                        value="@(file == null ? string.Empty : file.OriginalName.Text)"
                                         readonly="readonly" />
                               </div>
                            </div>
@@ -266,8 +281,7 @@
                         <input type="hidden"
                                name="@(parameter.Name)_Old"
                                id="id_@(parameter.Name)_Old"
-                               @*value="@(string.IsNullOrEmpty(Request.Form[parameter.Name + "_Old"]) ? (file == null ? string.Empty : file.Id.ToString()) : Request.Form[parameter.Name + "_Old"])"*@
-                               value="x"
+                               value="@(string.IsNullOrEmpty(oldFileId) ? (file == null ? string.Empty : file.ContentItem.ContentItemId) : oldFileId)"
                                @Html.Raw(parameter.ToParsley()) />
                         <script language="javascript">$(document).ready(function () { fileHandler('@parameter.Name',false); });</script>
                      </div>

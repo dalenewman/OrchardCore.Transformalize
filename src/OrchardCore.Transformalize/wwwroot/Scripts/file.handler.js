@@ -16,7 +16,7 @@
          this.expectingFile.find('input').prop('disabled', true);
          this.expectingFile.hide();
 
-         if (result.id > 0) {
+         if (result.id !== "") {
             container.closest('div.form-group').find('.help-block').empty();
             this.hasFile.closest('div.form-group').removeClass('has-error');
          } else {
