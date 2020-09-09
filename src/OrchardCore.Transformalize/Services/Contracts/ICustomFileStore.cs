@@ -16,11 +16,8 @@
 // limitations under the License.
 #endregion
 
-
 using OrchardCore.FileStorage;
 
 namespace TransformalizeModule.Services.Contracts {
-   public interface IFormFileStore : IFileStore {
-
-   }
+   public interface ICustomFileStore : IFileStore { }
 }

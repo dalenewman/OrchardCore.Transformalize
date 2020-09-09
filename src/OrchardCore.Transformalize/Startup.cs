@@ -77,12 +77,12 @@ namespace TransformalizeModule {
          services.AddActivity<TransformalizeActivity, TransformalizeActivityDisplayDriver>();
 
          // file system, see https://github.com/Lombiq/Orchard-Training-Demo-Module/blob/dev/Startup.cs
-         services.AddSingleton<IFormFileStore>(serviceProvider => {
+         services.AddSingleton<ICustomFileStore>(serviceProvider => {
             var options = serviceProvider.GetRequiredService<IOptions<ShellOptions>>().Value;
             var settings = serviceProvider.GetRequiredService<ShellSettings>();
-            var folderPath = PathExtensions.Combine(options.ShellsApplicationDataPath, options.ShellsContainerName, settings.Name);
-            var formFolderPath = PathExtensions.Combine(folderPath, "Transformalize", "Files");
-            return new FormFileStore(formFolderPath);
+            var sitePath = PathExtensions.Combine(options.ShellsApplicationDataPath, options.ShellsContainerName, settings.Name);
+            var path = PathExtensions.Combine(sitePath, "Transformalize", "Files");
+            return new CustomFileStore(path);
          });
       }
 
@@ -92,6 +92,7 @@ namespace TransformalizeModule {
          RouteMap(routes);
          RouteCalendar(routes);
          RouteForms(routes);
+         RouteFiles(routes);
          RouteTasks(routes);
          RouteBulkActions(routes);
 
@@ -200,13 +201,6 @@ namespace TransformalizeModule {
          );
 
          routes.MapAreaControllerRoute(
-             name: "Form File Upload",
-             areaName: Common.ModuleName,
-             pattern: "t/form/file/{ContentItemId}",
-             defaults: new { controller = "Form", action = "Upload" }
-         );
-
-         routes.MapAreaControllerRoute(
             name: "Run Report API",
             areaName: Common.ModuleName,
             pattern: "t/form/{format}/{ContentItemId}",
@@ -214,6 +208,25 @@ namespace TransformalizeModule {
          );
 
       }
+
+      public void RouteFiles(IEndpointRouteBuilder routes) {
+
+         routes.MapAreaControllerRoute(
+            name: "File View",
+            areaName: Common.ModuleName,
+            pattern: "t/file/{ContentItemId}",
+            defaults: new { controller = "File", action = "Index" }
+         );
+
+         routes.MapAreaControllerRoute(
+             name: "File Upload",
+             areaName: Common.ModuleName,
+             pattern: "t/file/{ContentItemId}",
+             defaults: new { controller = "File", action = "Upload" }
+         );
+
+      }
+
 
       public void RouteReporting(IEndpointRouteBuilder routes) {
 

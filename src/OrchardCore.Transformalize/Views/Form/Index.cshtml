@@ -62,8 +62,8 @@
    var settings = {
       ajaxUrl: "@(Url.Action("Form", "Form", new { Area = Common.ModuleName, ContentItemId = Model.ContentItem.ContentItemId }))",
       updateUrl: "@(Url.Action("Index", "Form", new { Area = Common.ModuleName, ContentItemId = Model.ContentItem.ContentItemId }))",
-      uploadUrl: "@(Url.Action("Upload", "Form", new { Area = Common.ModuleName }))",
-      scanUrl: "@(Url.Action("Scan", "Form", new { Area = Common.ModuleName }))"
+      uploadUrl: "@(Url.Action("Upload", "File", new { Area = Common.ModuleName }))",
+      scanUrl: "@(Url.Action("Scan", "File", new { Area = Common.ModuleName }))"
    }
    //-->
 </script>

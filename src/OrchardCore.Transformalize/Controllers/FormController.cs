@@ -4,8 +4,10 @@ using TransformalizeModule.Services.Contracts;
 using TransformalizeModule.Services;
 using TransformalizeModule.Models;
 using Microsoft.AspNetCore.Authorization;
-using System.IO;
-using OrchardCore.ContentManagement;
+using System.Linq;
+using OrchardCore.DisplayManagement.Notify;
+using Microsoft.AspNetCore.Mvc.Localization;
+using System;
 
 namespace TransformalizeModule.Controllers {
 
@@ -14,27 +16,63 @@ namespace TransformalizeModule.Controllers {
 
       private readonly CombinedLogger<FormController> _logger;
       private readonly IFormService _formService;
-      private readonly IFormFileStore _formFileStore;
-      private readonly IContentManager _contentManager;
+      private readonly INotifier _notifier;
+      private readonly IHtmlLocalizer<FormController> H;
 
       public FormController(
          IFormService formService,
-         IFormFileStore formFileStore,
-         IContentManager contentManager,
+         INotifier notifier,
+         IHtmlLocalizer<FormController> htmlLocalizer,
          CombinedLogger<FormController> logger
       ) {
          _logger = logger;
          _formService = formService;
-         _formFileStore = formFileStore;
-         _contentManager = contentManager;
+         _notifier = notifier;
+         H = htmlLocalizer;
       }
 
       public async Task<ActionResult> Index(string contentItemId) {
 
-         var form = await _formService.ValidateForm(new TransformalizeRequest(contentItemId, HttpContext.User.Identity.Name));
+         var form = await _formService.ValidateForm(new TransformalizeRequest(contentItemId, HttpContext.User.Identity.Name) { ValidateParameters = Request.Method == "POST" });
 
          if (form.Fails()) {
             return form.ActionResult;
+         }
+
+         if (Request.Method == "POST") {
+
+            if (form.Process.Parameters.All(p => p.Valid)) {
+               // reset, modify for actual insert, and execute
+               var key = form.Process.Parameters.First();
+               var insert = key.Value == Transformalize.Constants.TypeDefaults()[key.Type].ToString();
+               form.Process.Actions.Add(new Transformalize.Configuration.Action {
+                  After = false, // for now
+                  Before = false,
+                  Type = "run",
+                  Connection = form.Process.Connections.First().Name,
+                  Command = insert ? "Insert Command" : "Update Command",
+                  Key = Guid.NewGuid().ToString(),
+                  ErrorMode = "exception"
+               });
+
+               try {
+                  await _formService.RunAsync(form.Process);
+                  _notifier.Information(insert ? H["{0} inserted", form.Process.Name] : H["{0} updated", form.Process.Name]);
+                  // return Redirect(parameters["Orchard.ReturnUrl"]);
+               } catch (Exception ex) {
+                  if (ex.Message.Contains("duplicate")) {
+                     _notifier.Error(H["The {0} save failed: {1}", form.Process.Name, "The database has rejected this update due to a unique constraint violation."]);
+                  } else {
+                     _notifier.Error(H["The {0} save failed: {1}", form.Process.Name, ex.Message]);
+                  }
+                  _logger.Error(ex, () => ex.Message);
+               }
+
+
+            } else {
+               _notifier.Error(H["The form did not pass validation.  Please correct it and re-submit."]);
+            }
+
          }
 
          return View(form);
@@ -66,51 +104,6 @@ namespace TransformalizeModule.Controllers {
          report.Process.Connections.Clear();
 
          return new ContentResult() { Content = report.Process.Serialize(), ContentType = request.ContentType };
-      }
-
-      // TODO: Move to File Controller
-      [HttpPost]
-      public async Task<ContentResult> Upload() {
-
-         if (!User.Identity.IsAuthenticated) {
-            return GetResult(string.Empty, "Unauthorized");
-         }
-
-         if (Request.HasFormContentType && Request.Form.Files != null && Request.Form.Files.Count > 0) {
-            var file = Request.Form.Files[0];
-            if (file != null && file.Length > 0) {
-
-               //TODO: move to file server so parameters for task can use it too
-               var filePath = Path.Combine(Common.GetSafeFilePath(HttpContext.User.Identity.Name, file.FileName));
-               var contentItem = await _contentManager.NewAsync("TransformalizeFile");
-               var part = contentItem.As<TransformalizeFilePart>();
-
-               part.OriginalName.Text = file.FileName;
-               using (var stream = file.OpenReadStream()) {
-                  await _formFileStore.CreateFileFromStreamAsync(filePath, stream, true);
-               }
-
-               var fileInfo = await _formFileStore.GetFileInfoAsync(filePath);
-
-               part.FullPath.Text = fileInfo.Path;
-
-               contentItem.Apply(part);
-
-               await _contentManager.CreateAsync(contentItem);
-
-               return GetResult(contentItem.ContentItemId, file.FileName);
-            }
-         }
-
-         return GetResult(string.Empty, "Error");
-      }
-
-      private static ContentResult GetResult(string id, string message) {
-         var data = string.Format("{{ \"id\":\"{0}\", \"message\":\"{1}\" }}", id, message);
-         return new ContentResult {
-            Content = data,
-            ContentType = "text/json"
-         };
       }
 
    }

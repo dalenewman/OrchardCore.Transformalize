@@ -204,23 +204,23 @@
                         </span>
 
                      </div>
-                     break;
-                  case "file":
+               break;
+            case "file":
 
-                     TransformalizeFilePart file = null;
-                     string oldFileId = string.Empty;
+               TransformalizeFilePart file = null;
+               string oldFileId = string.Empty;
 
-                     if (Context.Request.HasFormContentType) {
-                        oldFileId = Context.Request.Form[parameter.Name + "_Old"].ToString();
-                     }
+               if (Context.Request.HasFormContentType) {
+                  oldFileId = Context.Request.Form[parameter.Name + "_Old"].ToString();
+               }
 
-                     if (!string.IsNullOrWhiteSpace(oldFileId)) {
-                        file = await fileService.GetFilePart(oldFileId);
-                     } else {
-                        if (value is string strValue) {
-                           file = await fileService.GetFilePart(strValue);
-                        }
-                     }
+               if (!string.IsNullOrWhiteSpace(oldFileId)) {
+                  file = await fileService.GetFilePart(oldFileId);
+               } else {
+                  if (value is string strValue) {
+                     file = await fileService.GetFilePart(strValue);
+                  }
+               }
 
                      @* if change this markup you'll need to update filehandler jquery selectors *@
                      <div class="form-group @(parameter.Valid ? "is-valid" : "is-invalid") @parameter.Class">

@@ -387,10 +387,10 @@ namespace TransformalizeModule {
                   )
             ).WithField("FullPath", field => field
                .OfType(nameof(TextField))
-               .WithDisplayName("Full File Path")
+               .WithDisplayName("File Path")
                .WithPosition("4")
                .WithSettings(new TextFieldSettings {
-                     Hint = "This is the full path of the file stored on the server.",
+                     Hint = "This is the path used to retrieve the file.  It is relative to the Transformalize/Files in the tenant's folder.",
                      Required = true
                   }
                )
