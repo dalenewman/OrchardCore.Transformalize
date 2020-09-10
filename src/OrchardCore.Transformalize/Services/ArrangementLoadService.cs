@@ -40,7 +40,7 @@ namespace TransformalizeModule.Services {
       public Process LoadForStream(ContentItem contentItem) {
 
          if (!TryGetReportPart(contentItem, out var part)) {
-            return new Process { Status = 500, Message = "Error", Log = new List<LogEntry>() { new LogEntry(LogLevel.Error, null, $"LoadForExport can't load {contentItem.ContentType}.") } };
+            return new Process { Status = 500, Message = "Error", Log = new List<LogEntry>() { new LogEntry(LogLevel.Error, null, $"LoadForStream can't load {contentItem.ContentType}.") } };
          }
 
          var process = LoadInternal(part);
@@ -313,6 +313,10 @@ namespace TransformalizeModule.Services {
             pageSizes.AddRange(_settings.GetPageSizesExtended(part));
 
             EnforcePageSize(process, _parameters, pageSizes.Min(), _parameters.GetIntegerOrDefault("size", () => pageSizes.Min()), pageSizes.Max());
+         }
+
+         if (_parameters.ContainsKey("sort") && _parameters["sort"] != null) {
+            _sortService.AddSortToEntity(part, process.Entities.First(), _parameters["sort"]);
          }
 
          var o = process.GetOutputConnection();
