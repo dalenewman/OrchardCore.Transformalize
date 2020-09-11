@@ -14,8 +14,6 @@
 <script asp-name="pickadate-picker-date" version="3.6.4" at="Foot"></script>
 <script asp-name="parsley" version="2.9.2" at="Foot"></script>
 <script asp-name="moment" version="2.26.0" at="Foot"></script>
-<script asp-src="~/@Common.ModuleName/Scripts/form.js?v=1" at="Foot"></script>
-
 @*the order of these file handling scripts matters*@
 <script asp-name="load-image-all" version="5.14.0" at="Head" ></script>
 <script asp-name="canvas-to-blob" version="3.28.0" at="Head" ></script>
@@ -23,12 +21,20 @@
 <script asp-name="jquery-fileupload" version="10.31.0" at="Head"></script>
 <script asp-name="jquery-fileupload-process" version="10.31.0" at="Head"></script>
 <script asp-name="jquery-fileupload-image" version="10.31.0" at="Head"></script>
+
+<script asp-src="~/@Common.ModuleName/Scripts/form.js?v=1" at="Foot"></script>
 <script asp-src="~/@Common.ModuleName/Scripts/file.handler.js?v=1" at="Foot"></script>
 
 <style asp-name="pickadate-themes-default" version="3.6.4"></style>
 <style asp-name="pickadate-themes-default-date" version="3.6.4"></style>
 
 <style>
+
+   /* to stop ios from zooming in on inputs */
+   body {
+      font-size: 16px;
+   }   
+
    #busy {
       position: fixed;
       left: 46%;
@@ -52,14 +58,38 @@
       color: red;
    }
 
+   .form-control:focus {
+      border-color: #66AFE9;
+   }
+
    input:invalid {
       border-color: red;
+   }
+
+   span.focus {
+      border-color: #66afe9;
+      outline: 0;
+      box-shadow: inset 0 1px 1px rgba(0,0,0,.075), 0 0 8px rgba(102, 175, 233, 0.6);
+   }
+
+   .fileinput-button input {
+      position: absolute;
+      top: 0;
+      right: 0;
+      margin: 0;
+      opacity: 0;
+      -ms-filter: 'alpha(opacity=0)';
+      font-size: 200px;
+      direction: ltr;
+      cursor: pointer;
    }
 </style>
 
 <script type="text/javascript" language="javascript">
     //<!--
    var settings = {
+      geo: false,
+      controller: "Form",
       ajaxUrl: "@(Url.Action("Form", "Form", new { Area = Common.ModuleName, ContentItemId = Model.ContentItem.ContentItemId }))",
       updateUrl: "@(Url.Action("Index", "Form", new { Area = Common.ModuleName, ContentItemId = Model.ContentItem.ContentItemId }))",
       uploadUrl: "@(Url.Action("Upload", "File", new { Area = Common.ModuleName }))",

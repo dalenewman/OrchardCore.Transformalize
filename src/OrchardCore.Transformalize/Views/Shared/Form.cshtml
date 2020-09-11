@@ -9,6 +9,26 @@
    Layout = null;
    var auth = Context.RequestServices.GetService<IAuthorizationService>();
    var fileService = Context.RequestServices.GetService<IFileService>();
+
+   var focus = string.Empty;
+   if (Context.Request.Method == "GET") {
+      focus = Model.Parameters.First(f => f.Prompt).Name;
+   } else {
+      var previous =  Context.Request.Form["Orchard.Focus"].ToString() == "Orchard.Submit" ? Model.Parameters.Last(p=>p.Prompt) : Model.Parameters.First(p => p.Name == Context.Request.Form["Orchard.Focus"].ToString());
+      var maxSequence = Model.Parameters.Where(f => f.Prompt).Max(p => p.Sequence);
+      if (previous.Sequence < maxSequence) {
+         var next = Model.Parameters.OrderBy(p => p.Sequence).FirstOrDefault(p => p.Sequence > previous.Sequence);
+         if (next != null) {
+            focus = next.Name;
+         } else {
+            var invalid = Model.Parameters.FirstOrDefault(p => p.Prompt && !p.Valid);
+            focus = invalid == null ? "Orchard.Submit" : invalid.Name;
+         }
+      } else {
+         var invalid = Model.Parameters.FirstOrDefault(p => p.Prompt && !p.Valid);
+         focus = invalid == null ? "Orchard.Submit" : invalid.Name;
+      }
+   }
 }
 
 @if (!Model.Parameters.Any()) {
@@ -23,7 +43,7 @@
 
 <form id="id_form" method="post" role="form" enctype="multipart/form-data">
    @Html.AntiForgeryToken()
-   <input type="hidden" id="id_focus" name="Orchard.Focus" value="@(Model.Parameters.FirstOrDefault(p=>p.Prompt && !p.Valid)?.Name ?? string.Empty)" />
+   <input type="hidden" id="id_focus" name="Orchard.Focus" value="@(focus)" />
 
    @foreach (var parameter in Model.Parameters) {
 
@@ -35,6 +55,11 @@
       }
 
       if (parameter.Readonly()) {
+
+         if (!parameter.Raw || !parameter.Input) {
+            <input type="hidden" name="@parameter.Name" value="@parameter.Value" />
+            continue;
+         }
 
          <div class="form-group @(parameter.Valid ? "is-valid" : "is-invalid") @parameter.Class">
             @if (parameter.Raw) {
@@ -144,9 +169,9 @@
                                   @Html.Raw(parameter.ToParsley()) />
                            <script language="javascript">
                            $(document).ready(function () {
-                              var input = $('#id_@parameter.Name').pickadate({ editable: true, format: 'yyyy-mm-dd' });
-                              var picker = input.pickadate('picker');
-                              $('#id_@parameter.Name').off('click');
+                              var $input = $('#id_@parameter.Name').pickadate({ editable: true, format: 'yyyy-mm-dd' });
+                              var picker = $input.pickadate('picker');
+                              picker.off('open');
                               $('#id_dp_@parameter.Name').click(function (e) {
                                     // stop the click from bubbling
                                     e.stopPropagation();
@@ -204,23 +229,23 @@
                         </span>
 
                      </div>
-               break;
-            case "file":
+                     break;
+                  case "file":
 
-               TransformalizeFilePart file = null;
-               string oldFileId = string.Empty;
+                     TransformalizeFilePart file = null;
+                     string oldFileId = string.Empty;
 
-               if (Context.Request.HasFormContentType) {
-                  oldFileId = Context.Request.Form[parameter.Name + "_Old"].ToString();
-               }
+                     if (Context.Request.HasFormContentType) {
+                        oldFileId = Context.Request.Form[parameter.Name + "_Old"].ToString();
+                     }
 
-               if (!string.IsNullOrWhiteSpace(oldFileId)) {
-                  file = await fileService.GetFilePart(oldFileId);
-               } else {
-                  if (value is string strValue) {
-                     file = await fileService.GetFilePart(strValue);
-                  }
-               }
+                     if (!string.IsNullOrWhiteSpace(oldFileId)) {
+                        file = await fileService.GetFilePart(oldFileId);
+                     } else {
+                        if (value is string strValue) {
+                           file = await fileService.GetFilePart(strValue);
+                        }
+                     }
 
                      @* if change this markup you'll need to update filehandler jquery selectors *@
                      <div class="form-group @(parameter.Valid ? "is-valid" : "is-invalid") @parameter.Class">
@@ -250,7 +275,7 @@
                               <table>
                                  <tr>
                                     <td style="width:auto;">
-                                       <label class="btn btn-primary btn-file" style="width:100px; margin-bottom:0px;">
+                                       @*<label class="btn btn-primary btn-file" style="width:100px; margin-bottom:0px;">
                                           <i class="fas fa-plus"></i>
                                           Browse <input name="@(parameter.Name)"
                                                         type="file"
@@ -260,7 +285,18 @@
                                                         disabled="@(file != null)"
                                                         @(Html.Raw(parameter.InputAccept == string.Empty ? string.Empty : "accept=\"" + parameter.InputAccept + "\""))
                                                         @(Html.Raw(parameter.InputCapture == string.Empty ? string.Empty : "capture=\"" + parameter.InputCapture + "\"")) />
-                                       </label>
+                                       </label>*@
+                                       <span class="btn btn-primary fileinput-button @(parameter.Valid ? "is-valid" : "is-invalid")" style="width:100px;">
+                                          <i class="fas fa-plus"></i>
+                                          <span>Upload</span>
+                                          <input name="@(parameter.Name)"
+                                                 type="file"
+                                                 class="form-control @(parameter.Valid ? "is-valid" : "is-invalid")"
+                                                 data-tfl-post-back="false"
+                                                 disabled="@(file != null)"
+                                                 @(Html.Raw(parameter.InputAccept == string.Empty ? string.Empty : "accept=\"" + parameter.InputAccept + "\""))
+                                                 @(Html.Raw(parameter.InputCapture == string.Empty ? string.Empty : "capture=\"" + parameter.InputCapture + "\"")) />
+                                       </span>
                                     </td>
                                     <td style="width:100%;">
                                        <div class="progress" style="height:38px;">
@@ -406,10 +442,18 @@
             }
          }
 
-   @if (Model.Parameters.All(p => p.Valid)) {
-      <input name="Orchard.Submit" id="id_submit" type="submit" value="Run" class="btn btn-success btn-block" />
+   @if (Model.Mode == "form") {
+
+      <input name="Orchard.Submit" id="id_submit" type="submit" value="Submit" class="btn btn-success btn-block" />
+
    } else {
-      <input name="Orchard.Submit" id="id_submit" type="submit" value="Update" class="btn btn-primary btn-block" />
+
+      if (Model.Parameters.All(p => p.Valid)) {
+         <input name="Orchard.Submit" id="id_submit" type="submit" value="Run" class="btn btn-success btn-block" />
+      } else {
+         <input name="Orchard.Submit" id="id_submit" type="submit" value="Update" class="btn btn-primary btn-block" />
+      }
+
    }
 
 </form>

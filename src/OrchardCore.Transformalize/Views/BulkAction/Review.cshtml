@@ -49,13 +49,15 @@
 
    <script type="text/javascript" language="javascript">
     //<!--
-   var settings = {
-      ajaxUrl: "@(Url.Action("Form", "BulkAction", new { Area = Common.ModuleName }))",
-      updateUrl: "@(Url.Action("Review", "BulkAction", new { Area = Common.ModuleName }))",
-      runUrl: "@(Url.Action("Run", "BulkAction", new { Area = Common.ModuleName }))",
-      uploadUrl: "@(Url.Action("Upload", "File", new { Area = Common.ModuleName }))",
-      scanUrl: "@(Url.Action("Scan", "File", new { Area = Common.ModuleName }))"
-   }
+      var settings = {
+         geo: false,
+         controller: "BulkAction",
+         ajaxUrl: "@(Url.Action("Form", "BulkAction", new { Area = Common.ModuleName }))",
+         updateUrl: "@(Url.Action("Review", "BulkAction", new { Area = Common.ModuleName }))",
+         runUrl: "@(Url.Action("Run", "BulkAction", new { Area = Common.ModuleName }))",
+         uploadUrl: "@(Url.Action("Upload", "File", new { Area = Common.ModuleName }))",
+         scanUrl: "@(Url.Action("Scan", "File", new { Area = Common.ModuleName }))"
+      }
    //-->
    </script>
 

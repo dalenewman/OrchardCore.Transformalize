@@ -21,7 +21,7 @@
    $(document).bind("ajaxSend", function () {
       block();
    }).bind("ajaxComplete", function () {
-      $("#id_busy").hide();
+      $("#busy").hide();
       $.unblockUI();
    });
 
@@ -32,7 +32,17 @@
    function bind(html) {
 
       $("#id_content").html(html);
-      $("#id_form").attr("action", $('#id_submit').val() === "Run" ? settings.runUrl : settings.updateUrl);
+
+      var actionUrl = "";
+      if (settings.controller === "Form") {
+         actionUrl = settings.updateUrl;
+      } else {
+         // this is a task or bulk action
+         actionUrl = $('#id_submit').val() === "Run" ? settings.runUrl : settings.updateUrl;
+      }
+
+      $("#id_form").attr("action", actionUrl);
+
       $("#id_form").parsley({
          errorsContainer: function (e) {
             return e.$element.closest('div.form-group').find('span.help-container');
@@ -168,7 +178,7 @@
    }
 
    function block() {
-      $('#id_busy').show();
+      $('#busy').show();
       $.blockUI({
          message: null,
          css: {

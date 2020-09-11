@@ -51,6 +51,8 @@
 <script type="text/javascript" language="javascript">
     //<!--
    var settings = {
+      geo: false,
+      controller: "Task",
       ajaxUrl: "@(Url.Action("Form", "Task", new { Area = Common.ModuleName, ContentItemId = Model.ContentItem.ContentItemId }))",
       updateUrl: "@(Url.Action("Review", "Task", new { Area = Common.ModuleName, ContentItemId = Model.ContentItem.ContentItemId }))",
       runUrl: "@(Url.Action("Run", "Task", new { Area = Common.ModuleName, ContentItemId = Model.ContentItem.ContentItemId }))",
