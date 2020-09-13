@@ -14,33 +14,53 @@ using Transformalize.Configuration;
 using Transformalize.Contracts;
 using Transformalize.Logging;
 using TransformalizeModule.Models;
+using TransformalizeModule.Services;
 using TransformalizeModule.Services.Contracts;
 using TransformalizeModule.ViewModels;
+using IContainer = TransformalizeModule.Services.Contracts.IContainer;
 
 namespace TransformalizeModule.Drivers {
    public class TransformalizeFormPartDisplayDriver : ContentPartDisplayDriver<TransformalizeFormPart> {
 
       private readonly IStringLocalizer S;
       private readonly IHtmlLocalizer<TransformalizeFormPartDisplayDriver> H;
-      private readonly IConfigurationContainer _container;
+      private readonly IConfigurationContainer _configurationContainer;
+      private readonly IContainer _container;
+      private readonly CombinedLogger<TransformalizeFormPartDisplayDriver> _logger;
       private readonly INotifier _notifier;
 
       public TransformalizeFormPartDisplayDriver(
          IStringLocalizer<TransformalizeFormPartDisplayDriver> localizer,
          IHtmlLocalizer<TransformalizeFormPartDisplayDriver> htmlLocalizer,
-         IConfigurationContainer container,
+         CombinedLogger<TransformalizeFormPartDisplayDriver> logger,
+         IConfigurationContainer configurationContainer,
+         IContainer container,
          INotifier notifier
       ) {
          S = localizer;
          H = htmlLocalizer;
          _container = container;
+         _logger = logger;
+         _configurationContainer = configurationContainer;
          _notifier = notifier;
       }
 
       public override IDisplayResult Edit(TransformalizeFormPart part) {
+
+         var commands = new AdoFormCommands();
+         try {
+            var process = _configurationContainer.CreateScope(part.Arrangement.Text, part.ContentItem, new Dictionary<string, string>(), false).Resolve<Process>();
+            commands = _container.CreateScope(process, _logger).Resolve<AdoFormCommandWriter>().Write();
+         } catch (Exception) {
+            // swallow
+         }
+
          return Initialize<EditTransformalizeFormPartViewModel>("TransformalizeFormPart_Edit", model => {
             model.TransformalizeFormPart = part;
             model.Arrangement = part.Arrangement;
+            model.CreateCommand = commands.Create;
+            model.InsertCommand = commands.Insert;
+            model.UpdateCommand = commands.Update;
          }).Location("Content:1");
       }
 
@@ -54,7 +74,7 @@ namespace TransformalizeModule.Drivers {
 
          try {
             var logger = new MemoryLogger(LogLevel.Error);
-            var process = _container.CreateScope(model.Arrangement.Text, part.ContentItem, new Dictionary<string, string>(), false).Resolve<Process>();
+            var process = _configurationContainer.CreateScope(model.Arrangement.Text, part.ContentItem, new Dictionary<string, string>(), false).Resolve<Process>();
             if (process.Errors().Any()) {
                foreach (var error in process.Errors()) {
                   updater.ModelState.AddModelError(Prefix, S[error]);

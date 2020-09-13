@@ -19,17 +19,47 @@
          <span class="fas fa-eye"></span>
       </a>
       <a title="run this report as xml"
-         href="@xmlLink" 
-         class="btn btn-primary btn-sm" 
+         href="@xmlLink"
+         class="btn btn-primary btn-sm"
          role="button">
          <span class="fas fa-code"></span>
       </a>
-      <a title="run this report as json" 
-         role="button" 
-         class="btn btn-secondary btn-sm" 
+      <a title="run this report as json"
+         role="button"
+         class="btn btn-secondary btn-sm"
          href="@jsonLink">
          <span class="fas fa-exchange-alt"></span>
       </a>
    </div>
 </fieldset>
+
+@if (Model.CreateCommand != string.Empty) {
+   <fieldset>
+
+      <table class="table table-sm">
+         <thead>
+            <tr>
+               <th scope="col">Type</th>
+               <th scope="col">Command</th>
+            </tr>
+         </thead>
+         <tbody>
+            <tr>
+               <td>Create</td>
+               <td>@Model.CreateCommand</td>
+            </tr>
+            <tr>
+               <td>Insert</td>
+               <td>@Model.InsertCommand</td>
+            </tr>
+            <tr>
+               <td>Update</td>
+               <td>@Model.UpdateCommand</td>
+            </tr>
+         </tbody>
+      </table>
+
+   </fieldset>
+}
+
 

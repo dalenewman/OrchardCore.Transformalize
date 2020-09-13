@@ -56,7 +56,7 @@
 
       if (parameter.Readonly()) {
 
-         if (!parameter.Raw || !parameter.Input) {
+         if (!parameter.Raw && !parameter.Input) {
             <input type="hidden" name="@parameter.Name" value="@parameter.Value" />
             continue;
          }

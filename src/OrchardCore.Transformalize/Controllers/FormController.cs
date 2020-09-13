@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Mvc.Localization;
 using System;
 using Autofac;
 using IContainer = TransformalizeModule.Services.Contracts.IContainer;
+using Microsoft.AspNetCore.Http;
 
 namespace TransformalizeModule.Controllers {
 
@@ -20,17 +21,20 @@ namespace TransformalizeModule.Controllers {
       private readonly IFormService _formService;
       private readonly INotifier _notifier;
       private readonly IHtmlLocalizer<FormController> H;
+      private readonly IHttpContextAccessor _httpContext;
       private readonly IContainer _container;
 
       public FormController(
          IFormService formService,
          INotifier notifier,
          IContainer container,
+         IHttpContextAccessor httpContext,
          IHtmlLocalizer<FormController> htmlLocalizer,
          CombinedLogger<FormController> logger
       ) {
          _logger = logger;
          _formService = formService;
+         _httpContext = httpContext;
          _container = container;
          _notifier = notifier;
          H = htmlLocalizer;
@@ -44,7 +48,7 @@ namespace TransformalizeModule.Controllers {
             return form.ActionResult;
          }
 
-         if (Request.Method == "POST") {
+         if (Request.Method == "POST" && _httpContext.HttpContext.Request.HasFormContentType) {
 
             if (!form.Process.Parameters.All(p => p.Valid)) {
                _notifier.Error(H["The form did not pass validation.  Please correct it and re-submit."]);
@@ -77,6 +81,14 @@ namespace TransformalizeModule.Controllers {
                Key = Guid.NewGuid().ToString(),
                ErrorMode = "exception"
             });
+
+            // the content item id of the last stored file is in the _Old parameter
+            foreach (var parameter in _httpContext.HttpContext.Request.Form) {
+               if (parameter.Key.EndsWith("_Old")) {
+                  var name = parameter.Key.Substring(0, parameter.Key.Length - 4);
+                  form.Process.Parameters.First(p => p.Name == name).Value = parameter.Value.ToString();
+               }
+            }
 
             try {
                await _formService.RunAsync(form.Process);
