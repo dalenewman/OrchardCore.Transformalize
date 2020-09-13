@@ -275,9 +275,22 @@
                               <table>
                                  <tr>
                                     <td style="width:auto;">
-                                       @*<label class="btn btn-primary btn-file" style="width:100px; margin-bottom:0px;">
+
+                                       @*<div class="custom-file">
+                                          <input name="@(parameter.Name)"
+                                                 type="file" 
+                                                 class="custom-file-input @(parameter.Valid ? "is-valid" : "is-invalid")"
+                                                 data-tfl-post-back="false"
+                                                 disabled="@(file != null)"
+                                                 id="@(parameter.Name)"
+                                                 @(Html.Raw(parameter.InputAccept == string.Empty ? string.Empty : "accept=\"" + parameter.InputAccept + "\""))
+                                                 @(Html.Raw(parameter.InputCapture == string.Empty ? string.Empty : "capture=\"" + parameter.InputCapture + "\"")) />
+                                          <label class="custom-file-label" for="@(parameter.Name)">Upload</label>
+                                       </div>*@
+
+                                       <label class="btn btn-primary btn-file" style="width:100px; margin-bottom:0px;">
                                           <i class="fas fa-plus"></i>
-                                          Browse <input name="@(parameter.Name)"
+                                          Upload <input name="@(parameter.Name)"
                                                         type="file"
                                                         style="display: none;"
                                                         class="form-control custom-file-input @(parameter.Valid ? "is-valid" : "is-invalid")"
@@ -285,8 +298,9 @@
                                                         disabled="@(file != null)"
                                                         @(Html.Raw(parameter.InputAccept == string.Empty ? string.Empty : "accept=\"" + parameter.InputAccept + "\""))
                                                         @(Html.Raw(parameter.InputCapture == string.Empty ? string.Empty : "capture=\"" + parameter.InputCapture + "\"")) />
-                                       </label>*@
-                                       <span class="btn btn-primary fileinput-button @(parameter.Valid ? "is-valid" : "is-invalid")" style="width:100px;">
+                                       </label>
+
+                                       @*<span class="btn btn-primary fileinput-button @(parameter.Valid ? "is-valid" : "is-invalid")" style="width:100px;">
                                           <i class="fas fa-plus"></i>
                                           <span>Upload</span>
                                           <input name="@(parameter.Name)"
@@ -296,7 +310,7 @@
                                                  disabled="@(file != null)"
                                                  @(Html.Raw(parameter.InputAccept == string.Empty ? string.Empty : "accept=\"" + parameter.InputAccept + "\""))
                                                  @(Html.Raw(parameter.InputCapture == string.Empty ? string.Empty : "capture=\"" + parameter.InputCapture + "\"")) />
-                                       </span>
+                                       </span>*@
                                     </td>
                                     <td style="width:100%;">
                                        <div class="progress" style="height:38px;">

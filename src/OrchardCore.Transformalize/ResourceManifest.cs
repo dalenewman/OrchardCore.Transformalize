@@ -369,6 +369,12 @@ namespace TransformalizeModule {
             .SetCdnIntegrity("sha512-/zXq+I7ihnFX2Jw9+7lNZX9/oZ323b3rOMtwtowHN2VS3xoeLY1srC11oiQidw1YDTxrHVLWp9dehlZqqLKqhg==", "sha512-e0MZer7eLu4GULyhtYxafD0hyDK9anMSL27EqC4H/c1paOzw0xT4d7nuat2KG+Np65HQzz9fmO1HeW1bt6P9MQ==")
             .SetVersion("10.31.0");
 
+         manifest
+            .DefineScript("bs-custom-file-input")
+            .SetUrl($"~/{Common.ModuleName}/Scripts/bs-custom-file-input.js", $"~/{Common.ModuleName}/Scripts/bs-custom-file-input.min.js")
+            .SetCdn("https://cdnjs.cloudflare.com/ajax/libs/bs-custom-file-input/1.3.4/bs-custom-file-input.min.js", "https://cdnjs.cloudflare.com/ajax/libs/bs-custom-file-input/1.3.4/bs-custom-file-input.js")
+            .SetCdnIntegrity("sha512-91BoXI7UENvgjyH31ug0ga7o1Ov41tOzbMM3+RPqFVohn1UbVcjL/f5sl6YSOFfaJp+rF+/IEbOOEwtBONMz+w==", "sha512-TkqvBtxfAZgTiRN9Xuoh/dkowLIcuUp4BKHRC6BFINpofxwDaK683A/XqLZlGtGeF+9f2+vBss6hP91EaJ5D7w==")
+            .SetVersion("1.3.4");
 
       }
    }

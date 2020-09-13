@@ -60,10 +60,19 @@ namespace TransformalizeModule.Drivers {
                   updater.ModelState.AddModelError(Prefix, S[error]);
                }
             }
+            
             if (process.Warnings().Any()) {
                foreach (var warning in process.Warnings()) {
                   _notifier.Warning(H[warning]);
                }
+            }
+
+            if(!process.Connections.Any(c=>c.Table != "[default]" && !string.IsNullOrEmpty(c.Table))) {
+               updater.ModelState.AddModelError(Prefix, S["A form requires one of the connections to have a table.  The form submissions are stored in the specified table."]);
+            }
+
+            if (!process.Parameters.Any(p => p.PrimaryKey)) {
+               updater.ModelState.AddModelError(Prefix, S["A form requires one of the parameters to be marked as the primary key."]);
             }
 
          } catch (Exception ex) {

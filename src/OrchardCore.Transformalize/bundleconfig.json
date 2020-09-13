@@ -70,5 +70,11 @@
     "inputFiles": [
       "wwwroot/Scripts/file.handler.js"
     ]
+  },
+  {
+    "outputFileName": "wwwroot/Scripts/bs-custom-file-input.min.js",
+    "inputFiles": [
+      "wwwroot/Scripts/bs-custom-file-input.js"
+    ]
   }
 ]

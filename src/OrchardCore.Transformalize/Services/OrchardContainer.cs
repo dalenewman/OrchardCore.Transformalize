@@ -61,6 +61,7 @@ using Microsoft.Extensions.Caching.Memory;
 using OrchardCore.Environment.Cache;
 using Transformalize.Extensions;
 using Cfg.Net.Reader;
+using Transformalize.Providers.Ado;
 
 namespace TransformalizeModule.Services {
 
@@ -182,9 +183,21 @@ namespace TransformalizeModule.Services {
          }).As<OutputContext>();
 
          // connection and process level output context
+         var formWriter = false;
+
          foreach (var connection in process.Connections) {
 
             builder.Register(ctx => new ConnectionContext(ctx.Resolve<IContext>(), connection)).Named<IConnectionContext>(connection.Key);
+
+            // there can only be one form writer
+            if (!formWriter && process.Mode == "form" && connection.Table != "[default]") {
+               builder.Register(ctx => {
+                  var context = ctx.ResolveNamed<IConnectionContext>(connection.Key);
+                  var connectionFactory = ctx.ResolveNamed<IConnectionFactory>(connection.Key);
+                  return new AdoFormCommandWriter(context, connectionFactory);
+               }).As<AdoFormCommandWriter>();
+               formWriter = true;
+            }
 
             if (connection.Name != process.Output)
                continue;

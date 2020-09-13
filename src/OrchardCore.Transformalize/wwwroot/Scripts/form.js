@@ -1,5 +1,7 @@
 ﻿$(document).ready(function () {
 
+   bsCustomFileInput.init();
+
    window.Parsley.on('field:error', function () {
       this.$element.closest('div.form-group').addClass("is-invalid").removeClass("is-valid");
       this.$element.addClass("is-invalid").removeClass("is-valid");
