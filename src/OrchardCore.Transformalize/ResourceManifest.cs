@@ -258,7 +258,7 @@ namespace TransformalizeModule {
             .DefineStyle("pickadate-themes-default")
             .SetUrl($"~/{Common.ModuleName}/Styles/pickadate/themes/default.css", $"~/{Common.ModuleName}/Styles/pickadate/themes/default.min.css")
             .SetCdn("https://cdnjs.cloudflare.com/ajax/libs/pickadate.js/3.6.4/compressed/themes/default.css", "https://cdnjs.cloudflare.com/ajax/libs/pickadate.js/3.6.4/themes/default.css")
-            .SetCdnIntegrity("sha512-5T7eDTBgFKRXiH39mhR6fKpzW6b79Y5VlEFz4Qv2zQds46pyhO1F7Rv0KcVhm0SAi8mKDuThX1e1c0fC/WEfoA==", "sha512-x9ZSPqJJfUhtPuo+fw6331wHeC3vhDpNI3Iu4KC05zJrxx7MWYewaDaASGxAUgWyrwU50oFn6Xk0CrQnTSuoOA==")
+            .SetCdnIntegrity("sha512-CIn19F6Q/91ayiK+V1qCXZf5SB96gnFh89uEvEUWTlYnKua5D2r8W3Vb7ghBsTzVjmWv/VZgQyK8RrK0JKQYXg==", "sha512-x9ZSPqJJfUhtPuo+fw6331wHeC3vhDpNI3Iu4KC05zJrxx7MWYewaDaASGxAUgWyrwU50oFn6Xk0CrQnTSuoOA==")
             .SetVersion("3.6.4");
 
          manifest
