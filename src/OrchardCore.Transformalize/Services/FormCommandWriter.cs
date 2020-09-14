@@ -38,11 +38,11 @@ namespace TransformalizeModule.Services {
       private string SqlCreate() {
          var definitions = new List<string>();
 
-         foreach (var parameter in _context.Process.Parameters.Where(p => !string.IsNullOrEmpty(p.Name) && p.Input)) {
+         foreach (var parameter in _context.Process.Parameters.Where(p => !string.IsNullOrEmpty(p.Name) && p.Output)) {
             if (parameter.PrimaryKey) {
-               definitions.Add(_factory.Enclose(parameter.Name) + "INT NOT NULL PRIMARY KEY IDENTITY(1,1)"); // for now
+               definitions.Add(_factory.Enclose(parameter.Name) + " INT NOT NULL PRIMARY KEY IDENTITY(1,1)"); // for now
             } else {
-               var field = new Field() { Name = parameter.Name, Alias = parameter.Name, Type = parameter.Type, Precision = parameter.Precision, Scale = parameter.Scale, Unicode = parameter.Unicode, VariableLength = parameter.VariableLength };
+               var field = new Field { Name = parameter.Name, Alias = parameter.Name, Type = parameter.Type, Precision = parameter.Precision, Scale = parameter.Scale, Unicode = parameter.Unicode, VariableLength = parameter.VariableLength };
                definitions.Add(_factory.Enclose(parameter.Name) + " " + _factory.SqlDataType(field) + " NOT NULL");
             }
          }
@@ -57,7 +57,7 @@ namespace TransformalizeModule.Services {
       /// <param name="cf"></param>
       /// <returns></returns>
       private string SqlInsert() {
-         var fields = _context.Process.Parameters.Where(p => !string.IsNullOrEmpty(p.Name) && p.Input && !p.PrimaryKey && p.Scope != "update").ToList();
+         var fields = _context.Process.Parameters.Where(p => !string.IsNullOrEmpty(p.Name) && p.Output && !p.PrimaryKey && p.Scope != "update").ToList();
          var fieldNames = string.Join(",", fields.Select(f => _factory.Enclose(f.Name)));
          var parameters = _factory.AdoProvider == AdoProvider.Access ? string.Join(",", fields.Select(f => "?")) : string.Join(",", fields.Select(f => "@" + f.Name));
          return $"INSERT INTO {_factory.Enclose(_context.Connection.Table)}({fieldNames}) VALUES({parameters}){_factory.Terminator}";
@@ -65,7 +65,7 @@ namespace TransformalizeModule.Services {
 
       private string SqlUpdate() {
 
-         var fields = _context.Process.Parameters.Where(p => !string.IsNullOrEmpty(p.Name) && p.Input && p.Scope != "insert").ToList();
+         var fields = _context.Process.Parameters.Where(p => !string.IsNullOrEmpty(p.Name) && p.Output && p.Scope != "insert").ToList();
 
          var sets = fields.Where(p => !p.PrimaryKey && p.InputType != "file").Select(f => $"{_factory.Enclose(f.Name)} = {GetParameter(f)}");
          var fileSets = fields.Where(p => !p.PrimaryKey && p.InputType == "file").Select(f => $"{_factory.Enclose(f.Name)} = CASE WHEN {GetParameter(f)} = '' THEN {_factory.Enclose(f.Name)} ELSE {GetParameter(f)} END"); // for now

@@ -423,6 +423,7 @@ namespace TransformalizeModule.Services {
 
          process = LoadInternal(part, parameters, format == "json" ? new JsonSerializer() : null);
          process.Mode = "form";
+         process.ReadOnly = true;
 
          // switch postback auto to true or false
          foreach (var parameter in process.Parameters.Where(p => p.Prompt && p.PostBack == "auto")) {
