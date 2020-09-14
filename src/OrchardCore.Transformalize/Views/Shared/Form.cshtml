@@ -14,7 +14,7 @@
    if (Context.Request.Method == "GET") {
       focus = Model.Parameters.First(f => f.Prompt).Name;
    } else {
-      var previous =  Context.Request.Form["Orchard.Focus"].ToString() == "Orchard.Submit" ? Model.Parameters.Last(p=>p.Prompt) : Model.Parameters.First(p => p.Name == Context.Request.Form["Orchard.Focus"].ToString());
+      var previous = Context.Request.Form["Orchard.Focus"].ToString() == "Orchard.Submit" ? Model.Parameters.Last(p => p.Prompt) : Model.Parameters.First(p => p.Name == Context.Request.Form["Orchard.Focus"].ToString());
       var maxSequence = Model.Parameters.Where(f => f.Prompt).Max(p => p.Sequence);
       if (previous.Sequence < maxSequence) {
          var next = Model.Parameters.OrderBy(p => p.Sequence).FirstOrDefault(p => p.Sequence > previous.Sequence);
@@ -262,13 +262,13 @@
                                     <span class="input-group-text fas fa-times"></span>
                                  </div>
                                  <input type="text"
-                                        class="form-control @(parameter.Valid ? "is-valid" : "is-invalid")"
-                                        name="@parameter.Name"
-                                        id="id_@parameter.Name"
-                                        disabled="@(file == null)"
-                                        data-tfl-post-back="@(parameter.PostBack)"
-                                        value="@(file == null ? string.Empty : file.OriginalName.Text)"
-                                        readonly="readonly" />
+                                          class="form-control @(parameter.Valid ? "is-valid" : "is-invalid")"
+                                          name="@parameter.Name"
+                                          id="id_@parameter.Name"
+                                          disabled="@(file == null)"
+                                          data-tfl-post-back="@(parameter.PostBack)"
+                                          value="@(file == null ? string.Empty : file.OriginalName.Text)"
+                                          readonly="readonly" />
                               </div>
                            </div>
                            <div class="expecting-file" style="@(file == null ? string.Empty: "display:none")">
@@ -277,40 +277,40 @@
                                     <td style="width:auto;">
 
                                        @*<div class="custom-file">
-                                          <input name="@(parameter.Name)"
-                                                 type="file" 
-                                                 class="custom-file-input @(parameter.Valid ? "is-valid" : "is-invalid")"
-                                                 data-tfl-post-back="false"
-                                                 disabled="@(file != null)"
-                                                 id="@(parameter.Name)"
-                                                 @(Html.Raw(parameter.InputAccept == string.Empty ? string.Empty : "accept=\"" + parameter.InputAccept + "\""))
-                                                 @(Html.Raw(parameter.InputCapture == string.Empty ? string.Empty : "capture=\"" + parameter.InputCapture + "\"")) />
-                                          <label class="custom-file-label" for="@(parameter.Name)">Upload</label>
-                                       </div>*@
+                                             <input name="@(parameter.Name)"
+                                                      type="file"
+                                                      class="custom-file-input @(parameter.Valid ? "is-valid" : "is-invalid")"
+                                                      data-tfl-post-back="false"
+                                                      disabled="@(file != null)"
+                                                      id="@(parameter.Name)"
+                                                      @(Html.Raw(parameter.InputAccept == string.Empty ? string.Empty : "accept=\"" + parameter.InputAccept + "\""))
+                                                      @(Html.Raw(parameter.InputCapture == string.Empty ? string.Empty : "capture=\"" + parameter.InputCapture + "\"")) />
+                                             <label class="custom-file-label" for="@(parameter.Name)">Upload</label>
+                                          </div>*@
 
                                        <label class="btn btn-primary btn-file" style="width:100px; margin-bottom:0px;">
                                           <i class="fas fa-plus"></i>
                                           Upload <input name="@(parameter.Name)"
-                                                        type="file"
-                                                        style="display: none;"
-                                                        class="form-control custom-file-input @(parameter.Valid ? "is-valid" : "is-invalid")"
-                                                        data-tfl-post-back="false"
-                                                        disabled="@(file != null)"
-                                                        @(Html.Raw(parameter.InputAccept == string.Empty ? string.Empty : "accept=\"" + parameter.InputAccept + "\""))
-                                                        @(Html.Raw(parameter.InputCapture == string.Empty ? string.Empty : "capture=\"" + parameter.InputCapture + "\"")) />
+                                                         type="file"
+                                                         style="display: none;"
+                                                         class="form-control custom-file-input @(parameter.Valid ? "is-valid" : "is-invalid")"
+                                                         data-tfl-post-back="false"
+                                                         disabled="@(file != null)"
+                                                         @(Html.Raw(parameter.InputAccept == string.Empty ? string.Empty : "accept=\"" + parameter.InputAccept + "\""))
+                                                         @(Html.Raw(parameter.InputCapture == string.Empty ? string.Empty : "capture=\"" + parameter.InputCapture + "\"")) />
                                        </label>
 
                                        @*<span class="btn btn-primary fileinput-button @(parameter.Valid ? "is-valid" : "is-invalid")" style="width:100px;">
-                                          <i class="fas fa-plus"></i>
-                                          <span>Upload</span>
-                                          <input name="@(parameter.Name)"
-                                                 type="file"
-                                                 class="form-control @(parameter.Valid ? "is-valid" : "is-invalid")"
-                                                 data-tfl-post-back="false"
-                                                 disabled="@(file != null)"
-                                                 @(Html.Raw(parameter.InputAccept == string.Empty ? string.Empty : "accept=\"" + parameter.InputAccept + "\""))
-                                                 @(Html.Raw(parameter.InputCapture == string.Empty ? string.Empty : "capture=\"" + parameter.InputCapture + "\"")) />
-                                       </span>*@
+                                             <i class="fas fa-plus"></i>
+                                             <span>Upload</span>
+                                             <input name="@(parameter.Name)"
+                                                      type="file"
+                                                      class="form-control @(parameter.Valid ? "is-valid" : "is-invalid")"
+                                                      data-tfl-post-back="false"
+                                                      disabled="@(file != null)"
+                                                      @(Html.Raw(parameter.InputAccept == string.Empty ? string.Empty : "accept=\"" + parameter.InputAccept + "\""))
+                                                      @(Html.Raw(parameter.InputCapture == string.Empty ? string.Empty : "capture=\"" + parameter.InputCapture + "\"")) />
+                                          </span>*@
                                     </td>
                                     <td style="width:100%;">
                                        <div class="progress" style="height:38px;">
@@ -322,6 +322,7 @@
                               </table>
                            </div>
                         </div>
+
 
                         <span class="help-container">
                            @if (!parameter.Valid) {

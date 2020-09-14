@@ -40,10 +40,18 @@ namespace TransformalizeModule.Services {
 
          foreach (var parameter in _context.Process.Parameters.Where(p => !string.IsNullOrEmpty(p.Name) && p.Output)) {
             if (parameter.PrimaryKey) {
-               definitions.Add(_factory.Enclose(parameter.Name) + " INT NOT NULL PRIMARY KEY IDENTITY(1,1)"); // for now
+               switch (_factory.AdoProvider) {
+                  case AdoProvider.PostgreSql:
+                     definitions.Add(_factory.Enclose(parameter.Name) + " SERIAL NOT NULL PRIMARY KEY"); 
+                     break;
+                  default:
+                     definitions.Add(_factory.Enclose(parameter.Name) + " INT NOT NULL PRIMARY KEY IDENTITY(1,1)");
+                     break;
+               }
             } else {
                var field = new Field { Name = parameter.Name, Alias = parameter.Name, Type = parameter.Type, Precision = parameter.Precision, Scale = parameter.Scale, Unicode = parameter.Unicode, VariableLength = parameter.VariableLength };
-               definitions.Add(_factory.Enclose(parameter.Name) + " " + _factory.SqlDataType(field) + " NOT NULL");
+               var notNull = parameter.Scope == "update" ? string.Empty : " NOT NULL";
+               definitions.Add(_factory.Enclose(parameter.Name) + " " + _factory.SqlDataType(field) + notNull);
             }
          }
 
@@ -68,7 +76,7 @@ namespace TransformalizeModule.Services {
          var fields = _context.Process.Parameters.Where(p => !string.IsNullOrEmpty(p.Name) && p.Output && p.Scope != "insert").ToList();
 
          var sets = fields.Where(p => !p.PrimaryKey && p.InputType != "file").Select(f => $"{_factory.Enclose(f.Name)} = {GetParameter(f)}");
-         var fileSets = fields.Where(p => !p.PrimaryKey && p.InputType == "file").Select(f => $"{_factory.Enclose(f.Name)} = CASE WHEN {GetParameter(f)} = '' THEN {_factory.Enclose(f.Name)} ELSE {GetParameter(f)} END"); // for now
+         var fileSets = fields.Where(p => !p.PrimaryKey && p.InputType == "file").Select(f => $"{_factory.Enclose(f.Name)} = CASE {GetParameter(f)} WHEN '' THEN {_factory.Enclose(f.Name)} ELSE {GetParameter(f)} END"); // for now
          var combinedSets = string.Join(",", sets.Union(fileSets));
 
          var criteria = string.Join(" AND ", fields.Where(f => f.PrimaryKey).OrderBy(f => f.Sequence).Select(f => $"{_factory.Enclose(f.Name)} = {GetParameter(f)}"));
