@@ -11,6 +11,7 @@ using System;
 using Autofac;
 using IContainer = TransformalizeModule.Services.Contracts.IContainer;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Primitives;
 
 namespace TransformalizeModule.Controllers {
 
@@ -93,7 +94,9 @@ namespace TransformalizeModule.Controllers {
             try {
                await _formService.RunAsync(form.Process);
                _notifier.Information(insert ? H["{0} inserted", form.Process.Name] : H["{0} updated", form.Process.Name]);
-               // return Redirect(parameters["Orchard.ReturnUrl"]);
+               if (Request.Form["ReturnUrl"] != StringValues.Empty) {
+                  return Redirect(Request.Form["ReturnUrl"].ToString());
+               }
             } catch (Exception ex) {
                if (ex.Message.Contains("duplicate")) {
                   _notifier.Error(H["The {0} save failed: {1}", form.Process.Name, "The database has rejected this update due to a unique constraint violation."]);

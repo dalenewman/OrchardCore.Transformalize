@@ -40,77 +40,87 @@
 
 }
 
-<div class="row">
-   <div class="col-md-3">
-      <div class="btn-group float-left" role="group">
-         @if (entity.Name != "Missing Entity") {
-            <button id="id_submit" type="submit" title="Search / Refresh" class="btn btn-primary btn-sm">
-               <span class="fas fa-search"></span>
-            </button>
+   <div class="row">
+      <div class="col-md-3">
+         <div class="btn-group float-left" role="group">
+            @if (entity.Name != "Missing Entity") {
+               <button id="id_submit" type="submit" title="Search / Refresh" class="btn btn-primary btn-sm">
+                  <span class="fas fa-search"></span>
+               </button>
 
-            <button id="id_clear" title="Clear the Parameters" type="button" class="btn btn-info btn-sm">Clear</button>
+               <button id="id_clear" title="Clear the Parameters" type="button" class="btn btn-info btn-sm">Clear</button>
 
-            if (Model.Part.BulkActions.Value) {
-               <div class="btn-group btn-group-sm" role="group" aria-label="bulk actions drop down">
-                  <button id="idActionDropdown" type="button" class="btn btn-sm btn-danger dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                     Action
-                  </button>
-                  <div class="dropdown-menu" aria-labelledby="idActionDropdown">
-                     @foreach (var action in Model.Process.Actions.Where(a => !string.IsNullOrEmpty(a.Name))) {
-                        <a class="bulk-action-link dropdown-item" rel="@action.Description" href="javascript:bulkAction(1, '@action.Name');">@action.Description</a>
-                     }
+               if (Model.Part.BulkActions.Value) {
+                  <div class="btn-group btn-group-sm" role="group" aria-label="bulk actions drop down">
+                     <button id="idActionDropdown" type="button" class="btn btn-sm btn-danger dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        Action
+                     </button>
+                     <div class="dropdown-menu" aria-labelledby="idActionDropdown">
+                        @foreach (var action in Model.Process.Actions.Where(a => a.Type != "open" && !string.IsNullOrEmpty(a.Name))) {
+                           <a class="bulk-action-link dropdown-item" rel="@action.Description" href="javascript:bulkAction(1, '@action.Name');">@action.Description</a>
+                        }
+                     </div>
                   </div>
-               </div>
+               }
             }
+         </div>
+
+         <div class="btn-group float-left" role="group" style="padding-left: 20px;">
+            @foreach (var action in Model.Process.Actions.Where(a => a.Type == "open")) {
+               var url = new Flurl.Url(action.Url);
+               if (!url.QueryParams.Any(qp => qp.Name == "ReturnUrl")) {
+                  url.SetQueryParam("ReturnUrl", Context.Request.GetEncodedUrl());
+               }
+               <a href="@url" title="@action.Description" rel="nofollow" class="btn btn-sm @action.Class"><i class="fas fa-@action.Icon" aria-hidden="true">@action.Name</i></a>
+            }
+         </div>
+      </div>
+
+      <div class="col-md-6">
+         @if (entity.Page == 0 || Model.Process.Mode == "map" && !Model.Part.PageSizesExtended.Enabled() || Model.Process.Mode == "calendar" && !Model.Part.PageSizesExtended.Enabled()) {
+            <h3 class="text-primary" style="margin: 2px 0px 0px 0px;">@(entity.Label == string.Empty ? entity.Alias : entity.Label)</h3>
+         } else {
+            <nav aria-label="...">
+               <ul class="pagination pagination-sm" style="text-align: center;">
+                  @if (entity.Pagination.HasPrevious) {
+                     <li class="page-item" title="first page"><a class="page-link" href="javascript:controls.submit(@entity.Pagination.First)"><span class="fas fa-step-backward"></span></a></li>
+                     <li class="page-item" title="previous page"><a class="page-link" href="javascript:controls.submit(@entity.Pagination.Previous)"><span class="fas fa-chevron-left"></span></a></li>
+                  } else {
+                     <li class="page-item disabled"><a href="" class="page-link"><span class="fas fa-step-backward"></span></a></li>
+                     <li class="page-item disabled"><a href="" class="page-link"><span class="fas fa-chevron-left"></span></a></li>
+                  }
+                  <li class="page-item disabled" style="white-space:nowrap;">
+                     @if (entity.Hits > 0) {
+                        <a class="page-link" href="">@(entity.Pagination.StartRow.ToString("#,##0"))-@(entity.Pagination.EndRow.ToString("#,##0")) of @(entity.Hits.ToString("#,##0")) <strong>@(entity.Label == string.Empty ? entity.Alias : entity.Label)</strong></a>
+                     } else {
+                        <a class="page-link" href=""><strong>@(entity.Label == string.Empty ? entity.Alias : entity.Label)</strong></a>
+                     }
+                  </li>
+
+                  @if (entity.Pagination.HasNext) {
+                     <li class="page-item" title="next page"><a class="page-link" href="javascript:controls.submit(@entity.Pagination.Next)"><span class="fas fa-chevron-right"></span></a></li>
+                     <li class="page-item" title="last page"><a class="page-link" href="javascript:controls.submit(@entity.Pagination.Last)"><span class="fas fa-step-forward"></span></a></li>
+                  } else {
+                     <li class="page-item disabled"><a class="page-link" href=""><span class="fas fa-chevron-right"></span></a></li>
+                     <li class="page-item disabled"><a class="page-link" href=""><span class="fas fa-step-forward"></span></a></li>
+                  }
+               </ul>
+            </nav>
          }
       </div>
-   </div>
 
-   <div class="col-md-6">
-      @if (entity.Page == 0 || Model.Process.Mode == "map" && !Model.Part.PageSizesExtended.Enabled() || Model.Process.Mode == "calendar" && !Model.Part.PageSizesExtended.Enabled()) {
-         <h3 class="text-primary" style="margin: 2px 0px 0px 0px;">@(entity.Label == string.Empty ? entity.Alias : entity.Label)</h3>
-      } else {
-         <nav aria-label="...">
-            <ul class="pagination pagination-sm" style="text-align: center;">
-               @if (entity.Pagination.HasPrevious) {
-                  <li class="page-item" title="first page"><a class="page-link" href="javascript:controls.submit(@entity.Pagination.First)"><span class="fas fa-step-backward"></span></a></li>
-                  <li class="page-item" title="previous page"><a class="page-link" href="javascript:controls.submit(@entity.Pagination.Previous)"><span class="fas fa-chevron-left"></span></a></li>
-               } else {
-                  <li class="page-item disabled"><a href="" class="page-link"><span class="fas fa-step-backward"></span></a></li>
-                  <li class="page-item disabled"><a href="" class="page-link"><span class="fas fa-chevron-left"></span></a></li>
+      <div class="col-md-3">
+         <div class="btn-group float-right" role="group">
+
+            @if (entity.Name != "Missing Entity") {
+
+               if (Model.Item != null && await auth.AuthorizeAsync(Context.User, OrchardCore.Contents.Permissions.EditContent, Model.Item)) {
+                  <button title="edit this report" type="button" class="btn btn-warning btn-sm" onclick="window.open('@(Url.Content("~/Admin/Contents/ContentItems/" + Model.Item.ContentItemId + "/Edit?" + Common.ReturnUrlName + "=" + System.Net.WebUtility.UrlEncode(Context.Request.Path + Context.Request.QueryString)))', '_self');">
+                     <span class="fas fa-edit"></span>
+                  </button>
                }
-               <li class="page-item disabled" style="white-space:nowrap;">
-                  @if (entity.Hits > 0) {
-                     <a class="page-link" href="">@(entity.Pagination.StartRow.ToString("#,##0"))-@(entity.Pagination.EndRow.ToString("#,##0")) of @(entity.Hits.ToString("#,##0")) <strong>@(entity.Label == string.Empty ? entity.Alias : entity.Label)</strong></a>
-                  } else {
-                     <a class="page-link" href=""><strong>@(entity.Label == string.Empty ? entity.Alias : entity.Label)</strong></a>
-                  }
-               </li>
 
-               @if (entity.Pagination.HasNext) {
-                  <li class="page-item" title="next page"><a class="page-link" href="javascript:controls.submit(@entity.Pagination.Next)"><span class="fas fa-chevron-right"></span></a></li>
-                  <li class="page-item" title="last page"><a class="page-link" href="javascript:controls.submit(@entity.Pagination.Last)"><span class="fas fa-step-forward"></span></a></li>
-               } else {
-                  <li class="page-item disabled"><a class="page-link" href=""><span class="fas fa-chevron-right"></span></a></li>
-                  <li class="page-item disabled"><a class="page-link" href=""><span class="fas fa-step-forward"></span></a></li>
-               }
-            </ul>
-         </nav>
-      }
-   </div>
-
-   <div class="col-md-3">
-      <div class="btn-group float-right" role="group">
-
-         @if (entity.Name != "Missing Entity") {
-
-            if (Model.Item != null && await auth.AuthorizeAsync(Context.User, OrchardCore.Contents.Permissions.EditContent, Model.Item)) {
-               <button title="edit this report" type="button" class="btn btn-warning btn-sm" onclick="window.open('@(Url.Content("~/Admin/Contents/ContentItems/" + Model.Item.ContentItemId + "/Edit?" + Common.ReturnUrlName + "=" + System.Net.WebUtility.UrlEncode(Context.Request.Path + Context.Request.QueryString)))', '_self');">
-                  <span class="fas fa-edit"></span>
-               </button>
-            }
-
-            @*if (Model.Process.Mode == "map") {
+               @*if (Model.Process.Mode == "map") {
                    if (Model.MapCfg != null) {
                        <div class="btn-group" role="group">
                            <button type="button" class="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -131,108 +141,108 @@
                    }
                }*@
 
-            // for now, if map is not enabled, you don't need this because there is only map and report views so far (no calendar)
-            if (Model.Part.Map.Value && hasCoordinates || Model.Part.Calendar.Value) {
+               // for now, if map is not enabled, you don't need this because there is only map and report views so far (no calendar)
+               if (Model.Part.Map.Value && hasCoordinates || Model.Part.Calendar.Value) {
 
-               var headless = Context.Request.GetDisplayUrl().Contains("Headless");
+                  var headless = Context.Request.GetDisplayUrl().Contains("Headless");
 
-               // not using Url.Action because I don't want the autoroute (friendly slug name) here
-               var reportUrl = Url.Content("~/t/report/" + Model.IdOrAlias);
-               if (headless) {
-                  reportUrl = reportUrl.Replace("/t/report/", "/t/headless/report/");
-               }
-
-               views.Add(new PipelineViewModel("report") {
-                  Active = Model.Process.Mode == "report",
-                  Glyphicon = "list",
-                  Link = linkService.Create(Model.IdOrAlias, reportUrl, !Model.Part.PageSizes.Enabled())
-               });
-
-               if (Model.Part.Map.Value && hasCoordinates) {
-
-                  var mapUrl = Url.Action("Index", "Map", new { ContentItemId = Model.IdOrAlias });
+                  // not using Url.Action because I don't want the autoroute (friendly slug name) here
+                  var reportUrl = Url.Content("~/t/report/" + Model.IdOrAlias);
                   if (headless) {
-                     mapUrl = mapUrl.Replace("/t/report/map/", "/t/headless/report/map/");
+                     reportUrl = reportUrl.Replace("/t/report/", "/t/headless/report/");
                   }
-                  views.Add(new PipelineViewModel("map") {
-                     Active = Model.Process.Mode == "map",
-                     Glyphicon = "map-marker",
-                     Link = linkService.Create(Model.IdOrAlias, mapUrl, !Model.Part.PageSizesExtended.Enabled())
+
+                  views.Add(new PipelineViewModel("report") {
+                     Active = Model.Process.Mode == "report",
+                     Glyphicon = "list",
+                     Link = linkService.Create(Model.IdOrAlias, reportUrl, !Model.Part.PageSizes.Enabled())
                   });
-               }
 
-               if (Model.Part.Calendar.Value) {
+                  if (Model.Part.Map.Value && hasCoordinates) {
 
-                  var calendarUrl = Url.Action("Index", "Calendar", new { ContentItemId = Model.IdOrAlias });
-                  if (headless) {
-                     calendarUrl = calendarUrl.Replace("/t/report/calendar/", "/t/headless/report/calendar/");
-                  }
-                  views.Add(new PipelineViewModel("calendar") {
-                     Active = Model.Process.Mode == "calendar",
-                     Glyphicon = "calendar",
-                     Link = linkService.Create(Model.IdOrAlias, calendarUrl, !Model.Part.PageSizesExtended.Enabled())
-                  });
-               }
-
-               var defaultView = views.First(v => v.Mode != Model.Process.Mode);
-
-            <div class="btn-group btn-group-sm" role="group">
-               <button type="button" class="btn btn-primary btn-sm" title="@defaultView.Title" onclick="javascript:window.open('@defaultView.Link','_self');">
-                  <span class="fas fa-@defaultView.Glyphicon"></span>
-               </button>
-               <button type="button" class="btn btn-primary btn-sm dropdown-toggle" title="other views" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                  <span class="caret"></span>
-               </button>
-               <div class="dropdown-menu">
-                  @foreach (var export in views) {
-                     <a class="dropdown-item @(export.Active ? "active" : string.Empty)" href="@(export.Link)" title="@export.Title">
-                        <span class="fas fa-@export.Glyphicon"></span>&nbsp;&nbsp;@export.Label
-                     </a>
-                  }
-               </div>
-            </div>
-         }
-
-            <div class="btn-group btn-group-sm">
-               <button type="button" class="btn btn-sm btn-info" title="save to csv file" onclick="javascript:window.open('@exportCsvLink','_self');">
-                  <span class="fas fa-save"></span>
-               </button>
-               <button class="btn dropdown-toggle btn-sm btn-info" title="other formats" data-toggle="dropdown">
-                  <span class="caret"></span>
-               </button>
-               <div class="dropdown-menu">
-                  <a class="dropdown-item" href="@exportCsvLink" title="save to csv file">CSV</a>
-                  <a class="dropdown-item" href="@exportJsonLink" title="save to json file">JSON</a>
-                  @{
-                     if (hasCoordinates) {
-                        var exportGeoJsonLink = linkService.Create(Model.Item.ContentItemId, Url.Action("StreamGeoJson", new { ContentItemId = Model.IdOrAlias }), true);
-                        /* var exportKmlLink = linkService.Create(Model.Item.ContentItemId, Url.Action("Index", "Kml", new { ContentItemId = Model.IdOrAlias }), true); */
-                        <a class="dropdown-item" href="@exportGeoJsonLink" title="save to geojson file">GEOJSON</a>
-                        @*<a class="dropdown-item" href="@exportKmlLink" title="save to kml file">KML</a>*@
+                     var mapUrl = Url.Action("Index", "Map", new { ContentItemId = Model.IdOrAlias });
+                     if (headless) {
+                        mapUrl = mapUrl.Replace("/t/report/map/", "/t/headless/report/map/");
                      }
+                     views.Add(new PipelineViewModel("map") {
+                        Active = Model.Process.Mode == "map",
+                        Glyphicon = "map-marker",
+                        Link = linkService.Create(Model.IdOrAlias, mapUrl, !Model.Part.PageSizesExtended.Enabled())
+                     });
                   }
-               </div>
-            </div>
 
-            if (pageSizes.Count < 2) {
-               <!-- paging is disabled -->
-            } else {
+                  if (Model.Part.Calendar.Value) {
+
+                     var calendarUrl = Url.Action("Index", "Calendar", new { ContentItemId = Model.IdOrAlias });
+                     if (headless) {
+                        calendarUrl = calendarUrl.Replace("/t/report/calendar/", "/t/headless/report/calendar/");
+                     }
+                     views.Add(new PipelineViewModel("calendar") {
+                        Active = Model.Process.Mode == "calendar",
+                        Glyphicon = "calendar",
+                        Link = linkService.Create(Model.IdOrAlias, calendarUrl, !Model.Part.PageSizesExtended.Enabled())
+                     });
+                  }
+
+                  var defaultView = views.First(v => v.Mode != Model.Process.Mode);
+
+                  <div class="btn-group btn-group-sm" role="group">
+                     <button type="button" class="btn btn-primary btn-sm" title="@defaultView.Title" onclick="javascript:window.open('@defaultView.Link','_self');">
+                        <span class="fas fa-@defaultView.Glyphicon"></span>
+                     </button>
+                     <button type="button" class="btn btn-primary btn-sm dropdown-toggle" title="other views" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        <span class="caret"></span>
+                     </button>
+                     <div class="dropdown-menu">
+                        @foreach (var export in views) {
+                           <a class="dropdown-item @(export.Active ? "active" : string.Empty)" href="@(export.Link)" title="@export.Title">
+                              <span class="fas fa-@export.Glyphicon"></span>&nbsp;&nbsp;@export.Label
+                           </a>
+                        }
+                     </div>
+                  </div>
+               }
+
                <div class="btn-group btn-group-sm">
-                  <button class="btn btn-sm btn-outline-info" disabled="disabled">Size</button>
-                  <button class="btn dropdown-toggle btn-sm btn-outline-info" data-toggle="dropdown" title="set page size" style="padding-left:4px;">
+                  <button type="button" class="btn btn-sm btn-info" title="save to csv file" onclick="javascript:window.open('@exportCsvLink','_self');">
+                     <span class="fas fa-save"></span>
+                  </button>
+                  <button class="btn dropdown-toggle btn-sm btn-info" title="other formats" data-toggle="dropdown">
                      <span class="caret"></span>
                   </button>
                   <div class="dropdown-menu">
-                     @foreach (var size in pageSizes) {
-                        <a class="dropdown-item @(entity.Size.Equals(size) ? "active" : string.Empty)" href="javascript:controls.setSize(@size);">@size</a>
+                     <a class="dropdown-item" href="@exportCsvLink" title="save to csv file">CSV</a>
+                     <a class="dropdown-item" href="@exportJsonLink" title="save to json file">JSON</a>
+                     @{
+                        if (hasCoordinates) {
+                           var exportGeoJsonLink = linkService.Create(Model.Item.ContentItemId, Url.Action("StreamGeoJson", new { ContentItemId = Model.IdOrAlias }), true);
+                           /* var exportKmlLink = linkService.Create(Model.Item.ContentItemId, Url.Action("Index", "Kml", new { ContentItemId = Model.IdOrAlias }), true); */
+                           <a class="dropdown-item" href="@exportGeoJsonLink" title="save to geojson file">GEOJSON</a>
+                           @*<a class="dropdown-item" href="@exportKmlLink" title="save to kml file">KML</a>*@
+                        }
                      }
                   </div>
                </div>
+
+               if (pageSizes.Count < 2) {
+                  <!-- paging is disabled -->
+               } else {
+                  <div class="btn-group btn-group-sm">
+                     <button class="btn btn-sm btn-outline-info" disabled="disabled">Size</button>
+                     <button class="btn dropdown-toggle btn-sm btn-outline-info" data-toggle="dropdown" title="set page size" style="padding-left:4px;">
+                        <span class="caret"></span>
+                     </button>
+                     <div class="dropdown-menu">
+                        @foreach (var size in pageSizes) {
+                           <a class="dropdown-item @(entity.Size.Equals(size) ? "active" : string.Empty)" href="javascript:controls.setSize(@size);">@size</a>
+                        }
+                     </div>
+                  </div>
+               }
             }
-         }
+         </div>
       </div>
    </div>
-</div>
 
 
 

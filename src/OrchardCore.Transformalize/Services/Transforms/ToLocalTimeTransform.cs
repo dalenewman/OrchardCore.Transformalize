@@ -10,7 +10,7 @@ namespace TransformalizeModule.Services.Transforms {
 
       private readonly IClock _clock;
       private readonly Transformalize.Configuration.Field _input;
-      private readonly Func<DateTime, object> _transform;
+      private readonly Func<DateTime, DateTime> _transform;
 
       public ToLocalTimeTransform(
          IContext context = null,
@@ -32,6 +32,9 @@ namespace TransformalizeModule.Services.Transforms {
          ITimeZone localTimeZone = _clock.GetSystemTimeZone();
 
          _transform = (dt) => {
+            if(dt.Kind != DateTimeKind.Utc) {
+               dt = DateTime.SpecifyKind(dt, DateTimeKind.Utc);
+            }
             return _clock.ConvertToTimeZone(dt, localTimeZone).DateTime;
          };
 
