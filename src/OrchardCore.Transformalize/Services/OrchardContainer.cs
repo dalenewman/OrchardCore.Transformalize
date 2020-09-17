@@ -62,6 +62,7 @@ using OrchardCore.Environment.Cache;
 using Transformalize.Extensions;
 using Cfg.Net.Reader;
 using Transformalize.Providers.Ado;
+using OrchardCore.Modules;
 
 namespace TransformalizeModule.Services {
 
@@ -76,6 +77,7 @@ namespace TransformalizeModule.Services {
       private readonly IMemoryCache _memoryCache;
       private readonly ISignal _signal;
       private readonly HashSet<string> _adoProviders = new HashSet<string>() { "sqlserver", "postgresql", "sqlite", "mysql" };
+      private readonly IClock _clock;
 
       public Func<InputContext, IRowFactory, IRead> GetReaderAlternate { get; set; }
       public Func<IRead, InputContext, IRowFactory, IRead> GetReaderDecorator { get; set; }
@@ -85,6 +87,7 @@ namespace TransformalizeModule.Services {
          IUserService userService,
          IServiceProvider serviceProvider,
          CombinedLogger<OrchardContainer> logger,
+         IClock clock,
          IMemoryCache memoryCache,
          ISignal signal
       ) {
@@ -94,6 +97,7 @@ namespace TransformalizeModule.Services {
          _logger = logger;
          _memoryCache = memoryCache;
          _signal = signal;
+         _clock = clock;
       }
 
       public ILifetimeScope CreateScope(Process process, IPipelineLogger logger) {
@@ -115,6 +119,7 @@ namespace TransformalizeModule.Services {
          tm.AddTransform(new TransformHolder((c) => new OrchardRazorTransform(c, _memoryCache, _signal), new OrchardRazorTransform().GetSignatures()));
          tm.AddTransform(new TransformHolder((c) => new OrchardFluidTransform(c, _memoryCache, _signal), new OrchardFluidTransform().GetSignatures()));
          tm.AddTransform(new TransformHolder((c) => new OrchardJintTransform(c, new DefaultReader(new FileReader(), new WebReader()), _memoryCache, _signal), new OrchardJintTransform().GetSignatures()));
+         tm.AddTransform(new TransformHolder((c) => new ToLocalTimeTransform(c, _clock), new ToLocalTimeTransform().GetSignatures()));
          builder.RegisterModule(tm);
 
          // register short-hand for v attribute, allowing for additional validators
