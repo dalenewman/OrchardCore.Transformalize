@@ -43,7 +43,7 @@ namespace TransformalizeModule.Controllers {
 
       public async Task<ActionResult> Index(string contentItemId) {
 
-         var form = await _formService.ValidateForm(new TransformalizeRequest(contentItemId, HttpContext.User.Identity.Name) { ValidateParameters = Request.Method == "POST" });
+         var form = await _formService.ValidateForm(new TransformalizeRequest(contentItemId, HttpContext.User.Identity.Name));
 
          if (form.Fails()) {
             return form.ActionResult;
@@ -69,10 +69,10 @@ namespace TransformalizeModule.Controllers {
             }
 
             var commands = scope.Resolve<AdoFormCommandWriter>().Write();
-
-            // reset, modify for actual insert, and execute
             var key = form.Process.Parameters.First(k => k.PrimaryKey);
             var insert = key.Value == Transformalize.Constants.TypeDefaults()[key.Type].ToString();
+
+            // reset, modify for actual insert, and execute
             form.Process.Actions.Add(new Transformalize.Configuration.Action {
                After = true,
                Before = false,

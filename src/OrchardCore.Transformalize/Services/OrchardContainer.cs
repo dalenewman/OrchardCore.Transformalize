@@ -120,6 +120,9 @@ namespace TransformalizeModule.Services {
          tm.AddTransform(new TransformHolder((c) => new OrchardFluidTransform(c, _memoryCache, _signal), new OrchardFluidTransform().GetSignatures()));
          tm.AddTransform(new TransformHolder((c) => new OrchardJintTransform(c, new DefaultReader(new FileReader(), new WebReader()), _memoryCache, _signal), new OrchardJintTransform().GetSignatures()));
          tm.AddTransform(new TransformHolder((c) => new ToLocalTimeTransform(c, _clock), new ToLocalTimeTransform().GetSignatures()));
+         tm.AddTransform(new TransformHolder((c) => new GetEncodedUrlTransform(_httpContext, c), new GetEncodedUrlTransform().GetSignatures()));
+         tm.AddTransform(new TransformHolder((c) => new GetDisplayUrlTransform(_httpContext, c), new GetDisplayUrlTransform().GetSignatures()));
+
          builder.RegisterModule(tm);
 
          // register short-hand for v attribute, allowing for additional validators

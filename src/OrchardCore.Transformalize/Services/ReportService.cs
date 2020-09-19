@@ -144,6 +144,9 @@ namespace TransformalizeModule.Services {
          _arrangementService.SetupWrongTypeResponse(request, response);
       }
 
+      public void SetupCustomErrorResponse<TPart>(TransformalizeRequest request, TransformalizeResponse<TPart> response, string error) {
+         _arrangementService.SetupCustomErrorResponse(request, response, error);
+      }
 
    }
 }

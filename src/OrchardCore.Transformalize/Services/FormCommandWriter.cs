@@ -25,9 +25,18 @@ namespace TransformalizeModule.Services {
          return new AdoFormCommands {
             Create = SqlCreate(),
             Insert = SqlInsert(),
-            Update = SqlUpdate()
+            Update = SqlUpdate(),
+            Select = SqlSelect()
          };
       }
+
+      public string SqlSelect() {
+         var fields = _context.Process.Parameters.Where(p => !string.IsNullOrEmpty(p.Name) && p.Output && p.Scope == "[default]").OrderBy(f => f.Sequence).ToList();
+         var columns = string.Join(", ", fields.Where(p => !p.PrimaryKey).Select(f => _factory.Enclose(f.Name)));
+         var criteria = string.Join(" AND ", fields.Where(f => f.PrimaryKey).Select(f => $"{_factory.Enclose(f.Name)} = {GetParameter(f)}"));
+         return $"SELECT {columns} FROM {_factory.Enclose(_context.Connection.Table)} WHERE {criteria}{_factory.Terminator}";
+      }
+
 
       /// <summary>
       /// this assumes sql server is the provider (currently)

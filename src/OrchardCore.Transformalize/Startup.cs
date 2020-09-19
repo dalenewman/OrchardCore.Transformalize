@@ -52,6 +52,7 @@ namespace TransformalizeModule {
          services.AddScoped<ISchemaService, SchemaService>();
          services.AddScoped<ISettingsService, SettingsService>();
          services.AddScoped<ITransformalizeParametersModifier, TransformalizeParametersModifier>();
+         services.AddScoped<ILoadFormModifier, LoadFormModifier>();
          services.AddScoped<IFileService, FileService>();
 
          services.AddTransient<IConfigurationContainer, OrchardConfigurationContainer>();

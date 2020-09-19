@@ -4,6 +4,7 @@ using OrchardCore.ContentManagement;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Transformalize.Configuration;
+using System.Linq;
 
 namespace TransformalizeModule.Services {
    public class FormService : IFormService {
@@ -85,6 +86,17 @@ namespace TransformalizeModule.Services {
          }
 
          response.Process = LoadForForm(response.ContentItem, request.InternalParameters, request.Format);
+
+         if(response.Process.Connections.Where(c=>c.Table != "[default]").Count() != 1) {
+            SetupCustomErrorResponse(request, response, "Missing form table in connection.");
+            return response;
+         }
+
+         if (response.Process.Parameters.Where(p => p.PrimaryKey).Count() != 1) {
+            SetupCustomErrorResponse(request, response, "One parameter must be desigated as the primary key.");
+            return response;
+         }
+
          if (response.Process.Status != 200) {
             SetupLoadErrorResponse(request, response);
             return response;
@@ -112,5 +124,10 @@ namespace TransformalizeModule.Services {
       public void SetupWrongTypeResponse<T1>(TransformalizeRequest request, TransformalizeResponse<T1> response) {
          _arrangementService.SetupWrongTypeResponse(request, response);
       }
+
+      public void SetupCustomErrorResponse<TPart>(TransformalizeRequest request, TransformalizeResponse<TPart> response, string error) {
+         _arrangementService.SetupCustomErrorResponse(request, response, error);
+      }
+
    }
 }

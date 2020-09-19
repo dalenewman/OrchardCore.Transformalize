@@ -70,5 +70,9 @@ namespace TransformalizeModule.Services {
       public void SetupWrongTypeResponse<T1>(TransformalizeRequest request, TransformalizeResponse<T1> response) {
          _arrangementService.SetupWrongTypeResponse(request, response);
       }
+
+      public void SetupCustomErrorResponse<TPart>(TransformalizeRequest request, TransformalizeResponse<TPart> response, string error) {
+         _arrangementService.SetupCustomErrorResponse(request, response, error);
+      }
    }
 }

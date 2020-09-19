@@ -8,5 +8,6 @@ namespace TransformalizeModule.ViewModels {
       public string CreateCommand { get; set; }
       public string InsertCommand { get; set; }
       public string UpdateCommand { get; set; }
+      public string SelectCommand { get; set; }
    }
 }

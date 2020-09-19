@@ -61,6 +61,7 @@ namespace TransformalizeModule.Drivers {
             model.CreateCommand = commands.Create;
             model.InsertCommand = commands.Insert;
             model.UpdateCommand = commands.Update;
+            model.SelectCommand = commands.Select;
          }).Location("Content:1");
       }
 
@@ -88,11 +89,11 @@ namespace TransformalizeModule.Drivers {
             }
 
             if(!process.Connections.Any(c=>c.Table != "[default]" && !string.IsNullOrEmpty(c.Table))) {
-               updater.ModelState.AddModelError(Prefix, S["A form requires one of the connections to have a table.  The form submissions are stored in the specified table."]);
+               updater.ModelState.AddModelError(Prefix, S["A form requires one connection to have a table defined.  The submissions are stored in this table."]);
             }
 
-            if (!process.Parameters.Any(p => p.PrimaryKey)) {
-               updater.ModelState.AddModelError(Prefix, S["A form requires one of the parameters to be marked as the primary key."]);
+            if (process.Parameters.Where(p => p.PrimaryKey).Count() != 1) {
+               updater.ModelState.AddModelError(Prefix, S["A form requires one parameter to be marked as the primary key."]);
             }
 
          } catch (Exception ex) {

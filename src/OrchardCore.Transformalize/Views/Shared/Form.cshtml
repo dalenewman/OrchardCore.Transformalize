@@ -8,10 +8,12 @@
 @{
    Layout = null;
    var fileService = Context.RequestServices.GetService<IFileService>();
-
+   var getMethod = false;
    var focus = string.Empty;
+
    if (Context.Request.Method == "GET") {
       focus = Model.Parameters.First(f => f.Prompt).Name;
+      getMethod = true;
    } else {
       var previous = Context.Request.Form["Orchard.Focus"].ToString() == "Orchard.Submit" ? Model.Parameters.Last(p => p.Prompt) : Model.Parameters.First(p => p.Name == Context.Request.Form["Orchard.Focus"].ToString());
       var maxSequence = Model.Parameters.Where(f => f.Prompt).Max(p => p.Sequence);
@@ -55,6 +57,11 @@
    @foreach (var parameter in Model.Parameters) {
 
       var value = parameter.Value ?? string.Empty as object;
+
+      if (getMethod) {
+         parameter.Valid = true;
+         parameter.Message = string.Empty;
+      }
 
       if (TransformalizeModule.Common.SystemFields.Contains(parameter.Name)) {
          <input type="hidden" name="@parameter.Name" value="@parameter.Value" />
@@ -141,7 +148,7 @@
          switch (type) {
             case "bool":
             case "boolean":
-               value = Transformalize.Constants.ObjectConversionMap["bool"](value);
+               value = Transformalize.Constants.ObjectConversionMap["bool"](value.Equals(string.Empty) ? "false" : value);
                <div class="@(parameter.Valid ? "is-valid" : "is-invalid") @parameter.Class">
                   <div class="checkbox">
                      <label for="@parameter.Name">

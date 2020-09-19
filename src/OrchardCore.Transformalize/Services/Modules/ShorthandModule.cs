@@ -44,6 +44,8 @@ namespace TransformalizeModule.Services.Modules {
          tm.AddTransform(new TransformHolder((c) => new OrchardFluidTransform(), new OrchardFluidTransform().GetSignatures()));
          tm.AddTransform(new TransformHolder((c) => new OrchardJintTransform(), new OrchardJintTransform().GetSignatures()));
          tm.AddTransform(new TransformHolder((c) => new ToLocalTimeTransform(), new ToLocalTimeTransform().GetSignatures()));
+         tm.AddTransform(new TransformHolder((c) => new GetEncodedUrlTransform(), new GetEncodedUrlTransform().GetSignatures()));
+         tm.AddTransform(new TransformHolder((c) => new GetDisplayUrlTransform(), new GetDisplayUrlTransform().GetSignatures()));
 
          builder.RegisterModule(tm);
 

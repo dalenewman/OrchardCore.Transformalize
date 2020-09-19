@@ -111,6 +111,22 @@ namespace TransformalizeModule.Services {
          }
       }
 
+      public void SetupCustomErrorResponse<T>(TransformalizeRequest request, TransformalizeResponse<T> response, string error) {
+
+         response.Process.Status = 500;
+         response.Process.Message = error;
+
+         _logger.Warn(() => $"User {request.User} received error trying to load {response.ContentItem.DisplayText}.");
+
+         if (request.Format == null) {
+            response.ActionResult = LogResult(response);
+         } else {
+            response.Process.Connections.Clear();
+            response.Process.Log.AddRange(_logger.Log);
+            response.ActionResult = ContentResult(request, response);
+         }
+      }
+
       public void SetupWrongTypeResponse<T>(TransformalizeRequest request, TransformalizeResponse<T> response) {
 
          response.Process.Status = 422;

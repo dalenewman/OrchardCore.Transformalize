@@ -29,6 +29,7 @@ using Transformalize.Containers.Autofac.Modules;
 using Process = Transformalize.Configuration.Process;
 using ParameterModifier = TransformalizeModule.Services.Modifiers.ParameterModifier;
 using OrchardCore.ContentManagement;
+using Microsoft.AspNetCore.Http;
 
 namespace TransformalizeModule.Services {
 
@@ -41,15 +42,21 @@ namespace TransformalizeModule.Services {
 
       private readonly CombinedLogger<OrchardConfigurationContainer> _logger;
       private readonly ITransformalizeParametersModifier _transformalizeParameters;
+      private readonly ILoadFormModifier _loadFormModifier;
+      private readonly IHttpContextAccessor _httpContext;
 
       public ISerializer Serializer { get; set; }
 
       public OrchardConfigurationContainer(
          CombinedLogger<OrchardConfigurationContainer> logger,
-         ITransformalizeParametersModifier transformalizeParameters
+         ITransformalizeParametersModifier transformalizeParameters,
+         ILoadFormModifier loadFormModifier,
+         IHttpContextAccessor httpContext
       ) {
          _logger = logger;
          _transformalizeParameters = transformalizeParameters;
+         _loadFormModifier = loadFormModifier;
+         _httpContext = httpContext;
       }
 
       public ILifetimeScope CreateScope(string arrangement, ContentItem item, IDictionary<string, string> parameters, bool validateParameters = true) {
@@ -79,7 +86,14 @@ namespace TransformalizeModule.Services {
             dependancies.Add(ctx.ResolveNamed<IDependency>(ValidateModule.FieldsName));
             dependancies.Add(ctx.ResolveNamed<IDependency>(ValidateModule.ParametersName));
 
-            var modified = validateParameters ? _transformalizeParameters.Modify(arrangement, combinedParameters) : arrangement;
+            string modified = arrangement;
+            if (_httpContext.HttpContext.Request.Method == "GET" && item.ContentItem.Has("TransformalizeFormPart")) {
+               modified = _loadFormModifier.Modify(arrangement, combinedParameters);               
+            }
+
+            if (validateParameters) {
+               modified = _transformalizeParameters.Modify(arrangement, combinedParameters);
+            }
 
             var process = new Process(modified, combinedParameters, dependancies.ToArray());
 

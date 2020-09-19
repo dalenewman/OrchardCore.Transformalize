@@ -11,5 +11,6 @@ namespace TransformalizeModule.Services.Contracts {
       void SetupNotFoundResponse<TPart>(TransformalizeRequest request, TransformalizeResponse<TPart> response);
       void SetupLoadErrorResponse<TPart>(TransformalizeRequest request, TransformalizeResponse<TPart> response);
       void SetupWrongTypeResponse<TPart>(TransformalizeRequest request, TransformalizeResponse<TPart> response);
+      void SetupCustomErrorResponse<TPart>(TransformalizeRequest request, TransformalizeResponse<TPart> response, string error);
    }
 }

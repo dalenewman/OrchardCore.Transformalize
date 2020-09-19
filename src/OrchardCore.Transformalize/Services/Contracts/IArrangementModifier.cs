@@ -27,8 +27,7 @@ namespace TransformalizeModule.Services.Contracts {
    }
 
    // for dependency injection
-   public interface ITransformalizeParametersModifier : IArrangementModifier {
-
-   }
+   public interface ITransformalizeParametersModifier : IArrangementModifier { }
+   public interface ILoadFormModifier : IArrangementModifier { }
 
 }
