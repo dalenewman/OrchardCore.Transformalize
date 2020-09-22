@@ -63,6 +63,7 @@ using Transformalize.Extensions;
 using Cfg.Net.Reader;
 using Transformalize.Providers.Ado;
 using OrchardCore.Modules;
+using Transformalize.Transform.GoogleMaps;
 
 namespace TransformalizeModule.Services {
 
@@ -122,6 +123,9 @@ namespace TransformalizeModule.Services {
          tm.AddTransform(new TransformHolder((c) => new ToLocalTimeTransform(c, _clock), new ToLocalTimeTransform().GetSignatures()));
          tm.AddTransform(new TransformHolder((c) => new GetEncodedUrlTransform(_httpContext, c), new GetEncodedUrlTransform().GetSignatures()));
          tm.AddTransform(new TransformHolder((c) => new GetDisplayUrlTransform(_httpContext, c), new GetDisplayUrlTransform().GetSignatures()));
+
+         tm.AddTransform(new TransformHolder((c) => new GeocodeTransform(c), new GeocodeTransform().GetSignatures()));
+         tm.AddTransform(new TransformHolder((c) => new PlaceTransform(c), new PlaceTransform().GetSignatures()));
 
          builder.RegisterModule(tm);
 
