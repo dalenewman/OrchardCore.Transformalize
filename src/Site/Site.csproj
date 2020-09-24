@@ -5,6 +5,9 @@
     <TieredCompilation>true</TieredCompilation>
     <AspNetCoreHostingModel>InProcess</AspNetCoreHostingModel>
     <PreserveCompilationReferences>true</PreserveCompilationReferences>
+    <UserSecretsId>385130c7-6d28-458c-8059-7afef6345940</UserSecretsId>
+    <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
+    <DockerfileContext>..\..</DockerfileContext>
   </PropertyGroup>
 
   <ItemGroup>
@@ -14,6 +17,7 @@
 
   <ItemGroup>
     <PackageReference Include="Etch.OrchardCore.ContentPermissions" Version="0.3.1-rc2" />
+    <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.10.9" />
     <PackageReference Include="OrchardCore.Logging.NLog" Version="1.0.0-rc2-13450" />
     <PackageReference Include="OrchardCore.Application.Cms.Targets" Version="1.0.0-rc2-13450" />
   </ItemGroup>
