@@ -90,6 +90,7 @@ namespace TransformalizeModule.Services {
                Type = pr.Type,
                Default = pr.Value,
                Length = pr.Length,
+               Format = pr.Format,
                InputType = pr.InputType,
                Precision = pr.Precision,
                Scale = pr.Scale
