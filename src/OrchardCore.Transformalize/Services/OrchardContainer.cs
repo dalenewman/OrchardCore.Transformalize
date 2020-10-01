@@ -64,6 +64,7 @@ using Cfg.Net.Reader;
 using Transformalize.Providers.Ado;
 using OrchardCore.Modules;
 using Transformalize.Transform.GoogleMaps;
+using System.Runtime.CompilerServices;
 
 namespace TransformalizeModule.Services {
 
@@ -79,6 +80,7 @@ namespace TransformalizeModule.Services {
       private readonly ISignal _signal;
       private readonly HashSet<string> _adoProviders = new HashSet<string>() { "sqlserver", "postgresql", "sqlite", "mysql" };
       private readonly IClock _clock;
+      private readonly ILocalClock _localClock;
 
       public Func<InputContext, IRowFactory, IRead> GetReaderAlternate { get; set; }
       public Func<IRead, InputContext, IRowFactory, IRead> GetReaderDecorator { get; set; }
@@ -89,6 +91,7 @@ namespace TransformalizeModule.Services {
          IServiceProvider serviceProvider,
          CombinedLogger<OrchardContainer> logger,
          IClock clock,
+         ILocalClock localClock,
          IMemoryCache memoryCache,
          ISignal signal
       ) {
@@ -99,6 +102,7 @@ namespace TransformalizeModule.Services {
          _memoryCache = memoryCache;
          _signal = signal;
          _clock = clock;
+         _localClock = localClock;
       }
 
       public ILifetimeScope CreateScope(Process process, IPipelineLogger logger) {
@@ -120,10 +124,10 @@ namespace TransformalizeModule.Services {
          tm.AddTransform(new TransformHolder((c) => new OrchardRazorTransform(c, _memoryCache, _signal), new OrchardRazorTransform().GetSignatures()));
          tm.AddTransform(new TransformHolder((c) => new OrchardFluidTransform(c, _memoryCache, _signal), new OrchardFluidTransform().GetSignatures()));
          tm.AddTransform(new TransformHolder((c) => new OrchardJintTransform(c, new DefaultReader(new FileReader(), new WebReader()), _memoryCache, _signal), new OrchardJintTransform().GetSignatures()));
-         tm.AddTransform(new TransformHolder((c) => new ToLocalTimeTransform(c, _clock), new ToLocalTimeTransform().GetSignatures()));
+         tm.AddTransform(new TransformHolder((c) => new ToLocalTimeTransform(c, _clock, _localClock), new ToLocalTimeTransform().GetSignatures()));
          tm.AddTransform(new TransformHolder((c) => new GetEncodedUrlTransform(_httpContext, c), new GetEncodedUrlTransform().GetSignatures()));
          tm.AddTransform(new TransformHolder((c) => new GetDisplayUrlTransform(_httpContext, c), new GetDisplayUrlTransform().GetSignatures()));
-
+         tm.AddTransform(new TransformHolder((c) => new OrchardTimeZoneTransform(c), new OrchardTimeZoneTransform().GetSignatures()));
          tm.AddTransform(new TransformHolder((c) => new GeocodeTransform(c), new GeocodeTransform().GetSignatures()));
          tm.AddTransform(new TransformHolder((c) => new PlaceTransform(c), new PlaceTransform().GetSignatures()));
 

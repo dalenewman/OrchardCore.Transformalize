@@ -14,7 +14,8 @@ namespace TransformalizeModule.Services.Transforms {
 
       public ToLocalTimeTransform(
          IContext context = null,
-         IClock clock = null
+         IClock clock = null,
+         ILocalClock localClock = null
       ) : base(context, "datetime") {
 
          if (IsMissingContext()) {
@@ -29,7 +30,7 @@ namespace TransformalizeModule.Services.Transforms {
 
          _clock = clock;
 
-         ITimeZone localTimeZone = _clock.GetSystemTimeZone();
+         var localTimeZone = localClock.GetLocalTimeZoneAsync().Result;
 
          _transform = (dt) => {
             if(dt.Kind != DateTimeKind.Utc) {
