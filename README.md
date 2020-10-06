@@ -32,10 +32,9 @@ module for [Orchard Core](https://github.com/OrchardCMS/OrchardCore) rc2.
   - <strike>Actions</strike>
   - <strike>Page Sizes</strike>
   - <strike>Fields</strike> (no short-hand yet)
-- Forms
-  - add ability to setup a "form" in transformalize
-    - old implementation only works on SQL Server, perhaps abstract to use task to get the next key (for adding form submissions)
-  - implement file uploading (could be used for task parameters as well)
+- <strike>Forms</strike>
+  - <strike>add ability to setup a "form" in transformalize</strike>
+  - <strike>implement file uploading (could be used for task parameters as well)</strike>
 - Figure out how to disable navigation for Running in IFrame (or perhaps Widget)
 
 #### Providers
