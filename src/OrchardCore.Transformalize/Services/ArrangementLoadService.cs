@@ -22,18 +22,24 @@ namespace TransformalizeModule.Services {
       private readonly ISettingsService _settings;
       private readonly IConfigurationContainer _configurationContainer;
       private readonly CombinedLogger<ArrangementLoadService> _logger;
+      private readonly IFileService _fileService;
+      private readonly ICustomFileStore _formFileStore;
 
       public ArrangementLoadService(
+         ICustomFileStore formFileStore,
          IParameterService parameterService,
          ISortService sortService,
          ISettingsService settings,
          IConfigurationContainer configurationContainer,
+         IFileService fileService,
          CombinedLogger<ArrangementLoadService> logger
       ) {
+         _formFileStore = formFileStore;
          _parameters = parameterService.GetParameters();
          _sortService = sortService;
          _settings = settings;
          _logger = logger;
+         _fileService = fileService;
          _configurationContainer = configurationContainer;
       }
 
@@ -357,6 +363,18 @@ namespace TransformalizeModule.Services {
          }
 
          process = LoadInternal(part, parameters, format == "json" ? new JsonSerializer() : null);
+
+         // handles situation when a file is a parameter for the report
+         // translating the file content item id to it's full path
+         if(process.Connections.Any()){
+            var connection = process.Connections.FirstOrDefault(c => c.Provider == "file" && c.File.Length == Common.IdLength && !c.File.Contains('.'));
+            if(connection != null) {
+               var filePart = _fileService.GetFilePart(connection.File).Result;
+               if(filePart != null) {
+                  connection.File = System.IO.Path.Combine(_formFileStore.Path, filePart.FullPath.Text);
+               }
+            }
+         }
 
          return process;
       }

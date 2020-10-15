@@ -19,5 +19,9 @@ namespace TransformalizeModule.Models {
       public string Extension() {
          return Path.GetExtension(OriginalName.Text);
       }
+
+      public bool HasMimeType() {
+         return Common.HasMimeType(Extension());
+      }
    }
 }

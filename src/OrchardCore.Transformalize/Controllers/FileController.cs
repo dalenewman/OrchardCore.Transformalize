@@ -37,8 +37,7 @@ namespace TransformalizeModule.Controllers {
          }
          var fileInfo = await _formFileStore.GetFileInfoAsync(part.FullPath.Text);
 
-         var mimeType = part.MimeType();
-         return new FileStreamResult(await _formFileStore.GetFileStreamAsync(fileInfo), mimeType);
+         return new FileStreamResult(await _formFileStore.GetFileStreamAsync(fileInfo), part.MimeType());
       }
 
 
@@ -53,12 +52,12 @@ namespace TransformalizeModule.Controllers {
             var file = Request.Form.Files[0];
             if (file != null && file.Length > 0) {
 
-               //TODO: move to file server so parameters for task can use it too
-               var filePath = Path.Combine(Common.GetSafeFilePath(HttpContext.User.Identity.Name, file.FileName));
                var contentItem = await _contentManager.NewAsync("TransformalizeFile");
                var part = contentItem.As<TransformalizeFilePart>();
-
                part.OriginalName.Text = file.FileName;
+
+               var filePath = Path.Combine(Common.GetSafeFilePath(part, HttpContext.User.Identity.Name));
+
                using (var stream = file.OpenReadStream()) {
                   await _formFileStore.CreateFileFromStreamAsync(filePath, stream, true);
                }

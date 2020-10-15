@@ -19,5 +19,7 @@
 using OrchardCore.FileStorage;
 
 namespace TransformalizeModule.Services.Contracts {
-   public interface ICustomFileStore : IFileStore { }
+   public interface ICustomFileStore : IFileStore {
+      public string Path { get; set; }
+   }
 }

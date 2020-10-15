@@ -46,7 +46,7 @@ namespace TransformalizeModule.Services.Transforms {
 
          var toTimeZone = DateTimeZoneProviders.Tzdb.GetZoneOrNull(Context.Operation.ToTimeZone);
 
-         if (fromTimeZone == null) {
+         if (toTimeZone == null) {
             Run = false;
             Context.Error($"The to time zone id {Context.Operation.ToTimeZone} is invalid. See IANA time zones.");
          }
@@ -67,8 +67,8 @@ namespace TransformalizeModule.Services.Transforms {
       public override IEnumerable<OperationSignature> GetSignatures() {
          return new[] { new OperationSignature("timezone") {
                Parameters = new List<OperationParameter>() {
-                  new OperationParameter("fromtimezone"),
-                  new OperationParameter("totimezone")
+                  new OperationParameter("from-time-zone"),
+                  new OperationParameter("to-time-zone")
                }
             }
          };

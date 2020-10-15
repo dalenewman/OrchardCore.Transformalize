@@ -9,7 +9,7 @@
 }
 
 <script asp-name="jQuery" at="Head"></script>
-<script asp-name="jQuery-ui" at="Foot"></script>
+<script asp-name="jQuery-ui" at="Head"></script>
 <script asp-name="block-ui" version="2.70.0" at="Foot"></script>
 <script asp-name="pickadate-picker-date" version="3.6.4" at="Foot"></script>
 <script asp-name="parsley" version="2.9.2" at="Foot"></script>
@@ -24,11 +24,18 @@
 <script asp-name="bs-custom-file-input" version="1.3.4" at="Head"></script>
 
 <script asp-src="~/@Common.ModuleName/Scripts/form.js?v=1" at="Foot"></script>
+<script asp-src="~/@Common.ModuleName/Scripts/file.handler.js?v=1" at="Foot"></script>
 
 <style asp-name="pickadate-themes-default" version="3.6.4"></style>
 <style asp-name="pickadate-themes-default-date" version="3.6.4"></style>
 
 <style>
+
+   /* to stop ios from zooming in on inputs */
+   body {
+      font-size: 16px;
+   }   
+
    #busy {
       position: fixed;
       left: 46%;
@@ -52,8 +59,18 @@
       color: red;
    }
 
+   .form-control:focus {
+      border-color: #66AFE9;
+   }
+
    input:invalid {
       border-color: red;
+   }
+
+   label.focus {
+      border-color: #66afe9;
+      outline: 0;
+      box-shadow: inset 0 1px 1px rgba(0,0,0,.075), 0 0 8px rgba(102, 175, 233, 0.6);
    }
 </style>
 

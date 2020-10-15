@@ -92,7 +92,7 @@ namespace TransformalizeModule.Controllers {
             }
 
             try {
-               await _formService.RunAsync(form.Process);
+               _formService.Run(form.Process);
                _notifier.Information(insert ? H["{0} inserted", form.Process.Name] : H["{0} updated", form.Process.Name]);
                if (Request.Form["ReturnUrl"] != StringValues.Empty) {
                   return Redirect(Request.Form["ReturnUrl"].ToString());

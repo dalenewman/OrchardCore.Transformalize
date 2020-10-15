@@ -43,6 +43,10 @@ namespace TransformalizeModule.Services {
          await _runService.RunAsync(process);
       }
 
+      public void Run(Process process) {
+         _runService.Run(process);
+      }
+
       public async Task<TransformalizeResponse<TransformalizeTaskPart>> ValidateParameters(TransformalizeRequest request) {
 
          var response = new TransformalizeResponse<TransformalizeTaskPart>(request.Format) {

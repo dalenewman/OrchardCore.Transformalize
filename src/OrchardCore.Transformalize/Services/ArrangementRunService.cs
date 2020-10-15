@@ -45,5 +45,29 @@ namespace TransformalizeModule.Services {
          return;
 
       }
+
+      public void Run(Process process) {
+
+         IProcessController controller;
+
+         using (MiniProfiler.Current.Step("Run.Prepare")) {
+            controller = _container.CreateScope(process, _logger).Resolve<IProcessController>();
+         }
+
+         using (MiniProfiler.Current.Step("Run.Execute")) {
+            controller.Execute();
+         }
+
+         if (process.Errors().Any() || _logger.Log.Any(l => l.LogLevel == LogLevel.Error)) {
+            process.Status = 500;
+            process.Message = "Error";
+         } else {
+            process.Status = 200;
+            process.Message = "Ok";
+         }
+
+         return;
+
+      }
    }
 }

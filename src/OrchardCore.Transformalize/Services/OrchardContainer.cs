@@ -65,6 +65,7 @@ using Transformalize.Providers.Ado;
 using OrchardCore.Modules;
 using Transformalize.Transform.GoogleMaps;
 using System.Runtime.CompilerServices;
+using TransformalizeModule.Services.Contracts;
 
 namespace TransformalizeModule.Services {
 
@@ -81,12 +82,14 @@ namespace TransformalizeModule.Services {
       private readonly HashSet<string> _adoProviders = new HashSet<string>() { "sqlserver", "postgresql", "sqlite", "mysql" };
       private readonly IClock _clock;
       private readonly ILocalClock _localClock;
+      private readonly IFileService _fileService;
 
       public Func<InputContext, IRowFactory, IRead> GetReaderAlternate { get; set; }
       public Func<IRead, InputContext, IRowFactory, IRead> GetReaderDecorator { get; set; }
 
       public OrchardContainer(
          IHttpContextAccessor httpContext,
+         IFileService fileService,
          IUserService userService,
          IServiceProvider serviceProvider,
          CombinedLogger<OrchardContainer> logger,
@@ -103,6 +106,7 @@ namespace TransformalizeModule.Services {
          _signal = signal;
          _clock = clock;
          _localClock = localClock;
+         _fileService = fileService;
       }
 
       public ILifetimeScope CreateScope(Process process, IPipelineLogger logger) {
@@ -130,6 +134,7 @@ namespace TransformalizeModule.Services {
          tm.AddTransform(new TransformHolder((c) => new OrchardTimeZoneTransform(c), new OrchardTimeZoneTransform().GetSignatures()));
          tm.AddTransform(new TransformHolder((c) => new GeocodeTransform(c), new GeocodeTransform().GetSignatures()));
          tm.AddTransform(new TransformHolder((c) => new PlaceTransform(c), new PlaceTransform().GetSignatures()));
+         tm.AddTransform(new TransformHolder((c) => new FilePartTransform(c, _fileService), new FilePartTransform().GetSignatures()));
 
          builder.RegisterModule(tm);
 

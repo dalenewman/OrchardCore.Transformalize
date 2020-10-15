@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using TransformalizeModule.Models;
 
 namespace TransformalizeModule {
    public static class Common {
@@ -30,10 +31,10 @@ namespace TransformalizeModule {
          return contentItemId + KeySuffix;
       }
 
-      public static string GetSafeFilePath(string user, string name) {
+      public static string GetSafeFilePath(TransformalizeFilePart part, string user) {
          var now = DateTime.UtcNow;
          var path = Path.Combine(now.Year.ToString(), now.ToString("MM-MMM").ToUpper(), now.ToString("dd"));
-         return Path.Combine(path, string.Format("{0}-{1:yyyy-MM-dd-HH-mm-ss}-{2}", user, now, name.Replace(' ','-')));
+         return Path.Combine(path, string.Format("{0}-{1}{2}", user, part.ContentItem.ContentItemId, part.HasMimeType() ? part.Extension() : ".unknown"));
       }
 
       /// <summary>
@@ -614,6 +615,16 @@ namespace TransformalizeModule {
          string mime;
 
          return _mappings.TryGetValue(extension, out mime) ? mime : "application/octet-stream";
+      }
+
+      public static bool HasMimeType(string extension) {
+         if (string.IsNullOrEmpty(extension)) {
+            return false;
+         }
+         if (extension.StartsWith(".")) {
+            extension = extension.Substring(1);
+         }
+         return _mappings.ContainsKey(extension);
       }
 
    }
