@@ -364,18 +364,6 @@ namespace TransformalizeModule.Services {
 
          process = LoadInternal(part, parameters, format == "json" ? new JsonSerializer() : null);
 
-         // handles situation when a file is a parameter for the report
-         // translating the file content item id to it's full path
-         if(process.Connections.Any()){
-            var connection = process.Connections.FirstOrDefault(c => c.Provider == "file" && c.File.Length == Common.IdLength && !c.File.Contains('.'));
-            if(connection != null) {
-               var filePart = _fileService.GetFilePart(connection.File).Result;
-               if(filePart != null) {
-                  connection.File = System.IO.Path.Combine(_formFileStore.Path, filePart.FullPath.Text);
-               }
-            }
-         }
-
          return process;
       }
 
@@ -499,6 +487,17 @@ namespace TransformalizeModule.Services {
 
          // in case common settings were not applied when transforming / validating parameters
          _settings.ApplyCommonSettings(process);
+
+         // translates file content item id to full path
+         if (process.Connections.Any()) {
+            var connection = process.Connections.FirstOrDefault(c => c.Provider == "file" && c.File.Length == Common.IdLength && !c.File.Contains('.'));
+            if (connection != null) {
+               var filePart = _fileService.GetFilePart(connection.File).Result;
+               if (filePart != null) {
+                  connection.File = System.IO.Path.Combine(_formFileStore.Path, filePart.FullPath.Text);
+               }
+            }
+         }
 
          if (process.Errors().Any() || process.Log.Any(l => l.LogLevel == LogLevel.Error)) {
             process.Status = 500;

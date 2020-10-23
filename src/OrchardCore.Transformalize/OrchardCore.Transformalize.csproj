@@ -36,12 +36,12 @@
     <PackageReference Include="OrchardCore.Users" Version="1.0.0-rc2-13450" />
     <PackageReference Include="OrchardCore.Workflows" Version="1.0.0-rc2-13450" />
     <PackageReference Include="Transformalize" Version="0.8.29-beta" />
-    <PackageReference Include="Transformalize.Container.Autofac" Version="0.8.28-beta" />
+    <PackageReference Include="Transformalize.Container.Autofac" Version="0.8.29-beta" />
     <PackageReference Include="Transformalize.Provider.Ado.Autofac" Version="0.8.31-beta" />
-    <PackageReference Include="Transformalize.Provider.Bogus.Autofac" Version="0.8.22-beta" />
-    <PackageReference Include="Transformalize.Provider.CsvHelper.Autofac" Version="0.8.18-beta" />
+    <PackageReference Include="Transformalize.Provider.Bogus.Autofac" Version="0.8.29-beta" />
+    <PackageReference Include="Transformalize.Provider.CsvHelper.Autofac" Version="0.8.29-beta" />
     <PackageReference Include="Transformalize.Provider.Elasticsearch.Autofac" Version="0.8.26-beta" />
-    <PackageReference Include="Transformalize.Provider.File.Autofac" Version="0.8.22-beta" />
+    <PackageReference Include="Transformalize.Provider.File.Autofac" Version="0.8.29-beta" />
     <PackageReference Include="Transformalize.Provider.GeoJson.Autofac" Version="0.8.24-beta" />
     <PackageReference Include="Transformalize.Provider.Json.Autofac" Version="0.8.26-beta" />
     <PackageReference Include="Transformalize.Provider.MySql.Autofac" Version="0.8.15-beta" />
