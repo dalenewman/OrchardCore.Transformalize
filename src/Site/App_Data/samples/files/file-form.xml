@@ -1,0 +1,23 @@
+<cfg name="FileForm">
+
+  <parameters>
+    <!-- primary key must be defined here as an integer - default it to zero to indicate a new submission -->
+    <add name="FileId" type="int" value="0" label="Id" primary-key="true" />
+    <add name="Deleted" type="bool" value="false" input="false" scope="insert" />
+    
+    <!-- using insert scope to capture additional data -->
+    <add name="Created" type="datetime" input="false" t="now()" scope="insert" format="o" />
+    <add name="CreatedBy" t="username()" input="false" scope="insert" label="Created By"  />
+    
+    <!-- using update scope to capture additional data -->
+    <add name="Updated" type="datetime" input="false" t="now()" scope="update" format="o" />
+    <add name="UpdatedBy" t="username()" input="false" scope="update" label="Updated By" />
+
+    <add name="File" prompt="true" type="string" input-type="file" />
+  </parameters>
+
+  <connections>
+    <add name="form" server="host.docker.internal" provider="postgresql" database="Junk" user="postgres" password="*" table="FormFile" />
+  </connections>
+
+</cfg>

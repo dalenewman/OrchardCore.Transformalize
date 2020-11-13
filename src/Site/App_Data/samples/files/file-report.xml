@@ -1,0 +1,34 @@
+<cfg name="FileReport">
+
+  <connections>
+    <add name="form" provider="postgresql" server="host.docker.internal" database="Junk" user="postgres" password="*" table="FormFile" />
+  </connections>
+
+  <actions>
+    <add type="open" 
+         url="/t/form/file-form" 
+         description="Add File" 
+         class="btn-outline-primary waves-effect" 
+         icon="plus" />  
+
+  </actions>
+
+  <entities>
+    <add name="FormFile" label="Files">
+      <fields>
+        <add name="fileid" type="int" primary-key="true"/>
+        <add name="deleted" type="bool"/>
+        <add name="created" type="datetime" t="toLocalTime()" />
+        <add name="createdby"/>
+        <add name="updated" type="datetime" t="toLocalTime()" />
+        <add name="updatedby"/>
+        <add name="file" output="false" />
+      </fields>
+      <calculated-fields>
+        <add name="filename" t="copy(file).filePart(OriginalName)" length="128" output="false" /> 
+        <add name="fileLink" label="file" raw="true" t='format(<a href="/t/file/{file}">{filename}</a>)' sort-field="file" />
+      </calculated-fields>
+    </add>
+  </entities>
+
+</cfg>
