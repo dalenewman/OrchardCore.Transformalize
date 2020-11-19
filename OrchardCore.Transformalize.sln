@@ -15,6 +15,12 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		README.md = README.md
 	EndProjectSection
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".ebextensions", ".ebextensions", "{9FE8E383-310E-4A6A-BA67-00F019257667}"
+	ProjectSection(SolutionItems) = preProject
+		src\Site\.ebextensions\options.config = src\Site\.ebextensions\options.config
+		src\Site\.ebextensions\storage-efs-mountfilesystem.config = src\Site\.ebextensions\storage-efs-mountfilesystem.config
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -32,6 +38,9 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{9FE8E383-310E-4A6A-BA67-00F019257667} = {F2F08A22-7662-48E3-BE46-064A42C40D2E}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {0E7D6D81-5254-4180-BC66-C332CA6E784F}
