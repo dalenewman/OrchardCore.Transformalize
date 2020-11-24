@@ -10,6 +10,7 @@ using OrchardCore.ContentManagement.Display.Models;
 using OrchardCore.DisplayManagement.ModelBinding;
 using OrchardCore.DisplayManagement.Notify;
 using OrchardCore.DisplayManagement.Views;
+using OrchardCore.Environment.Cache;
 using Transformalize.Configuration;
 using Transformalize.Contracts;
 using Transformalize.Logging;
@@ -28,6 +29,7 @@ namespace TransformalizeModule.Drivers {
       private readonly IContainer _container;
       private readonly CombinedLogger<TransformalizeFormPartDisplayDriver> _logger;
       private readonly INotifier _notifier;
+      private readonly ISignal _signal;
 
       public TransformalizeFormPartDisplayDriver(
          IStringLocalizer<TransformalizeFormPartDisplayDriver> localizer,
@@ -35,7 +37,8 @@ namespace TransformalizeModule.Drivers {
          CombinedLogger<TransformalizeFormPartDisplayDriver> logger,
          IConfigurationContainer configurationContainer,
          IContainer container,
-         INotifier notifier
+         INotifier notifier,
+         ISignal signal
       ) {
          S = localizer;
          H = htmlLocalizer;
@@ -43,6 +46,7 @@ namespace TransformalizeModule.Drivers {
          _logger = logger;
          _configurationContainer = configurationContainer;
          _notifier = notifier;
+         _signal = signal;
       }
 
       public override IDisplayResult Edit(TransformalizeFormPart part) {
@@ -98,6 +102,10 @@ namespace TransformalizeModule.Drivers {
 
          } catch (Exception ex) {
             updater.ModelState.AddModelError(Prefix, S[ex.Message]);
+         }
+
+         if (updater.ModelState.IsValid) {
+            _signal.SignalToken(Common.GetCacheKey(part.ContentItem.Id));
          }
 
          return Edit(part, context);
