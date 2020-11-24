@@ -170,9 +170,12 @@ namespace TransformalizeModule.Services {
          // solr
          // lucene
 
-         // exporting
+         // importing, exporting
          var stream = _httpContext.HttpContext.Response.Body;
          if (providers.Contains("file")) { builder.RegisterModule(new CsvHelperProviderModule(stream)); }
+         if (providers.Contains("excel")) { builder.RegisterModule(new OrchardExcelModule()); }
+
+         // exporting
          if (providers.Contains("json")) { builder.RegisterModule(new JsonProviderModule(stream) { UseAsyncMethods = true }); }
          if (providers.Contains("geojson")) { builder.RegisterModule(new GeoJsonProviderModule(stream) { UseAsyncMethods = true }); }
 

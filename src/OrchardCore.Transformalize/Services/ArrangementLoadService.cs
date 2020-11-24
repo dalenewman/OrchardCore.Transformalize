@@ -24,6 +24,7 @@ namespace TransformalizeModule.Services {
       private readonly CombinedLogger<ArrangementLoadService> _logger;
       private readonly IFileService _fileService;
       private readonly ICustomFileStore _formFileStore;
+      private static readonly HashSet<string> _fileBasedProviders = new HashSet<string>() { "file", "excel" };
 
       public ArrangementLoadService(
          ICustomFileStore formFileStore,
@@ -490,7 +491,7 @@ namespace TransformalizeModule.Services {
 
          // translates file content item id to full path
          if (process.Connections.Any()) {
-            var connection = process.Connections.FirstOrDefault(c => c.Provider == "file" && c.File.Length == Common.IdLength && !c.File.Contains('.'));
+            var connection = process.Connections.FirstOrDefault(c => _fileBasedProviders.Contains(c.Provider) && c.File.Length == Common.IdLength && !c.File.Contains('.'));
             if (connection != null) {
                var filePart = _fileService.GetFilePart(connection.File).Result;
                if (filePart != null) {

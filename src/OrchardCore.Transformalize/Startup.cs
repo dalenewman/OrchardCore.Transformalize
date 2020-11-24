@@ -30,6 +30,10 @@ using System.IO;
 namespace TransformalizeModule {
    public class Startup : StartupBase {
 
+      public Startup() {
+         System.Text.Encoding.RegisterProvider(System.Text.CodePagesEncodingProvider.Instance);
+      }
+
       public override void ConfigureServices(IServiceCollection services) {
 
          // services.AddSession();
