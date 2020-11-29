@@ -29,7 +29,7 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Include=".ebextensions\https-singleinstance-securitygroup.config">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </None>
     <None Include=".ebextensions\options.config">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
