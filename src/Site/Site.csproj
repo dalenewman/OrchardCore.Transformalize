@@ -11,11 +11,26 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Include=".ebextensions\https-backendsecurity.config">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include=".ebextensions\https-reencrypt-alb.config">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
+  <ItemGroup>
     <Folder Include="wwwroot\" />
     <Folder Include="Localization\" />
   </ItemGroup>
 
   <ItemGroup>
+    <None Include=".ebextensions\https-lbsecuritygroup.config">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include=".ebextensions\https-singleinstance-securitygroup.config">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Include=".ebextensions\options.config">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
