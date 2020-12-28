@@ -22,7 +22,7 @@ using Transformalize.Configuration;
 namespace TransformalizeModule.Models {
    public class CachedRazorTransform {
       public Field[] Input;
-      public RazorEngineCompiledTemplate Template;
+      public IRazorEngineCompiledTemplate Template;
    }
 
 }
