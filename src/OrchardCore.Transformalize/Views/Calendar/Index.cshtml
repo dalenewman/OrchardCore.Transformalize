@@ -8,6 +8,8 @@
 @model ReportViewModel
 
 @{
+   RenderTitleSegments(Model.Title, "before");
+
    var output = Context.Request.Query["output"].ToString() ?? "page";
 
    var entity = Model.Process.Entities.FirstOrDefault() ?? new Entity { Name = "Missing Entity" };

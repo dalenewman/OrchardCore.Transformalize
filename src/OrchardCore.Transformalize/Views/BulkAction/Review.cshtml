@@ -4,6 +4,7 @@
 @using Microsoft.AspNetCore.Authorization
 
 @{
+   RenderTitleSegments(Model.Task.Title, "before");
    var auth = Context.RequestServices.GetService<IAuthorizationService>();
 }
 

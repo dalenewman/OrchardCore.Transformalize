@@ -4,6 +4,7 @@ using System.Linq;
 using TransformalizeModule.Models;
 using OrchardCore.ContentManagement;
 using Transformalize.Configuration;
+using OrchardCore.Title.Models;
 
 namespace TransformalizeModule.ViewModels {
    public class ReportViewModel {
@@ -19,6 +20,7 @@ namespace TransformalizeModule.ViewModels {
       public bool EnableInlineParameters { get; set; } = true;
       public bool CalendarEnabled { get; set; }
       public string IdOrAlias { get; set; }
+      public string Title { get; set; }
 
       public Process Process {
          get {
@@ -40,6 +42,7 @@ namespace TransformalizeModule.ViewModels {
          Item = item;
          Part = item.As<TransformalizeReportPart>();
          IdOrAlias = idOrAlias;
+         Title = item.As<TitlePart>().Title;
       }
 
       public Dictionary<string, Parameter> InlineParameters {

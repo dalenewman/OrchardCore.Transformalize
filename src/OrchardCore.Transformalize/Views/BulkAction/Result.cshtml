@@ -1,6 +1,7 @@
 @model Transformalize.Configuration.Process
 
 @{ 
+   RenderTitleSegments(Model.Name, "before");
    var referrer = Model.Parameters.FirstOrDefault(p => p.Name == "TaskReferrer");
 }
 <div class="container">

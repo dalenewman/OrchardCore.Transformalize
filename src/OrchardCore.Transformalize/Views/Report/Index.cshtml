@@ -7,6 +7,8 @@
 @using Transformalize.Configuration
 
 @{
+   RenderTitleSegments(Model.Title, "before");
+
    var firstEntity = Model.Process.Entities.First();
    var sortService = Context.RequestServices.GetService<ISortService>();
 }

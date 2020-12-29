@@ -8,6 +8,8 @@
 @model ReportViewModel
 
 @{
+   RenderTitleSegments(Model.Title, "before");
+
    var entity = Model.Process.Entities.FirstOrDefault() ?? new Entity { Name = "Missing Entity" };
    var allFields = entity.GetAllFields().Where(f => !f.System).ToArray();
 

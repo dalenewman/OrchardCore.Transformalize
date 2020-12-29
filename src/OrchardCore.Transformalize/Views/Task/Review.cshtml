@@ -5,6 +5,8 @@
 @using TransformalizeModule.Models
 
 @{
+   RenderTitleSegments(Model.Title, "before");
+
    var auth = Context.RequestServices.GetService<IAuthorizationService>();
 }
 
