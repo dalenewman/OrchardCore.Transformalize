@@ -30,6 +30,7 @@ namespace TransformalizeModule.Drivers {
       private readonly CombinedLogger<TransformalizeFormPartDisplayDriver> _logger;
       private readonly INotifier _notifier;
       private readonly ISignal _signal;
+      private readonly ISettingsService _settings;
 
       public TransformalizeFormPartDisplayDriver(
          IStringLocalizer<TransformalizeFormPartDisplayDriver> localizer,
@@ -38,7 +39,8 @@ namespace TransformalizeModule.Drivers {
          IConfigurationContainer configurationContainer,
          IContainer container,
          INotifier notifier,
-         ISignal signal
+         ISignal signal,
+         ISettingsService settings
       ) {
          S = localizer;
          H = htmlLocalizer;
@@ -47,16 +49,20 @@ namespace TransformalizeModule.Drivers {
          _configurationContainer = configurationContainer;
          _notifier = notifier;
          _signal = signal;
+         _settings = settings;
       }
 
       public override IDisplayResult Edit(TransformalizeFormPart part) {
 
          var commands = new AdoFormCommands();
-         try {
-            var process = _configurationContainer.CreateScope(part.Arrangement.Text, part.ContentItem, new Dictionary<string, string>(), false).Resolve<Process>();
-            commands = _container.CreateScope(process, _logger).Resolve<AdoFormCommandWriter>().Write();
-         } catch (Exception) {
-            // swallow
+         var process = _configurationContainer.CreateScope(part.Arrangement.Text, part.ContentItem, new Dictionary<string, string>(), false).Resolve<Process>();
+
+         _settings.ApplyCommonSettings(process);
+
+         using (var scope = _container.CreateScope(process, _logger)) {
+            if (scope.IsRegistered<AdoFormCommandWriter>()) {
+               commands = scope.Resolve<AdoFormCommandWriter>().Write();
+            }
          }
 
          return Initialize<EditTransformalizeFormPartViewModel>("TransformalizeFormPart_Edit", model => {
@@ -85,14 +91,14 @@ namespace TransformalizeModule.Drivers {
                   updater.ModelState.AddModelError(Prefix, S[error]);
                }
             }
-            
+
             if (process.Warnings().Any()) {
                foreach (var warning in process.Warnings()) {
                   _notifier.Warning(H[warning]);
                }
             }
 
-            if(!process.Connections.Any(c=>c.Table != "[default]" && !string.IsNullOrEmpty(c.Table))) {
+            if (!process.Connections.Any(c => c.Table != "[default]" && !string.IsNullOrEmpty(c.Table))) {
                updater.ModelState.AddModelError(Prefix, S["A form requires one connection to have a table defined.  The submissions are stored in this table."]);
             }
 

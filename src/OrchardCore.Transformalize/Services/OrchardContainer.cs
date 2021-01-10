@@ -214,7 +214,7 @@ namespace TransformalizeModule.Services {
             builder.Register(ctx => new ConnectionContext(ctx.Resolve<IContext>(), connection)).Named<IConnectionContext>(connection.Key);
 
             // there can only be one form writer
-            if (!formWriter && connection.Table != "[default]") {
+            if (!formWriter && connection.Table != "[default]" && connection.Provider != "[default]") {
                builder.Register(ctx => {
                   var context = ctx.ResolveNamed<IConnectionContext>(connection.Key);
                   var connectionFactory = ctx.ResolveNamed<IConnectionFactory>(connection.Key);

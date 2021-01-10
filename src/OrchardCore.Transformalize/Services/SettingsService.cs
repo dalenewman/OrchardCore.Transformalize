@@ -203,8 +203,10 @@ namespace TransformalizeModule.Services {
             var connection = process.Connections[i];
             if (Connections.ContainsKey(connection.Name) && connection.Provider == Transformalize.Constants.DefaultSetting) {
                var key = connection.Key;
+               var table = connection.Table;
                process.Connections[i] = Connections[connection.Name];
                process.Connections[i].Key = key;
+               process.Connections[i].Table = table;
             }
          }
 
@@ -281,7 +283,9 @@ namespace TransformalizeModule.Services {
          for (int i = 0; i < process.Connections.Count; i++) {
             var connection = process.Connections[i];
             if (connection.Provider == null && ConnectionsFacade.ContainsKey(connection.Name)) {
+               var table = connection.Table;
                process.Connections[i] = ConnectionsFacade[connection.Name];
+               process.Connections[i].Table = table;
             }
          }
 

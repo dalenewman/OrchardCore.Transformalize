@@ -1,7 +1,6 @@
 using TransformalizeModule.Models;
 using System.Collections.Generic;
 using Transformalize.Configuration;
-using OrchardCore.ContentFields.Fields;
 
 namespace TransformalizeModule.Services.Contracts {
    public interface ISettingsService {
