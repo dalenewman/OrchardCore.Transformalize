@@ -13,6 +13,7 @@ using Transformalize.Transforms.Humanizer.Autofac;
 using Transformalize.Transforms.Json.Autofac;
 using Transformalize.Validate.Jint.Autofac;
 using Transformalize.Transforms.LambdaParser.Autofac;
+using Transformalize.Transforms.Aws.Autofac;
 
 namespace TransformalizeModule.Services.Modules {
 
@@ -77,6 +78,7 @@ namespace TransformalizeModule.Services.Modules {
          builder.RegisterModule(new HumanizeModule());
          builder.RegisterModule(new FileModule());
          builder.RegisterModule(new LambdaParserModule());
+         builder.RegisterModule(new AwsTransformModule());
 
          // register validator modules here so they can register their short-hand
          builder.RegisterModule(new JintValidateModule());

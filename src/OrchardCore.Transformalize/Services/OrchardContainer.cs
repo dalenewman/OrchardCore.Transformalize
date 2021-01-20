@@ -66,6 +66,7 @@ using OrchardCore.Modules;
 using Transformalize.Transform.GoogleMaps;
 using System.Runtime.CompilerServices;
 using TransformalizeModule.Services.Contracts;
+using Transformalize.Transforms.Aws.Autofac;
 
 namespace TransformalizeModule.Services {
 
@@ -193,6 +194,7 @@ namespace TransformalizeModule.Services {
          builder.RegisterModule(new FileModule());
          builder.RegisterModule(new AdoTransformModule());
          builder.RegisterModule(new LambdaParserModule());
+         builder.RegisterModule(new AwsTransformModule());
 
          // register validator modules here
          builder.RegisterModule(new JintValidateModule());
