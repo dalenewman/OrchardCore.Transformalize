@@ -37,31 +37,31 @@ namespace TransformalizeModule.Activities {
 
       public override LocalizedString Category => S["Transformalize"];
 
-      public WorkflowExpression<string> TaskContentItemId {
+      public WorkflowExpression<string> Alias {
          get => GetProperty(() => new WorkflowExpression<string>());
          set => SetProperty(value);
       }
 
       public override IEnumerable<Outcome> GetPossibleOutcomes(WorkflowExecutionContext workflowContext, ActivityContext activityContext) {
-         return Outcomes(S["Done"], S["Failed"]);
+         return Outcomes(S["Done"], S["Error"]);
       }
 
       public override async Task<ActivityExecutionResult> ExecuteAsync(WorkflowExecutionContext workflowContext, ActivityContext activityContext) {
 
-         var contentItemId = await _expressionEvaluator.EvaluateAsync(TaskContentItemId, workflowContext, null);
-         var request = new TransformalizeRequest(contentItemId, "Workflow") { Secure = false };
+         var alias = await _expressionEvaluator.EvaluateAsync(Alias, workflowContext, null);
+         var request = new TransformalizeRequest(alias, null) { Secure = false };
          var task = await _taskService.Validate(request);
 
          if (task.Fails()) {
             workflowContext.Fault(new Exception(task.Process.Message), activityContext);
-            return Outcomes("Failed");
+            return Outcomes("Error");
          }
 
          await _taskService.RunAsync(task.Process);
 
          if(task.Process.Status != 200) {
             workflowContext.Fault(new Exception(task.Process.Message), activityContext);
-            return Outcomes("Failed");
+            return Outcomes("Error");
          }
 
          return Outcomes("Done");

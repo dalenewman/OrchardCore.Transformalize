@@ -12,7 +12,7 @@
    var focus = string.Empty;
 
    if (Context.Request.Method == "GET") {
-      focus = Model.Parameters.First(f => f.Prompt).Name;
+      focus = Model.Parameters.FirstOrDefault(f => f.Prompt)?.Name ?? string.Empty;
       getMethod = true;
    } else {
       var previous = Context.Request.Form["Orchard.Focus"].ToString() == "Orchard.Submit" ? Model.Parameters.Last(p => p.Prompt) : Model.Parameters.First(p => p.Name == Context.Request.Form["Orchard.Focus"].ToString());

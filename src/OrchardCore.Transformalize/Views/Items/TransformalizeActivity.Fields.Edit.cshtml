@@ -1,9 +1,9 @@
 @using TransformalizeModule.ViewModels;
 @model TransformalizeActivityViewModel
 
-<div class="form-group" asp-validation-class-for="TaskContentItemIdExpression">
-    <label asp-for="TaskContentItemIdExpression">@T["Task Content Item Id"]</label>
-    <input type="text" asp-for="TaskContentItemIdExpression" class="form-control code" />
-    <span asp-validation-for="TaskContentItemIdExpression"></span>
-    <span class="hint">@T["Task Content Item Id or Alias"]</span>
+<div class="form-group" asp-validation-class-for="AliasExpression">
+    <label asp-for="AliasExpression">@T["Task Alias"]</label>
+    <input type="text" asp-for="AliasExpression" class="form-control code" />
+    <span asp-validation-for="AliasExpression"></span>
+    <span class="hint">@T["The Transformalize task's alias or it's content item id."]</span>
 </div>
