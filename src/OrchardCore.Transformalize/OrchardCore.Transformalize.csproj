@@ -1,24 +1,19 @@
-﻿<Project Sdk="Microsoft.NET.Sdk.Razor">
-
+<Project Sdk="Microsoft.NET.Sdk.Razor">
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
     <AddRazorSupportForMvc>true</AddRazorSupportForMvc>
     <RootNamespace>TransformalizeModule</RootNamespace>
-    <Version>0.8.33-beta</Version>
+    <Version>0.8.34-beta</Version>
   </PropertyGroup>
-
   <ItemGroup>
     <EmbeddedResource Remove="bundleconfig.json" />
   </ItemGroup>
-
   <ItemGroup>
     <FrameworkReference Include="Microsoft.AspNetCore.App" />
   </ItemGroup>
-
   <ItemGroup>
     <None Include="bundleconfig.json" />
   </ItemGroup>
-
   <ItemGroup>
     <PackageReference Include="Etch.OrchardCore.ContentPermissions" Version="0.3.1-rc2" />
     <PackageReference Include="Flurl" Version="2.8.2" />
@@ -62,7 +57,6 @@
     <PackageReference Include="Transformalize.Transform.Razor.Autofac" Version="0.8.30-beta" />
     <PackageReference Include="Transformalize.Validate.Jint.3.Autofac" Version="0.8.29-beta" />
   </ItemGroup>
-
   <ItemGroup>
     <EmbeddedResource Update="Recipes\batches.postgres.recipe.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
@@ -77,5 +71,4 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </EmbeddedResource>
   </ItemGroup>
-
 </Project>
