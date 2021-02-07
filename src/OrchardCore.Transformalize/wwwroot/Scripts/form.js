@@ -55,7 +55,7 @@
          inputs: 'input, textarea, select, input[type=hidden]'
       });
 
-      if (settings.geo) {
+      if (settings.location.enabled) {
          getLocation();
       }
       setFocus();
@@ -143,13 +143,18 @@
    function getLocation() {
       if ("geolocation" in navigator) {
 
-         if ($('#id_geo_latitude').val() === "") {
+         // if nothing is set, go for low accuracy location
+         if (settings.location.latitude.val() === "") {
             navigator.geolocation.getCurrentPosition(
                function (location) {
-                  console.log(location.coords);
-                  $('#id_geo_latitude').val(location.coords.latitude);
-                  $('#id_geo_longitude').val(location.coords.longitude);
-                  $('#id_geo_accuracy').val(location.coords.accuracy);
+                  console.log('low accuracy location: ' + location.coords);
+                  settings.location.latitude.val(location.coords.latitude);
+                  settings.location.longitude.val(location.coords.longitude);
+                  settings.location.accuracy.val(location.coords.accuracy);
+                  settings.location.altitude.val(location.coords.altitude);
+                  settings.location.altitudeaccuracy.val(location.coords.altitudeAccuracy);
+                  settings.location.speed.val(location.coords.speed);
+                  settings.location.heading.val(location.coords.heading);
                },
                function (error) {
                   console.log(error);
@@ -157,12 +162,17 @@
             );
          }
 
+         // go for high accuracy location and cache it
          navigator.geolocation.getCurrentPosition(
             function (location) {
-               console.log(location.coords);
-               $('#id_geo_latitude').val(location.coords.latitude);
-               $('#id_geo_longitude').val(location.coords.longitude);
-               $('#id_geo_accuracy').val(location.coords.accuracy);
+               console.log('high accuracy location: ' + location.coords);
+               settings.location.latitude.val(location.coords.latitude);
+               settings.location.longitude.val(location.coords.longitude);
+               settings.location.accuracy.val(location.coords.accuracy);
+               settings.location.altitude.val(location.coords.altitude);
+               settings.location.altitudeaccuracy.val(location.coords.altitudeAccuracy);
+               settings.location.speed.val(location.coords.speed);
+               settings.location.heading.val(location.coords.heading);
             },
             function (error) {
                console.log(error);

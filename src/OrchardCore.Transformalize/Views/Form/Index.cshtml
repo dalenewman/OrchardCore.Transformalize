@@ -79,7 +79,16 @@
 <script type="text/javascript" language="javascript">
     //<!--
    var settings = {
-      geo: false,
+      location: {
+         enabled: @Model.Process.Parameters.Any(p=>p.InputType == "location").ToString().ToLower(),
+         latitude: $([]),
+         longitude: $([]),
+         altitude: $([]),
+         accuracy: $([]),
+         altitudeaccuracy: $([]),
+         heading: $([]),
+         speed: $([])
+      },
       controller: "Form",
       ajaxUrl: "@(Url.Action("Form", "Form", new { Area = Common.ModuleName, ContentItemId = Model.ContentItem.ContentItemId }))",
       updateUrl: "@(Url.Action("Index", "Form", new { Area = Common.ModuleName, ContentItemId = Model.ContentItem.ContentItemId }))",

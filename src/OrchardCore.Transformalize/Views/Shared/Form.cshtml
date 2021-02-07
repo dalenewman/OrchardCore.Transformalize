@@ -70,8 +70,9 @@
 
       if (parameter.Readonly()) {
 
-         if (!parameter.Raw && !parameter.Input || parameter.PrimaryKey) {
-            <input type="hidden" name="@parameter.Name" value="@parameter.Value" />
+         if (!parameter.Raw && !parameter.Input || parameter.PrimaryKey || parameter.InputType == "location") {
+            <input type="hidden" name="@parameter.Name" value="@parameter.Value" id="id_@parameter.Name" />
+            Html.RenderPartial("Location", parameter);
             continue;
          }
 

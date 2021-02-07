@@ -3,7 +3,7 @@
     <TargetFramework>netcoreapp3.1</TargetFramework>
     <AddRazorSupportForMvc>true</AddRazorSupportForMvc>
     <RootNamespace>TransformalizeModule</RootNamespace>
-    <Version>0.8.34-beta</Version>
+    <Version>0.8.35-beta</Version>
   </PropertyGroup>
   <ItemGroup>
     <EmbeddedResource Remove="bundleconfig.json" />
@@ -32,7 +32,7 @@
     <PackageReference Include="OrchardCore.Users" Version="1.0.0-rc2-13450" />
     <PackageReference Include="OrchardCore.Workflows" Version="1.0.0-rc2-13450" />
     <PackageReference Include="System.Text.Encoding.CodePages" Version="5.0.0" />
-    <PackageReference Include="Transformalize" Version="0.8.32-beta" />
+    <PackageReference Include="Transformalize" Version="0.8.34-beta" />
     <PackageReference Include="Transformalize.Container.Autofac" Version="0.8.31-beta" />
     <PackageReference Include="Transformalize.Provider.Ado.Autofac" Version="0.8.33-beta" />
     <PackageReference Include="Transformalize.Provider.Bogus.Autofac" Version="0.8.29-beta" />
