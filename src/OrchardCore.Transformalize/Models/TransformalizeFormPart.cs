@@ -39,9 +39,9 @@ namespace TransformalizeModule.Models {
 
 </cfg>" };
 
-         LocationEnableHighAccuracy = new BooleanField() { Value = true };
-         LocationMaximumAge = new NumericField() { Value = 5000 };
-         LocationTimeout = new NumericField() { Value = 0 };
+         LocationEnableHighAccuracy = new BooleanField() { Value = false };
+         LocationMaximumAge = new NumericField() { Value = 0 };
+         LocationTimeout = new NumericField() { Value = -1 };
       }
       public TextField Arrangement { get; set; }
       public BooleanField LocationEnableHighAccuracy { get; set; }

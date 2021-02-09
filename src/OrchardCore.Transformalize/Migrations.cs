@@ -413,6 +413,10 @@ namespace TransformalizeModule {
       }
 
       public int UpdateFrom7() {
+         return 8;
+      }
+
+      public int UpdateFrom8() {
 
          _contentDefinitionManager.AlterPartDefinition("TransformalizeFormPart", part => part
          .WithField("LocationEnableHighAccuracy", field => field
@@ -420,8 +424,9 @@ namespace TransformalizeModule {
                 .WithDisplayName("Enable High Accuracy")
                 .WithPosition("11")
                 .WithSettings(new BooleanFieldSettings {
-                   DefaultValue = true,
-                   Label = "Enable High Accuracy"
+                   DefaultValue = false,
+                   Label = "Enable High Accuracy",
+                   Hint = "Is a Boolean that indicates the application would like to receive the best possible results. If true and if the device is able to provide a more accurate position, it will do so. Note that this can result in slower response times or increased power consumption (with a GPS chip on a mobile device for example). On the other hand, if false, the device can take the liberty to save resources by responding more quickly and/or using less power. Default: false."
                 }
                 )
               )
@@ -431,10 +436,10 @@ namespace TransformalizeModule {
              .WithPosition("12")
              .WithSettings(new NumericFieldSettings {
                 Scale = 0,
-                DefaultValue = "5000",
+                DefaultValue = "0",
                 Minimum = -1,
                 Maximum = int.MaxValue,
-                Hint = "Maximum cached position age. An integer in milliseconds or infinity (-1)."
+                Hint = "Is a positive long value indicating the maximum age in milliseconds of a possible cached position that is acceptable to return. If set to 0, it means that the device cannot use a cached position and must attempt to retrieve the real current position. If set to Infinity (-1) the device must return a cached position regardless of its age. Default: 0."
              }
              )
            ).WithField("LocationTimeout", field => field
@@ -443,18 +448,17 @@ namespace TransformalizeModule {
              .WithPosition("13")
              .WithSettings(new NumericFieldSettings {
                 Scale = 0,
-                DefaultValue = "0",
-                Minimum = 0,
+                DefaultValue = "-1",
+                Minimum = -1,
                 Maximum = int.MaxValue,
-                Hint = "Amount of time before the error callback is invoked. If 0, it will never invoke. An integer in milliseconds."
+                Hint = "Is a positive long value representing the maximum length of time (in milliseconds) the device is allowed to take in order to return a position. The default value is Infinity (-1), meaning that getCurrentPosition() won't return until the position is available."
              }
              )
            )
          );
 
-         return 8;
+         return 9;
       }
-
 
       private async Task EnableFeature(string id) {
 

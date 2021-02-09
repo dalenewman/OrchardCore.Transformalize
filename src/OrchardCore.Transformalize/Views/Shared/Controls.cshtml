@@ -69,7 +69,7 @@
             @foreach (var action in Model.Process.Actions.Where(a => a.Type == "open")) {
                var url = new Flurl.Url(action.Url);
                if (!url.QueryParams.Any(qp => qp.Name == "ReturnUrl")) {
-                  url.SetQueryParam("ReturnUrl", Context.Request.GetEncodedUrl());
+                  url.SetQueryParam("ReturnUrl", Context.Request.GetEncodedUrl().Replace("http:","https:"));
                }
                <a href="@url" title="@action.Description" rel="nofollow" class="btn btn-sm @action.Class"><i class="fas fa-@action.Icon" aria-hidden="true">@action.Name</i></a>
             }

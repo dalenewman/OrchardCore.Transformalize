@@ -160,7 +160,7 @@
             {
                enableHighAccuracy: settings.location.enableHighAccuracy,
                maximumAge: settings.location.maximumAge < 0 ? Infinity : settings.location.maximumAge,
-               timeout: settings.location.timeout
+               timeout: settings.location.timeout < 0 ? Infinity : settings.location.timeout
             }
          );
 
