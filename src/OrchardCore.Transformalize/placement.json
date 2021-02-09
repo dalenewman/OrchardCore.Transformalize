@@ -14,6 +14,23 @@
          "displayType": "Edit",
          "differentiator": "TransformalizeReportPart-Calendar",
          "place": "Parts:30#Calendar:3"
+      },
+      {
+         "displayType": "Edit",
+         "differentiator": "TransformalizeFormPart-LocationEnableHighAccuracy",
+         "place": "Parts:10#Location:1"
+      }
+   ],
+   "NumericField_Edit": [
+      {
+         "displayType": "Edit",
+         "differentiator": "TransformalizeFormPart-LocationMaximumAge",
+         "place": "Parts:11#Location:2"
+      },
+      {
+         "displayType": "Edit",
+         "differentiator": "TransformalizeFormPart-LocationTimeout",
+         "place": "Parts:12#Location:3"
       }
    ],
    "TextField_Edit": [

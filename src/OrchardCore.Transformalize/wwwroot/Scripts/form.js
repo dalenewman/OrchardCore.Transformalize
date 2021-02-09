@@ -143,26 +143,6 @@
    function getLocation() {
       if ("geolocation" in navigator) {
 
-         // if nothing is set, go for low accuracy location
-         if (settings.location.latitude.val() === "") {
-            navigator.geolocation.getCurrentPosition(
-               function (location) {
-                  console.log('low accuracy location: ' + location.coords);
-                  settings.location.latitude.val(location.coords.latitude);
-                  settings.location.longitude.val(location.coords.longitude);
-                  settings.location.accuracy.val(location.coords.accuracy);
-                  settings.location.altitude.val(location.coords.altitude);
-                  settings.location.altitudeaccuracy.val(location.coords.altitudeAccuracy);
-                  settings.location.speed.val(location.coords.speed);
-                  settings.location.heading.val(location.coords.heading);
-               },
-               function (error) {
-                  console.log(error);
-               }
-            );
-         }
-
-         // go for high accuracy location and cache it
          navigator.geolocation.getCurrentPosition(
             function (location) {
                console.log('high accuracy location: ' + location.coords);
@@ -178,9 +158,9 @@
                console.log(error);
             },
             {
-               enableHighAccuracy: true,
-               maximumAge: 15000,
-               timeout: Infinity
+               enableHighAccuracy: settings.location.enableHighAccuracy,
+               maximumAge: settings.location.maximumAge < 0 ? Infinity : settings.location.maximumAge,
+               timeout: settings.location.timeout
             }
          );
 

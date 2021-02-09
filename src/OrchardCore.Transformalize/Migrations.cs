@@ -381,18 +381,18 @@ namespace TransformalizeModule {
                  .WithDisplayName("Original File Name")
                  .WithPosition("3")
                  .WithSettings(new TextFieldSettings {
-                        Hint = "This is the original name of the file uploaded to the server.",
-                        Required = true
-                     }
+                    Hint = "This is the original name of the file uploaded to the server.",
+                    Required = true
+                 }
                   )
             ).WithField("FullPath", field => field
                .OfType(nameof(TextField))
                .WithDisplayName("File Path")
                .WithPosition("4")
                .WithSettings(new TextFieldSettings {
-                     Hint = "This is the path used to retrieve the file.  It is relative to the Transformalize/Files in the tenant's folder.",
-                     Required = true
-                  }
+                  Hint = "This is the path used to retrieve the file.  It is relative to the Transformalize/Files in the tenant's folder.",
+                  Required = true
+               }
                )
             )
          );
@@ -410,6 +410,49 @@ namespace TransformalizeModule {
 
          return 7;
 
+      }
+
+      public int UpdateFrom7() {
+
+         _contentDefinitionManager.AlterPartDefinition("TransformalizeFormPart", part => part
+         .WithField("LocationEnableHighAccuracy", field => field
+                .OfType(nameof(BooleanField))
+                .WithDisplayName("Enable High Accuracy")
+                .WithPosition("11")
+                .WithSettings(new BooleanFieldSettings {
+                   DefaultValue = true,
+                   Label = "Enable High Accuracy"
+                }
+                )
+              )
+          .WithField("LocationMaximumAge", field => field
+             .OfType(nameof(NumericField))
+             .WithDisplayName("Maximum Age")
+             .WithPosition("12")
+             .WithSettings(new NumericFieldSettings {
+                Scale = 0,
+                DefaultValue = "5000",
+                Minimum = -1,
+                Maximum = int.MaxValue,
+                Hint = "Maximum cached position age. An integer in milliseconds or infinity (-1)."
+             }
+             )
+           ).WithField("LocationTimeout", field => field
+             .OfType(nameof(NumericField))
+             .WithDisplayName("Timeout")
+             .WithPosition("13")
+             .WithSettings(new NumericFieldSettings {
+                Scale = 0,
+                DefaultValue = "0",
+                Minimum = 0,
+                Maximum = int.MaxValue,
+                Hint = "Amount of time before the error callback is invoked. If 0, it will never invoke. An integer in milliseconds."
+             }
+             )
+           )
+         );
+
+         return 8;
       }
 
 

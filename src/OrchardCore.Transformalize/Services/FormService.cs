@@ -89,6 +89,12 @@ namespace TransformalizeModule.Services {
             return response;
          }
 
+         response.Part = response.ContentItem.As<TransformalizeFormPart>();
+         if (response.Part == null) {
+            SetupWrongTypeResponse(request, response);
+            return response;
+         }
+
          response.Process = LoadForForm(response.ContentItem, request.InternalParameters, request.Format);
 
          if(response.Process.Connections.Where(c=>c.Table != "[default]").Count() != 1) {

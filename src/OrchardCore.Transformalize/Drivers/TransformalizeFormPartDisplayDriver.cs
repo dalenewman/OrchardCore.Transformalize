@@ -68,6 +68,9 @@ namespace TransformalizeModule.Drivers {
          return Initialize<EditTransformalizeFormPartViewModel>("TransformalizeFormPart_Edit", model => {
             model.TransformalizeFormPart = part;
             model.Arrangement = part.Arrangement;
+            model.LocationEnableHighAccuracy = part.LocationEnableHighAccuracy;
+            model.LocationMaximumAge = part.LocationMaximumAge;
+            model.LocationTimeout = part.LocationTimeout;
             model.CreateCommand = commands.Create;
             model.InsertCommand = commands.Insert;
             model.UpdateCommand = commands.Update;
@@ -81,6 +84,9 @@ namespace TransformalizeModule.Drivers {
 
          if (await updater.TryUpdateModelAsync(model, Prefix)) {
             part.Arrangement.Text = model.Arrangement.Text;
+            part.LocationEnableHighAccuracy.Value = model.LocationEnableHighAccuracy.Value;
+            part.LocationMaximumAge.Value = model.LocationMaximumAge.Value;
+            part.LocationTimeout.Value = model.LocationTimeout.Value;
          }
 
          try {
