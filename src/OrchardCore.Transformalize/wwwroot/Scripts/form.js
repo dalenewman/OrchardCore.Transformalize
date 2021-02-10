@@ -108,6 +108,10 @@
          block();
       });
 
+      $("#id_location_button").click(function () {
+         getLocation();
+      });
+
    }
 
    function post() {
@@ -143,26 +147,39 @@
    function getLocation() {
       if ("geolocation" in navigator) {
 
-         navigator.geolocation.getCurrentPosition(
-            function (location) {
-               console.log('high accuracy location: ' + location.coords);
-               settings.location.latitude.val(location.coords.latitude);
-               settings.location.longitude.val(location.coords.longitude);
-               settings.location.accuracy.val(location.coords.accuracy);
-               settings.location.altitude.val(location.coords.altitude);
-               settings.location.altitudeaccuracy.val(location.coords.altitudeAccuracy);
-               settings.location.speed.val(location.coords.speed);
-               settings.location.heading.val(location.coords.heading);
-            },
-            function (error) {
-               console.log(error);
-            },
-            {
-               enableHighAccuracy: settings.location.enableHighAccuracy,
-               maximumAge: settings.location.maximumAge < 0 ? Infinity : settings.location.maximumAge,
-               timeout: settings.location.timeout < 0 ? Infinity : settings.location.timeout
-            }
-         );
+         var locationOptions = {
+            enableHighAccuracy: settings.location.enableHighAccuracy,
+            maximumAge: settings.location.maximumAge < 0 ? Infinity : settings.location.maximumAge,
+            timeout: settings.location.timeout < 0 ? Infinity : settings.location.timeout
+         }
+
+         var locationSuccess = function (location) {
+            console.log(location);
+            settings.location.latitude.val(location.coords.latitude);
+            settings.location.longitude.val(location.coords.longitude);
+            settings.location.accuracy.val(location.coords.accuracy);
+            settings.location.altitude.val(location.coords.altitude);
+            settings.location.altitudeaccuracy.val(location.coords.altitudeAccuracy);
+            settings.location.speed.val(location.coords.speed);
+            settings.location.heading.val(location.coords.heading);
+            
+            $('#id_location_accuracy').text(location.coords.accuracy);
+            $('#id_location_button').find('div.spinner-border').hide();
+            setTimeout(function () {
+               $('#id_location_accuracy').text("");
+               $('#id_location_button').find('span.fa-location-arrow').fadeIn();
+            }, 3000);
+         }
+
+         var locationError = function (error) {
+            console.log(error);
+            $('#id_location_button').find('span.fa-location-arrow').show();
+            $('#id_location_button').find('div.spinner-border').hide();
+         }
+
+         $('#id_location_button').find('span.fa-location-arrow').hide();
+         $('#id_location_button').find('div.spinner-border').show();
+         navigator.geolocation.getCurrentPosition(locationSuccess, locationError, locationOptions);
 
       } else {
          console.log("geolocation IS NOT available");

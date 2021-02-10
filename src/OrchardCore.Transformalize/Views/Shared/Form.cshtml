@@ -83,7 +83,7 @@
 
                <label for="@parameter.Name">@(parameter.Label == string.Empty ? parameter.Name : parameter.Label)</label>
                @if (parameter.Hint != string.Empty) {
-                  <span class="text-muted"> @parameter.Hint</span>
+                  <span class="text-muted float-right"> @parameter.Hint</span>
                }
 
                <input type="text"
@@ -112,7 +112,7 @@
          <div class="form-group @(parameter.Valid ? "is-valid" : "is-invalid") @parameter.Class">
             <label for="@parameter.Name">@parameter.Label</label>
             @if (parameter.Hint != string.Empty) {
-               <span class="text-muted"> @parameter.Hint</span>
+               <span class="text-muted float-right"> @parameter.Hint</span>
             }
             @if (map.Items.Any() && map.Items.All(i => !i.To.Equals(value))) {
                value = map.Items.First().To;
@@ -167,7 +167,7 @@
                      <div class="form-group @(parameter.Valid ? "is-valid" : "is-invalid") @parameter.Class">
                         <label for="@parameter.Name">@parameter.Label</label>
                         @if (parameter.Hint != string.Empty) {
-                           <span class="text-muted"> @parameter.Hint</span>
+                           <span class="text-muted float-right"> @parameter.Hint</span>
                         }
                         <div class="input-group">
                            <div class="input-group-prepend" id="id_dp_@parameter.Name" style="cursor: pointer;">
@@ -215,7 +215,7 @@
                      <div class="form-group @(parameter.Valid ? "is-valid" : "is-invalid") @parameter.Class">
                         <label for="@parameter.Name">@parameter.Label</label>
                         @if (parameter.Hint != string.Empty) {
-                           <span class="text-muted"> @parameter.Hint</span>
+                           <span class="text-muted float-right"> @parameter.Hint</span>
                         }
                         <div class="input-group">
                            <div class="input-group-prepend" id="id_dp_@parameter.Name" style="cursor: pointer;">
@@ -267,7 +267,7 @@
 
                         <label for="@parameter.Name">@parameter.Label</label>
                         @if (parameter.Hint != string.Empty) {
-                           <span class="text-muted"> @parameter.Hint</span>
+                           <span class="text-muted float-right"> @parameter.Hint</span>
                         }
 
                         <div id="id_@(parameter.Name)" class="file-options">
@@ -362,7 +362,7 @@
 
                         <label for="@parameter.Name">@parameter.Label</label>
                         @if (parameter.Hint != string.Empty) {
-                           <span class="text-muted"> @parameter.Hint</span>
+                           <span class="text-muted float-right"> @parameter.Hint</span>
                         }
                         <div id="id_@(parameter.Name)" class="file-options">
                            <div class="has-file" style="@(hasScan ? string.Empty : "display:none")">
@@ -420,7 +420,7 @@
                      <div class="form-group @(parameter.Valid ? "is-valid" : "is-invalid") @parameter.Class">
                         <label for="@parameter.Name">@parameter.Label</label>
                         @if (parameter.Hint != string.Empty) {
-                           <span class="text-muted"> @parameter.Hint</span>
+                           <span class="text-muted float-right"> @parameter.Hint</span>
                         }
                         @if (parameter.UseTextArea(out length)) {
                            <textarea class="form-control @(parameter.Valid ? "is-valid" : "is-invalid")"
