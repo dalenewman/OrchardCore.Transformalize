@@ -145,6 +145,10 @@
    }
 
    function getLocation() {
+
+      var button = $('#id_location_button');
+      var span = $('#id_location_accuracy');
+
       if ("geolocation" in navigator) {
 
          var locationOptions = {
@@ -162,27 +166,46 @@
             settings.location.altitudeaccuracy.val(location.coords.altitudeAccuracy);
             settings.location.speed.val(location.coords.speed);
             settings.location.heading.val(location.coords.heading);
-            
-            $('#id_location_accuracy').text(location.coords.accuracy);
-            $('#id_location_button').find('div.spinner-border').hide();
+
+            button.toggleClass("btn-danger btn-success");
+            span.text(location.coords.accuracy);
+            button.find('div.spinner-border').hide();
             setTimeout(function () {
-               $('#id_location_accuracy').text("");
-               $('#id_location_button').find('span.fa-location-arrow').fadeIn();
+               span.text("");
+               button.find('span.fa-location-arrow').fadeIn();
             }, 3000);
          }
 
          var locationError = function (error) {
-            console.log(error);
-            $('#id_location_button').find('span.fa-location-arrow').show();
-            $('#id_location_button').find('div.spinner-border').hide();
+            console.log(error.message);
+            switch (error.code) {
+               case 1:
+                  span.text("Not Allowed")
+                  break;
+               case 2:
+                  span.text("Unavailable")
+                  break;
+               default:
+                  span.text("Timeout")
+                  break;
+            }
+            button.toggleClass("btn-success btn-danger")
+            button.find('span.fa-location-arrow').show();
+            button.find('div.spinner-border').hide();
+            setTimeout(function () {
+               span.text("");
+               button.find('span.fa-location-arrow').fadeIn();
+               button.toggleClass("btn-danger btn-success")
+            }, 3000);
          }
 
-         $('#id_location_button').find('span.fa-location-arrow').hide();
-         $('#id_location_button').find('div.spinner-border').show();
+         button.find('span.fa-location-arrow').hide();
+         button.find('div.spinner-border').show();
          navigator.geolocation.getCurrentPosition(locationSuccess, locationError, locationOptions);
 
       } else {
-         console.log("geolocation IS NOT available");
+         button.toggleClass("btn-success btn-warning");
+         button.prop("disabled", true);
       }
    }
 
