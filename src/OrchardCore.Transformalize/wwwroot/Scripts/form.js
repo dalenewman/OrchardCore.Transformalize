@@ -147,18 +147,23 @@
    function getLocation() {
 
       var button = $('#id_location_button');
-      var span = $('#id_location_accuracy');
+      var display = $('#id_location_accuracy');
+      var busy = button.find('div.spinner-border');
+      var arrow = button.find('span.fa-location-arrow');
+
+      var red = function () { button.removeClass("btn-success").addClass("btn-danger"); }
+      var green = function () { button.removeClass("btn-danger").addClass("btn-success"); }
 
       if ("geolocation" in navigator) {
 
-         var locationOptions = {
+         var options = {
             enableHighAccuracy: settings.location.enableHighAccuracy,
             maximumAge: settings.location.maximumAge < 0 ? Infinity : settings.location.maximumAge,
             timeout: settings.location.timeout < 0 ? Infinity : settings.location.timeout
          }
 
-         var locationSuccess = function (location) {
-            console.log(location);
+         var success = function (location) {
+
             settings.location.latitude.val(location.coords.latitude);
             settings.location.longitude.val(location.coords.longitude);
             settings.location.accuracy.val(location.coords.accuracy);
@@ -167,44 +172,55 @@
             settings.location.speed.val(location.coords.speed);
             settings.location.heading.val(location.coords.heading);
 
-            button.toggleClass("btn-danger btn-success");
-            span.text(location.coords.accuracy);
-            button.find('div.spinner-border').hide();
+            green();
+            busy.hide();
+            display.text(location.coords.accuracy);
+            console.log(location);
+
+            // reset the button after 3 seconds
             setTimeout(function () {
-               span.text("");
-               button.find('span.fa-location-arrow').fadeIn();
+               display.text("");
+               arrow.fadeIn();
             }, 3000);
          }
 
          var locationError = function (error) {
-            console.log(error.message);
+
+            red();
+            busy.hide();
+            console.log(error);
+
+            // show message instead of arrow
+            arrow.hide();
             switch (error.code) {
-               case 1:
-                  span.text("Not Allowed")
+               case error.PERMISSION_DENIED:
+                  display.text("Blocked");
                   break;
-               case 2:
-                  span.text("Unavailable")
+               case error.POSITION_UNAVAILABLE:
+                  display.text("Unknown");
                   break;
-               default:
-                  span.text("Timeout")
+               case error.TIMEOUT:
+                  display.text("Timeout");
+                  break;
+               case error.UNKNOWN_ERROR:
+                  display.text("Error");
                   break;
             }
-            button.toggleClass("btn-success btn-danger")
-            button.find('span.fa-location-arrow').show();
-            button.find('div.spinner-border').hide();
+
+            // reset the button after 3 seconds
             setTimeout(function () {
-               span.text("");
-               button.find('span.fa-location-arrow').fadeIn();
-               button.toggleClass("btn-danger btn-success")
+               green();
+               display.text("");
+               arrow.fadeIn();
             }, 3000);
          }
 
-         button.find('span.fa-location-arrow').hide();
-         button.find('div.spinner-border').show();
-         navigator.geolocation.getCurrentPosition(locationSuccess, locationError, locationOptions);
+         arrow.hide();
+         busy.show();
+         navigator.geolocation.getCurrentPosition(success, locationError, options);
 
       } else {
-         button.toggleClass("btn-success btn-warning");
+         button.removeClass("btn-success").addClass("btn-warning");
          button.prop("disabled", true);
       }
    }
