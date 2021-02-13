@@ -7,7 +7,7 @@
     <UserSecretsId>385130c7-6d28-458c-8059-7afef6345940</UserSecretsId>
     <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
     <DockerfileContext>..\..</DockerfileContext>
-    <Version>0.8.35-beta</Version>
+    <Version>0.8.36-beta</Version>
   </PropertyGroup>
   <ItemGroup>
     <None Include=".ebextensions\https-backendsecurity.config">
