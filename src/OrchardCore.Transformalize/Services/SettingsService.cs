@@ -9,9 +9,8 @@ using System.Linq;
 using Transformalize.Configuration;
 using StackExchange.Profiling;
 using TransformalizeModule.Ext;
-using OrchardCore.ContentFields.Fields;
-using System.Security.Cryptography.Xml;
-using Microsoft.AspNetCore.Mvc.RazorPages;
+using OrchardCore.Data;
+using YesSql;
 
 namespace TransformalizeModule.Services {
 
@@ -39,7 +38,17 @@ namespace TransformalizeModule.Services {
       public Dictionary<string, Field> Fields { get; } = new Dictionary<string, Field>();
       private readonly Dictionary<string, Transformalize.ConfigurationFacade.Field> FieldsFacade = new Dictionary<string, Transformalize.ConfigurationFacade.Field>(StringComparer.OrdinalIgnoreCase);
 
-      public SettingsService(ISiteService siteService) {
+      private readonly IDbConnectionAccessor _dbConnectionAccessor;
+      private readonly IStore _store;
+
+      public SettingsService(
+         ISiteService siteService, 
+         IDbConnectionAccessor dbConnectionAccessor,
+         IStore store
+      ) {
+
+         _dbConnectionAccessor = dbConnectionAccessor;
+         _store = store;
 
          using (MiniProfiler.Current.Step("Common Settings Setup")) {
 
@@ -86,6 +95,7 @@ namespace TransformalizeModule.Services {
                ConnectionsFacade.Add(connection.Name, connection);
             }
 
+            // fields
             if (Process.Entities.Any()) {
                foreach (var field in Process.Entities.First().Fields) {
                   Fields.Add(field.Name, field);
@@ -201,13 +211,22 @@ namespace TransformalizeModule.Services {
          // common connections
          for (int i = 0; i < process.Connections.Count; i++) {
             var connection = process.Connections[i];
-            if (Connections.ContainsKey(connection.Name) && connection.Provider == Transformalize.Constants.DefaultSetting) {
-               var key = connection.Key;
-               var table = connection.Table;
-               process.Connections[i] = Connections[connection.Name];
-               process.Connections[i].Key = key;
-               process.Connections[i].Table = table;
+            if(connection.Provider == Transformalize.Constants.DefaultSetting) {
+               if (Connections.ContainsKey(connection.Name)) {
+                  var key = connection.Key;
+                  var table = connection.Table;
+                  process.Connections[i] = Connections[connection.Name];
+                  process.Connections[i].Key = key;
+                  process.Connections[i].Table = table;
+               } else if (connection.Name == "orchard"){
+                  using(var cn = _dbConnectionAccessor.CreateConnection()) {
+                     connection.ConnectionString = cn.ConnectionString;
+                     connection.Provider = _store.Dialect.Name.ToLower();
+                  }
+               }
+
             }
+
          }
 
          // common fields
@@ -282,10 +301,17 @@ namespace TransformalizeModule.Services {
          // common connections
          for (int i = 0; i < process.Connections.Count; i++) {
             var connection = process.Connections[i];
-            if (connection.Provider == null && ConnectionsFacade.ContainsKey(connection.Name)) {
-               var table = connection.Table;
-               process.Connections[i] = ConnectionsFacade[connection.Name];
-               process.Connections[i].Table = table;
+            if(connection.Provider == null) {
+               if (ConnectionsFacade.ContainsKey(connection.Name)) {
+                  var table = connection.Table;
+                  process.Connections[i] = ConnectionsFacade[connection.Name];
+                  process.Connections[i].Table = table;
+               } else if(connection.Name == "orchard") {
+                  using(var cn = _dbConnectionAccessor.CreateConnection()) {
+                     connection.ConnectionString = cn.ConnectionString;
+                     connection.Provider = _store.Dialect.Name.ToLower();
+                  }
+               }
             }
          }
 
