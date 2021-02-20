@@ -21,7 +21,7 @@ namespace TransformalizeModule.Activities {
 
       public TransformalizeActivity(
          ITaskService taskService,
-         IStringLocalizer<NotifyTask> s, 
+         IStringLocalizer<NotifyTask> s,
          IHtmlLocalizer<NotifyTask> h,
          IWorkflowExpressionEvaluator expressionEvaluator
       ) {
@@ -49,7 +49,7 @@ namespace TransformalizeModule.Activities {
       public override async Task<ActivityExecutionResult> ExecuteAsync(WorkflowExecutionContext workflowContext, ActivityContext activityContext) {
 
          var alias = await _expressionEvaluator.EvaluateAsync(Alias, workflowContext, null);
-         var request = new TransformalizeRequest(alias, null) { Secure = false };
+         var request = new TransformalizeRequest(alias, null) { Secure = false, InternalParameters = GetParameters(workflowContext) };
          var task = await _taskService.Validate(request);
 
          if (task.Fails()) {
@@ -59,7 +59,7 @@ namespace TransformalizeModule.Activities {
 
          await _taskService.RunAsync(task.Process);
 
-         if(task.Process.Status != 200) {
+         if (task.Process.Status != 200) {
             workflowContext.Fault(new Exception(task.Process.Message), activityContext);
             return Outcomes("Error");
          }
@@ -67,5 +67,15 @@ namespace TransformalizeModule.Activities {
          return Outcomes("Done");
       }
 
+      private static Dictionary<string, string> GetParameters(WorkflowExecutionContext workflowContext) {
+         var parameters = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+         if (workflowContext.Input != null) {
+            foreach (var key in workflowContext.Input.Keys) {
+               parameters[key] = workflowContext.Input[key]?.ToString() ?? string.Empty;
+            }
+         }
+         parameters["CorrelationId"] = workflowContext.CorrelationId ?? string.Empty;
+         return parameters;
+      }
    }
 }

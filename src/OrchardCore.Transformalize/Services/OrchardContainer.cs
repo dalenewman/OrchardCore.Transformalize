@@ -66,6 +66,7 @@ using OrchardCore.Modules;
 using Transformalize.Transform.GoogleMaps;
 using TransformalizeModule.Services.Contracts;
 using Transformalize.Transforms.Aws.Autofac;
+using Transformalize.Providers.Mail.Autofac;
 
 namespace TransformalizeModule.Services {
 
@@ -182,6 +183,7 @@ namespace TransformalizeModule.Services {
          // misc
          if (providers.Contains("bogus")) { builder.RegisterModule(new BogusModule()); }
          if (providers.Contains("log") || process.Actions.Any(a => a.Type == "log")) { builder.RegisterModule(new OrchardLogModule(process)); }
+         if (providers.Contains("mail")) { builder.RegisterModule(new MailModule()); }
 
          // transform and validation modules need these properties
          builder.Properties["ShortHand"] = _shortHand;
@@ -298,7 +300,7 @@ namespace TransformalizeModule.Services {
                pipeline.Register(TransformFactory.GetTransforms(ctx, context, entity.GetAllFields().Where(f => f.Transforms.Any())));
                pipeline.Register(ValidateFactory.GetValidators(ctx, context, entity.GetAllFields().Where(f => f.Validators.Any())));
 
-               if (!process.ReadOnly && !output.Provider.In("internal","log")) {
+               if (!process.ReadOnly && !output.Provider.In("internal", "log")) {
                   pipeline.Register(new StringTruncateTransfom(new PipelineContext(ctx.Resolve<IPipelineLogger>(), process, entity)));
                }
 
@@ -410,7 +412,7 @@ namespace TransformalizeModule.Services {
                      controller.PostActions.Add(ctx.ResolveNamed<IAction>(action.Key));
                   }
                } else {
-                  if(action.Type != "internal") {
+                  if (action.Type != "internal") {
                      _logger.Warn(() => $"The action {action.Name} with type {action.Type} isn't registered.");
                   }
                }
