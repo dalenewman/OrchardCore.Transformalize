@@ -3,7 +3,7 @@
     <TargetFramework>netcoreapp3.1</TargetFramework>
     <AddRazorSupportForMvc>true</AddRazorSupportForMvc>
     <RootNamespace>TransformalizeModule</RootNamespace>
-    <Version>0.8.37-beta</Version>
+    <Version>0.8.39-beta</Version>
   </PropertyGroup>
   <ItemGroup>
     <EmbeddedResource Remove="bundleconfig.json" />
@@ -32,7 +32,7 @@
     <PackageReference Include="OrchardCore.Users" Version="1.0.0-rc2-13450" />
     <PackageReference Include="OrchardCore.Workflows" Version="1.0.0-rc2-13450" />
     <PackageReference Include="System.Text.Encoding.CodePages" Version="5.0.0" />
-    <PackageReference Include="Transformalize" Version="0.8.35-beta" />
+    <PackageReference Include="Transformalize" Version="0.8.36-beta" />
     <PackageReference Include="Transformalize.Container.Autofac" Version="0.8.35-beta" />
     <PackageReference Include="Transformalize.Provider.Ado.Autofac" Version="0.8.35-beta" />
     <PackageReference Include="Transformalize.Provider.Bogus.Autofac" Version="0.8.29-beta" />
@@ -42,7 +42,7 @@
     <PackageReference Include="Transformalize.Provider.File.Autofac" Version="0.8.30-beta" />
     <PackageReference Include="Transformalize.Provider.GeoJson.Autofac" Version="0.8.24-beta" />
     <PackageReference Include="Transformalize.Provider.Json.Autofac" Version="0.8.29-beta" />
-    <PackageReference Include="Transformalize.Provider.Mail.Autofac" Version="0.8.35-beta" />
+    <PackageReference Include="Transformalize.Provider.Mail.Autofac" Version="0.8.38-beta" />
     <PackageReference Include="Transformalize.Provider.MySql.Autofac" Version="0.8.29-beta" />
     <PackageReference Include="Transformalize.Provider.PostgreSql.Autofac" Version="0.8.35-beta" />
     <PackageReference Include="Transformalize.Provider.Sqlite.Autofac" Version="0.8.29-beta" />
