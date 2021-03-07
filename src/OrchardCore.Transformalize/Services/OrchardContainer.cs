@@ -67,6 +67,7 @@ using Transformalize.Transform.GoogleMaps;
 using TransformalizeModule.Services.Contracts;
 using Transformalize.Transforms.Aws.Autofac;
 using Transformalize.Providers.Mail.Autofac;
+using Transformalize.Providers.Aws.CloudWatch.Autofac;
 
 namespace TransformalizeModule.Services {
 
@@ -184,6 +185,7 @@ namespace TransformalizeModule.Services {
          if (providers.Contains("bogus")) { builder.RegisterModule(new BogusModule()); }
          if (providers.Contains("log") || process.Actions.Any(a => a.Type == "log")) { builder.RegisterModule(new OrchardLogModule(process)); }
          if (providers.Contains("mail")) { builder.RegisterModule(new MailModule()); }
+         if (providers.Contains("aws")) { builder.RegisterModule(new AwsCloudWatchProviderModule()); }
 
          // transform and validation modules need these properties
          builder.Properties["ShortHand"] = _shortHand;
