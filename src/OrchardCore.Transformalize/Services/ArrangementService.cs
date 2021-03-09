@@ -58,7 +58,7 @@ namespace TransformalizeModule.Services {
          if (request.Format == null) {
             foreach (var parameter in response.Process.Parameters.Where(p => !p.Valid)) {
                foreach (var message in parameter.Message.Split('|')) {
-                  _logger.Warn(() => message);
+                  _logger.Warn(() => message.Replace("{", "{{").Replace("}", "}}"));
                }
             }
             response.ActionResult = LogResult(response);

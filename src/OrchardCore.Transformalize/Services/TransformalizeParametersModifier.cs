@@ -102,6 +102,7 @@ namespace TransformalizeModule.Services {
                Label = pr.Label,
                PostBack = pr.PostBack,
                Type = pr.Type,
+               Help = pr.Help,
                InputType = pr.InputType,  // used in ParameterRowReader to identify files
                Transforms = pr.Transforms.Select(o => o.ToOperation()).ToList(),
                Validators = pr.Validators.Select(o => o.ToOperation()).ToList()
