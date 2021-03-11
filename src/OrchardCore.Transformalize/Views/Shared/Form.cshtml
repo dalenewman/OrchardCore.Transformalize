@@ -93,6 +93,7 @@
                       id="id_@parameter.Name"
                       placeholder="@parameter.Label"
                       value="@value"
+                      autocomplete="@(parameter.AutoComplete ? "on" : "off")"
                       data-tfl-post-back="false" />
 
                @* if you change location you must update parsley error container *@
@@ -180,6 +181,7 @@
                                   id="id_@parameter.Name"
                                   placeholder="@parameter.Label"
                                   value="@value"
+                                  autocomplete="@(parameter.AutoComplete ? "on" : "off")"
                                   data-tfl-post-back="@(parameter.PostBack)"
                                   @Html.Raw(parameter.ToParsley()) />
                            <script language="javascript">
@@ -281,6 +283,7 @@
                                         name="@parameter.Name"
                                         id="id_@parameter.Name"
                                         disabled="@(file == null)"
+                                        autocomplete="@(parameter.AutoComplete ? "on" : "off")"
                                         data-tfl-post-back="@(parameter.PostBack)"
                                         value="@(file == null ? string.Empty : file.OriginalName.Text)"
                                         readonly="readonly" />
@@ -290,18 +293,6 @@
                               <table>
                                  <tr>
                                     <td style="width:auto;">
-
-                                       @*<div class="custom-file">
-                                             <input name="@(parameter.Name)"
-                                                      type="file"
-                                                      class="custom-file-input @(parameter.Valid ? "is-valid" : "is-invalid")"
-                                                      data-tfl-post-back="false"
-                                                      disabled="@(file != null)"
-                                                      id="@(parameter.Name)"
-                                                      @(Html.Raw(parameter.InputAccept == string.Empty ? string.Empty : "accept=\"" + parameter.InputAccept + "\""))
-                                                      @(Html.Raw(parameter.InputCapture == string.Empty ? string.Empty : "capture=\"" + parameter.InputCapture + "\"")) />
-                                             <label class="custom-file-label" for="@(parameter.Name)">Upload</label>
-                                          </div>*@
 
                                        <label class="btn btn-primary btn-file" style="width:110px; margin-bottom:0px;">
                                           <i class="fas fa-plus"></i>
@@ -315,17 +306,6 @@
                                                         @(Html.Raw(parameter.InputCapture == string.Empty ? string.Empty : "capture=\"" + parameter.InputCapture + "\"")) />
                                        </label>
 
-                                       @*<span class="btn btn-primary fileinput-button @(parameter.Valid ? "is-valid" : "is-invalid")" style="width:100px;">
-                                             <i class="fas fa-plus"></i>
-                                             <span>Upload</span>
-                                             <input name="@(parameter.Name)"
-                                                      type="file"
-                                                      class="form-control @(parameter.Valid ? "is-valid" : "is-invalid")"
-                                                      data-tfl-post-back="false"
-                                                      disabled="@(file != null)"
-                                                      @(Html.Raw(parameter.InputAccept == string.Empty ? string.Empty : "accept=\"" + parameter.InputAccept + "\""))
-                                                      @(Html.Raw(parameter.InputCapture == string.Empty ? string.Empty : "capture=\"" + parameter.InputCapture + "\"")) />
-                                          </span>*@
                                     </td>
                                     <td style="width:100%;">
                                        <div class="progress" style="height:38px;">
@@ -374,6 +354,7 @@
                                         class="form-control @(parameter.Valid ? "is-valid" : "is-invalid")"
                                         name="@parameter.Name"
                                         id="id_@parameter.Name"
+                                        autocomplete="@(parameter.AutoComplete ? "on" : "off")"
                                         data-tfl-post-back="false"
                                         value="@(hasScan ? value : string.Empty)"
                                         @Html.Raw(parameter.ToParsley()) />
@@ -452,6 +433,7 @@
                                         name="@parameter.Name"
                                         id="id_@parameter.Name"
                                         placeholder="@parameter.Label"
+                                        autocomplete="@(parameter.AutoComplete ? "on" : "off")"
                                         value="@value"
                                         data-tfl-post-back="@(parameter.PostBack)"
                                         @Html.Raw(parameter.ToParsley()) />
