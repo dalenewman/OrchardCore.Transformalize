@@ -10,6 +10,7 @@
    var fileService = Context.RequestServices.GetService<IFileService>();
    var getMethod = false;
    var focus = string.Empty;
+   var submitStyle = Model.Parameters.Any(p => p.Prompt) ? string.Empty : "display:none;";
 
    if (Context.Request.Method == "GET") {
       focus = Model.Parameters.FirstOrDefault(f => f.Prompt)?.Name ?? string.Empty;
@@ -456,7 +457,7 @@
 
    @if (Model.Mode == "form") {
 
-      <input name="Orchard.Submit" id="id_submit" type="submit" value="Submit" class="btn btn-success btn-block" />
+      <input name="Orchard.Submit" id="id_submit" type="submit" style="@submitStyle" value="Submit" class="btn btn-success btn-block" />
 
    } else {
 
