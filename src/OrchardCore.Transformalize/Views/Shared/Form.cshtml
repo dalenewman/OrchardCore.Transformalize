@@ -7,28 +7,38 @@
 
 @{
    Layout = null;
+
+   const string ORCHARD_SUBMIT = "Orchard.Submit";
+   const string ORCHARD_FOCUS = "Orchard.Focus";
+   const string RETURN_URL = "ReturnUrl";
+
    var fileService = Context.RequestServices.GetService<IFileService>();
    var getMethod = false;
    var focus = string.Empty;
-   var submitStyle = Model.Parameters.Any(p => p.Prompt) ? string.Empty : "display:none;";
+   var submit = Model.Parameters.Any(p => p.VisiblePrompt());
+   var antiForgery = Model.Mode == "form" && submit || Model.Mode != "form";
 
    if (Context.Request.Method == "GET") {
-      focus = Model.Parameters.FirstOrDefault(f => f.Prompt)?.Name ?? string.Empty;
+      focus = Model.Parameters.FirstOrDefault(p => p.VisiblePrompt())?.Name ?? string.Empty;
       getMethod = true;
    } else {
-      var previous = Context.Request.Form["Orchard.Focus"].ToString() == "Orchard.Submit" ? Model.Parameters.Last(p => p.Prompt) : Model.Parameters.First(p => p.Name == Context.Request.Form["Orchard.Focus"].ToString());
-      var maxSequence = Model.Parameters.Where(f => f.Prompt).Max(p => p.Sequence);
-      if (previous.Sequence < maxSequence) {
-         var next = Model.Parameters.OrderBy(p => p.Sequence).FirstOrDefault(p => p.Sequence > previous.Sequence);
+      var previous = Context.Request.Form[ORCHARD_FOCUS].ToString() == ORCHARD_SUBMIT ?
+         Model.Parameters.LastOrDefault(p => p.VisiblePrompt()) :
+         Model.Parameters.FirstOrDefault(p => p.Name == Context.Request.Form[ORCHARD_FOCUS].ToString());
+
+      var maxSequence = Model.Parameters.Where(p => p.VisiblePrompt()).Max(p => p.Sequence);
+
+      if (previous != null && previous.Sequence < maxSequence) {
+         var next = Model.Parameters.OrderBy(p => p.Sequence).FirstOrDefault(p => p.Sequence > previous.Sequence && p.VisiblePrompt());
          if (next != null) {
             focus = next.Name;
          } else {
-            var invalid = Model.Parameters.FirstOrDefault(p => p.Prompt && !p.Valid);
-            focus = invalid == null ? "Orchard.Submit" : invalid.Name;
+            var invalid = Model.Parameters.FirstOrDefault(p => p.VisiblePrompt() && !p.Valid);
+            focus = invalid == null ? ORCHARD_SUBMIT : invalid.Name;
          }
       } else {
-         var invalid = Model.Parameters.FirstOrDefault(p => p.Prompt && !p.Valid);
-         focus = invalid == null ? "Orchard.Submit" : invalid.Name;
+         var invalid = Model.Parameters.FirstOrDefault(p => p.VisiblePrompt() && !p.Valid);
+         focus = invalid == null ? ORCHARD_SUBMIT : invalid.Name;
       }
    }
 }
@@ -43,15 +53,15 @@
    }
 </style>
 
-<form id="id_form" method="post" role="form" enctype="multipart/form-data">
-   @Html.AntiForgeryToken()
-   <input type="hidden" id="id_focus" name="Orchard.Focus" value="@(focus)" />
+<form id="id_form" method="post" role="form" enctype="multipart/form-data" asp-antiforgery="@antiForgery">
 
-   @if (!Model.Parameters.Any(p => p.Name == "ReturnUrl")) {
-      if (Context.Request.HasFormContentType && Context.Request.Form["ReturnUrl"] != StringValues.Empty) {
-         <input type="hidden" name="ReturnUrl" value="@Context.Request.Form["ReturnUrl"].ToString()" />
-      } else if (Context.Request.Query["ReturnUrl"] != StringValues.Empty) {
-         <input type="hidden" name="ReturnUrl" value="@Context.Request.Query["ReturnUrl"].ToString()" />
+   <input type="hidden" id="id_focus" name="@ORCHARD_FOCUS" value="@(focus)" />
+
+   @if (!Model.Parameters.Any(p => p.Name == RETURN_URL)) {
+      if (Context.Request.HasFormContentType && Context.Request.Form[RETURN_URL] != StringValues.Empty) {
+         <input type="hidden" name="@RETURN_URL" value="@Context.Request.Form[RETURN_URL].ToString()" />
+      } else if (Context.Request.Query[RETURN_URL] != StringValues.Empty) {
+         <input type="hidden" name="@RETURN_URL" value="@Context.Request.Query[RETURN_URL].ToString()" />
       }
    }
 
@@ -71,7 +81,7 @@
 
       if (parameter.Readonly()) {
 
-         if (!parameter.Raw && !parameter.Input || parameter.PrimaryKey || parameter.InputType == "location") {
+         if (!parameter.Raw && !parameter.Input || parameter.PrimaryKey || parameter.InputType == "location" || parameter.Visible == "false") {
             <input type="hidden" name="@parameter.Name" value="@parameter.Value" id="id_@parameter.Name" />
             Html.RenderPartial("Location", parameter);
             continue;
@@ -282,7 +292,7 @@
                                  <input type="text"
                                         class="form-control @(parameter.Valid ? "is-valid" : "is-invalid")"
                                         name="@parameter.Name"
-                                        id="id_@parameter.Name"
+                                        @*id="id_@parameter.Name"*@
                                         disabled="@(file == null)"
                                         autocomplete="@(parameter.AutoComplete ? "on" : "off")"
                                         data-tfl-post-back="@(parameter.PostBack)"
@@ -457,14 +467,16 @@
 
    @if (Model.Mode == "form") {
 
-      <input name="Orchard.Submit" id="id_submit" type="submit" style="@submitStyle" value="Submit" class="btn btn-success btn-block" />
+      if (submit) {
+         <input name="@ORCHARD_SUBMIT" id="id_submit" type="submit" value="Submit" class="btn btn-success btn-block" />
+      }
 
-   } else {
+   } else {  // tasks
 
       if (Model.Parameters.All(p => p.Valid)) {
-         <input name="Orchard.Submit" id="id_submit" type="submit" value="Run" class="btn btn-success btn-block" />
+         <input name="@ORCHARD_SUBMIT" id="id_submit" type="submit" value="Run" class="btn btn-success btn-block" />
       } else {
-         <input name="Orchard.Submit" id="id_submit" type="submit" value="Update" class="btn btn-primary btn-block" />
+         <input name="@ORCHARD_SUBMIT" id="id_submit" type="submit" value="Update" class="btn btn-primary btn-block" />
       }
 
    }

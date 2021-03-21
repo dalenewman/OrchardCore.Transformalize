@@ -7,7 +7,11 @@ namespace TransformalizeModule.Ext {
    public static class ParameterExtensions {
 
       public static bool Readonly(this Parameter p) {
-         return !p.Prompt;
+         return !p.Prompt || p.Visible == "false";
+      }
+
+      public static bool VisiblePrompt(this Parameter p) {
+         return p.Prompt && p.Visible == "true";
       }
 
       public static string ToParsley(this Parameter f) {

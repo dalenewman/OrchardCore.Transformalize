@@ -30,6 +30,8 @@ using Transformalize.Impl;
 using Process = Transformalize.Configuration.Process;
 using IContainer = TransformalizeModule.Services.Contracts.IContainer;
 using StackExchange.Profiling;
+using OrchardCore.DisplayManagement.Notify;
+using Microsoft.AspNetCore.Mvc.Localization;
 
 namespace TransformalizeModule.Services {
 
@@ -44,17 +46,23 @@ namespace TransformalizeModule.Services {
       private readonly ISettingsService _settings;
       private readonly CombinedLogger<TransferParameterModifier> _logger;
       private readonly IContainer _container;
+      private readonly INotifier _notifier;
+      private readonly IHtmlLocalizer<TransferParameterModifier> H;
 
       public ISerializer Serializer { get; set; }
 
       public TransformalizeParametersModifier(
          CombinedLogger<TransferParameterModifier> logger,
+         IHtmlLocalizer<TransferParameterModifier> htmlLocalizer,
          ISettingsService settings,
-         IContainer container
+         IContainer container,
+         INotifier notifier
       ) {
          _logger = logger;
          _settings = settings;
          _container = container;
+         _notifier = notifier;
+         H = htmlLocalizer;
       }
 
       public string Modify(string cfg, IDictionary<string, string> parameters) {
@@ -63,7 +71,7 @@ namespace TransformalizeModule.Services {
          }
       }
 
-      private string ModifyInternal(string cfg, IDictionary<string,string> parameters) {
+      private string ModifyInternal(string cfg, IDictionary<string, string> parameters) {
 
          // using facade (which is all string properties) so things can be 
          // transformed before types are checked or place-holders are replaced
@@ -216,6 +224,9 @@ namespace TransformalizeModule.Services {
             }
 
             if (output != null) {
+
+               JintVisibility jintVisibility = null;
+
                foreach (var parameter in facade.Parameters) {
                   var field = fields.First(f => f.Name == parameter.Name);
 
@@ -223,13 +234,31 @@ namespace TransformalizeModule.Services {
                   parameter.Value = output[field.Name].ToString();
                   parameter.PostBack = field.PostBack;  // auto is changed to true|false in transformalize
 
+                  // set the validation results
                   if (parameter.Validators.Any()) {
-                     // set the validation results
                      if ((bool)output[field.ValidField]) {
                         parameter.Valid = "true";
                      } else {
                         parameter.Valid = "false";
                         parameter.Message = ((string)output[field.MessageField]).TrimEnd('|');
+                     }
+                  }
+
+                  // set the visibility
+                  if (string.IsNullOrEmpty(parameter.Visible)) {
+                     parameter.Visible = "true";
+                  } else {
+                     if (jintVisibility == null) {
+                        jintVisibility = new JintVisibility();
+                     }
+                     var response = jintVisibility.Visible(new JvRequest(output, parameter.Visible));
+                     if (response.Faulted) {
+                        _logger.Error(() => $"Parameter {parameter.Name} has a visible script error: {response.Message}");
+                        _notifier.Error(H[$"Parameter {parameter.Name} has a visible script error: {response.Message}"]);
+                     }
+                     parameter.Visible = response.Visible.ToString().ToLower();
+                     if (parameter.Visible == "false") {
+                        parameter.Valid = "true";  // because they won't be able to fix it
                      }
                   }
 

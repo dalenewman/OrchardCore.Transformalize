@@ -1,7 +1,7 @@
 #region license
 // Transformalize
 // Configurable Extract, Transform, and Load
-// Copyright 2013-2020 Dale Newman
+// Copyright 2013-2021 Dale Newman
 //  
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -68,6 +68,7 @@ using TransformalizeModule.Services.Contracts;
 using Transformalize.Transforms.Aws.Autofac;
 using Transformalize.Providers.Mail.Autofac;
 using Transformalize.Providers.Aws.CloudWatch.Autofac;
+using Transformalize.Providers.Amazon.Connect.Autofac;
 
 namespace TransformalizeModule.Services {
 
@@ -185,7 +186,11 @@ namespace TransformalizeModule.Services {
          if (providers.Contains("bogus")) { builder.RegisterModule(new BogusModule()); }
          if (providers.Contains("log") || process.Actions.Any(a => a.Type == "log")) { builder.RegisterModule(new OrchardLogModule(process)); }
          if (providers.Contains("mail")) { builder.RegisterModule(new MailModule()); }
-         if (providers.Contains("aws")) { builder.RegisterModule(new AwsCloudWatchProviderModule()); }
+         if (providers.Contains("aws")) {
+            var services = new HashSet<string>(process.Connections.Where(c => c.Provider == "aws").Select(c => c.Service));
+            if (services.Contains("logs")) { builder.RegisterModule(new AwsCloudWatchProviderModule()); }
+            if (services.Contains("connect")) { builder.RegisterModule(new AmazonConnectProviderModule()); }   
+         }
 
          // transform and validation modules need these properties
          builder.Properties["ShortHand"] = _shortHand;
