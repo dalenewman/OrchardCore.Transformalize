@@ -65,13 +65,13 @@ namespace TransformalizeModule.Services {
          H = htmlLocalizer;
       }
 
-      public string Modify(string cfg, IDictionary<string, string> parameters) {
+      public string Modify(string cfg, int id, IDictionary<string, string> parameters) {
          using (MiniProfiler.Current.Step("Transformalize Parameters")) {
-            return ModifyInternal(cfg, parameters);
+            return ModifyInternal(cfg, id, parameters);
          }
       }
 
-      private string ModifyInternal(string cfg, IDictionary<string, string> parameters) {
+      private string ModifyInternal(string cfg, int id, IDictionary<string, string> parameters) {
 
          // using facade (which is all string properties) so things can be 
          // transformed before types are checked or place-holders are replaced
@@ -91,6 +91,7 @@ namespace TransformalizeModule.Services {
                   scope.ResolveNamed<IDependency>(ValidateModule.ParametersName)
                }.ToArray()
             );
+            facade.Id = id.ToString();
          }
 
          if (!facade.Parameters.Any()) {
@@ -180,6 +181,7 @@ namespace TransformalizeModule.Services {
 
          // create process to transform and validate the parameter values
          var process = new Process {
+            Id = id,
             Name = "Transformalize Parameters",
             ReadOnly = true,
             Mode = "form",  // causes auto post-back's to resolve to either true or false

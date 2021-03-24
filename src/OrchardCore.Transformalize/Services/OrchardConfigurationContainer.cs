@@ -88,11 +88,11 @@ namespace TransformalizeModule.Services {
 
             string modified = arrangement;
             if (_httpContext.HttpContext.Request.Method == "GET" && item.ContentItem.Has("TransformalizeFormPart")) {
-               modified = _loadFormModifier.Modify(arrangement, combinedParameters);               
+               modified = _loadFormModifier.Modify(arrangement, item.Id, combinedParameters);               
             }
 
             if (validateParameters) {
-               modified = _transformalizeParameters.Modify(arrangement, combinedParameters);
+               modified = _transformalizeParameters.Modify(arrangement, item.Id, combinedParameters);
             }
 
             var process = new Process(modified, combinedParameters, dependancies.ToArray());

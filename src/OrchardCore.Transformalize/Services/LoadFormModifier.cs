@@ -51,15 +51,15 @@ namespace TransformalizeModule.Services {
          _container = container;
       }
 
-      public string Modify(string cfg, IDictionary<string, string> parameters) {
+      public string Modify(string cfg, int id, IDictionary<string, string> parameters) {
          using (MiniProfiler.Current.Step("Load Form")) {
-            return ModifyInternal(cfg, parameters);
+            return ModifyInternal(cfg, id, parameters);
          }
       }
 
-      private string ModifyInternal(string cfg, IDictionary<string,string> parameters) {
+      private string ModifyInternal(string cfg, int id, IDictionary<string,string> parameters) {
 
-         var process = new Process(cfg);
+         var process = new Process(cfg) { Id = id };
 
          // if there aren't any parameters, just leave
          if (!process.Parameters.Any()) {
@@ -113,6 +113,7 @@ namespace TransformalizeModule.Services {
 
          // create process to load the form submission
          var modified = new Process {
+            Id = id,
             Name = "Load Form",
             ReadOnly = true,
             Entities = new List<Entity> { entity },
