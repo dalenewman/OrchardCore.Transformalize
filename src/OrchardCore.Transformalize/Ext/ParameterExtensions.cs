@@ -11,7 +11,7 @@ namespace TransformalizeModule.Ext {
       }
 
       public static bool VisiblePrompt(this Parameter p) {
-         return p.Prompt && p.Visible == "true";
+         return p.Prompt && p.Visible != "false";
       }
 
       public static string ToParsley(this Parameter f) {
