@@ -18,10 +18,11 @@
 
          if (result.id !== "") {
             container.closest('div.form-group').find('.help-block').empty();
-            this.hasFile.closest('div.form-group').removeClass('has-error');
+            this.hasFile.closest('div.form-group').removeClass('is-invalid');
+            this.hasFile.closest('div.form-group').find('input[type=text]').removeClass('is-invalid');
          } else {
             container.closest('div.form-group').find('.help-container').append('<span class="help-block">unable to ' + scan ? 'scan' : 'save' + ' file</span>');
-            this.hasFile.closest('div.form-group').addClass('has-error');
+            this.hasFile.closest('div.form-group').addClass('is-invalid');
          }
 
       }

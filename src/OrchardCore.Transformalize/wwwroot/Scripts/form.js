@@ -134,7 +134,11 @@
       console.log('setting focus to ' + name);
       var $target = $('#id_' + name);
 
-      $target.focus().select();
+      if ($target.length > 0) {
+         $target.focus().select();
+      } else {
+         $("input[name='" + name + "']:checked").focus();
+      }
 
       // ios doesn't refresh dropdowns when ajax re-populates
       if (navigator.userAgent.match(/(ip(hone|od|ad))/i)) {

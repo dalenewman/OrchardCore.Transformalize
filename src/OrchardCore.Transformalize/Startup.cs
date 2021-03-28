@@ -206,7 +206,7 @@ namespace TransformalizeModule {
          );
 
          routes.MapAreaControllerRoute(
-            name: "Run Report API",
+            name: "Run Form API",
             areaName: Common.ModuleName,
             pattern: "t/form/{format}/{ContentItemId}",
             defaults: new { controller = "Form", action = "Run", format = "json" }

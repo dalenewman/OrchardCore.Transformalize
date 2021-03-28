@@ -12,6 +12,7 @@ using Autofac;
 using IContainer = TransformalizeModule.Services.Contracts.IContainer;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Primitives;
+using System.Collections.Generic;
 
 namespace TransformalizeModule.Controllers {
 
@@ -43,7 +44,11 @@ namespace TransformalizeModule.Controllers {
 
       public async Task<ActionResult> Index(string contentItemId) {
 
-         var form = await _formService.ValidateForm(new TransformalizeRequest(contentItemId, HttpContext.User.Identity.Name));
+         var form = await _formService.ValidateForm(
+            new TransformalizeRequest(contentItemId, HttpContext.User.Identity.Name) {
+               InternalParameters = Common.GetFileParameters(Request)
+            }
+         );
 
          if (form.Fails()) {
             return form.ActionResult;
@@ -83,14 +88,6 @@ namespace TransformalizeModule.Controllers {
                ErrorMode = "exception"
             });
 
-            // the content item id of the last stored file is in the _Old parameter
-            foreach (var parameter in _httpContext.HttpContext.Request.Form) {
-               if (parameter.Key.EndsWith("_Old")) {
-                  var name = parameter.Key.Substring(0, parameter.Key.Length - 4);
-                  form.Process.Parameters.First(p => p.Name == name).Value = parameter.Value.ToString();
-               }
-            }
-
             try {
                _formService.Run(form.Process);
                _notifier.Information(insert ? H["{0} inserted", form.Process.Name] : H["{0} updated", form.Process.Name]);
@@ -113,7 +110,11 @@ namespace TransformalizeModule.Controllers {
 
       public async Task<ActionResult> Form(string contentItemId) {
 
-         var form = await _formService.ValidateForm(new TransformalizeRequest(contentItemId, HttpContext.User.Identity.Name));
+         var form = await _formService.ValidateForm(
+            new TransformalizeRequest(contentItemId, HttpContext.User.Identity.Name) {
+               InternalParameters = Common.GetFileParameters(Request)
+            }
+         );
 
          if (form.Fails()) {
             return form.ActionResult;
@@ -125,7 +126,10 @@ namespace TransformalizeModule.Controllers {
       [HttpGet]
       public async Task<ActionResult> Run(string contentItemId, string format = "json") {
 
-         var request = new TransformalizeRequest(contentItemId, HttpContext.User.Identity.Name) { Format = format };
+         var request = new TransformalizeRequest(contentItemId, HttpContext.User.Identity.Name) { 
+            Format = format,
+            InternalParameters = Common.GetFileParameters(Request)
+         };
          var report = await _formService.ValidateForm(request);
 
          if (report.Fails()) {

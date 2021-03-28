@@ -34,7 +34,7 @@ namespace TransformalizeModule.Controllers {
 
          var request = new TransformalizeRequest(contentItemId, HttpContext.User.Identity.Name) { 
             Format = format, 
-            InternalParameters = GetFileParameters()
+            InternalParameters = Common.GetFileParameters(Request)
          };
          var task = await _taskService.Validate(request);
 
@@ -73,24 +73,6 @@ namespace TransformalizeModule.Controllers {
          }
 
          return View(task);
-      }
-
-      /// <summary>
-      /// Gets the file parameter content item ids that are posted in as {name}_Old
-      /// </summary>
-      /// <returns>returns a dictionary of parameters to be passed in as "internal parameters"</returns>
-      private Dictionary<string, string> GetFileParameters() {
-         var parameters = new Dictionary<string, string>();
-         if (Request.Method == "POST" && _httpContext.HttpContext.Request.HasFormContentType) {
-            // the content item id of the last stored file is in the _Old parameter
-            foreach (var parameter in _httpContext.HttpContext.Request.Form) {
-               if (parameter.Key.EndsWith("_Old")) {
-                  var name = parameter.Key.Substring(0, parameter.Key.Length - 4);
-                  parameters[name] = parameter.Value.ToString();
-               }
-            }
-         }
-         return parameters;
       }
 
    }

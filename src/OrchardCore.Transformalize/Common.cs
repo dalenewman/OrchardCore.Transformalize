@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -625,6 +626,24 @@ namespace TransformalizeModule {
             extension = extension.Substring(1);
          }
          return _mappings.ContainsKey(extension);
+      }
+
+      /// <summary>
+      /// Gets the file parameter content item ids that are posted in as {name}_Old
+      /// </summary>
+      /// <returns>returns a dictionary of parameters to be passed in as "internal parameters"</returns>
+      public static Dictionary<string, string> GetFileParameters(HttpRequest request) {
+         var parameters = new Dictionary<string, string>();
+         if (request.Method == "POST" && request.HasFormContentType) {
+            // the content item id of the last stored file is in the _Old parameter
+            foreach (var parameter in request.Form) {
+               if (parameter.Key.EndsWith("_Old")) {
+                  var name = parameter.Key.Substring(0, parameter.Key.Length - 4);
+                  parameters[name] = parameter.Value.ToString();
+               }
+            }
+         }
+         return parameters;
       }
 
    }
