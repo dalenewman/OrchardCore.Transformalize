@@ -33,7 +33,7 @@ namespace TransformalizeModule.Services.Transforms {
       }
 
       public override IEnumerable<OperationSignature> GetSignatures() {
-         yield return new OperationSignature("getencodedurl");
+         yield return new OperationSignature("getdisplayurl");
       }
    }
 }
