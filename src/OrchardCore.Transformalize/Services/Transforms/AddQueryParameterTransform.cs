@@ -34,7 +34,7 @@ namespace TransformalizeModule.Services.Transforms {
             // a single field argument, use field alias and value
             _field = f1;
             _transform = (url, field, row, name, value) => {
-               url.QueryParams.Add(field.Alias, GetString(row,field));
+               url.QueryParams.Add(field.Alias, GetString(row, field), isEncoded: true);
                return url.ToString();
             };
          } else {
@@ -42,17 +42,17 @@ namespace TransformalizeModule.Services.Transforms {
                var split = Context.Operation.Value.Split(',');
                _name = split[0];
                _value = split[1];
-               if(Context.Entity.TryGetField(_value, out var f2)) {
+               if (Context.Entity.TryGetField(_value, out var f2)) {
                   // second parameter is a field, use name and field
                   _field = f2;
                   _transform = (url, field, row, name, value) => {
-                     url.QueryParams.Add(name, GetString(row, field));
+                     url.QueryParams.Add(name, GetString(row, field), isEncoded: true);
                      return url.ToString();
                   };
                } else {
                   // neither parameter is a field, use name and value
                   _transform = (url, field, row, name, value) => {
-                     url.QueryParams.Add(name, value);
+                     url.QueryParams.Add(name, value, isEncoded: true);
                      return url.ToString();
                   };
                }
@@ -70,7 +70,7 @@ namespace TransformalizeModule.Services.Transforms {
             row[Context.Field] = _transform(url, _field, row, _name, _value);
          } else {
             row[Context.Field] = value;
-         }        
+         }
          return row;
       }
 
