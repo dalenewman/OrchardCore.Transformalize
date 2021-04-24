@@ -13,6 +13,9 @@ COPY ["nuget.config",""]
 RUN dotnet restore "src/Site/Site.csproj"
 COPY . .
 WORKDIR "/src/src/Site"
+RUN rm -rf ./App_Data/logs
+RUN rm -rf ./App_Data/Sites
+RUN rm ./App_Data/tenants.json
 RUN dotnet build "Site.csproj" -c Release -o /app/build
 
 FROM build AS publish
