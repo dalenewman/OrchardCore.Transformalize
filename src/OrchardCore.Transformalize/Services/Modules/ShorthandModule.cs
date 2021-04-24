@@ -50,6 +50,7 @@ namespace TransformalizeModule.Services.Modules {
          tm.AddTransform(new TransformHolder((c) => new OrchardTimeZoneTransform(), new OrchardTimeZoneTransform().GetSignatures()));
          tm.AddTransform(new TransformHolder((c) => new FilePartTransform(), new FilePartTransform().GetSignatures()));
          tm.AddTransform(new TransformHolder((c) => new AddQueryParameterTransform(), new AddQueryParameterTransform().GetSignatures()));
+         tm.AddTransform(new TransformHolder((c) => new RemoveQueryParameterTransform(), new RemoveQueryParameterTransform().GetSignatures()));
 
          builder.RegisterModule(tm);
 
