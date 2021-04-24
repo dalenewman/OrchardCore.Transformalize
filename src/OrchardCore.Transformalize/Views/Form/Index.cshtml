@@ -18,15 +18,16 @@
 <script asp-name="parsley" version="2.9.2" at="Foot"></script>
 <script asp-name="moment" version="2.26.0" at="Foot"></script>
 @*the order of these file handling scripts matters*@
-<script asp-name="load-image-all" version="5.14.0" at="Head" ></script>
-<script asp-name="canvas-to-blob" version="3.28.0" at="Head" ></script>
-<script asp-name="jquery-iframe-transport" version="10.31.0" at="Head" ></script>
+<script asp-name="load-image-all" version="5.14.0" at="Head"></script>
+<script asp-name="canvas-to-blob" version="3.28.0" at="Head"></script>
+<script asp-name="jquery-iframe-transport" version="10.31.0" at="Head"></script>
 <script asp-name="jquery-fileupload" version="10.31.0" at="Head"></script>
 <script asp-name="jquery-fileupload-process" version="10.31.0" at="Head"></script>
 <script asp-name="jquery-fileupload-image" version="10.31.0" at="Head"></script>
 <script asp-name="bs-custom-file-input" version="1.3.4" at="Head"></script>
+<script asp-name="jquery-are-you-sure" version="1.9.0" at="Head"></script>
 
-<script asp-src="~/@Common.ModuleName/Scripts/form.js?v=5" at="Foot"></script>
+<script asp-src="~/@Common.ModuleName/Scripts/form.js?v=6" at="Foot"></script>
 <script asp-src="~/@Common.ModuleName/Scripts/file.handler.js?v=2" at="Foot"></script>
 
 <style asp-name="pickadate-themes-default" version="3.6.4"></style>
@@ -37,7 +38,7 @@
    /* to stop ios from zooming in on inputs */
    body {
       font-size: 16px;
-   }   
+   }
 
    #busy {
       position: fixed;
@@ -109,18 +110,18 @@
    <div class="row">
       <div class="col-md-12">
          @if (locationEnabled) {
-         <button id="id_location_button" title="query location" type="button" class="btn btn-success btn-sm float-right">
-            <span class="fas fa-location-arrow" style="padding-top:0px;"></span>
-            <div class="spinner-border spinner-border-sm" role="status" style="display:none">
-               <span class="sr-only">Loading...</span>
-            </div>
-            <span id="id_location_accuracy"></span>
-         </button>
+            <button id="id_location_button" title="query location" type="button" class="btn btn-success btn-sm float-right">
+               <span class="fas fa-location-arrow" style="padding-top:0px;"></span>
+               <div class="spinner-border spinner-border-sm" role="status" style="display:none">
+                  <span class="sr-only">Loading...</span>
+               </div>
+               <span id="id_location_accuracy"></span>
+            </button>
          }
          @if (editEnabled) {
-         <button title="edit this task" type="button" class="btn btn-warning btn-sm float-right" onclick="window.open('@(Url.Content("~/Admin/Contents/ContentItems/" + Model.ContentItem.ContentItemId + "/Edit?" + Common.ReturnUrlName + "=" + System.Net.WebUtility.UrlEncode(Context.Request.Path + Context.Request.QueryString)))', '_self');">
-            <span class="fas fa-edit" style="padding-top:0px;"></span>
-         </button>
+            <button title="edit this task" type="button" class="btn btn-warning btn-sm float-right" onclick="window.open('@(Url.Content("~/Admin/Contents/ContentItems/" + Model.ContentItem.ContentItemId + "/Edit?" + Common.ReturnUrlName + "=" + System.Net.WebUtility.UrlEncode(Context.Request.Path + Context.Request.QueryString)))', '_self');">
+               <span class="fas fa-edit" style="padding-top:0px;"></span>
+            </button>
          }
          <h4>@(@Model.ContentItem.DisplayText)</h4>
          <div id="id_content">

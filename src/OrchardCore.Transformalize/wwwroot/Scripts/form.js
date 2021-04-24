@@ -6,10 +6,12 @@
       this.$element.closest('div.form-group').addClass("is-invalid").removeClass("is-valid");
       this.$element.addClass("is-invalid").removeClass("is-valid");
    });
+
    window.Parsley.on('field:success', function () {
       this.$element.closest('div.form-group').removeClass("is-invalid").addClass("is-valid").find('.help-block').empty();
       this.$element.removeClass("is-invalid").addClass("is-valid");
    });
+
    window.Parsley.addValidator('string', {
       requirementType: 'date',
       validateString: function (value, requirement) {
@@ -112,6 +114,14 @@
          getLocation();
       });
 
+      $('#id_form').areYouSure();
+
+      // if a post has occured, we are dirty
+      setTimeout(function () {
+         if ($('#id_method').val() !== "GET") {
+            $('#id_form').addClass("dirty");
+         }
+      }, 1000);
    }
 
    function post() {

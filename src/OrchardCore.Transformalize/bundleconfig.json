@@ -76,5 +76,11 @@
     "inputFiles": [
       "wwwroot/Scripts/bs-custom-file-input.js"
     ]
+  },
+  {
+    "outputFileName": "wwwroot/Scripts/jquery.are-you-sure.min.js",
+    "inputFiles": [
+      "wwwroot/Scripts/jquery.are-you-sure.js"
+    ]
   }
 ]

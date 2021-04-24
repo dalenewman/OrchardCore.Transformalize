@@ -10,17 +10,16 @@
 
    const string ORCHARD_SUBMIT = "Orchard.Submit";
    const string ORCHARD_FOCUS = "Orchard.Focus";
+   const string ORCHARD_METHOD = "Orchard.Method";
    const string RETURN_URL = "ReturnUrl";
 
    var fileService = Context.RequestServices.GetService<IFileService>();
-   var getMethod = false;
    var focus = string.Empty;
    var submit = Model.Parameters.Any(p => p.VisiblePrompt());
    var antiForgery = Model.Mode == "form" && submit || Model.Mode != "form";
 
    if (Context.Request.Method == "GET") {
       focus = Model.Parameters.FirstOrDefault(p => p.VisiblePrompt())?.Name ?? string.Empty;
-      getMethod = true;
    } else {
       var previous = Context.Request.Form[ORCHARD_FOCUS].ToString() == ORCHARD_SUBMIT ?
          Model.Parameters.LastOrDefault(p => p.VisiblePrompt()) :
@@ -56,6 +55,7 @@
 <form id="id_form" method="post" role="form" enctype="multipart/form-data" asp-antiforgery="@antiForgery">
 
    <input type="hidden" id="id_focus" name="@ORCHARD_FOCUS" value="@(focus)" />
+   <input type="hidden" id="id_method" name="@ORCHARD_METHOD" value="@Context.Request.Method" />
 
    @if (!Model.Parameters.Any(p => p.Name == RETURN_URL)) {
       if (Context.Request.HasFormContentType && Context.Request.Form[RETURN_URL] != StringValues.Empty) {
@@ -69,7 +69,7 @@
 
       var value = parameter.Value ?? string.Empty as object;
 
-      if (getMethod) {
+      if (Context.Request.Method == "GET") {
          parameter.Valid = true;
          parameter.Message = string.Empty;
       }
@@ -488,9 +488,6 @@
    }
 
 </form>
-
-
-
 
 
 

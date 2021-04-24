@@ -376,6 +376,13 @@ namespace TransformalizeModule {
             .SetCdnIntegrity("sha512-91BoXI7UENvgjyH31ug0ga7o1Ov41tOzbMM3+RPqFVohn1UbVcjL/f5sl6YSOFfaJp+rF+/IEbOOEwtBONMz+w==", "sha512-TkqvBtxfAZgTiRN9Xuoh/dkowLIcuUp4BKHRC6BFINpofxwDaK683A/XqLZlGtGeF+9f2+vBss6hP91EaJ5D7w==")
             .SetVersion("1.3.4");
 
+         manifest
+            .DefineScript("jquery-are-you-sure")
+            .SetUrl($"~/{Common.ModuleName}/Scripts/jquery.are-you-sure.js", $"~/{Common.ModuleName}/Scripts/jquery.are-you-sure.min.js")
+            .SetCdn("https://cdnjs.cloudflare.com/ajax/libs/jquery.AreYouSure/1.9.0/jquery.are-you-sure.min.js", "https://cdnjs.cloudflare.com/ajax/libs/jquery.AreYouSure/1.9.0/jquery.are-you-sure.js")
+            .SetCdnIntegrity("sha512-YuZemcyQ8r4w8tdxIzkJVgWfHrzSQN9PuF18I490DE8H97DOkrt+bolBf3/mve+9t8SLWODBzFCCPxH/vZYqBg==", "sha512-mYoXRCW7jn4Pm7gT7iqWdM42rpYge7g/Hegu5ttt+KqTmiuX8y6OpFUU644Ld+PlTTiS5Cecoiwoc+5homJ1oQ==")
+            .SetVersion("1.9.0");
+
       }
    }
 }
