@@ -24,6 +24,7 @@
 <script asp-name="jquery-fileupload-process" version="10.31.0" at="Head"></script>
 <script asp-name="jquery-fileupload-image" version="10.31.0" at="Head"></script>
 <script asp-name="bs-custom-file-input" version="1.3.4" at="Head"></script>
+<script asp-name="jquery-are-you-sure" version="1.9.0" at="Head"></script>
 
 <script asp-src="~/@Common.ModuleName/Scripts/form.js?v=6" at="Foot"></script>
 <script asp-src="~/@Common.ModuleName/Scripts/file.handler.js?v=2" at="Foot"></script>
@@ -79,7 +80,9 @@
 <script type="text/javascript" language="javascript">
     //<!--
    var settings = {
-      geo: false,
+      location: {
+         enabled: false
+      },
       controller: "Task",
       ajaxUrl: "@(Url.Action("Form", "Task", new { Area = Common.ModuleName, ContentItemId = Model.ContentItem.ContentItemId }))",
       updateUrl: "@(Url.Action("Review", "Task", new { Area = Common.ModuleName, ContentItemId = Model.ContentItem.ContentItemId }))",
