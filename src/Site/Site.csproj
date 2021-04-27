@@ -8,7 +8,7 @@
     <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
     <DockerfileContext>..\..</DockerfileContext>
     <DockerfileTag>transformalize.orchard</DockerfileTag>
-    <Version>0.8.47-beta</Version>
+    <Version>0.8.48-beta</Version>
   </PropertyGroup>
   <ItemGroup>
     <None Include=".ebextensions\https-backendsecurity.config">
