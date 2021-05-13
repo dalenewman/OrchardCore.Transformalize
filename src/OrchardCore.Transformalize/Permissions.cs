@@ -12,12 +12,18 @@ namespace TransformalizeModule {
           "Manage Transformalize Settings"
       );
 
+      public static readonly Permission AllowApi = new Permission(
+         nameof(AllowApi),
+         "Allow API"
+      );
 
       public Task<IEnumerable<Permission>> GetPermissionsAsync() =>
-          Task.FromResult(new[] {
-                ManageTransformalizeSettings
-          }
-          .AsEnumerable());
+         Task.FromResult(new[] {
+            ManageTransformalizeSettings,
+            AllowApi
+         }
+         .AsEnumerable()
+      );
 
       public IEnumerable<PermissionStereotype> GetDefaultStereotypes() =>
           new[] {
@@ -26,5 +32,5 @@ namespace TransformalizeModule {
                   Permissions = new[] { ManageTransformalizeSettings }
                }
           };
-   }
+      }
 }

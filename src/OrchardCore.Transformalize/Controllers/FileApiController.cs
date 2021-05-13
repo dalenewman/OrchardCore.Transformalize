@@ -9,42 +9,33 @@ using OrchardCore.ContentManagement;
 
 namespace TransformalizeModule.Controllers {
 
-   [Authorize]
-   public class FileController : Controller {
+   [Route("t/api/file")]
+   [ApiController]
+   [Authorize(AuthenticationSchemes = "Api"), IgnoreAntiforgeryToken, AllowAnonymous]
+   public class FileApiController : Controller {
 
-      private readonly CombinedLogger<FileController> _logger;
+      private readonly CombinedLogger<FileApiController> _logger;
       private readonly ICustomFileStore _formFileStore;
-      private readonly IFileService _fileService;
       private readonly IContentManager _contentManager;
+      private readonly IAuthorizationService _authorizationService;
 
-      public FileController(
+      public FileApiController(
          ICustomFileStore formFileStore,
          IContentManager contentManager,
-         IFileService fileService,
-         CombinedLogger<FileController> logger
+         CombinedLogger<FileApiController> logger,
+         IAuthorizationService authorizationService
       ) {
          _logger = logger;
-         _fileService = fileService;
          _formFileStore = formFileStore;
          _contentManager = contentManager;
+         _authorizationService = authorizationService;
       }
-
-      public async Task<ActionResult> Index(string contentItemId) {
-
-         var part = await _fileService.GetFilePart(contentItemId);
-         if (part == null) {
-            return NotFound();
-         }
-         var fileInfo = await _formFileStore.GetFileInfoAsync(part.FullPath.Text);
-
-         return new FileStreamResult(await _formFileStore.GetFileStreamAsync(fileInfo), part.MimeType());
-      }
-
 
       [HttpPost]
-      public async Task<ContentResult> Upload() {
+      [Route("upload")]
+      public async Task<IActionResult> Upload() {
 
-         if (!User.Identity.IsAuthenticated) {
+         if (!await _authorizationService.AuthorizeAsync(User, Permissions.AllowApi)) {
             return GetResult(string.Empty, "Unauthorized");
          }
 
@@ -85,6 +76,6 @@ namespace TransformalizeModule.Controllers {
             ContentType = "text/json"
          };
       }
-      
+
    }
 }
