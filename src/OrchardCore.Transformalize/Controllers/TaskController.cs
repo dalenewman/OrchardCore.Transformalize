@@ -6,7 +6,6 @@ using TransformalizeModule.Services;
 using TransformalizeModule.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
-using System.Collections.Generic;
 
 namespace TransformalizeModule.Controllers {
 
@@ -16,18 +15,15 @@ namespace TransformalizeModule.Controllers {
       private readonly ITaskService _taskService;
       private readonly CombinedLogger<TaskController> _logger;
       private readonly IFormService _formService;
-      private readonly IHttpContextAccessor _httpContext;
 
       public TaskController(
          ITaskService taskService,
          IFormService formService,
-         IHttpContextAccessor httpContext,
          CombinedLogger<TaskController> logger
       ) {
          _taskService = taskService;
          _logger = logger;
          _formService = formService;
-         _httpContext = httpContext;
       }
 
       public async Task<ActionResult> Run(string contentItemId, string format = null) {
