@@ -5,6 +5,10 @@ WORKDIR /app
 EXPOSE 80
 EXPOSE 443
 
+# FOR AWS APP RUNNER
+# ENV ASPNETCORE_URLS http://+:8080
+# EXPOSE 8080
+
 FROM mcr.microsoft.com/dotnet/core/sdk:3.1-buster AS build
 WORKDIR /src
 COPY ["src/Site/Site.csproj", "src/Site/"]
