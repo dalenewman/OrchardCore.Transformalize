@@ -87,8 +87,7 @@ namespace TransformalizeModule.Controllers {
          Response.ContentType = "application/json";
          Response.Headers.Add("content-disposition", "attachment; filename=" + o.File);
 
-         await Response.Body.FlushAsync();
-         await _reportService.RunAsync(stream.Process);
+         _reportService.Run(stream.Process);
 
          return new EmptyResult();
 
@@ -130,8 +129,7 @@ namespace TransformalizeModule.Controllers {
          Response.ContentType = "application/vnd.geo+json";
          Response.Headers.Add("content-disposition", "attachment; filename=" + o.File);
 
-         await Response.Body.FlushAsync();
-         await _reportService.RunAsync(stream.Process);
+         _reportService.Run(stream.Process);
 
          return new EmptyResult();
 
@@ -157,8 +155,7 @@ namespace TransformalizeModule.Controllers {
          Response.ContentType = "application/csv";
          Response.Headers.Add("content-disposition", "attachment; filename=" + o.File);
 
-         await Response.Body.FlushAsync();
-         await _reportService.RunAsync(stream.Process);
+         _reportService.Run(stream.Process);
 
          return new EmptyResult();
 
