@@ -9,6 +9,7 @@ using TransformalizeModule.Services;
 using TransformalizeModule.Models;
 using System.Collections.Generic;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 
 namespace TransformalizeModule.Controllers {
 
@@ -66,14 +67,17 @@ namespace TransformalizeModule.Controllers {
 
          report.Process.Connections.Clear();
 
-         return new ContentResult() { Content = report.Process.Serialize(), ContentType = request.ContentType };
+         return new ContentResult { 
+            Content = report.Process.Serialize(), 
+            ContentType = request.ContentType 
+         };
       }
 
       [HttpGet]
       public async Task<ActionResult> StreamJson(string contentItemId) {
 
          var request = new TransformalizeRequest(contentItemId, HttpContext.User.Identity.Name) { Mode = "stream" };
-         var stream = await _reportService.Validate(request);
+         var stream = await _reportService.Validate(request).ConfigureAwait(false);
 
          if (stream.Fails()) {
             return stream.ActionResult;
@@ -84,8 +88,7 @@ namespace TransformalizeModule.Controllers {
          o.Provider = "json";
          o.File = _slugService.Slugify(stream.ContentItem.As<TitlePart>().Title) + ".json";
 
-         Response.ContentType = "application/json";
-         Response.Headers.Add("content-disposition", "attachment; filename=" + o.File);
+         PrepareResponse(Response, "application/csv", o.File);
 
          _reportService.Run(stream.Process);
 
@@ -97,7 +100,7 @@ namespace TransformalizeModule.Controllers {
       public async Task<ActionResult> StreamGeoJson(string contentItemId) {
 
          var request = new TransformalizeRequest(contentItemId, HttpContext.User.Identity.Name) { Mode = "stream" };
-         var stream = await _reportService.Validate(request);
+         var stream = await _reportService.Validate(request).ConfigureAwait(false);
 
          if (stream.Fails()) {
             return stream.ActionResult;
@@ -126,8 +129,7 @@ namespace TransformalizeModule.Controllers {
             }
          }
 
-         Response.ContentType = "application/vnd.geo+json";
-         Response.Headers.Add("content-disposition", "attachment; filename=" + o.File);
+         PrepareResponse(Response, "application/csv", o.File);
 
          _reportService.Run(stream.Process);
 
@@ -139,7 +141,7 @@ namespace TransformalizeModule.Controllers {
       public async Task<ActionResult> StreamCsv(string contentItemId) {
 
          var request = new TransformalizeRequest(contentItemId, HttpContext.User.Identity.Name) { Mode = "stream" };
-         var stream = await _reportService.Validate(request);
+         var stream = await _reportService.Validate(request).ConfigureAwait(false);
 
          if (stream.Fails()) {
             return stream.ActionResult;
@@ -152,13 +154,21 @@ namespace TransformalizeModule.Controllers {
          o.TextQualifier = "\"";
          o.File = _slugService.Slugify(stream.ContentItem.As<TitlePart>().Title) + ".csv";
 
-         Response.ContentType = "application/csv";
-         Response.Headers.Add("content-disposition", "attachment; filename=" + o.File);
+         PrepareResponse(Response, "application/csv", o.File);
 
          _reportService.Run(stream.Process);
 
          return new EmptyResult();
 
+      }
+
+      private static void PrepareResponse(HttpResponse response, string contentType, string fileName) {
+         response.Clear();
+         response.ContentType = contentType;
+         response.Headers.Add("content-disposition", "attachment; filename=" + fileName);
+         response.Headers.Add("Cache-Control", "no-cache, no-store, must-revalidate");
+         response.Headers.Add("Pragma", "no-cache");
+         response.Headers.Add("Expires", "0");
       }
    }
 }

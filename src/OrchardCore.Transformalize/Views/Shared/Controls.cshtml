@@ -33,6 +33,7 @@
    var linkService = Context.RequestServices.GetService<ILinkService>();
    var exportCsvLink = linkService.Create(Model.Item.ContentItemId, Url.Action("StreamCsv", new { ContentItemId = Model.IdOrAlias }), true);
    var exportJsonLink = linkService.Create(Model.Item.ContentItemId, Url.Action("StreamJson", new { ContentItemId = Model.IdOrAlias }), true);
+   var exportGeoJsonLink = linkService.Create(Model.Item.ContentItemId, Url.Action("StreamGeoJson", new { ContentItemId = Model.IdOrAlias }), true);
 
    var views = new List<PipelineViewModel>();
 
@@ -204,21 +205,18 @@
                }
 
                <div class="btn-group btn-group-sm">
-                  <button type="button" class="btn btn-sm btn-info" title="save to csv file" onclick="javascript:window.open('@exportCsvLink','_self');">
+                  <button type="button" class="btn btn-sm btn-info" title="save to csv file" onclick="openRandomLink('@exportCsvLink');">
                      <span class="fas fa-save"></span>
                   </button>
                   <button class="btn dropdown-toggle btn-sm btn-info" title="other formats" data-toggle="dropdown">
                      <span class="caret"></span>
                   </button>
                   <div class="dropdown-menu">
-                     <a class="dropdown-item" href="@exportCsvLink" title="save to csv file">CSV</a>
-                     <a class="dropdown-item" href="@exportJsonLink" title="save to json file">JSON</a>
+                     <a class="dropdown-item" onclick="openRandomLink('@exportCsvLink');" title="save to csv file">CSV</a>
+                     <a class="dropdown-item" onclick="openRandomLink('@exportJsonLink');" title="save to json file">JSON</a>
                      @{
                         if (hasCoordinates) {
-                           var exportGeoJsonLink = linkService.Create(Model.Item.ContentItemId, Url.Action("StreamGeoJson", new { ContentItemId = Model.IdOrAlias }), true);
-                           /* var exportKmlLink = linkService.Create(Model.Item.ContentItemId, Url.Action("Index", "Kml", new { ContentItemId = Model.IdOrAlias }), true); */
-                           <a class="dropdown-item" href="@exportGeoJsonLink" title="save to geojson file">GEOJSON</a>
-                           @*<a class="dropdown-item" href="@exportKmlLink" title="save to kml file">KML</a>*@
+                           <a class="dropdown-item" onclick="openRandomLink('@exportGeoJsonLink');" title="save to geojson file">GEOJSON</a>
                         }
                      }
                   </div>
@@ -243,6 +241,14 @@
          </div>
       </div>
    </div>
+   <script type="text/javascript">
+      // <!--
+      function openRandomLink(url) {
+         url = url + (url.indexOf('?') > -1 ? '&' : '?') + 'random=' + Math.random();
+         javascript:window.open(url,'_self');
+      }
+      // -->
+   </script>
 
 
 

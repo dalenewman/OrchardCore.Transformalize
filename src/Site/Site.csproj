@@ -8,15 +8,13 @@
     <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
     <DockerfileContext>..\..</DockerfileContext>
     <DockerfileTag>transformalize.orchard</DockerfileTag>
-    <Version>0.8.52-beta</Version>
+    <Version>0.8.57-beta</Version>
   </PropertyGroup>
   <ItemGroup>
     <None Include=".ebextensions\https-backendsecurity.config">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Include=".ebextensions\https-reencrypt-alb.config">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
+    <None Include=".ebextensions\https-reencrypt-alb.config" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="wwwroot\" />
