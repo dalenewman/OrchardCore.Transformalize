@@ -6,6 +6,7 @@ using OrchardCore.Liquid;
 using TransformalizeModule.Services;
 using TransformalizeModule.Models;
 using Microsoft.AspNetCore.Authorization;
+using System.IO;
 
 namespace TransformalizeModule.Controllers {
 
@@ -68,7 +69,10 @@ namespace TransformalizeModule.Controllers {
 
          Response.ContentType = "application/vnd.geo+json";
 
-         await _reportService.RunAsync(map.Process, null);
+         StreamWriter sw;
+         await using ((sw = new StreamWriter(Response.Body)).ConfigureAwait(false)) {
+            await _reportService.RunAsync(map.Process, sw);
+         }
 
          return new EmptyResult();
 

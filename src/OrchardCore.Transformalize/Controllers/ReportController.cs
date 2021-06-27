@@ -89,9 +89,10 @@ namespace TransformalizeModule.Controllers {
          o.Provider = "json";
          o.File = _slugService.Slugify(stream.ContentItem.As<TitlePart>().Title) + ".json";
 
-         PrepareResponse(Response, "application/csv", o.File);
+         Response.ContentType = "application/json";
+         Response.Headers.Add("content-disposition", "attachment; filename=" + o.File);
 
-         _reportService.Run(stream.Process, null);
+         await _reportService.RunAsync(stream.Process, null);
 
          return new EmptyResult();
 
@@ -130,9 +131,13 @@ namespace TransformalizeModule.Controllers {
             }
          }
 
-         PrepareResponse(Response, "application/csv", o.File);
+         Response.ContentType = "application/vnd.geo+json";
+         Response.Headers.Add("content-disposition", "attachment; filename=" + o.File);
 
-         _reportService.Run(stream.Process, null);
+         StreamWriter sw;
+         await using ((sw = new StreamWriter(Response.Body)).ConfigureAwait(false)) {
+            await _reportService.RunAsync(stream.Process, sw);
+         }
 
          return new EmptyResult();
 
@@ -155,24 +160,17 @@ namespace TransformalizeModule.Controllers {
          o.TextQualifier = "\"";
          o.File = _slugService.Slugify(stream.ContentItem.As<TitlePart>().Title) + ".csv";
 
-         PrepareResponse(Response, "application/csv", o.File);
+         Response.ContentType = "application/csv";
+         Response.Headers.Add("content-disposition", "attachment; filename=" + o.File);
 
          StreamWriter sw;
          await using ((sw = new StreamWriter(Response.Body)).ConfigureAwait(false)) {
-            _reportService.Run(stream.Process, sw);
+            await _reportService.RunAsync(stream.Process, sw);
          }
 
          return new EmptyResult();
 
       }
 
-      private static void PrepareResponse(HttpResponse response, string contentType, string fileName) {
-         response.Clear();
-         response.ContentType = contentType;
-         response.Headers.Add("content-disposition", "attachment; filename=" + fileName);
-         response.Headers.Add("Cache-Control", "no-cache, no-store, must-revalidate");
-         response.Headers.Add("Pragma", "no-cache");
-         response.Headers.Add("Expires", "0");
-      }
    }
 }

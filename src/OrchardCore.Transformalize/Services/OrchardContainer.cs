@@ -183,7 +183,7 @@ namespace TransformalizeModule.Services {
 
          // exporting
          if (providers.Contains("json")) { builder.RegisterModule(new JsonProviderModule(stream) { UseAsyncMethods = true }); }
-         if (providers.Contains("geojson")) { builder.RegisterModule(new GeoJsonProviderModule(stream) { UseAsyncMethods = true }); }
+         if (providers.Contains("geojson")) { builder.RegisterModule(new GeoJsonProviderModule(streamWriter) { UseAsyncMethods = true }); }
 
          // misc
          if (providers.Contains("bogus")) { builder.RegisterModule(new BogusModule()); }
