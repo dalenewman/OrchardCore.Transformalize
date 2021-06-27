@@ -5,24 +5,25 @@ using TransformalizeModule.Models;
 using TransformalizeModule.Services.Contracts;
 using OrchardCore.ContentManagement;
 using Transformalize.Configuration;
+using System.IO;
 
 namespace TransformalizeModule.Services {
 
    public class ReportService : IReportService {
 
       private readonly IArrangementLoadService _loadService;
-      private readonly IArrangementRunService _runService;
+      private readonly IArrangementStreamService _streamService;
       private readonly IArrangementService _arrangementService;
       private readonly IHttpContextAccessor _httpContextAccessor;
 
       public ReportService(
          IArrangementLoadService loadService,
-         IArrangementRunService runService,
+         IArrangementStreamService streamService,
          IArrangementService arrangementService,
          IHttpContextAccessor httpContextAccessor
       ) {
          _loadService = loadService;
-         _runService = runService;
+         _streamService = streamService;
          _arrangementService = arrangementService;
          _httpContextAccessor = httpContextAccessor;
       }
@@ -63,12 +64,12 @@ namespace TransformalizeModule.Services {
          return _loadService.LoadForCalendarStream(contentItem);
       }
 
-      public async Task RunAsync(Process process) {
-         await _runService.RunAsync(process);
+      public async Task RunAsync(Process process, StreamWriter streamWriter) {
+         await _streamService.RunAsync(process, streamWriter);
       }
 
-      public void Run(Process process) {
-         _runService.Run(process);
+      public void Run(Process process, StreamWriter streamWriter) {
+         _streamService.Run(process, streamWriter);
       }
 
       public async Task<TransformalizeResponse<TransformalizeReportPart>> Validate(TransformalizeRequest request) {

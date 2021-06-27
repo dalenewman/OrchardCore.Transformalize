@@ -204,7 +204,7 @@ namespace TransformalizeModule.Services {
 
             CfgRow output;
             _container.GetReaderAlternate = (input, rowFactory) => new ParameterRowReader(input, new DefaultRowReader(input, rowFactory));
-            using (var scope = _container.CreateScope(process, _logger)) {
+            using (var scope = _container.CreateScope(process, _logger, null)) {
                scope.Resolve<IProcessController>().Execute();
                output = process.Entities[0].Rows.FirstOrDefault();
             }

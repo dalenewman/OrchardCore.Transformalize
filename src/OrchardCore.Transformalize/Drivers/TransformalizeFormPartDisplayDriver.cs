@@ -59,7 +59,7 @@ namespace TransformalizeModule.Drivers {
 
          _settings.ApplyCommonSettings(process);
 
-         using (var scope = _container.CreateScope(process, _logger)) {
+         using (var scope = _container.CreateScope(process, _logger, null)) {
             if (scope.IsRegistered<AdoFormCommandWriter>()) {
                commands = scope.Resolve<AdoFormCommandWriter>().Write();
             }

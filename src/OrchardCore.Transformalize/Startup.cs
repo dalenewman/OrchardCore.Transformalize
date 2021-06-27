@@ -47,6 +47,7 @@ namespace TransformalizeModule {
          services.AddScoped<IArrangementService, ArrangementService>();
          services.AddScoped<IArrangementLoadService, ArrangementLoadService>();
          services.AddScoped<IArrangementRunService, ArrangementRunService>();
+         services.AddScoped<IArrangementStreamService, ArrangementStreamService>();
          services.AddScoped<IArrangementSchemaService, ArrangementSchemaService>();
          services.AddScoped<IParameterService, ParameterService>();
          services.AddScoped<ICommonService, CommonService>();

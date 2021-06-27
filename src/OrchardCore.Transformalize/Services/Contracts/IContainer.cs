@@ -18,6 +18,7 @@
 
 using Autofac;
 using System;
+using System.IO;
 using Transformalize.Context;
 using Transformalize.Contracts;
 using Process = Transformalize.Configuration.Process;
@@ -26,6 +27,6 @@ namespace TransformalizeModule.Services.Contracts {
    public interface IContainer {
       public Func<InputContext, IRowFactory, IRead> GetReaderAlternate { get; set; }
       public Func<IRead, InputContext, IRowFactory, IRead> GetReaderDecorator { get; set; }
-      ILifetimeScope CreateScope(Process process, IPipelineLogger logger);
+      ILifetimeScope CreateScope(Process process, IPipelineLogger logger, StreamWriter streamWriter);
    }
 }

@@ -3,7 +3,7 @@
     <TargetFramework>netcoreapp3.1</TargetFramework>
     <AddRazorSupportForMvc>true</AddRazorSupportForMvc>
     <RootNamespace>TransformalizeModule</RootNamespace>
-    <Version>0.8.57-beta</Version>
+    <Version>0.8.59-beta</Version>
   </PropertyGroup>
   <ItemGroup>
     <EmbeddedResource Remove="bundleconfig.json" />
@@ -38,7 +38,7 @@
     <PackageReference Include="Transformalize.Provider.Amazon.Connect.Autofac" Version="0.8.41-beta" />
     <PackageReference Include="Transformalize.Provider.Aws.CloudWatch.Autofac" Version="0.8.41-beta" />
     <PackageReference Include="Transformalize.Provider.Bogus.Autofac" Version="0.8.29-beta" />
-    <PackageReference Include="Transformalize.Provider.CsvHelper.Autofac" Version="0.8.34-beta" />
+    <PackageReference Include="Transformalize.Provider.CsvHelper.Autofac" Version="0.8.36-beta" />
     <PackageReference Include="Transformalize.Provider.Elasticsearch.Autofac" Version="0.8.29-beta" />
     <PackageReference Include="Transformalize.Provider.Excel" Version="0.8.29-beta" />
     <PackageReference Include="Transformalize.Provider.File.Autofac" Version="0.8.30-beta" />

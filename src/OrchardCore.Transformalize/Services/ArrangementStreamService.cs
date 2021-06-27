@@ -6,28 +6,29 @@ using System.Threading.Tasks;
 using Transformalize.Configuration;
 using Transformalize.Contracts;
 using IContainer = TransformalizeModule.Services.Contracts.IContainer;
+using System.IO;
 
 namespace TransformalizeModule.Services {
 
-   public class ArrangementRunService : IArrangementRunService {
+   public class ArrangementStreamService : IArrangementStreamService {
 
       private readonly IContainer _container;
-      private readonly CombinedLogger<ArrangementRunService> _logger;
+      private readonly CombinedLogger<ArrangementStreamService> _logger;
 
-      public ArrangementRunService(
+      public ArrangementStreamService(
          IContainer container,
-         CombinedLogger<ArrangementRunService> logger
+         CombinedLogger<ArrangementStreamService> logger
       ) {
          _container = container;
          _logger = logger;
       }
 
-      public async Task RunAsync(Process process) {
+      public async Task RunAsync(Process process, StreamWriter streamWriter) {
 
          IProcessController controller;
 
          using (MiniProfiler.Current.Step("Run.Prepare")) {
-            controller = _container.CreateScope(process, _logger, null).Resolve<IProcessController>();
+            controller = _container.CreateScope(process, _logger, streamWriter).Resolve<IProcessController>();
          }
 
          using (MiniProfiler.Current.Step("Run.Execute")) {
@@ -46,12 +47,12 @@ namespace TransformalizeModule.Services {
 
       }
 
-      public void Run(Process process) {
+      public void Run(Process process, StreamWriter streamWriter) {
 
          IProcessController controller;
 
          using (MiniProfiler.Current.Step("Run.Prepare")) {
-            controller = _container.CreateScope(process, _logger, null).Resolve<IProcessController>();
+            controller = _container.CreateScope(process, _logger, streamWriter).Resolve<IProcessController>();
          }
 
          using (MiniProfiler.Current.Step("Run.Execute")) {

@@ -46,7 +46,7 @@ namespace TransformalizeModule.Controllers {
             return View("Log", new LogViewModel(_logger.Log, map.Process, map.ContentItem));
          }
 
-         await _reportService.RunAsync(map.Process);
+         await _reportService.RunAsync(map.Process, null);
 
          if (map.Process.Status != 200) {
             return View("Log", new LogViewModel(_logger.Log, map.Process, map.ContentItem));
@@ -68,7 +68,7 @@ namespace TransformalizeModule.Controllers {
 
          Response.ContentType = "application/vnd.geo+json";
 
-         await _reportService.RunAsync(map.Process);
+         await _reportService.RunAsync(map.Process, null);
 
          return new EmptyResult();
 

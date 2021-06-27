@@ -61,7 +61,7 @@ namespace TransformalizeModule.Controllers {
                return View(form);
             }
 
-            var scope = _container.CreateScope(form.Process, _logger);
+            var scope = _container.CreateScope(form.Process, _logger, null);
 
             if (!scope.IsRegistered<AdoFormCommandWriter>()) {
                _logger.Error(() => "The form command writer isn't registered.");

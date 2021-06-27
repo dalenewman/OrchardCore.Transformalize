@@ -25,7 +25,7 @@ namespace TransformalizeModule.Services {
 
          //TODO: make getting a schema asynchronous
 
-         var scope = _container.CreateScope(process, _logger);
+         var scope = _container.CreateScope(process, _logger, null);
          var connectionReaders = new Dictionary<string, ISchemaReader>();
          var entityReaders = new Dictionary<Entity, ISchemaReader>();
 

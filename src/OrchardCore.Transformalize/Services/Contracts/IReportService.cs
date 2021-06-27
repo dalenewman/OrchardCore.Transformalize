@@ -4,7 +4,7 @@ using OrchardCore.ContentManagement;
 using Transformalize.Configuration;
 
 namespace TransformalizeModule.Services.Contracts {
-   public interface IReportService : IArrangementService, IArrangementRunService {
+   public interface IReportService : IArrangementService, IArrangementStreamService {
       Task<TransformalizeResponse<TransformalizeReportPart>> Validate(TransformalizeRequest request);
 
       Process LoadForReport(ContentItem contentItem, string format = null);

@@ -126,7 +126,7 @@ namespace TransformalizeModule.Services {
 
             // run the process which should get a single row (the form submission) into output
             CfgRow output;
-            using (var scope = _container.CreateScope(modified, _logger)) {
+            using (var scope = _container.CreateScope(modified, _logger, null)) {
                scope.Resolve<IProcessController>().Execute();
                output = modified.Entities[0].Rows.FirstOrDefault();
             }

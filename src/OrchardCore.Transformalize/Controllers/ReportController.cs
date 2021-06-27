@@ -10,6 +10,7 @@ using TransformalizeModule.Models;
 using System.Collections.Generic;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
+using System.IO;
 
 namespace TransformalizeModule.Controllers {
 
@@ -39,7 +40,7 @@ namespace TransformalizeModule.Controllers {
             return report.ActionResult;
          }
 
-         await _reportService.RunAsync(report.Process);
+         await _reportService.RunAsync(report.Process, null);
          if (report.Process.Status != 200) {
             return View("Log", new LogViewModel(_logger.Log, report.Process, report.ContentItem));
          }
@@ -63,7 +64,7 @@ namespace TransformalizeModule.Controllers {
             return report.ActionResult;
          }
 
-         await _reportService.RunAsync(report.Process);
+         await _reportService.RunAsync(report.Process, null);
 
          report.Process.Connections.Clear();
 
@@ -90,7 +91,7 @@ namespace TransformalizeModule.Controllers {
 
          PrepareResponse(Response, "application/csv", o.File);
 
-         _reportService.Run(stream.Process);
+         _reportService.Run(stream.Process, null);
 
          return new EmptyResult();
 
@@ -131,7 +132,7 @@ namespace TransformalizeModule.Controllers {
 
          PrepareResponse(Response, "application/csv", o.File);
 
-         _reportService.Run(stream.Process);
+         _reportService.Run(stream.Process, null);
 
          return new EmptyResult();
 
@@ -156,7 +157,10 @@ namespace TransformalizeModule.Controllers {
 
          PrepareResponse(Response, "application/csv", o.File);
 
-         _reportService.Run(stream.Process);
+         StreamWriter sw;
+         await using ((sw = new StreamWriter(Response.Body)).ConfigureAwait(false)) {
+            _reportService.Run(stream.Process, sw);
+         }
 
          return new EmptyResult();
 
