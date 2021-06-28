@@ -177,13 +177,12 @@ namespace TransformalizeModule.Services {
          // lucene
 
          // importing, exporting
-         var stream = _httpContext.HttpContext.Response.Body;
          if (providers.Contains("file")) { builder.RegisterModule(new CsvHelperProviderModule(streamWriter)); }
          if (providers.Contains("excel")) { builder.RegisterModule(new OrchardExcelModule()); }
 
          // exporting
-         if (providers.Contains("json")) { builder.RegisterModule(new JsonProviderModule(stream) { UseAsyncMethods = true }); }
-         if (providers.Contains("geojson")) { builder.RegisterModule(new GeoJsonProviderModule(streamWriter) { UseAsyncMethods = true }); }
+         if (providers.Contains("json")) { builder.RegisterModule(new JsonProviderModule(streamWriter) { UseAsyncMethods = false }); }
+         if (providers.Contains("geojson")) { builder.RegisterModule(new GeoJsonProviderModule(streamWriter) { UseAsyncMethods = false }); }
 
          // misc
          if (providers.Contains("bogus")) { builder.RegisterModule(new BogusModule()); }

@@ -11,6 +11,7 @@ using System.Collections.Generic;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using System.IO;
+using Microsoft.AspNetCore.Http.Features;
 
 namespace TransformalizeModule.Controllers {
 
@@ -89,10 +90,24 @@ namespace TransformalizeModule.Controllers {
          o.Provider = "json";
          o.File = _slugService.Slugify(stream.ContentItem.As<TitlePart>().Title) + ".json";
 
+         o.Synchronous = true;
+         var syncIOFeature = HttpContext.Features.Get<IHttpBodyControlFeature>();
+         if (syncIOFeature != null) {
+            syncIOFeature.AllowSynchronousIO = true;
+         }
+
          Response.ContentType = "application/json";
          Response.Headers.Add("content-disposition", "attachment; filename=" + o.File);
 
-         await _reportService.RunAsync(stream.Process, null);
+         StreamWriter sw;
+
+         //await using ((sw = new StreamWriter(Response.Body)).ConfigureAwait(false)) {
+         //   await _reportService.RunAsync(stream.Process, sw).ConfigureAwait(false);
+         //}
+
+         using (sw = new StreamWriter(Response.Body)) {
+            _reportService.Run(stream.Process, sw);
+         }
 
          return new EmptyResult();
 
@@ -131,12 +146,23 @@ namespace TransformalizeModule.Controllers {
             }
          }
 
+         o.Synchronous = true;
+         var syncIOFeature = HttpContext.Features.Get<IHttpBodyControlFeature>();
+         if (syncIOFeature != null) {
+            syncIOFeature.AllowSynchronousIO = true;
+         }
+
          Response.ContentType = "application/vnd.geo+json";
          Response.Headers.Add("content-disposition", "attachment; filename=" + o.File);
 
          StreamWriter sw;
-         await using ((sw = new StreamWriter(Response.Body)).ConfigureAwait(false)) {
-            await _reportService.RunAsync(stream.Process, sw);
+         
+         //await using ((sw = new StreamWriter(Response.Body)).ConfigureAwait(false)) {
+         //   await _reportService.RunAsync(stream.Process, sw).ConfigureAwait(false);
+         //}
+
+         using (sw = new StreamWriter(Response.Body)) {
+            _reportService.Run(stream.Process, sw);
          }
 
          return new EmptyResult();
@@ -160,12 +186,22 @@ namespace TransformalizeModule.Controllers {
          o.TextQualifier = "\"";
          o.File = _slugService.Slugify(stream.ContentItem.As<TitlePart>().Title) + ".csv";
 
+         o.Synchronous = true;
+         var syncIOFeature = HttpContext.Features.Get<IHttpBodyControlFeature>();
+         if (syncIOFeature != null) {
+            syncIOFeature.AllowSynchronousIO = true;
+         }
+
          Response.ContentType = "application/csv";
          Response.Headers.Add("content-disposition", "attachment; filename=" + o.File);
 
          StreamWriter sw;
-         await using ((sw = new StreamWriter(Response.Body)).ConfigureAwait(false)) {
-            await _reportService.RunAsync(stream.Process, sw);
+         //await using ((sw = new StreamWriter(Response.Body)).ConfigureAwait(false)) {
+         //   await _reportService.RunAsync(stream.Process, sw).ConfigureAwait(false);
+         //}
+
+         using (sw = new StreamWriter(Response.Body)) {
+            _reportService.Run(stream.Process, sw);
          }
 
          return new EmptyResult();

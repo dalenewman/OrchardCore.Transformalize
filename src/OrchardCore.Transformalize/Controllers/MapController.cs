@@ -7,6 +7,7 @@ using TransformalizeModule.Services;
 using TransformalizeModule.Models;
 using Microsoft.AspNetCore.Authorization;
 using System.IO;
+using Microsoft.AspNetCore.Http.Features;
 
 namespace TransformalizeModule.Controllers {
 
@@ -67,11 +68,21 @@ namespace TransformalizeModule.Controllers {
             return map.ActionResult;
          }
 
+         var syncIOFeature = HttpContext.Features.Get<IHttpBodyControlFeature>();
+         if (syncIOFeature != null) {
+            syncIOFeature.AllowSynchronousIO = true;
+         }
+
          Response.ContentType = "application/vnd.geo+json";
 
          StreamWriter sw;
-         await using ((sw = new StreamWriter(Response.Body)).ConfigureAwait(false)) {
-            await _reportService.RunAsync(map.Process, sw);
+         
+         //await using ((sw = new StreamWriter(Response.Body)).ConfigureAwait(false)) {
+         //   await _reportService.RunAsync(map.Process, sw).ConfigureAwait(false);
+         //}
+
+         using (sw = new StreamWriter(Response.Body)) {
+            _reportService.Run(map.Process, sw);
          }
 
          return new EmptyResult();

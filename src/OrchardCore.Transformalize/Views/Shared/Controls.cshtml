@@ -212,11 +212,11 @@
                      <span class="caret"></span>
                   </button>
                   <div class="dropdown-menu">
-                     <a class="dropdown-item" onclick="openRandomLink('@exportCsvLink');" title="save to csv file">CSV</a>
-                     <a class="dropdown-item" onclick="openRandomLink('@exportJsonLink');" title="save to json file">JSON</a>
+                     <a class="dropdown-item" href="javascript:openRandomLink('@exportCsvLink');" title="save to csv file">CSV</a>
+                     <a class="dropdown-item" href="javascript:openRandomLink('@exportJsonLink');" title="save to json file">JSON</a>
                      @{
                         if (hasCoordinates) {
-                           <a class="dropdown-item" onclick="openRandomLink('@exportGeoJsonLink');" title="save to geojson file">GEOJSON</a>
+                           <a class="dropdown-item" href="javascript:openRandomLink('@exportGeoJsonLink');" title="save to geojson file">GEOJSON</a>
                         }
                      }
                   </div>
