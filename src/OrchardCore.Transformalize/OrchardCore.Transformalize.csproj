@@ -1,9 +1,9 @@
 <Project Sdk="Microsoft.NET.Sdk.Razor">
   <PropertyGroup>
-    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <TargetFramework>net5.0</TargetFramework>
     <AddRazorSupportForMvc>true</AddRazorSupportForMvc>
     <RootNamespace>TransformalizeModule</RootNamespace>
-    <Version>0.8.61-beta</Version>
+    <Version>0.9.0-beta</Version>
   </PropertyGroup>
   <ItemGroup>
     <EmbeddedResource Remove="bundleconfig.json" />
@@ -15,24 +15,24 @@
     <None Include="bundleconfig.json" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Etch.OrchardCore.ContentPermissions" Version="0.3.1-rc2" />
+    <PackageReference Include="Etch.OrchardCore.ContentPermissions" Version="0.4.0" />
     <PackageReference Include="Flurl" Version="2.8.2" />
-    <PackageReference Include="OrchardCore.Alias" Version="1.0.0-rc2-13450" />
-    <PackageReference Include="OrchardCore.ContentFields" Version="1.0.0-rc2-13450" />
-    <PackageReference Include="OrchardCore.Contents" Version="1.0.0-rc2-13450" />
-    <PackageReference Include="OrchardCore.Features" Version="1.0.0-rc2-13450" />
-    <PackageReference Include="OrchardCore.FileStorage.FileSystem" Version="1.0.0-rc2-13450" />
-    <PackageReference Include="OrchardCore.MiniProfiler" Version="1.0.0-rc2-13450" />
-    <PackageReference Include="OrchardCore.Module.Targets" Version="1.0.0-rc2-13450" />
-    <PackageReference Include="OrchardCore.ContentManagement" Version="1.0.0-rc2-13450" />
-    <PackageReference Include="OrchardCore.ContentTypes.Abstractions" Version="1.0.0-rc2-13450" />
-    <PackageReference Include="OrchardCore.DisplayManagement" Version="1.0.0-rc2-13450" />
-    <PackageReference Include="OrchardCore.Navigation" Version="1.0.0-rc2-13450" />
-    <PackageReference Include="OrchardCore.Title" Version="1.0.0-rc2-13450" />
-    <PackageReference Include="OrchardCore.Users" Version="1.0.0-rc2-13450" />
-    <PackageReference Include="OrchardCore.Workflows" Version="1.0.0-rc2-13450" />
+    <PackageReference Include="NodaTime" Version="3.0.5" />
+    <PackageReference Include="OrchardCore.Alias" Version="1.0.0" />
+    <PackageReference Include="OrchardCore.ContentFields" Version="1.0.0" />
+    <PackageReference Include="OrchardCore.ContentManagement" Version="1.0.0" />
+    <PackageReference Include="OrchardCore.Contents" Version="1.0.0" />
+    <PackageReference Include="OrchardCore.ContentTypes.Abstractions" Version="1.0.0" />
+    <PackageReference Include="OrchardCore.DisplayManagement" Version="1.0.0" />
+    <PackageReference Include="OrchardCore.Features" Version="1.0.0" />
+    <PackageReference Include="OrchardCore.FileStorage.FileSystem" Version="1.0.0" />
+    <PackageReference Include="OrchardCore.MiniProfiler" Version="1.0.0" />
+    <PackageReference Include="OrchardCore.Module.Targets" Version="1.0.0" />
+    <PackageReference Include="OrchardCore.Navigation" Version="1.0.0" />
+    <PackageReference Include="OrchardCore.Title" Version="1.0.0" />
+    <PackageReference Include="OrchardCore.Users" Version="1.0.0" />
+    <PackageReference Include="OrchardCore.Workflows" Version="1.0.0" />
     <PackageReference Include="System.Text.Encoding.CodePages" Version="5.0.0" />
-    <PackageReference Include="Transformalize" Version="0.8.41-beta" />
     <PackageReference Include="Transformalize.Container.Autofac" Version="0.8.41-beta" />
     <PackageReference Include="Transformalize.Provider.Ado.Autofac" Version="0.8.35-beta" />
     <PackageReference Include="Transformalize.Provider.Amazon.Connect.Autofac" Version="0.8.41-beta" />
@@ -54,11 +54,12 @@
     <PackageReference Include="Transformalize.Transform.Fluid.Autofac" Version="0.8.31-beta" />
     <PackageReference Include="Transformalize.Transform.GoogleMaps" Version="0.8.30-beta" />
     <PackageReference Include="Transformalize.Transform.Humanizer.Autofac" Version="0.8.30-beta" />
-    <PackageReference Include="Transformalize.Transform.Jint.3.Autofac" Version="0.8.29-beta" />
+    <PackageReference Include="Transformalize.Transform.Jint.3.Autofac" Version="0.8.41-beta" />
     <PackageReference Include="Transformalize.Transform.Json.Autofac" Version="0.8.39-beta" />
     <PackageReference Include="Transformalize.Transform.LambdaParser.Autofac" Version="0.8.30-beta" />
     <PackageReference Include="Transformalize.Transform.Razor.Autofac" Version="0.8.30-beta" />
-    <PackageReference Include="Transformalize.Validate.Jint.3.Autofac" Version="0.8.29-beta" />
+    <PackageReference Include="Transformalize.Validate.Jint.3.Autofac" Version="0.8.41-beta" />
+    <PackageReference Include="Transformalize" Version="0.8.41-beta" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Update="Recipes\batches.postgres.recipe.json">

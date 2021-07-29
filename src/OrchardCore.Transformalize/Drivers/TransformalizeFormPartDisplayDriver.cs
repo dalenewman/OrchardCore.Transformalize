@@ -117,7 +117,7 @@ namespace TransformalizeModule.Drivers {
          }
 
          if (updater.ModelState.IsValid) {
-            _signal.SignalToken(Common.GetCacheKey(part.ContentItem.Id));
+            await _signal.SignalTokenAsync(Common.GetCacheKey(part.ContentItem.Id));
          }
 
          return Edit(part, context);

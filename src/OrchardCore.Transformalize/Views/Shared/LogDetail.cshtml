@@ -3,10 +3,10 @@
 
 <div class="row" style="font:larger; font-weight:bolder;">
    <div class="col-md-6">
-      <div class="float-left">@(Model.Process == null ? "Process" : Model.Process.Name)</div>
+      <div class="float-start">@(Model.Process == null ? "Process" : Model.Process.Name)</div>
    </div>
    <div class="col-md-6">
-      <div class="float-right">@(Model.Process == null ? "" : $"{Model.Process.Status}:{Model.Process.Message}")</div>
+      <div class="float-end">@(Model.Process == null ? "" : $"{Model.Process.Status}:{Model.Process.Message}")</div>
    </div>
 </div>
 

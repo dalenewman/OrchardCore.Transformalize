@@ -10,7 +10,7 @@
 }
 
 <div class="form-group">
-   <label asp-for="Text">@Model.PartFieldDefinition.DisplayName()</label>
+   <label asp-for="Text" class="form-label">@Model.PartFieldDefinition.DisplayName()</label>
    <textarea asp-for="Text" rows="5" class="form-control content-preview-text" dir="@culture.GetLanguageDirection()"></textarea>
    <div class="hint" style="font-size: smaller;">
       @if (!string.IsNullOrWhiteSpace(settings.Hint)) {

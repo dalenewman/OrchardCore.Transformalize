@@ -29,7 +29,7 @@ namespace TransformalizeModule.Services {
 
       public JvResult Visible(JvRequest request) {
 
-         Program program;
+         Script script;
          var result = new JvResult();
 
          if(string.IsNullOrEmpty(request.Script)) {
@@ -38,7 +38,7 @@ namespace TransformalizeModule.Services {
          };
 
          try {
-            program = new JavaScriptParser(request.Script, new ParserOptions() { Tolerant = true }).ParseProgram();
+            script = new JavaScriptParser(request.Script, new ParserOptions() { Tolerant = true }).ParseScript();
          } catch (ParserException ex) {
             result.ParserException = ex;
             result.Message = $"{ex.Message} at column {ex.Column}.";
@@ -51,7 +51,7 @@ namespace TransformalizeModule.Services {
          }
 
          try {
-            var cv = _jint.Execute(program).GetCompletionValue();
+            var cv = _jint.Evaluate(script);
             if (cv.IsBoolean()) {
                result.Visible = (bool)cv.ToObject();
                return result;

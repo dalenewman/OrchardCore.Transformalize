@@ -13,13 +13,13 @@ namespace TransformalizeModule.Services {
    public class ArrangementService : IArrangementService {
 
       private readonly IContentManager _contentManager;
-      private readonly IContentAliasManager _aliasManager;
+      private readonly IContentHandleManager _aliasManager;
       private readonly IContentPermissionsService _contentPermissionsService;
       private readonly CombinedLogger<ArrangementService> _logger;
 
       public ArrangementService(
          IContentManager contentManager,
-         IContentAliasManager aliasManager, 
+         IContentHandleManager aliasManager, 
          IContentPermissionsService contentPermissionsService,
          CombinedLogger<ArrangementService> logger
          ) {

@@ -30,7 +30,7 @@
 
 <script asp-name="jQuery" at="Head"></script>
 <script asp-name="jQuery-ui" at="Foot"></script>
-<script asp-name="bootstrap-select" version="1.13.12" at="Foot"></script>
+<script asp-name="bootstrap-select" version="1.14.0" at="Foot"></script>
 <script asp-name="block-ui" version="2.70.0" at="Foot"></script>
 <script asp-name="underscore" at="Foot"></script>
 <script asp-name="bootstrap-calendar" version="0.2.5" at="Foot"></script>
@@ -40,7 +40,7 @@
 }
 
 <style asp-name="jQuery-ui"></style>
-<style asp-name="bootstrap-select" version="1.13.12"></style>
+<style asp-name="bootstrap-select" version="1.14.0"></style>
 <style asp-name="bootstrap-calendar" version="0.2.5"></style>
 
 @foreach (var script in Model.Process.Scripts.Where(s => s.Global && !string.IsNullOrEmpty(s.File) && (s.Language == "css" || s.Language == Transformalize.Constants.DefaultSetting && s.File.EndsWith(".css", StringComparison.OrdinalIgnoreCase)))) {
@@ -128,7 +128,7 @@
          </div>
       </div>
       <div class="col-md-3">
-         <div class="btn-group calendar-views float-right" role="group">
+         <div class="btn-group calendar-views float-end" role="group">
             <button class="btn btn-warning btn-sm" data-calendar-view="year">
                <span>Year</span>
             </button>

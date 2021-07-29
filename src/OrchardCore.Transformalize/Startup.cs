@@ -66,7 +66,7 @@ namespace TransformalizeModule {
          // orchard cms services
          services.AddScoped<IDataMigration, Migrations>();
          services.AddScoped<IPermissionProvider, Permissions>();
-         services.AddScoped<IResourceManifestProvider, ResourceManifest>();
+         services.AddTransient<IConfigureOptions<ResourceManagementOptions>, ResourceManagementOptionsConfiguration>();
          services.AddScoped<IContentHandler, TransformalizeHandler>();
 
          // parts
@@ -95,8 +95,6 @@ namespace TransformalizeModule {
       public override void Configure(IApplicationBuilder builder, IEndpointRouteBuilder routes, IServiceProvider serviceProvider) {
 
          RouteReporting(routes);
-         RouteMap(routes);
-         RouteCalendar(routes);
          RouteForms(routes);
          RouteFiles(routes);
          RouteTasks(routes);
@@ -233,7 +231,6 @@ namespace TransformalizeModule {
 
       }
 
-
       public void RouteReporting(IEndpointRouteBuilder routes) {
 
          routes.MapAreaControllerRoute(
@@ -265,6 +262,34 @@ namespace TransformalizeModule {
          );
 
          routes.MapAreaControllerRoute(
+            name: "Stream Geo JSON to Map",
+            areaName: Common.ModuleName,
+            pattern: "t/report/stream/map/{ContentItemId}",
+            defaults: new { controller = "Map", action = "Stream" }
+         );
+
+         routes.MapAreaControllerRoute(
+            name: "Stream JSON to Calendar",
+            areaName: Common.ModuleName,
+            pattern: "t/report/stream/calendar/{ContentItemId}",
+            defaults: new { controller = "Calendar", action = "Stream" }
+         );
+
+         routes.MapAreaControllerRoute(
+             name: "Report Map",
+             areaName: Common.ModuleName,
+             pattern: "t/report/map/{ContentItemId}",
+             defaults: new { controller = "Map", action = "Index" }
+         );
+
+         routes.MapAreaControllerRoute(
+             name: "Report Calendar",
+             areaName: Common.ModuleName,
+             pattern: "t/report/calendar/{ContentItemId}",
+             defaults: new { controller = "Calendar", action = "Index" }
+         );
+
+         routes.MapAreaControllerRoute(
             name: "Run Report API",
             areaName: Common.ModuleName,
             pattern: "t/report/{format}/{ContentItemId}",
@@ -276,42 +301,6 @@ namespace TransformalizeModule {
             areaName: Common.ModuleName,
             pattern: "t/report/{ContentItemId}",
             defaults: new { controller = "Report", action = "Index" }
-         );
-
-      }
-
-      public void RouteCalendar(IEndpointRouteBuilder routes) {
-
-         routes.MapAreaControllerRoute(
-             name: "Report Calendar",
-             areaName: Common.ModuleName,
-             pattern: "t/report/calendar/{ContentItemId}",
-             defaults: new { controller = "Calendar", action = "Index" }
-         );
-
-         routes.MapAreaControllerRoute(
-            name: "Stream JSON to Calendar",
-            areaName: Common.ModuleName,
-            pattern: "t/report/stream/calendar/{ContentItemId}",
-            defaults: new { controller = "Calendar", action = "Stream" }
-         );
-
-      }
-
-      public void RouteMap(IEndpointRouteBuilder routes) {
-
-         routes.MapAreaControllerRoute(
-             name: "Report Map",
-             areaName: Common.ModuleName,
-             pattern: "t/report/map/{ContentItemId}",
-             defaults: new { controller = "Map", action = "Index" }
-         );
-
-         routes.MapAreaControllerRoute(
-            name: "Stream Geo JSON to Map",
-            areaName: Common.ModuleName,
-            pattern: "t/report/stream/map/{ContentItemId}",
-            defaults: new { controller = "Map", action = "Stream" }
          );
 
       }

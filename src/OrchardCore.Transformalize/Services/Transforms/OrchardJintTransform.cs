@@ -140,7 +140,7 @@ namespace TransformalizeModule.Services.Transforms {
             }
 
             try {
-               transform.Program = new JavaScriptParser(scriptBuilder.ToString(), new ParserOptions() { Tolerant = true }).ParseProgram();
+               transform.Script = new JavaScriptParser(scriptBuilder.ToString(), new ParserOptions() { Tolerant = true }).ParseScript();
             } catch (ParserException ex) {
                Context.Error(ex.Message);
                Utility.CodeToError(Context, scriptBuilder.ToString());
@@ -162,7 +162,7 @@ namespace TransformalizeModule.Services.Transforms {
             if (TryFirst) {
                try {
                   TryFirst = false;
-                  var obj = _jint.Execute(transform.Program).GetCompletionValue().ToObject();
+                  var obj = _jint.Evaluate(transform.Script).ToObject();
                   var value = obj == null ? null : Context.Field.Convert(obj);
                   if (value == null && !_errors.ContainsKey(0)) {
                      Context.Error($"Jint transform in {Context.Field.Alias} returns null!");
@@ -182,7 +182,7 @@ namespace TransformalizeModule.Services.Transforms {
                   }
                }
             } else {
-               row[Context.Field] = Context.Field.Convert(_jint.Execute(transform.Program).GetCompletionValue().ToObject());
+               row[Context.Field] = Context.Field.Convert(_jint.Evaluate(transform.Script).ToObject());
             }
 
             yield return row;

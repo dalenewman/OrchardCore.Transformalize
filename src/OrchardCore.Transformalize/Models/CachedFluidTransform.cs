@@ -22,7 +22,7 @@ using Transformalize.Configuration;
 namespace TransformalizeModule.Models {
    public class CachedFluidTransform {
       public Field[] Input;
-      public FluidTemplate Template;
+      public IFluidTemplate Template;
    }
 
 }
