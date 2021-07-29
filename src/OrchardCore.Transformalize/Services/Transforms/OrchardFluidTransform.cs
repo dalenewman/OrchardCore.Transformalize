@@ -15,6 +15,7 @@ namespace TransformalizeModule.Services.Transforms {
       private readonly Func<string, object> _convert;
       private readonly IMemoryCache _memoryCache;
       private readonly ISignal _signal;
+      private readonly FluidParser _parser;
 
       public OrchardFluidTransform(IContext context = null, IMemoryCache memoryCache = null, ISignal signal = null) : base(context, null) {
          if (IsMissingContext()) {
@@ -23,6 +24,7 @@ namespace TransformalizeModule.Services.Transforms {
 
          _memoryCache = memoryCache;
          _signal = signal;
+         _parser = new FluidParser();
 
          Returns = Context.Field.Type;
 
@@ -68,7 +70,7 @@ namespace TransformalizeModule.Services.Transforms {
             var matches = Context.Entity.GetFieldMatches(Context.Operation.Template);
             transform.Input = input.Union(matches).ToArray();
 
-            if (FluidTemplate.TryParse(Context.Operation.Template, out transform.Template)) {
+            if (_parser.TryParse(Context.Operation.Template, out transform.Template)) {
 
                // any changes to content item will invalidate cache
                _memoryCache.Set(key, transform, _signal.GetToken(Common.GetCacheKey(Context.Process.Id)));

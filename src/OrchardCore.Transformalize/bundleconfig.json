@@ -82,5 +82,17 @@
     "inputFiles": [
       "wwwroot/Scripts/jquery.are-you-sure.js"
     ]
+  },
+  {
+    "outputFileName": "wwwroot/Scripts/bootstrap-select.min.js",
+    "inputFiles": [
+      "wwwroot/Scripts/bootstrap-select.js"
+    ]
+  },
+  {
+    "outputFileName": "wwwroot/Styles/bootstrap-select.min.css",
+    "inputFiles": [
+      "wwwroot/Styles/bootstrap-select.css"
+    ]
   }
 ]

@@ -18,7 +18,7 @@
    <div class="tab-pane fade show active" id="main" role="tabpanel" aria-labelledby="main-tab">
 
       <div class="form-group">
-         <label asp-for="CommonArrangement">@T["Common Arrangement"]</label>
+         <label asp-for="CommonArrangement" class="form-label">@T["Common Arrangement"]</label>
          <textarea asp-for="CommonArrangement" rows="5" class="form-control content-preview-text"></textarea>
          <div class="hint" style="font-size: smaller;">
             <strong>F11</strong>: <span>Full Screen</span>,
@@ -37,13 +37,13 @@
       @Html.Partial("CodeMirror", new CodeMirrorViewModel(Html.IdFor(m => m.CommonArrangement), .5))
 
       <div class="form-group">
-         <label asp-for="DefaultPageSizes">@T["Default Page Sizes"]</label>
+         <label asp-for="DefaultPageSizes" class="form-label">@T["Default Page Sizes"]</label>
          <input asp-for="DefaultPageSizes" class="form-control" />
          <span class="hint">@T["A comma delimited list of page sizes (integers).  These are used for all reports that do not set a page sizes."]</span>
       </div>
 
       <div class="form-group">
-         <label asp-for="DefaultPageSizesExtended">@T["Default Page Sizes Extended"]</label>
+         <label asp-for="DefaultPageSizesExtended" class="form-label">@T["Default Page Sizes Extended"]</label>
          <input asp-for="DefaultPageSizesExtended" class="form-control" />
          <span class="hint">@T["A comma delimited list of extended page sizes (integers).  These are used for all calendars and/or maps that do not set page sizes."]</span>
       </div>
@@ -53,37 +53,37 @@
    <div class="tab-pane fade" id="bulk" role="tabpanel" aria-labelledby="bulk-tab">
 
       <div class="form-group">
-         <label asp-for="BulkActionCreateTask">@T["Create Task"]</label>
+         <label asp-for="BulkActionCreateTask" class="form-label">@T["Create Task"]</label>
          <input asp-for="BulkActionCreateTask" class="form-control" />
          <span class="hint">@T[Common.BulkActionCreateTaskHint]</span>
       </div>
 
       <div class="form-group">
-         <label asp-for="BulkActionWriteTask">@T["Write Task"]</label>
+         <label asp-for="BulkActionWriteTask" class="form-label">@T["Write Task"]</label>
          <input asp-for="BulkActionWriteTask" class="form-control" />
          <span class="hint">@T[Common.BulkActionWriteTaskHint]</span>
       </div>
 
       <div class="form-group">
-         <label asp-for="BulkActionSummaryTask">@T["Summary Task"]</label>
+         <label asp-for="BulkActionSummaryTask" class="form-label">@T["Summary Task"]</label>
          <input asp-for="BulkActionSummaryTask" class="form-control" />
          <span class="hint">@T[Common.BulkActionSummaryTaskHint]</span>
       </div>
 
       <div class="form-group">
-         <label asp-for="BulkActionRunTask">@T["Run Task"]</label>
+         <label asp-for="BulkActionRunTask" class="form-label">@T["Run Task"]</label>
          <input asp-for="BulkActionRunTask" class="form-control" />
          <span class="hint">@T[Common.BulkActionRunTaskHint]</span>
       </div>
 
       <div class="form-group">
-         <label asp-for="BulkActionSuccessTask">@T["Success Task"]</label>
+         <label asp-for="BulkActionSuccessTask" class="form-label">@T["Success Task"]</label>
          <input asp-for="BulkActionSuccessTask" class="form-control" />
          <span class="hint">@T[Common.BulkActionSuccessTaskHint]</span>
       </div>
 
       <div class="form-group">
-         <label asp-for="BulkActionFailTask">@T["Fail Task"]</label>
+         <label asp-for="BulkActionFailTask" class="form-label">@T["Fail Task"]</label>
          <input asp-for="BulkActionFailTask" class="form-control" />
          <span class="hint">@T[Common.BulkActionFailTaskHint]</span>
       </div>
@@ -93,7 +93,7 @@
    <div class="tab-pane fade" id="map" role="tabpanel" aria-labelledby="map-tab">
 
       <div class="form-group">
-         <label asp-for="MapBoxToken">@T["MapBox Token"]</label>
+         <label asp-for="MapBoxToken" class="form-label">@T["MapBox Token"]</label>
          <input asp-for="MapBoxToken" class="form-control" />
          <span class="hint">@T["Get a token at "] <a href="https://www.mapbox.com" target="_blank">https://www.mapbox.com</a>.</span>
       </div>

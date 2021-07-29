@@ -92,9 +92,9 @@
                @Html.Raw(value)
             } else {
 
-               <label for="@parameter.Name">@(parameter.Label == string.Empty ? parameter.Name : parameter.Label)</label>
+               <label for="@parameter.Name" class="form-label">@(parameter.Label == string.Empty ? parameter.Name : parameter.Label)</label>
                @if (parameter.Hint != string.Empty) {
-                  <span class="text-muted float-right"> @parameter.Hint</span>
+                  <span class="text-muted float-end"> @parameter.Hint</span>
                }
 
                <input type="text"
@@ -122,9 +122,9 @@
       if (map != null) {
 
          <div class="form-group @(parameter.Valid ? "is-valid" : "is-invalid") @parameter.Class">
-            <label for="@parameter.Name">@parameter.Label</label>
+            <label for="@parameter.Name" class="form-label">@parameter.Label</label>
             @if (parameter.Hint != string.Empty) {
-               <span class="text-muted float-right"> @parameter.Hint</span>
+               <span class="text-muted float-end"> @parameter.Hint</span>
             }
             @if (map.Items.Any() && map.Items.All(i => !i.To.Equals(value))) {
                value = map.Items.First().To;
@@ -144,7 +144,7 @@
                foreach (var item in map.Items) {
                   <div class="form-check form-check-inline">
                      <input type="radio" name="@parameter.Name" class="form-check-input" value="@item.To" checked="@(value.Equals(item.To))" data-tfl-post-back="@(parameter.PostBack)" />
-                     <label for="@parameter.Name" class="form-check-label">@item.From</label>
+                     <label for="@parameter.Name" class="form-check-label form-label">@item.From</label>
                   </div>
                }
             }
@@ -164,7 +164,7 @@
                value = Transformalize.Constants.ObjectConversionMap["bool"](value.Equals(string.Empty) ? "false" : value);
                <div class="@(parameter.Valid ? "is-valid" : "is-invalid") @parameter.Class">
                   <div class="checkbox">
-                     <label for="@parameter.Name">
+                     <label for="@parameter.Name" class="form-label">
                         <input name="@parameter.Name"
                                id="id_@parameter.Name"
                                class="@(parameter.Valid ? "is-valid" : "is-invalid")"
@@ -183,14 +183,12 @@
                break;
             case "date":
                <div class="form-group @(parameter.Valid ? "is-valid" : "is-invalid") @parameter.Class">
-                  <label for="@parameter.Name">@parameter.Label</label>
+                  <label for="@parameter.Name" class="form-label">@parameter.Label</label>
                   @if (parameter.Hint != string.Empty) {
-                     <span class="text-muted float-right"> @parameter.Hint</span>
+                     <span class="text-muted float-end"> @parameter.Hint</span>
                   }
                   <div class="input-group">
-                     <div class="input-group-prepend" id="id_dp_@parameter.Name" style="cursor: pointer;">
-                        <span class="input-group-text fas fa-calendar"></span>
-                     </div>
+                     <span class="input-group-text fas fa-calendar" id="id_dp_@parameter.Name" style="cursor: pointer;"></span>
                      <input type="text"
                               class="form-control @(parameter.Valid ? "is-valid" : "is-invalid")"
                               maxlength="@parameter.Length"
@@ -232,14 +230,12 @@
                break;
             case "time":
                <div class="form-group @(parameter.Valid ? "is-valid" : "is-invalid") @parameter.Class">
-                  <label for="@parameter.Name">@parameter.Label</label>
+                  <label for="@parameter.Name" class="form-label">@parameter.Label</label>
                   @if (parameter.Hint != string.Empty) {
-                     <span class="text-muted float-right"> @parameter.Hint</span>
+                     <span class="text-muted float-end"> @parameter.Hint</span>
                   }
                   <div class="input-group">
-                     <div class="input-group-prepend" id="id_dp_@parameter.Name" style="cursor: pointer;">
-                        <span class="input-group-text fas fa-clock"></span>
-                     </div>
+                     <span class="input-group-text fas fa-clock" id="id_dp_@parameter.Name" style="cursor: pointer;"></span>
                      <input type="time"
                               class="form-control @(parameter.Valid ? "is-valid" : "is-invalid")"
                               maxlength="@parameter.Length"
@@ -284,17 +280,15 @@
                @* if change this markup you'll need to update filehandler jquery selectors *@
                <div class="form-group @(parameter.Valid ? "is-valid" : "is-invalid") @parameter.Class">
 
-                  <label for="@parameter.Name">@parameter.Label</label>
+                  <label for="@parameter.Name" class="form-label">@parameter.Label</label>
                   @if (parameter.Hint != string.Empty) {
-                     <span class="text-muted float-right"> @parameter.Hint</span>
+                     <span class="text-muted float-end"> @parameter.Hint</span>
                   }
 
                   <div id="id_@(parameter.Name)" class="file-options">
                      <div class="has-file" style="@(file == null ? "display:none" : string.Empty)">
                         <div class="input-group">
-                           <div class="input-group-prepend removeButton" style="cursor: pointer;">
-                              <span class="input-group-text fas fa-times"></span>
-                           </div>
+                           <span class="input-group-text fas fa-times removeButton" style="cursor: pointer;"></span>
                            <input type="text"
                                     class="form-control @(parameter.Valid ? "is-valid" : "is-invalid")"
                                     name="@parameter.Name"
@@ -311,7 +305,7 @@
                            <tr>
                               <td style="width:auto;">
 
-                                 <label class="btn btn-primary btn-file" style="width:110px; margin-bottom:0px;">
+                                 <label class="btn btn-primary btn-file form-label" style="width:110px; margin-bottom:0px;">
                                     <i class="fas fa-plus"></i>
                                     Upload <input name="@(parameter.Name)"
                                                    type="file"
@@ -357,16 +351,14 @@
                @* if change this markup you'll need to update filehandler jquery selectors *@
                <div class="form-group @(parameter.Valid ? "is-valid" : "is-invalid") @parameter.Class">
 
-                  <label for="@parameter.Name">@parameter.Label</label>
+                  <label for="@parameter.Name" class="form-label">@parameter.Label</label>
                   @if (parameter.Hint != string.Empty) {
-                     <span class="text-muted float-right"> @parameter.Hint</span>
+                     <span class="text-muted float-end"> @parameter.Hint</span>
                   }
                   <div id="id_@(parameter.Name)" class="file-options">
                      <div class="has-file" style="@(hasScan ? string.Empty : "display:none")">
                         <div class="input-group">
-                           <div class="input-group-prepend removeButton" style="cursor: pointer;">
-                              <span class="input-group-text fas fa-times"></span>
-                           </div>
+                           <span class="input-group-text fas fa-times removeButton" style="cursor: pointer;"></span>
                            <input type="text"
                                     class="form-control @(parameter.Valid ? "is-valid" : "is-invalid")"
                                     name="@parameter.Name"
@@ -416,9 +408,9 @@
             default:
                int length;
                <div class="form-group @(parameter.Valid ? "is-valid" : "is-invalid") @parameter.Class">
-                  <label for="@parameter.Name">@parameter.Label</label>
+                  <label for="@parameter.Name" class="form-label">@parameter.Label</label>
                   @if (parameter.Hint != string.Empty) {
-                     <span class="text-muted float-right"> @parameter.Hint</span>
+                     <span class="text-muted float-end"> @parameter.Hint</span>
                   }
                   @if (parameter.UseTextArea(out length)) {
                      <textarea class="form-control @(parameter.Valid ? "is-valid" : "is-invalid")"

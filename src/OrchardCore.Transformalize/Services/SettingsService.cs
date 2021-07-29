@@ -221,7 +221,7 @@ namespace TransformalizeModule.Services {
                } else if (connection.Name == "orchard"){
                   using(var cn = _dbConnectionAccessor.CreateConnection()) {
                      connection.ConnectionString = cn.ConnectionString;
-                     connection.Provider = _store.Dialect.Name.ToLower();
+                     connection.Provider = _store.Configuration.SqlDialect.Name.ToLower();
                   }
                }
 
@@ -309,7 +309,7 @@ namespace TransformalizeModule.Services {
                } else if(connection.Name == "orchard") {
                   using(var cn = _dbConnectionAccessor.CreateConnection()) {
                      connection.ConnectionString = cn.ConnectionString;
-                     connection.Provider = _store.Dialect.Name.ToLower();
+                     connection.Provider = _store.Configuration.SqlDialect.Name.ToLower();
                   }
                }
             }

@@ -115,6 +115,7 @@ $(document).ready(function () {
       width: "fit",
       sanitize: false
    });
+
    $("#id_report select").on("changed.bs.select", function (e, clickedIndex, isSelected, previousValue) {
       lastFilter = this.name;
       controls.setPage(1);

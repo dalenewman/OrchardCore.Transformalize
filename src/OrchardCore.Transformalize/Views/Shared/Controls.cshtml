@@ -43,7 +43,7 @@
 
    <div class="row">
       <div class="col-md-3">
-         <div class="btn-group float-left" role="group">
+         <div class="btn-group float-start" role="group">
             @if (entity.Name != "Missing Entity") {
                <button id="id_submit" type="submit" title="Search / Refresh" class="btn btn-primary btn-sm">
                   <span class="fas fa-search"></span>
@@ -53,7 +53,7 @@
 
                if (Model.Part.BulkActions.Value) {
                   <div class="btn-group btn-group-sm" role="group" aria-label="bulk actions drop down">
-                     <button id="idActionDropdown" type="button" class="btn btn-sm btn-danger dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                     <button id="idActionDropdown" type="button" class="btn btn-sm btn-danger dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                         Action
                      </button>
                      <div class="dropdown-menu" aria-labelledby="idActionDropdown">
@@ -66,7 +66,7 @@
             }
          </div>
 
-         <div class="btn-group float-left" role="group" style="padding-left: 20px;">
+         <div class="btn-group float-start" role="group" style="padding-left: 20px;">
             @foreach (var action in Model.Process.Actions.Where(a => a.Type == "open")) {
                var url = new Flurl.Url(action.Url);
                if (!url.QueryParams.Any(qp => qp.Name == "ReturnUrl")) {
@@ -111,7 +111,7 @@
       </div>
 
       <div class="col-md-3">
-         <div class="btn-group float-right" role="group">
+         <div class="btn-group float-end" role="group">
 
             @if (entity.Name != "Missing Entity") {
 
@@ -124,7 +124,7 @@
                @*if (Model.Process.Mode == "map") {
                    if (Model.MapCfg != null) {
                        <div class="btn-group" role="group">
-                           <button type="button" class="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                           <button type="button" class="btn btn-default btn-sm dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                Style
                                <span class="caret"></span>
                            </button>
@@ -191,7 +191,7 @@
                      <button type="button" class="btn btn-primary btn-sm" title="@defaultView.Title" onclick="javascript:window.open('@defaultView.Link','_self');">
                         <span class="fas fa-@defaultView.Glyphicon"></span>
                      </button>
-                     <button type="button" class="btn btn-primary btn-sm dropdown-toggle" title="other views" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                     <button type="button" class="btn btn-primary btn-sm dropdown-toggle" title="other views" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                         <span class="caret"></span>
                      </button>
                      <div class="dropdown-menu">
@@ -208,18 +208,18 @@
                   <button type="button" class="btn btn-sm btn-info" title="save to csv file" onclick="openRandomLink('@exportCsvLink');">
                      <span class="fas fa-save"></span>
                   </button>
-                  <button class="btn dropdown-toggle btn-sm btn-info" title="other formats" data-toggle="dropdown">
+                  <button class="btn dropdown-toggle btn-sm btn-info" title="other formats" data-bs-toggle="dropdown">
                      <span class="caret"></span>
                   </button>
-                  <div class="dropdown-menu">
-                     <a class="dropdown-item" href="javascript:openRandomLink('@exportCsvLink');" title="save to csv file">CSV</a>
-                     <a class="dropdown-item" href="javascript:openRandomLink('@exportJsonLink');" title="save to json file">JSON</a>
+                  <ul class="dropdown-menu">
+                     <li><a class="dropdown-item" href="javascript:openRandomLink('@exportCsvLink');" title="save to csv file">CSV</a></li>
+                     <li><a class="dropdown-item" href="javascript:openRandomLink('@exportJsonLink');" title="save to json file">JSON</a></li>
                      @{
                         if (hasCoordinates) {
-                           <a class="dropdown-item" href="javascript:openRandomLink('@exportGeoJsonLink');" title="save to geojson file">GEOJSON</a>
+                           <li><a class="dropdown-item" href="javascript:openRandomLink('@exportGeoJsonLink');" title="save to geojson file">GEOJSON</a></li>
                         }
                      }
-                  </div>
+                  </ul>
                </div>
 
                if (pageSizes.Count < 2) {
@@ -227,7 +227,7 @@
                } else {
                   <div class="btn-group btn-group-sm">
                      <button class="btn btn-sm btn-outline-info" disabled="disabled">Size</button>
-                     <button class="btn dropdown-toggle btn-sm btn-outline-info" data-toggle="dropdown" title="set page size" style="padding-left:4px;">
+                     <button class="btn dropdown-toggle btn-sm btn-outline-info" data-bs-toggle="dropdown" title="set page size" style="padding-left:4px;">
                         <span class="caret"></span>
                      </button>
                      <div class="dropdown-menu">

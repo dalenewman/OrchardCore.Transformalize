@@ -32,7 +32,7 @@
 </style>
 
 @if (Model.Item != null && await auth.AuthorizeAsync(Context.User, OrchardCore.Contents.Permissions.EditContent, Model.Item)) {
-   <button title="edit this report" type="button" class="btn btn-warning btn-sm float-right" onclick="window.open('@(Url.Content("~/Admin/Contents/ContentItems/" + Model.Item.ContentItemId + "/Edit?" + Common.ReturnUrlName + "=" + returnUrl))', '@target');">
+   <button title="edit this report" type="button" class="btn btn-warning btn-sm float-end" onclick="window.open('@(Url.Content("~/Admin/Contents/ContentItems/" + Model.Item.ContentItemId + "/Edit?" + Common.ReturnUrlName + "=" + returnUrl))', '@target');">
       <span class="fas fa-edit"></span>
    </button>
 }
