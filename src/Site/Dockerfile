@@ -13,13 +13,11 @@ FROM mcr.microsoft.com/dotnet/sdk:5.0 AS build
 WORKDIR /src
 COPY ["src/Site/Site.csproj", "src/Site/"]
 COPY ["src/OrchardCore.Transformalize/OrchardCore.Transformalize.csproj", "src/OrchardCore.Transformalize/"]
-COPY ["nuget.config",""]
+COPY ["nuget.config", ""]
 RUN dotnet restore "src/Site/Site.csproj"
 COPY . .
 WORKDIR "/src/src/Site"
-RUN rm -rf ./App_Data/logs
-RUN rm -rf ./App_Data/Sites
-RUN rm ./App_Data/tenants.json
+RUN rm -rf ./App_Data/Sites && rm ./App_Data/tenants.json && rm -rf ./App_Data/logs
 RUN dotnet build "Site.csproj" -c Release -o /app/build
 
 FROM build AS publish

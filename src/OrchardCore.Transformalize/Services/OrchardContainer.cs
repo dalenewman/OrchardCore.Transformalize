@@ -141,6 +141,7 @@ namespace TransformalizeModule.Services {
          tm.AddTransform(new TransformHolder((c) => new FilePartTransform(c, _fileService), new FilePartTransform().GetSignatures()));
          tm.AddTransform(new TransformHolder((c) => new AddQueryParameterTransform(c), new AddQueryParameterTransform().GetSignatures()));
          tm.AddTransform(new TransformHolder((c) => new RemoveQueryParameterTransform(c), new RemoveQueryParameterTransform().GetSignatures()));
+         tm.AddTransform(new TransformHolder((c) => new RemoveQueryParametersTransform(c), new RemoveQueryParametersTransform().GetSignatures()));
 
          builder.RegisterModule(tm);
 

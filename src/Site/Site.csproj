@@ -7,7 +7,7 @@
     <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
     <DockerfileContext>..\..</DockerfileContext>
     <DockerfileTag>transformalize.orchard</DockerfileTag>
-    <Version>0.9.0-beta</Version>
+    <Version>0.9.1-beta</Version>
   </PropertyGroup>
   <ItemGroup>
     <Folder Include="wwwroot\" />

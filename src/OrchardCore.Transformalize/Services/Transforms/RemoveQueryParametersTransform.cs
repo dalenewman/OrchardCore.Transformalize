@@ -6,11 +6,11 @@ using Flurl;
 using Transformalize.Configuration;
 
 namespace TransformalizeModule.Services.Transforms {
-   public class RemoveQueryParameterTransform : StringTransform {
+   public class RemoveQueryParametersTransform : StringTransform {
 
       private readonly Field _input;
 
-      public RemoveQueryParameterTransform(
+      public RemoveQueryParametersTransform(
          IContext context = null
       ) : base(context, "string") {
 
@@ -22,10 +22,6 @@ namespace TransformalizeModule.Services.Transforms {
             return;
          }
 
-         if (IsMissing(Context.Operation.Name)) {
-            return;
-         }
-
          _input = SingleInput();
 
       }
@@ -34,7 +30,7 @@ namespace TransformalizeModule.Services.Transforms {
          var value = GetString(row, _input);
          var url = new Url(value);
          if (url.IsValid()) {
-            url = url.RemoveQueryParam(Context.Operation.Name);
+            url.QueryParams.Clear();
             row[Context.Field] = url.ToString();
          } else {
             row[Context.Field] = value;
@@ -43,12 +39,8 @@ namespace TransformalizeModule.Services.Transforms {
       }
 
       public override IEnumerable<OperationSignature> GetSignatures() {
-         yield return new OperationSignature("removequeryparam") {
-            Parameters = new List<OperationParameter> { new OperationParameter("name") }
-         };
-         yield return new OperationSignature("removequeryparameter") {
-            Parameters = new List<OperationParameter> { new OperationParameter("name") }
-         };
+         yield return new OperationSignature("removequeryparams");
+         yield return new OperationSignature("removequeryparameters");
       }
    }
 }
