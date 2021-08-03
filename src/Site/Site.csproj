@@ -7,14 +7,14 @@
     <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
     <DockerfileContext>..\..</DockerfileContext>
     <DockerfileTag>transformalize.orchard</DockerfileTag>
-    <Version>0.9.1-beta</Version>
+    <Version>0.9.2-beta</Version>
   </PropertyGroup>
   <ItemGroup>
     <Folder Include="wwwroot\" />
     <Folder Include="Localization\" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Etch.OrchardCore.ContentPermissions" Version="0.4.0" />
+    <PackageReference Include="Etch.OrchardCore.ContentPermissions" Version="1.0.0" />
     <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.10.14" />
     <PackageReference Include="OrchardCore.Logging.NLog" Version="1.0.0" />
     <PackageReference Include="OrchardCore.Application.Cms.Targets" Version="1.0.0" />

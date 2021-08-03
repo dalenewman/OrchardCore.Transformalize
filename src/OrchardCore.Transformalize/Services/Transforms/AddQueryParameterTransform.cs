@@ -65,8 +65,8 @@ namespace TransformalizeModule.Services.Transforms {
       }
       public override IRow Operate(IRow row) {
          var value = GetString(row, _input);
-         var url = new Url(value);
-         if (url.IsValid()) {
+         if (Url.IsValid(value)) {
+            var url = new Url(value);
             row[Context.Field] = _transform(url, _field, row, _name, _value);
          } else {
             row[Context.Field] = value;

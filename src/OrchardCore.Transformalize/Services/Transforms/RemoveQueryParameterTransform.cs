@@ -32,8 +32,8 @@ namespace TransformalizeModule.Services.Transforms {
 
       public override IRow Operate(IRow row) {
          var value = GetString(row, _input);
-         var url = new Url(value);
-         if (url.IsValid()) {
+         if (Url.IsValid(value)) {
+            var url = new Url(value);
             url = url.RemoveQueryParam(Context.Operation.Name);
             row[Context.Field] = url.ToString();
          } else {

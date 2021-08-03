@@ -3,7 +3,7 @@
     <TargetFramework>net5.0</TargetFramework>
     <AddRazorSupportForMvc>true</AddRazorSupportForMvc>
     <RootNamespace>TransformalizeModule</RootNamespace>
-    <Version>0.9.1-beta</Version>
+    <Version>0.9.2-beta</Version>
   </PropertyGroup>
   <ItemGroup>
     <EmbeddedResource Remove="bundleconfig.json" />
@@ -15,8 +15,8 @@
     <None Include="bundleconfig.json" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Etch.OrchardCore.ContentPermissions" Version="0.4.0" />
-    <PackageReference Include="Flurl" Version="2.8.2" />
+    <PackageReference Include="Etch.OrchardCore.ContentPermissions" Version="1.0.0" />
+    <PackageReference Include="Flurl" Version="3.0.2" />
     <PackageReference Include="NodaTime" Version="3.0.5" />
     <PackageReference Include="OrchardCore.Alias" Version="1.0.0" />
     <PackageReference Include="OrchardCore.ContentFields" Version="1.0.0" />
@@ -59,7 +59,7 @@
     <PackageReference Include="Transformalize.Transform.LambdaParser.Autofac" Version="0.8.30-beta" />
     <PackageReference Include="Transformalize.Transform.Razor.Autofac" Version="0.8.30-beta" />
     <PackageReference Include="Transformalize.Validate.Jint.3.Autofac" Version="0.8.41-beta" />
-    <PackageReference Include="Transformalize" Version="0.8.41-beta" />
+    <PackageReference Include="Transformalize" Version="0.8.42-beta" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Update="Recipes\batches.postgres.recipe.json">
