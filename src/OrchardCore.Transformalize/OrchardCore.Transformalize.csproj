@@ -3,7 +3,18 @@
     <TargetFramework>net5.0</TargetFramework>
     <AddRazorSupportForMvc>true</AddRazorSupportForMvc>
     <RootNamespace>TransformalizeModule</RootNamespace>
-    <Version>0.9.2-beta</Version>
+    <Version>0.9.3-beta</Version>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <Authors>Dale Newman</Authors>
+    <Copyright>Copyright © 2013-2021</Copyright>
+    <Description />
+    <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
+    <PackageProjectUrl>https://github.com/dalenewman/OrchardCore.Transformalize</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/dalenewman/OrchardCore.Transformalize</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <PackageTags>etl,data,forms,reports,transformalize</PackageTags>
+    <NeutralLanguage>en-US</NeutralLanguage>
+    <PackageReleaseNotes>added nuget package</PackageReleaseNotes>
   </PropertyGroup>
   <ItemGroup>
     <EmbeddedResource Remove="bundleconfig.json" />

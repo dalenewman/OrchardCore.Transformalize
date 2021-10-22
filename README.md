@@ -1,26 +1,30 @@
 ## Transformalize in Orchard Core
 
 This is an [Orchard Core](https://github.com/OrchardCMS/OrchardCore) module 
-that [Transformalize](https://github.com/dalenewman/Transformalize)s everything 
-(for better or worse).  It adds content types for 
-tasks, forms, and reports with bulk actions.
+that uses [Transformalize](https://github.com/dalenewman/Transformalize) 
+arrangements to create:
+
+- **Reports**: Browse and Search for data.
+- **Tasks**: Validate & transform parameters for use in data modification statements.
+- **Forms**: Validate & transform form data for data collection. 
+- **Bulk Actions**: Tasks run on records selected from reports.
+
+### Reports
+Reports read, filter, search, export, and page over data. 
+You may transform records using [Razor](https://docs.microsoft.com/en-us/aspnet/core/mvc/views/razor?view=aspnetcore-3.1) 
+, [Liquid](https://shopify.github.io/liquid), and built-in transforms. 
+If the records have coordinates, you may display them on a map.
+
+`TODO: Explain example arrangement and show GIF.`
 
 ### Tasks
 
-Tasks are arrangements as demonstrated on the [Transformalize Read Me](https://github.com/dalenewman/Transformalize/blob/master/README.md) 
-page. In this module, tasks accept, transform, and validate 
-parameters before running.
+Tasks accept, transform, and validate parameters before running 
+traditional [transformalize](https://github.com/dalenewman/Transformalize/blob/master/README.md) 
+or simple data modification processes.
 
 `TODO: Explain example arrangement and show GIF.`
 
-### Reports
-Reports are arrangements that read, filter, 
-search, export, and page over data records from a 
-data source.  You may transform records using [Razor](https://docs.microsoft.com/en-us/aspnet/core/mvc/views/razor?view=aspnetcore-3.1) 
-and/or [Liquid](https://shopify.github.io/liquid).  Optionally, 
-you may display records on a map.
-
-`TODO: Explain example arrangement and show GIF.`
 
 ### Forms
 Building off the ability to validate parameters, 

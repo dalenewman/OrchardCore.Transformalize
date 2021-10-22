@@ -4,8 +4,8 @@ using OrchardCore.Modules.Manifest;
     Name = "Transformalize",
     Author = "Dale Newman",
     Website = "https://github.com/dalenewman/OrchardCore.Transformalize",
-    Version = "0.8.22",
-    Description = "This module wants to Transformalize everything.",
+    Version = "0.9.3",
+    Description = "transformalize everything",
     Category = "ETL",
     Dependencies = new[]{
         "OrchardCore.Alias",
