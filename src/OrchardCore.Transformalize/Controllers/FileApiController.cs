@@ -33,6 +33,7 @@ namespace TransformalizeModule.Controllers {
 
       [HttpPost]
       [Route("upload")]
+      [RequestSizeLimit(209_715_200)]
       public async Task<IActionResult> Upload() {
 
          if (!await _authorizationService.AuthorizeAsync(User, Permissions.AllowApi)) {

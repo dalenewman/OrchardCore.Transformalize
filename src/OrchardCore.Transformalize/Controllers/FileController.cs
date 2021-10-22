@@ -42,6 +42,7 @@ namespace TransformalizeModule.Controllers {
 
 
       [HttpPost]
+      [RequestSizeLimit(209_715_200)]
       public async Task<ContentResult> Upload() {
 
          if (!User.Identity.IsAuthenticated) {
