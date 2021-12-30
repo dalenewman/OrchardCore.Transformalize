@@ -171,18 +171,18 @@ namespace TransformalizeModule {
 
          // 1.14.0-beta for Bootstrap 5 Support
          _manifest
-             .DefineScript("bootstrap-select")
+             .DefineScript("bootstrap-select-beta")
              .SetDependencies("jQuery", "bootstrap")
              .SetUrl($"~/{Common.ModuleName}/Scripts/bootstrap-select.min.js", $"~/{Common.ModuleName}/Scripts/bootstrap-select.js")
-             //.SetCdn("https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.14.0/js/bootstrap-select.min.js", "https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.14.0/js/bootstrap-select.js")
-             //.SetCdnIntegrity("sha512-yDlE7vpGDP7o2eftkCiPZ+yuUyEcaBwoJoIhdXv71KZWugFqEphIS3PU60lEkFaz8RxaVsMpSvQxMBaKVwA5xg==", "sha512-t2sE4D8vBHZoytr423dbCPmX8MUKM9bNiVKGOMpqFYEsV8/GilxvresTtCsv9RDzqGMcizOd7EuXssJUtaGZLg==")
+             .SetCdn("https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.14.0-beta2/js/bootstrap-select.min.js", "https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.14.0-beta2/js/bootstrap-select.js")
+             .SetCdnIntegrity("sha512-FHZVRMUW9FsXobt+ONiix6Z0tIkxvQfxtCSirkKc5Sb4TKHmqq1dZa8DphF0XqKb3ldLu/wgMa8mT6uXiLlRlw==", "sha512-ygyrAVxux4a+xKAg4oj7ZKVKZgx+3lT4CYLkoYNT5VaSZcqfYDGDQkiNUBvS/Ggul5g10aCIlMsZ9qrjoUME9A==")
              .SetVersion("1.14.0");
 
          _manifest
-             .DefineStyle("bootstrap-select")
+             .DefineStyle("bootstrap-select-beta")
              .SetUrl($"~/{Common.ModuleName}/Styles/bootstrap-select.min.css", $"~/{Common.ModuleName}/Styles/bootstrap-select.css")
-             // .SetCdn("https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.14.0/css/bootstrap-select.min.css", "https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.14.0/css/bootstrap-select.css")
-             // .SetCdnIntegrity("sha512-ARJR74swou2y0Q2V9k0GbzQ/5vJ2RBSoCWokg4zkfM29Fb3vZEQyv0iWBMW/yvKgyHSR/7D64pFMmU8nYmbRkg==", "sha512-03p8fFZpOREY+YEQKSxxretkFih/D3AVX5Uw16CAaJRg14x9WOF18ZGYUnEqIpIqjxxgLlKgIB2kKIjiOD6++w==")
+             .SetCdn("https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.14.0-beta2/css/bootstrap-select.min.css", "https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.14.0-beta2/css/bootstrap-select.css")
+             .SetCdnIntegrity("sha512-mR/b5Y7FRsKqrYZou7uysnOdCIJib/7r5QeJMFvLNHNhtye3xJp1TdJVPLtetkukFn227nKpXD9OjUc09lx97Q==", "sha512-txEvwMt/+RgCCbxKwzCZNTusZHDw1To/n29O2UglIWO01ce9Ys/QOp3YV/ZEOyxxKTQuFFNZFgaOiPmN6EgPyw==")
              .SetVersion("1.14.0");
 
          // Prismjs
