@@ -3,10 +3,10 @@
     <TargetFramework>net5.0</TargetFramework>
     <AddRazorSupportForMvc>true</AddRazorSupportForMvc>
     <RootNamespace>TransformalizeModule</RootNamespace>
-    <Version>0.9.5-beta</Version>
+    <Version>0.9.6-beta</Version>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <Authors>Dale Newman</Authors>
-    <Copyright>Copyright © 2013-2021</Copyright>
+    <Copyright>Copyright © 2013-2022</Copyright>
     <Description />
     <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
     <PackageProjectUrl>https://github.com/dalenewman/OrchardCore.Transformalize</PackageProjectUrl>
