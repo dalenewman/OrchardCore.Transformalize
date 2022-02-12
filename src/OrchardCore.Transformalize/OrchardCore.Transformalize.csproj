@@ -49,7 +49,7 @@
     <PackageReference Include="Transformalize.Provider.Amazon.Connect.Autofac" Version="0.8.41-beta" />
     <PackageReference Include="Transformalize.Provider.Aws.CloudWatch.Autofac" Version="0.8.41-beta" />
     <PackageReference Include="Transformalize.Provider.Bogus.Autofac" Version="0.8.29-beta" />
-    <PackageReference Include="Transformalize.Provider.CsvHelper.Autofac" Version="0.8.36-beta" />
+    <PackageReference Include="Transformalize.Provider.CsvHelper.Autofac" Version="0.8.37-beta" />
     <PackageReference Include="Transformalize.Provider.Elasticsearch.Autofac" Version="0.8.29-beta" />
     <PackageReference Include="Transformalize.Provider.Excel" Version="0.8.29-beta" />
     <PackageReference Include="Transformalize.Provider.File.Autofac" Version="0.8.30-beta" />
@@ -70,7 +70,7 @@
     <PackageReference Include="Transformalize.Transform.LambdaParser.Autofac" Version="0.8.30-beta" />
     <PackageReference Include="Transformalize.Transform.Razor.Autofac" Version="0.8.30-beta" />
     <PackageReference Include="Transformalize.Validate.Jint.3.Autofac" Version="0.8.41-beta" />
-    <PackageReference Include="Transformalize" Version="0.8.42-beta" />
+    <PackageReference Include="Transformalize" Version="0.8.44-beta" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Update="Recipes\batches.postgres.recipe.json">
