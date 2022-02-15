@@ -4,7 +4,7 @@
       public string DefaultPageSizes { get; set; }
       public string DefaultPageSizesExtended { get; set; }
       public string MapBoxToken { get; set; }
-
+      public string GoogleApiKey { get; set; }
 
       public string BulkActionCreateTask { get; set; }
       public string BulkActionWriteTask { get; set; }

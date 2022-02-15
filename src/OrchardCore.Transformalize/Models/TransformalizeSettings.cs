@@ -11,6 +11,7 @@ namespace TransformalizeModule.Models {
       private string _defaultPageSizesExtended;
       private string _commonArrangement;
       private string _mapBoxToken;
+      private string _googleApiKey;
       private string _bulkActionCreateTask;
       private string _bulkActionWriteTask;
       private string _bulkActionSummaryTask;
@@ -62,6 +63,11 @@ namespace TransformalizeModule.Models {
       public string MapBoxToken {
          get => string.IsNullOrWhiteSpace(_mapBoxToken) ? string.Empty : _mapBoxToken;
          set => _mapBoxToken = string.IsNullOrWhiteSpace(value) ? string.Empty : value;
+      }
+
+      public string GoogleApiKey {
+         get => string.IsNullOrWhiteSpace(_googleApiKey) ? string.Empty : _googleApiKey;
+         set => _googleApiKey = string.IsNullOrWhiteSpace(value) ? string.Empty : value;
       }
 
       public string BulkActionCreateTask { get => _bulkActionCreateTask ?? "batch-create"; set => _bulkActionCreateTask = value; }

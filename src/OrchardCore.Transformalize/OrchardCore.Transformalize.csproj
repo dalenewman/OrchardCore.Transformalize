@@ -3,7 +3,7 @@
     <TargetFramework>net5.0</TargetFramework>
     <AddRazorSupportForMvc>true</AddRazorSupportForMvc>
     <RootNamespace>TransformalizeModule</RootNamespace>
-    <Version>0.9.6-beta</Version>
+    <Version>0.9.7-beta</Version>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <Authors>Dale Newman</Authors>
     <Copyright>Copyright © 2013-2022</Copyright>
@@ -45,7 +45,7 @@
     <PackageReference Include="OrchardCore.Workflows" Version="1.0.0" />
     <PackageReference Include="System.Text.Encoding.CodePages" Version="5.0.0" />
     <PackageReference Include="Transformalize.Container.Autofac" Version="0.8.41-beta" />
-    <PackageReference Include="Transformalize.Provider.Ado.Autofac" Version="0.8.35-beta" />
+    <PackageReference Include="Transformalize.Provider.Ado.Autofac" Version="0.8.36-beta" />
     <PackageReference Include="Transformalize.Provider.Amazon.Connect.Autofac" Version="0.8.41-beta" />
     <PackageReference Include="Transformalize.Provider.Aws.CloudWatch.Autofac" Version="0.8.41-beta" />
     <PackageReference Include="Transformalize.Provider.Bogus.Autofac" Version="0.8.29-beta" />
@@ -60,7 +60,7 @@
     <PackageReference Include="Transformalize.Provider.PostgreSql.Autofac" Version="0.8.35-beta" />
     <PackageReference Include="Transformalize.Provider.Sqlite.Autofac" Version="0.8.29-beta" />
     <PackageReference Include="Transformalize.Provider.SqlServer.SqlClient.1.Autofac" Version="0.8.33-beta" />
-    <PackageReference Include="Transformalize.Transform.Ado.Autofac" Version="0.8.35-beta" />
+    <PackageReference Include="Transformalize.Transform.Ado.Autofac" Version="0.8.36-beta" />
     <PackageReference Include="Transformalize.Transform.Aws.Autofac" Version="0.8.41-beta" />
     <PackageReference Include="Transformalize.Transform.Fluid.Autofac" Version="0.8.31-beta" />
     <PackageReference Include="Transformalize.Transform.GoogleMaps" Version="0.8.30-beta" />

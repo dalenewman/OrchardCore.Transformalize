@@ -94,5 +94,11 @@
     "inputFiles": [
       "wwwroot/Styles/bootstrap-select.css"
     ]
+  },
+  {
+    "outputFileName": "wwwroot/Scripts/load-image.all.min.js",
+    "inputFiles": [
+      "wwwroot/Scripts/load-image.all.js"
+    ]
   }
 ]

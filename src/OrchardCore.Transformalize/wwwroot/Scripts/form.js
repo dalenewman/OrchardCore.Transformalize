@@ -60,6 +60,13 @@
       if (settings.location.enabled) {
          getLocation();
       }
+
+      if (settings.googlePlacesAutocomplete) {
+         setTimeout(function () {
+            initAutocomplete();
+         }, 500);
+      }
+
       setFocus();
 
       // if it is post back, then validate field and post back

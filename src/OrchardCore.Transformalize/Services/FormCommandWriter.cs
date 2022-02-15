@@ -53,6 +53,9 @@ namespace TransformalizeModule.Services {
                   case AdoProvider.PostgreSql:
                      definitions.Add(_factory.Enclose(parameter.Name) + " SERIAL NOT NULL PRIMARY KEY"); 
                      break;
+                  case AdoProvider.SqLite:
+                     definitions.Add(_factory.Enclose(parameter.Name) + " INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT");
+                     break;
                   default:
                      definitions.Add(_factory.Enclose(parameter.Name) + " INT NOT NULL PRIMARY KEY IDENTITY(1,1)");
                      break;

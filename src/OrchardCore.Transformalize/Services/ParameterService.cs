@@ -15,10 +15,8 @@ namespace TransformalizeModule.Services {
 
          var parameters = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
          if (_request != null) {
-            if (_request.QueryString != null) {
-               foreach (var key in _request.Query.Keys) {
-                  parameters[key] = _request.Query[key].ToString();
-               }
+            foreach (var key in _request.Query.Keys) {
+               parameters[key] = _request.Query[key].ToString();
             }
             if (_request.HasFormContentType) {
                foreach (var key in _request.Form.Keys) {

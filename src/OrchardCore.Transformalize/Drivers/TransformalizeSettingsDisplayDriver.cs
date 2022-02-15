@@ -41,6 +41,7 @@ namespace TransformalizeModule.Drivers {
             model.DefaultPageSizes = settings.DefaultPageSizes;
             model.DefaultPageSizesExtended = settings.DefaultPageSizesExtended;
             model.MapBoxToken = settings.MapBoxToken;
+            model.GoogleApiKey = settings.GoogleApiKey;
 
             model.BulkActionCreateTask = settings.BulkActionCreateTask;
             model.BulkActionWriteTask = settings.BulkActionWriteTask;
@@ -68,6 +69,7 @@ namespace TransformalizeModule.Drivers {
             await context.Updater.TryUpdateModelAsync(model, Prefix);
 
             settings.MapBoxToken = model.MapBoxToken;
+            settings.GoogleApiKey = model.GoogleApiKey;
 
             settings.BulkActionCreateTask = model.BulkActionCreateTask;
             settings.BulkActionWriteTask = model.BulkActionWriteTask;
