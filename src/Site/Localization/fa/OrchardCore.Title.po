@@ -4,13 +4,13 @@ msgstr ""
 "X-Crowdin-Project: orchard-core\n"
 "X-Crowdin-Project-ID: 307044\n"
 "X-Crowdin-Language: fa\n"
-"X-Crowdin-File: /dev/Localization/OrchardCore.Title.pot\n"
-"X-Crowdin-File-ID: 624\n"
+"X-Crowdin-File: /main/Localization/OrchardCore.Title.pot\n"
+"X-Crowdin-File-ID: 832\n"
 "Project-Id-Version: orchard-core\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Language-Team: Persian\n"
 "Language: fa_IR\n"
-"PO-Revision-Date: 2021-06-01 09:29\n"
+"PO-Revision-Date: 2022-05-05 19:19\n"
 
 #. updater.ModelState.AddModelError(Prefix, nameof(model.Title), S["A value is required for Title."]);
 #: OrchardCore.Title\Drivers\TitlePartDisplayDriver.cs:60
@@ -84,7 +84,7 @@ msgctxt "OrchardCore.Title.Views.TitlePartSettings.Edit"
 msgid "Title is generated and input is hidden"
 msgstr "عنوان تولید شده و Input مخفی است"
 
-#. <label asp-for="RenderTitle" class="custom-control-label">@T["Render Title"]</label>
+#. <label asp-for="RenderTitle" class="form-check-label">@T["Render Title"]</label>
 #: OrchardCore.Title\Views\TitlePartSettings.Edit.cshtml:28
 msgctxt "OrchardCore.Title.Views.TitlePartSettings.Edit"
 msgid "Render Title"

@@ -4,19 +4,19 @@ msgstr ""
 "X-Crowdin-Project: orchard-core\n"
 "X-Crowdin-Project-ID: 307044\n"
 "X-Crowdin-Language: el\n"
-"X-Crowdin-File: /dev/Localization/OrchardCore.Title.pot\n"
-"X-Crowdin-File-ID: 624\n"
+"X-Crowdin-File: /main/Localization/OrchardCore.Title.pot\n"
+"X-Crowdin-File-ID: 832\n"
 "Project-Id-Version: orchard-core\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Language-Team: Greek\n"
 "Language: el_GR\n"
-"PO-Revision-Date: 2021-06-01 09:24\n"
+"PO-Revision-Date: 2022-05-05 19:19\n"
 
 #. updater.ModelState.AddModelError(Prefix, nameof(model.Title), S["A value is required for Title."]);
 #: OrchardCore.Title\Drivers\TitlePartDisplayDriver.cs:60
 msgctxt "OrchardCore.Title.Drivers.TitlePartDisplayDriver"
 msgid "A value is required for Title."
-msgstr ""
+msgstr "Απαιτείται μια τιμή για τον τίτλο."
 
 #. context.Updater.ModelState.AddModelError(nameof(model.Pattern), S["Pattern doesn't contain a valid Liquid expression. Details: {0}", string.Join(" ", errors)]);
 #: OrchardCore.Title\Settings\TitlePartSettingsDisplayDriver.cs:48
@@ -40,13 +40,13 @@ msgstr "Τίτλος"
 #: OrchardCore.Title\Views\TitlePart.Edit.cshtml:21
 msgctxt "OrchardCore.Title.Views.TitlePart.Edit"
 msgid "Leave empty to auto-generate the title using the pattern."
-msgstr ""
+msgstr "Αφήστε το κενό, για να δημιουργήσετε αυτόματα τον τίτλο χρησιμοποιώντας το μοτίβο."
 
 #. <span class="hint">@T["The title will be auto-generated using the pattern."]</span>
 #: OrchardCore.Title\Views\TitlePart.Edit.cshtml:24
 msgctxt "OrchardCore.Title.Views.TitlePart.Edit"
 msgid "The title will be auto-generated using the pattern."
-msgstr ""
+msgstr "Ο τίτλος θα δημιουργηθεί αυτόματα χρησιμοποιώντας το μοτίβο."
 
 #. <option value="" selected="@String.IsNullOrEmpty(currentEditor)">@T["Standard"]</option>
 #: OrchardCore.Title\Views\TitlePart.Option.cshtml:4
@@ -84,17 +84,17 @@ msgctxt "OrchardCore.Title.Views.TitlePartSettings.Edit"
 msgid "Title is generated and input is hidden"
 msgstr "Ο τίτλος δημιουργείται και η καταχώρηση είναι κρυμμένη"
 
-#. <label asp-for="RenderTitle" class="custom-control-label">@T["Render Title"]</label>
+#. <label asp-for="RenderTitle" class="form-check-label">@T["Render Title"]</label>
 #: OrchardCore.Title\Views\TitlePartSettings.Edit.cshtml:28
 msgctxt "OrchardCore.Title.Views.TitlePartSettings.Edit"
 msgid "Render Title"
-msgstr ""
+msgstr "Τίτλος Αποτύπωσης"
 
 #. <span class="hint dashed">@T["Check to render the title in display views."]</span>
 #: OrchardCore.Title\Views\TitlePartSettings.Edit.cshtml:29
 msgctxt "OrchardCore.Title.Views.TitlePartSettings.Edit"
 msgid "Check to render the title in display views."
-msgstr ""
+msgstr "Επιλέξτε για την αποτύπωση του τίτλου σε προβολές οθόνης."
 
 #. <label asp-for="Pattern">@T["Pattern"]</label>
 #: OrchardCore.Title\Views\TitlePartSettings.Edit.cshtml:35

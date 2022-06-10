@@ -4,13 +4,13 @@ msgstr ""
 "X-Crowdin-Project: orchard-core\n"
 "X-Crowdin-Project-ID: 307044\n"
 "X-Crowdin-Language: fi\n"
-"X-Crowdin-File: /dev/Localization/OrchardCore.Facebook.pot\n"
-"X-Crowdin-File-ID: 550\n"
+"X-Crowdin-File: /main/Localization/OrchardCore.Facebook.pot\n"
+"X-Crowdin-File-ID: 742\n"
 "Project-Id-Version: orchard-core\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Language-Team: Finnish\n"
 "Language: fi_FI\n"
-"PO-Revision-Date: 2021-06-01 09:22\n"
+"PO-Revision-Date: 2022-05-05 18:52\n"
 
 #. builder.Add(S["Configuration"], configuration => configuration
 #: OrchardCore.Facebook\AdminMenu.cs:27
@@ -104,7 +104,7 @@ msgstr "Sisäänkirjautumisen asetukset"
 #: OrchardCore.Facebook\Views\FacebookLoginSettings.Edit.cshtml:12
 msgctxt "OrchardCore.Facebook.Views.FacebookLoginSettings.Edit"
 msgid "CallbackPath"
-msgstr "CallbackPath"
+msgstr "Takaisinkutsumisosoite (CallbackPath)"
 
 #. <span class="hint">@T["The request path within the application's base path where the user-agent will be returned. The middleware will process this request when it arrives."]</span>
 #: OrchardCore.Facebook\Views\FacebookLoginSettings.Edit.cshtml:15
@@ -112,7 +112,7 @@ msgctxt "OrchardCore.Facebook.Views.FacebookLoginSettings.Edit"
 msgid "The request path within the application's base path where the user-agent will be returned. The middleware will process this request when it arrives."
 msgstr "Kyselypolku sovelluksen peruspolussa, johon käyttäjäagentti palautetaan. Välisovellus käsittelee tämän pyynnön heti sen saapuessa."
 
-#. <label class="custom-control-label" asp-for="SaveTokens">@T["Store tokens"]</label>
+#. <label class="form-check-label" asp-for="SaveTokens">@T["Store tokens"]</label>
 #: OrchardCore.Facebook\Views\FacebookLoginSettings.Edit.cshtml:21
 msgctxt "OrchardCore.Facebook.Views.FacebookLoginSettings.Edit"
 msgid "Store tokens"
@@ -254,13 +254,13 @@ msgstr "Facebook-sovellus"
 #: OrchardCore.Facebook\Views\Items\FacebookLoginDeploymentStep.Edit.cshtml:3
 msgctxt "OrchardCore.Facebook.Views.Items.FacebookLoginDeploymentStep.Edit"
 msgid "Facebook Login Settings"
-msgstr ""
+msgstr "Facebook-kirjautumisasetukset"
 
 #. <h5>@T["Facebook Login Settings"]</h5>
 #: OrchardCore.Facebook\Views\Items\FacebookLoginDeploymentStep.Summary.cshtml:3
 msgctxt "OrchardCore.Facebook.Views.Items.FacebookLoginDeploymentStep.Summary"
 msgid "Facebook Login Settings"
-msgstr ""
+msgstr "Facebook-kirjautumisasetukset"
 
 #. <span class="hint">@T["Adds Facebook Login settings to the plan."]</span>
 #: OrchardCore.Facebook\Views\Items\FacebookLoginDeploymentStep.Summary.cshtml:5
@@ -272,7 +272,7 @@ msgstr ""
 #: OrchardCore.Facebook\Views\Items\FacebookLoginDeploymentStep.Thumbnail.cshtml:3
 msgctxt "OrchardCore.Facebook.Views.Items.FacebookLoginDeploymentStep.Thumbnail"
 msgid "Facebook Login Settings"
-msgstr ""
+msgstr "Facebook-kirjautumisasetukset"
 
 #. <p>@T["Exports the Facebook Login settings."]</p>
 #: OrchardCore.Facebook\Views\Items\FacebookLoginDeploymentStep.Thumbnail.cshtml:4

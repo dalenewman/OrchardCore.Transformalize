@@ -65,10 +65,7 @@ using Transformalize.Providers.Ado;
 using OrchardCore.Modules;
 using Transformalize.Transform.GoogleMaps;
 using TransformalizeModule.Services.Contracts;
-using Transformalize.Transforms.Aws.Autofac;
 using Transformalize.Providers.Mail.Autofac;
-using Transformalize.Providers.Aws.CloudWatch.Autofac;
-using Transformalize.Providers.Amazon.Connect.Autofac;
 using System.IO;
 
 namespace TransformalizeModule.Services {
@@ -189,11 +186,6 @@ namespace TransformalizeModule.Services {
          if (providers.Contains("bogus")) { builder.RegisterModule(new BogusModule()); }
          if (providers.Contains("log") || process.Actions.Any(a => a.Type == "log")) { builder.RegisterModule(new OrchardLogModule(process)); }
          if (providers.Contains("mail")) { builder.RegisterModule(new MailModule()); }
-         if (providers.Contains("aws")) {
-            var services = new HashSet<string>(process.Connections.Where(c => c.Provider == "aws").Select(c => c.Service));
-            if (services.Contains("logs")) { builder.RegisterModule(new AwsCloudWatchProviderModule()); }
-            if (services.Contains("connect")) { builder.RegisterModule(new AmazonConnectProviderModule()); }   
-         }
 
          // transform and validation modules need these properties
          builder.Properties["ShortHand"] = _shortHand;
@@ -205,7 +197,6 @@ namespace TransformalizeModule.Services {
          builder.RegisterModule(new FileModule());
          builder.RegisterModule(new AdoTransformModule());
          builder.RegisterModule(new LambdaParserModule());
-         builder.RegisterModule(new AwsTransformModule());
 
          // register validator modules here
          builder.RegisterModule(new JintValidateModule());

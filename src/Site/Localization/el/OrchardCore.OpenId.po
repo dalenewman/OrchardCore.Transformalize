@@ -4,13 +4,13 @@ msgstr ""
 "X-Crowdin-Project: orchard-core\n"
 "X-Crowdin-Project-ID: 307044\n"
 "X-Crowdin-Language: el\n"
-"X-Crowdin-File: /dev/Localization/OrchardCore.OpenId.pot\n"
-"X-Crowdin-File-ID: 590\n"
+"X-Crowdin-File: /main/Localization/OrchardCore.OpenId.pot\n"
+"X-Crowdin-File-ID: 786\n"
 "Project-Id-Version: orchard-core\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Language-Team: Greek\n"
 "Language: el_GR\n"
-"PO-Revision-Date: 2021-07-08 17:47\n"
+"PO-Revision-Date: 2022-05-05 19:06\n"
 
 #. builder.Add(S["Security"], security => security
 #: OrchardCore.OpenId\AdminMenu.cs:31
@@ -48,7 +48,7 @@ msgstr "Διακομιστή εξουσιοδότησης"
 #: OrchardCore.OpenId\AdminMenu.cs:61
 msgctxt "OrchardCore.OpenId.AdminMenu"
 msgid "Token validation"
-msgstr "Επικύρωση Token"
+msgstr "Επικύρωση Συμβόλου (Token)"
 
 #. category.Add(S["Management"], "2", management =>
 #: OrchardCore.OpenId\AdminMenu.cs:71
@@ -68,8 +68,8 @@ msgctxt "OrchardCore.OpenId.AdminMenu"
 msgid "Scopes"
 msgstr "Σκοπός"
 
-#. _notifier.Warning(H["There are no registered services to provide roles."]);
-#. _notifier.Warning(H["There are no registered services to provide roles."]);
+#. await _notifier.WarningAsync(H["There are no registered services to provide roles."]);
+#. await _notifier.WarningAsync(H["There are no registered services to provide roles."]);
 #: OrchardCore.OpenId\Controllers\ApplicationController.cs:113
 #: OrchardCore.OpenId\Controllers\ApplicationController.cs:302
 msgctxt "OrchardCore.OpenId.Controllers.ApplicationController"
@@ -104,7 +104,7 @@ msgctxt "OrchardCore.OpenId.Controllers.ApplicationController"
 msgid "Setting a new client secret is required."
 msgstr "Απαιτείται ρύθμιση νέου μυστικού του πελάτη."
 
-#. _notifier.Warning(H["OpenID Connect settings are not properly configured."]);
+#. await _notifier.WarningAsync(H["OpenID Connect settings are not properly configured."]);
 #: OrchardCore.OpenId\Controllers\ApplicationController.cs:580
 msgctxt "OrchardCore.OpenId.Controllers.ApplicationController"
 msgid "OpenID Connect settings are not properly configured."
@@ -118,7 +118,7 @@ msgctxt "OrchardCore.OpenId.Controllers.ScopeController"
 msgid "The name is already taken by another scope."
 msgstr "Το όνομα έχει ήδη κρατηθεί από άλλο σκοπό."
 
-#. _notifier.Success(H["OpenID server configuration successfully updated."]);
+#. await _notifier.SuccessAsync(H["OpenID server configuration successfully updated."]);
 #: OrchardCore.OpenId\Controllers\ServerConfigurationController.cs:96
 msgctxt "OrchardCore.OpenId.Controllers.ServerConfigurationController"
 msgid "OpenID server configuration successfully updated."
@@ -128,9 +128,9 @@ msgstr "Η διαμόρφωση του διακομιστή OpenID ενημερ�
 #: OrchardCore.OpenId\Controllers\UserInfoController.cs:60
 msgctxt "OrchardCore.OpenId.Controllers.UserInfoController"
 msgid "The userinfo endpoint can only be used with access tokens representing users."
-msgstr "Το userinfo endpoint μπορεί να χρησιμοποιηθεί μόνο με access tokens που αντιπροσωπεύουν τους χρήστες."
+msgstr "Το userinfo endpoint μπορεί να χρησιμοποιηθεί μόνο με σύμβολα (tokens) πρόσβασης που αντιπροσωπεύουν τους χρήστες."
 
-#. _notifier.Success(H["OpenID validation configuration successfully updated."]);
+#. await _notifier.SuccessAsync(H["OpenID validation configuration successfully updated."]);
 #: OrchardCore.OpenId\Controllers\ValidationConfigurationController.cs:96
 msgctxt "OrchardCore.OpenId.Controllers.ValidationConfigurationController"
 msgid "OpenID validation configuration successfully updated."
@@ -140,7 +140,7 @@ msgstr "Η διαμόρφωση επικύρωσης OpenID ενημερώθηκ
 #: OrchardCore.OpenId\Drivers\OpenIdClientSettingsDisplayDriver.cs:176
 msgctxt "OrchardCore.OpenId.Drivers.OpenIdClientSettingsDisplayDriver"
 msgid "The parameters are written in an incorrect format."
-msgstr ""
+msgstr "Οι παράμετροι είναι γραμμένες σε λανθασμένη μορφή."
 
 #. results.Add(new ValidationResult(S["The authority cannot be null or empty."], new[]
 #: OrchardCore.OpenId\Services\OpenIdClientService.cs:62
@@ -230,31 +230,31 @@ msgstr "Το πιστοποιητικό δεν ισχύει για την τρέ
 #: OrchardCore.OpenId\Services\OpenIdServerService.cs:172
 msgctxt "OrchardCore.OpenId.Services.OpenIdServerService"
 msgid "The password flow cannot be enabled when the token endpoint is disabled."
-msgstr "Η ροή του κωδικού πρόσβασης δεν μπορεί να ενεργοποιηθεί όταν το τελικό σημείο token είναι απενεργοποιημένο."
+msgstr "Η ροή του κωδικού πρόσβασης δεν μπορεί να ενεργοποιηθεί όταν το τελικό σημείο σύμβολου (token) είναι απενεργοποιημένο."
 
 #. results.Add(new ValidationResult(S["The client credentials flow cannot be enabled when the token endpoint is disabled."], new[]
 #: OrchardCore.OpenId\Services\OpenIdServerService.cs:180
 msgctxt "OrchardCore.OpenId.Services.OpenIdServerService"
 msgid "The client credentials flow cannot be enabled when the token endpoint is disabled."
-msgstr "Η ροή διαπιστευτηρίων πελάτη δεν μπορεί να ενεργοποιηθεί όταν το τελικό σημείο token είναι απενεργοποιημένο."
+msgstr "Η ροή διαπιστευτηρίων πελάτη δεν μπορεί να ενεργοποιηθεί όταν το τελικό σημείο συμβολού (token) είναι απενεργοποιημένο."
 
 #. results.Add(new ValidationResult(S["The authorization code flow cannot be enabled when the authorization and token endpoints are disabled."], new[]
 #: OrchardCore.OpenId\Services\OpenIdServerService.cs:188
 msgctxt "OrchardCore.OpenId.Services.OpenIdServerService"
 msgid "The authorization code flow cannot be enabled when the authorization and token endpoints are disabled."
-msgstr "Η ροή κώδικα εξουσιοδότησης δεν μπορεί να ενεργοποιηθεί όταν τα τελικά σημεία εξουσιοδότησης και συμβολοσειρών είναι απενεργοποιημένα."
+msgstr "Η ροή κώδικα εξουσιοδότησης δεν μπορεί να ενεργοποιηθεί όταν τα τελικά σημεία εξουσιοδότησης και συμβολοσειρών (token) είναι απενεργοποιημένα."
 
 #. results.Add(new ValidationResult(S["The refresh token flow cannot be enabled when the token endpoint is disabled."], new[]
 #: OrchardCore.OpenId\Services\OpenIdServerService.cs:198
 msgctxt "OrchardCore.OpenId.Services.OpenIdServerService"
 msgid "The refresh token flow cannot be enabled when the token endpoint is disabled."
-msgstr "Η ανανέωση της ροή token δεν μπορεί να ενεργοποιηθεί όταν το τελικό σημείο token είναι απενεργοποιημένο."
+msgstr "Η ανανέωση της ροή συμβόλου (token) δεν μπορεί να ενεργοποιηθεί όταν το τελικό σημείο συμβόλου (token) είναι απενεργοποιημένο."
 
 #. results.Add(new ValidationResult(S["The refresh token flow can only be enabled if the password, authorization code or hybrid flows are enabled."], new[]
 #: OrchardCore.OpenId\Services\OpenIdServerService.cs:206
 msgctxt "OrchardCore.OpenId.Services.OpenIdServerService"
 msgid "The refresh token flow can only be enabled if the password, authorization code or hybrid flows are enabled."
-msgstr "Η ροή token ανανέωσης μπορεί να ενεργοποιηθεί μόνο εάν είναι ενεργοποιημένος ο κωδικός πρόσβασης, ο κωδικός εξουσιοδότησης ή οι υβριδικές ροές."
+msgstr "Η ροή ανανέωσης συμβόλου (token) μπορεί να ενεργοποιηθεί μόνο εάν είναι ενεργοποιημένος ο κωδικός πρόσβασης, ο κωδικός εξουσιοδότησης ή οι υβριδικές ροές."
 
 #. results.Add(new ValidationResult(S["The implicit flow cannot be enabled when the authorization endpoint is disabled."], new[]
 #: OrchardCore.OpenId\Services\OpenIdServerService.cs:215
@@ -266,13 +266,13 @@ msgstr "Η υπονοούμενη ροή δεν μπορεί να ενεργοπ
 #: OrchardCore.OpenId\Services\OpenIdServerService.cs:223
 msgctxt "OrchardCore.OpenId.Services.OpenIdServerService"
 msgid "The hybrid flow cannot be enabled when the authorization and token endpoints are disabled."
-msgstr ""
+msgstr "Η υβριδική ροή δεν μπορεί να ενεργοποιηθεί όταν είναι απενεργοποιημένα τα τελικά σημεία εξουσιοδότησης και συμβόλων (token)."
 
 #. results.Add(new ValidationResult(S["Access token encryption can only be disabled when using JWT tokens."], new[]
 #: OrchardCore.OpenId\Services\OpenIdServerService.cs:231
 msgctxt "OrchardCore.OpenId.Services.OpenIdServerService"
 msgid "Access token encryption can only be disabled when using JWT tokens."
-msgstr ""
+msgstr "Η πρόσβαση στη κρυπτογράφησης συμβόλου (token) μπορεί να απενεργοποιηθεί μόνο όταν χρησιμοποιείτε JWT σύμβολα (token)."
 
 #. results.Add(new ValidationResult(S["Either a tenant or an authority must be registered."], new[]
 #: OrchardCore.OpenId\Services\OpenIdValidationService.cs:96
@@ -308,7 +308,7 @@ msgstr "Κατά τη διαμόρφωση της αρχής εξουσιοδό�
 #: OrchardCore.OpenId\Services\OpenIdValidationService.cs:140
 msgctxt "OrchardCore.OpenId.Services.OpenIdValidationService"
 msgid "Token type validation can only be disabled for remote servers."
-msgstr ""
+msgstr "Η επικύρωση του τύπου συμβόλου (token) μπορεί να απενεργοποιηθεί μόνο για απομακρυσμένους διακομιστές."
 
 #. results.Add(new ValidationResult(S["The audience cannot start with the special 'oct:' prefix."], new[]
 #: OrchardCore.OpenId\Services\OpenIdValidationService.cs:149
@@ -328,7 +328,7 @@ msgstr "Ο συγκεκριμένος ενοικιαστής δεν είναι �
 #: OrchardCore.OpenId\Services\OpenIdValidationService.cs:173
 msgctxt "OrchardCore.OpenId.Services.OpenIdValidationService"
 msgid "Selecting a server tenant for which reference access tokens are enabled is currently not supported."
-msgstr ""
+msgstr "Η επιλογή ενός ενοικιαστή διακομιστή για τον οποίο είναι ενεργοποιημένα τα σύμβολα (tokes) πρόσβασης αναφοράς δεν υποστηρίζεται αυτήν τη στιγμή."
 
 #. results.Add(new ValidationResult(S["No appropriate scope was found."], new[]
 #: OrchardCore.OpenId\Services\OpenIdValidationService.cs:192
@@ -372,7 +372,7 @@ msgstr "Μη έγκυρη διαδρομή"
 #: OrchardCore.OpenId\ViewModels\OpenIdClientSettingsViewModel.cs:23
 msgctxt "OrchardCore.OpenId.ViewModels.OpenIdClientSettingsViewModel"
 msgid "Invalid SignedOut redirect url"
-msgstr ""
+msgstr "Μη έγκυρη διεύθυνση ανακατεύθυνσης Url SignedOut"
 
 #. <span class="icon"><i class="fa fa-openid" aria-hidden="true"></i></span><span class="title">@T["OpenID Connect"]</span>
 #: OrchardCore.OpenId\Views\NavigationItemText-openid.Id.cshtml:1
@@ -414,7 +414,7 @@ msgstr "Η αρχή εξουσιοδότησης να χρησιμοποιεί �
 #: OrchardCore.OpenId\Views\OpenIdClientSettings.Edit.cshtml:30
 msgctxt "OrchardCore.OpenId.Views.OpenIdClientSettings.Edit"
 msgid "ClientId"
-msgstr "ClientId"
+msgstr ""
 
 #. <span class="hint">@T["the 'client_id'"]</span>
 #: OrchardCore.OpenId\Views\OpenIdClientSettings.Edit.cshtml:33
@@ -426,7 +426,7 @@ msgstr "το 'client_id'"
 #: OrchardCore.OpenId\Views\OpenIdClientSettings.Edit.cshtml:37
 msgctxt "OrchardCore.OpenId.Views.OpenIdClientSettings.Edit"
 msgid "CallbackPath"
-msgstr "CallbackPath"
+msgstr ""
 
 #. <span class="hint">@T["The request path within the application's base path where the user-agent will be returned. The middleware will process this request when it arrives."]</span>
 #: OrchardCore.OpenId\Views\OpenIdClientSettings.Edit.cshtml:40
@@ -438,7 +438,7 @@ msgstr "Η διαδρομή αιτήματος μέσα στη βασική δι
 #: OrchardCore.OpenId\Views\OpenIdClientSettings.Edit.cshtml:44
 msgctxt "OrchardCore.OpenId.Views.OpenIdClientSettings.Edit"
 msgid "SignedOut CallbackPath"
-msgstr "SignedOut CallbackPath"
+msgstr ""
 
 #. <span class="hint">@T["The request path within the application's base path where the user agent will be returned after sign out from the identity provider."]</span>
 #: OrchardCore.OpenId\Views\OpenIdClientSettings.Edit.cshtml:47
@@ -476,17 +476,17 @@ msgctxt "OrchardCore.OpenId.Views.OpenIdClientSettings.Edit"
 msgid "extra scopes except openid and profile"
 msgstr "επιπλέον σκοποί εκτός από το openid και το προφίλ"
 
-#. <label class="custom-control-label" asp-for="StoreExternalTokens">@T["Store tokens"]</label>
+#. <label class="form-check-label" asp-for="StoreExternalTokens">@T["Store tokens"]</label>
 #: OrchardCore.OpenId\Views\OpenIdClientSettings.Edit.cshtml:68
 msgctxt "OrchardCore.OpenId.Views.OpenIdClientSettings.Edit"
 msgid "Store tokens"
-msgstr ""
+msgstr "Αποθήκη συμβόλων (tokens)"
 
 #. <span class="hint dashed">@T["Store external authentication tokens for reuse"]</span>
 #: OrchardCore.OpenId\Views\OpenIdClientSettings.Edit.cshtml:69
 msgctxt "OrchardCore.OpenId.Views.OpenIdClientSettings.Edit"
 msgid "Store external authentication tokens for reuse"
-msgstr ""
+msgstr "Αποθηκεύστε εξωτερικά σύμβολα (tokens) αυθεντικοποίησης για επαναχρησιμοποίηση"
 
 #. <h3>@T["Code Authentication Flow"]</h3>
 #: OrchardCore.OpenId\Views\OpenIdClientSettings.Edit.cshtml:73
@@ -504,7 +504,7 @@ msgctxt "OrchardCore.OpenId.Views.OpenIdClientSettings.Edit"
 msgid "see: "
 msgstr "δες: "
 
-#. <label class="custom-control-label" asp-for="UseCodeFlow">@T["Use 'code' response type"]</label>
+#. <label class="form-check-label" asp-for="UseCodeFlow">@T["Use 'code' response type"]</label>
 #: OrchardCore.OpenId\Views\OpenIdClientSettings.Edit.cshtml:78
 msgctxt "OrchardCore.OpenId.Views.OpenIdClientSettings.Edit"
 msgid "Use 'code' response type"
@@ -532,19 +532,19 @@ msgctxt "OrchardCore.OpenId.Views.OpenIdClientSettings.Edit"
 msgid "Hybrid Authentication Flow"
 msgstr "Υβριδική Ροή Αυθεντικοποίησης"
 
-#. <label class="custom-control-label" asp-for="UseCodeIdTokenFlow">@T["Use 'code id_token' response type"]</label>
+#. <label class="form-check-label" asp-for="UseCodeIdTokenFlow">@T["Use 'code id_token' response type"]</label>
 #: OrchardCore.OpenId\Views\OpenIdClientSettings.Edit.cshtml:89
 msgctxt "OrchardCore.OpenId.Views.OpenIdClientSettings.Edit"
 msgid "Use 'code id_token' response type"
 msgstr "Χρησιμοποιήστε τον τύπο απόκρισης 'code id_token'"
 
-#. <label class="custom-control-label" asp-for="UseCodeIdTokenTokenFlow">@T["Use 'code id_token token' response type"]</label>
+#. <label class="form-check-label" asp-for="UseCodeIdTokenTokenFlow">@T["Use 'code id_token token' response type"]</label>
 #: OrchardCore.OpenId\Views\OpenIdClientSettings.Edit.cshtml:97
 msgctxt "OrchardCore.OpenId.Views.OpenIdClientSettings.Edit"
 msgid "Use 'code id_token token' response type"
 msgstr "Χρησιμοποίησε τον τύπο απόκρισης 'code id_token token'"
 
-#. <label class="custom-control-label" asp-for="UseCodeTokenFlow">@T["Use 'code token' response type"]</label>
+#. <label class="form-check-label" asp-for="UseCodeTokenFlow">@T["Use 'code token' response type"]</label>
 #: OrchardCore.OpenId\Views\OpenIdClientSettings.Edit.cshtml:105
 msgctxt "OrchardCore.OpenId.Views.OpenIdClientSettings.Edit"
 msgid "Use 'code token' response type"
@@ -556,13 +556,13 @@ msgctxt "OrchardCore.OpenId.Views.OpenIdClientSettings.Edit"
 msgid "Implicit Authentication Flow"
 msgstr "Άρρητη Ροή Ελέγχου Ταυτότητας"
 
-#. <label class="custom-control-label" asp-for="UseIdTokenFlow">@T["Use 'id_token' response type"]</label>
+#. <label class="form-check-label" asp-for="UseIdTokenFlow">@T["Use 'id_token' response type"]</label>
 #: OrchardCore.OpenId\Views\OpenIdClientSettings.Edit.cshtml:116
 msgctxt "OrchardCore.OpenId.Views.OpenIdClientSettings.Edit"
 msgid "Use 'id_token' response type"
 msgstr "Χρησιμοποίησε τον τύπο απόκρισης 'id_token'"
 
-#. <label class="custom-control-label" asp-for="UseIdTokenTokenFlow">@T["Use 'id_token token' response type"]</label>
+#. <label class="form-check-label" asp-for="UseIdTokenTokenFlow">@T["Use 'id_token token' response type"]</label>
 #: OrchardCore.OpenId\Views\OpenIdClientSettings.Edit.cshtml:124
 msgctxt "OrchardCore.OpenId.Views.OpenIdClientSettings.Edit"
 msgid "Use 'id_token token' response type"
@@ -596,69 +596,69 @@ msgstr "ορίστε μυστικό πελάτη."
 #: OrchardCore.OpenId\Views\OpenIdClientSettings.Edit.cshtml:151
 msgctxt "OrchardCore.OpenId.Views.OpenIdClientSettings.Edit"
 msgid "Parameter Name"
-msgstr ""
+msgstr "Όνομα παραμέτρου"
 
 #. <th scope="col" colspan="3">@T["Value"]</th>
 #: OrchardCore.OpenId\Views\OpenIdClientSettings.Edit.cshtml:152
 msgctxt "OrchardCore.OpenId.Views.OpenIdClientSettings.Edit"
 msgid "Value"
-msgstr ""
+msgstr "Τιμή"
 
 #. <a v-on:click="remove(index)" href="javascript:void(0)" title="@T["Remove parameter from list"]" class="btn">
 #: OrchardCore.OpenId\Views\OpenIdClientSettings.Edit.cshtml:164
 msgctxt "OrchardCore.OpenId.Views.OpenIdClientSettings.Edit"
 msgid "Remove parameter from list"
-msgstr ""
+msgstr "Αφαίρεση παραμέτρου από τη λίστα"
 
-#. <a v-on:click="add()" class="btn btn-light w-100 btn-sm"><i class="fas fa-plus small"></i> @T["Add a parameter"]</a>
+#. <a v-on:click="add()" class="btn btn-light w-100 btn-sm"><i class="fas fa-plus small" aria-hidden="true"></i> @T["Add a parameter"]</a>
 #: OrchardCore.OpenId\Views\OpenIdClientSettings.Edit.cshtml:174
 msgctxt "OrchardCore.OpenId.Views.OpenIdClientSettings.Edit"
 msgid "Add a parameter"
-msgstr ""
+msgstr "Προσθέστε μια παράμετρο"
 
 #. <h5 class="modal-title">@T["Edit Data"]</h5>
-#. <a href="javascript:void(0)" v-on:click="showModal" class="float-right" title="@T["Edit Data"]"><i class="fas fa-edit"></i></a>
+#. <a href="javascript:void(0)" v-on:click="showModal" class="float-end" title="@T["Edit Data"]"><i class="fas fa-edit" aria-hidden="true"></i></a>
 #: OrchardCore.OpenId\Views\OpenIdClientSettings.Edit.cshtml:187
-#: OrchardCore.OpenId\Views\OpenIdClientSettings.Edit.cshtml:212
+#: OrchardCore.OpenId\Views\OpenIdClientSettings.Edit.cshtml:210
 msgctxt "OrchardCore.OpenId.Views.OpenIdClientSettings.Edit"
 msgid "Edit Data"
-msgstr ""
+msgstr "Επεξεργασία δεδομένων"
 
 #. <label for="parameters-textarea">@T["Parameters"]</label>
-#: OrchardCore.OpenId\Views\OpenIdClientSettings.Edit.cshtml:194
+#: OrchardCore.OpenId\Views\OpenIdClientSettings.Edit.cshtml:192
 msgctxt "OrchardCore.OpenId.Views.OpenIdClientSettings.Edit"
 msgid "Parameters"
-msgstr ""
+msgstr "Παράμετροι"
 
 #. <span class="hint">@T["A JSON representation of the allowed values, e.g. {0}", "[ { name: 'First parameter', value: 'parameter1' }, { name: 'Second parameter', value: 'parameter2' } ]"]</span>
-#: OrchardCore.OpenId\Views\OpenIdClientSettings.Edit.cshtml:196
+#: OrchardCore.OpenId\Views\OpenIdClientSettings.Edit.cshtml:194
 msgctxt "OrchardCore.OpenId.Views.OpenIdClientSettings.Edit"
 msgid "A JSON representation of the allowed values, e.g. {0}"
-msgstr ""
+msgstr "Μια αναπαράσταση JSON των επιτρεπόμενων τιμών, π.χ. {0}"
 
 #. <button type="button" class="btn btn-primary btn-submit" v-on:click="closeModal()">@T["OK"]</button>
-#: OrchardCore.OpenId\Views\OpenIdClientSettings.Edit.cshtml:200
+#: OrchardCore.OpenId\Views\OpenIdClientSettings.Edit.cshtml:198
 msgctxt "OrchardCore.OpenId.Views.OpenIdClientSettings.Edit"
 msgid "OK"
-msgstr ""
+msgstr "Εντάξει"
 
-#. <button type="button" class="btn btn-secondary" data-dismiss="modal">@T["Cancel"]</button>
-#: OrchardCore.OpenId\Views\OpenIdClientSettings.Edit.cshtml:201
+#. <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">@T["Cancel"]</button>
+#: OrchardCore.OpenId\Views\OpenIdClientSettings.Edit.cshtml:199
 msgctxt "OrchardCore.OpenId.Views.OpenIdClientSettings.Edit"
 msgid "Cancel"
-msgstr ""
+msgstr "Άκυρο"
 
 #. <label asp-for="Parameters">@T["Advanced Parameters"]</label>
-#: OrchardCore.OpenId\Views\OpenIdClientSettings.Edit.cshtml:211
+#: OrchardCore.OpenId\Views\OpenIdClientSettings.Edit.cshtml:209
 msgctxt "OrchardCore.OpenId.Views.OpenIdClientSettings.Edit"
 msgid "Advanced Parameters"
-msgstr ""
+msgstr "Προηγμένες Παράμετροι"
 
 #. <div class="hint">@T["Advanced parameters that can be sent with the authorize request."]</div>
-#: OrchardCore.OpenId\Views\OpenIdClientSettings.Edit.cshtml:215
+#: OrchardCore.OpenId\Views\OpenIdClientSettings.Edit.cshtml:213
 msgctxt "OrchardCore.OpenId.Views.OpenIdClientSettings.Edit"
 msgid "Advanced parameters that can be sent with the authorize request."
-msgstr ""
+msgstr "Προηγμένες παράμετροι που μπορούν να αποσταλούν με το αίτημα εξουσιοδότησης."
 
 #. <p class="alert alert-warning">@T["The current tenant will be reloaded when the settings are saved."]</p>
 #: OrchardCore.OpenId\Views\OpenIdServerSettings.Edit.cshtml:6
@@ -672,11 +672,11 @@ msgctxt "OrchardCore.OpenId.Views.OpenIdServerSettings.Edit"
 msgid "Endpoints"
 msgstr "Τελικό σημείο"
 
-#. <label class="custom-control-label" asp-for="EnableTokenEndpoint">@T["Enable Token Endpoint"]</label>
+#. <label class="form-check-label" asp-for="EnableTokenEndpoint">@T["Enable Token Endpoint"]</label>
 #: OrchardCore.OpenId\Views\OpenIdServerSettings.Edit.cshtml:12
 msgctxt "OrchardCore.OpenId.Views.OpenIdServerSettings.Edit"
 msgid "Enable Token Endpoint"
-msgstr "Ενεργοποίηση Τελικού Σημείου Token"
+msgstr "Ενεργοποίηση Τελικού Σημείου Συμβόλου (Token)"
 
 #. <span class="hint dashed">@T["Enables action"] /connect/token</span>
 #. <span class="hint dashed">@T["Enables action"] /connect/authorize</span>
@@ -690,19 +690,19 @@ msgctxt "OrchardCore.OpenId.Views.OpenIdServerSettings.Edit"
 msgid "Enables action"
 msgstr "Ενεργοποιεί τη ενέργεια"
 
-#. <label class="custom-control-label" asp-for="EnableAuthorizationEndpoint">@T["Enable Authorization Endpoint"]</label>
+#. <label class="form-check-label" asp-for="EnableAuthorizationEndpoint">@T["Enable Authorization Endpoint"]</label>
 #: OrchardCore.OpenId\Views\OpenIdServerSettings.Edit.cshtml:20
 msgctxt "OrchardCore.OpenId.Views.OpenIdServerSettings.Edit"
 msgid "Enable Authorization Endpoint"
 msgstr "Ενεργοποίηση Τελικού Σημείου Εξουσιοδότησης"
 
-#. <label class="custom-control-label" asp-for="EnableLogoutEndpoint">@T["Enable Logout Endpoint"]</label>
+#. <label class="form-check-label" asp-for="EnableLogoutEndpoint">@T["Enable Logout Endpoint"]</label>
 #: OrchardCore.OpenId\Views\OpenIdServerSettings.Edit.cshtml:28
 msgctxt "OrchardCore.OpenId.Views.OpenIdServerSettings.Edit"
 msgid "Enable Logout Endpoint"
 msgstr "Ενεργοποίηση Τελικού Σημείου Αποσύνδεσης"
 
-#. <label class="custom-control-label" asp-for="EnableUserInfoEndpoint">@T["Enable User Info Endpoint"]</label>
+#. <label class="form-check-label" asp-for="EnableUserInfoEndpoint">@T["Enable User Info Endpoint"]</label>
 #: OrchardCore.OpenId\Views\OpenIdServerSettings.Edit.cshtml:36
 msgctxt "OrchardCore.OpenId.Views.OpenIdServerSettings.Edit"
 msgid "Enable User Info Endpoint"
@@ -714,7 +714,7 @@ msgctxt "OrchardCore.OpenId.Views.OpenIdServerSettings.Edit"
 msgid "Flows"
 msgstr "Ροή"
 
-#. <label class="custom-control-label" asp-for="AllowAuthorizationCodeFlow">@T["Allow Authorization Code Flow"]</label>
+#. <label class="form-check-label" asp-for="AllowAuthorizationCodeFlow">@T["Allow Authorization Code Flow"]</label>
 #: OrchardCore.OpenId\Views\OpenIdServerSettings.Edit.cshtml:46
 msgctxt "OrchardCore.OpenId.Views.OpenIdServerSettings.Edit"
 msgid "Allow Authorization Code Flow"
@@ -736,31 +736,31 @@ msgctxt "OrchardCore.OpenId.Views.OpenIdServerSettings.Edit"
 msgid "More info:"
 msgstr "Περισσότερες πληροφορίες:"
 
-#. <label class="custom-control-label" asp-for="AllowImplicitFlow">@T["Allow Implicit Flow"]</label>
+#. <label class="form-check-label" asp-for="AllowImplicitFlow">@T["Allow Implicit Flow"]</label>
 #: OrchardCore.OpenId\Views\OpenIdServerSettings.Edit.cshtml:54
 msgctxt "OrchardCore.OpenId.Views.OpenIdServerSettings.Edit"
 msgid "Allow Implicit Flow"
 msgstr "Επέτρεψε την Άρρητη Ροή"
 
-#. <label class="custom-control-label" asp-for="AllowHybridFlow">@T["Allow Hybrid Flow"]</label>
+#. <label class="form-check-label" asp-for="AllowHybridFlow">@T["Allow Hybrid Flow"]</label>
 #: OrchardCore.OpenId\Views\OpenIdServerSettings.Edit.cshtml:62
 msgctxt "OrchardCore.OpenId.Views.OpenIdServerSettings.Edit"
 msgid "Allow Hybrid Flow"
-msgstr ""
+msgstr "Να επιτρέπεται η υβριδική ροή"
 
-#. <label class="custom-control-label" asp-for="AllowPasswordFlow">@T["Allow Password Flow"]</label>
+#. <label class="form-check-label" asp-for="AllowPasswordFlow">@T["Allow Password Flow"]</label>
 #: OrchardCore.OpenId\Views\OpenIdServerSettings.Edit.cshtml:70
 msgctxt "OrchardCore.OpenId.Views.OpenIdServerSettings.Edit"
 msgid "Allow Password Flow"
 msgstr "Να Επιτρέπεται η Ροή Κωδικών Πρόσβασης"
 
-#. <label class="custom-control-label" asp-for="AllowRefreshTokenFlow">@T["Allow Refresh Token Flow"]</label>
+#. <label class="form-check-label" asp-for="AllowRefreshTokenFlow">@T["Allow Refresh Token Flow"]</label>
 #: OrchardCore.OpenId\Views\OpenIdServerSettings.Edit.cshtml:78
 msgctxt "OrchardCore.OpenId.Views.OpenIdServerSettings.Edit"
 msgid "Allow Refresh Token Flow"
-msgstr "Να Επιτρέπεται η Ανανέωση Ροής Token"
+msgstr "Να Επιτρέπεται η Ανανέωση Ροής Συμβόλου (Token)"
 
-#. <label class="custom-control-label" asp-for="AllowClientCredentialsFlow">@T["Allow Client Credentials Flow"]</label>
+#. <label class="form-check-label" asp-for="AllowClientCredentialsFlow">@T["Allow Client Credentials Flow"]</label>
 #: OrchardCore.OpenId\Views\OpenIdServerSettings.Edit.cshtml:86
 msgctxt "OrchardCore.OpenId.Views.OpenIdServerSettings.Edit"
 msgid "Allow Client Credentials Flow"
@@ -794,7 +794,7 @@ msgstr "Η βασική διεύθυνση URL του εξυπηρετητή τ�
 #: OrchardCore.OpenId\Views\OpenIdServerSettings.Edit.cshtml:103
 msgctxt "OrchardCore.OpenId.Views.OpenIdServerSettings.Edit"
 msgid "Encryption Certificate Store Location"
-msgstr ""
+msgstr "Μέρος Αποθήκευσης Πιστοποιητικού Κρυπτογράφησης"
 
 #. <option value="">@T["None"]</option>
 #. <option value="">@T["None"]</option>
@@ -816,31 +816,31 @@ msgstr "Κανένα"
 #: OrchardCore.OpenId\Views\OpenIdServerSettings.Edit.cshtml:113
 msgctxt "OrchardCore.OpenId.Views.OpenIdServerSettings.Edit"
 msgid "Select the encryption certificate location."
-msgstr ""
+msgstr "Επιλέξτε τη θέση του πιστοποιητικού κρυπτογράφησης."
 
 #. <label asp-for="EncryptionCertificateStoreName">@T["Encryption Certificate Store Name"]</label>
 #: OrchardCore.OpenId\Views\OpenIdServerSettings.Edit.cshtml:117
 msgctxt "OrchardCore.OpenId.Views.OpenIdServerSettings.Edit"
 msgid "Encryption Certificate Store Name"
-msgstr ""
+msgstr "Όνομα Αποθήκευσης Πιστοποιητικού Κρυπτογράφησης"
 
 #. <span class="hint">@T["Select the encryption certificate store."]</span>
 #: OrchardCore.OpenId\Views\OpenIdServerSettings.Edit.cshtml:127
 msgctxt "OrchardCore.OpenId.Views.OpenIdServerSettings.Edit"
 msgid "Select the encryption certificate store."
-msgstr ""
+msgstr "Επιλέξτε το χώρο αποθήκευσης πιστοποιητικών κρυπτογράφησης."
 
 #. <label asp-for="EncryptionCertificateThumbprint">@T["Encryption Certificate"]</label>
 #: OrchardCore.OpenId\Views\OpenIdServerSettings.Edit.cshtml:133
 msgctxt "OrchardCore.OpenId.Views.OpenIdServerSettings.Edit"
 msgid "Encryption Certificate"
-msgstr ""
+msgstr "Πιστοποιητικό κρυπτογράφησης"
 
 #. <span class="hint">@T["Select the encryption certificate."]</span>
 #: OrchardCore.OpenId\Views\OpenIdServerSettings.Edit.cshtml:158
 msgctxt "OrchardCore.OpenId.Views.OpenIdServerSettings.Edit"
 msgid "Select the encryption certificate."
-msgstr ""
+msgstr "Επιλέξτε το πιστοποιητικό κρυπτογράφησης."
 
 #. <div class="alert alert-warning" asp-validation-for="CertificateThumbprint">@T["You need to add a certificate to your server for setting up OpenID Connect module."]</div>
 #. <div class="alert alert-warning" asp-validation-for="CertificateThumbprint">@T["You need to add a certificate to your server for setting up OpenID Connect module."]</div>
@@ -854,13 +854,13 @@ msgstr "Πρέπει να προσθέσετε ένα πιστοποιητικό
 #: OrchardCore.OpenId\Views\OpenIdServerSettings.Edit.cshtml:167
 msgctxt "OrchardCore.OpenId.Views.OpenIdServerSettings.Edit"
 msgid "Signing Certificate Store Location"
-msgstr ""
+msgstr "Μέρος Αποθήκευσης Υπογραφής Πιστοποιητικών"
 
 #. <span class="hint">@T["Select the signing certificate location."]</span>
 #: OrchardCore.OpenId\Views\OpenIdServerSettings.Edit.cshtml:177
 msgctxt "OrchardCore.OpenId.Views.OpenIdServerSettings.Edit"
 msgid "Select the signing certificate location."
-msgstr ""
+msgstr "Επιλέξτε τη θέση του πιστοποιητικού υπογραφής."
 
 #. <label asp-for="SigningCertificateStoreName">@T["Signing Certificate Store Name"]</label>
 #: OrchardCore.OpenId\Views\OpenIdServerSettings.Edit.cshtml:181
@@ -872,37 +872,37 @@ msgstr ""
 #: OrchardCore.OpenId\Views\OpenIdServerSettings.Edit.cshtml:191
 msgctxt "OrchardCore.OpenId.Views.OpenIdServerSettings.Edit"
 msgid "Select the signing certificate store."
-msgstr ""
+msgstr "Επιλέξτε τη θέση του πιστοποιητικού υπογραφής."
 
 #. <label asp-for="SigningCertificateThumbprint">@T["Signing Certificate"]</label>
 #: OrchardCore.OpenId\Views\OpenIdServerSettings.Edit.cshtml:197
 msgctxt "OrchardCore.OpenId.Views.OpenIdServerSettings.Edit"
 msgid "Signing Certificate"
-msgstr ""
+msgstr "Πιστοποιητικό Υπογραφής"
 
 #. <span class="hint">@T["Select the signing certificate."]</span>
 #: OrchardCore.OpenId\Views\OpenIdServerSettings.Edit.cshtml:222
 msgctxt "OrchardCore.OpenId.Views.OpenIdServerSettings.Edit"
 msgid "Select the signing certificate."
-msgstr ""
+msgstr "Επιλέξτε το πιστοποιητικό υπογραφής."
 
-#. <label class="custom-control-label" asp-for="DisableRollingRefreshTokens">@T["Disable Rolling Refresh Tokens"]</label>
+#. <label class="form-check-label" asp-for="DisableRollingRefreshTokens">@T["Disable Rolling Refresh Tokens"]</label>
 #: OrchardCore.OpenId\Views\OpenIdServerSettings.Edit.cshtml:233
 msgctxt "OrchardCore.OpenId.Views.OpenIdServerSettings.Edit"
 msgid "Disable Rolling Refresh Tokens"
-msgstr ""
+msgstr "Απενεργοποιήστε τα Κυλιόμενα Σύμβολα (Tokens) ανανέωσης"
 
 #. <span class="hint dashed">@T["When this option is enabled, refresh tokens are not marked as redeemed and can be reused until they expire."]</span>
 #: OrchardCore.OpenId\Views\OpenIdServerSettings.Edit.cshtml:234
 msgctxt "OrchardCore.OpenId.Views.OpenIdServerSettings.Edit"
 msgid "When this option is enabled, refresh tokens are not marked as redeemed and can be reused until they expire."
-msgstr ""
+msgstr "Όταν αυτή η επιλογή είναι ενεργοποιημένη, τα σύμβολα (tokens) ανανέωσης δεν επισημαίνονται ως εξαργυρωμένα και μπορούν να χρησιμοποιηθούν ξανά μέχρι να λήξουν. "
 
 #. <label asp-for="AccessTokenFormat">@T["Token Format"]</label>
 #: OrchardCore.OpenId\Views\OpenIdServerSettings.Edit.cshtml:239
 msgctxt "OrchardCore.OpenId.Views.OpenIdServerSettings.Edit"
 msgid "Token Format"
-msgstr "Μορφή Κουπονιού"
+msgstr "Μορφή Συμβόλου (Token)"
 
 #. @T["ASP.NET Core Data Protection"]
 #: OrchardCore.OpenId\Views\OpenIdServerSettings.Edit.cshtml:242
@@ -914,31 +914,31 @@ msgstr ""
 #: OrchardCore.OpenId\Views\OpenIdServerSettings.Edit.cshtml:245
 msgctxt "OrchardCore.OpenId.Views.OpenIdServerSettings.Edit"
 msgid "JSON Web Token (JWT)"
-msgstr ""
+msgstr "JSON Web Token (JWT)"
 
-#. <label class="custom-control-label" asp-for="DisableAccessTokenEncryption">@T["Disable Access Token Encryption (only for JWT tokens)"]</label>
+#. <label class="form-check-label" asp-for="DisableAccessTokenEncryption">@T["Disable Access Token Encryption (only for JWT tokens)"]</label>
 #: OrchardCore.OpenId\Views\OpenIdServerSettings.Edit.cshtml:254
 msgctxt "OrchardCore.OpenId.Views.OpenIdServerSettings.Edit"
 msgid "Disable Access Token Encryption (only for JWT tokens)"
-msgstr ""
+msgstr "Απενεργοποίηση κρυπτογράφησης Συμβόλου (Token) πρόσβασης (μόνο για σύμβολα (token) JWT)"
 
 #. <span class="hint dashed">@T["When this option is enabled, the JWT access token tokens are not encrypted."]</span>
 #: OrchardCore.OpenId\Views\OpenIdServerSettings.Edit.cshtml:255
 msgctxt "OrchardCore.OpenId.Views.OpenIdServerSettings.Edit"
 msgid "When this option is enabled, the JWT access token tokens are not encrypted."
-msgstr ""
+msgstr "Όταν αυτή η επιλογή είναι ενεργοποιημένη, τα σύμβολα (token) πρόσβασης JWT δεν είναι κρυπτογραφημένα."
 
-#. <label class="custom-control-label" asp-for="UseReferenceAccessTokens">@T["Use Reference Access Tokens"]</label>
+#. <label class="form-check-label" asp-for="UseReferenceAccessTokens">@T["Use Reference Access Tokens"]</label>
 #: OrchardCore.OpenId\Views\OpenIdServerSettings.Edit.cshtml:262
 msgctxt "OrchardCore.OpenId.Views.OpenIdServerSettings.Edit"
 msgid "Use Reference Access Tokens"
-msgstr ""
+msgstr "Χρήση Συμβόλων (Token) Πρόσβασης Αναφοράς"
 
 #. <span class="hint dashed">@T["When this option is enabled, the access token are stored in the database and fixed size tokens are returned to the client, which can be useful when storing a very large number of claims. Important: this option cannot be currently enabled when other tenants are configured to use this server."]</span>
 #: OrchardCore.OpenId\Views\OpenIdServerSettings.Edit.cshtml:263
 msgctxt "OrchardCore.OpenId.Views.OpenIdServerSettings.Edit"
 msgid "When this option is enabled, the access token are stored in the database and fixed size tokens are returned to the client, which can be useful when storing a very large number of claims. Important: this option cannot be currently enabled when other tenants are configured to use this server."
-msgstr ""
+msgstr "Όταν αυτή η επιλογή είναι ενεργοποιημένη, το σύμβολο (token) πρόσβασης αποθηκεύεται στη βάση δεδομένων και τα σύμβολα (token) σταθερού μεγέθους επιστρέφονται στον πελάτη, κάτι που μπορεί να είναι χρήσιμο κατά την αποθήκευση ενός πολύ μεγάλου αριθμού αξιώσεων. Σημαντικό: αυτή η επιλογή δεν μπορεί να ενεργοποιηθεί αυτήν τη στιγμή όταν άλλοι ενοικιαστές έχουν ρυθμιστεί να χρησιμοποιούν αυτόν τον διακομιστή."
 
 #. <p class="alert alert-warning">@T["The current tenant will be reloaded when the settings are saved."]</p>
 #: OrchardCore.OpenId\Views\OpenIdValidationSettings.Edit.cshtml:4
@@ -976,17 +976,17 @@ msgctxt "OrchardCore.OpenId.Views.OpenIdValidationSettings.Edit"
 msgid "The unique name associated with this tenant. If none is provided, the tenant name is automatically used as the default audience."
 msgstr "Το μοναδικό όνομα που σχετίζεται με αυτόν τον ενοικιαστή. Εάν δεν παρέχεται κανένα, το όνομα του ενοικιαστή χρησιμοποιείται αυτόματα ως προεπιλεγμένο ακροατήριο."
 
-#. <label class="custom-control-label" asp-for="DisableTokenTypeValidation">@T["Disable token type validation"]</label>
+#. <label class="form-check-label" asp-for="DisableTokenTypeValidation">@T["Disable token type validation"]</label>
 #: OrchardCore.OpenId\Views\OpenIdValidationSettings.Edit.cshtml:41
 msgctxt "OrchardCore.OpenId.Views.OpenIdValidationSettings.Edit"
 msgid "Disable token type validation"
-msgstr ""
+msgstr "Απενεργοποίηση επικύρωσης συμβόλου (token)"
 
 #. <span class="hint dashed">@T["Token type validation can be disabled to accept JWT tokens issued by servers that don't support the 'at+jwt' type header."]</span>
 #: OrchardCore.OpenId\Views\OpenIdValidationSettings.Edit.cshtml:42
 msgctxt "OrchardCore.OpenId.Views.OpenIdValidationSettings.Edit"
 msgid "Token type validation can be disabled to accept JWT tokens issued by servers that don't support the 'at+jwt' type header."
-msgstr ""
+msgstr "Η επικύρωση τύπου συμβόλου(token) μπορεί να απενεργοποιηθεί για αποδοχή συμβόλων (token) JWT που εκδίδονται από διακομιστές που δεν υποστηρίζουν την κεφαλίδα τύπου \"at+jwt\"."
 
 #. <h1>@T["Authorization"]</h1>
 #: OrchardCore.OpenId\Views\Access\Authorize.cshtml:10
@@ -994,7 +994,7 @@ msgctxt "OrchardCore.OpenId.Views.Access.Authorize"
 msgid "Authorization"
 msgstr "Εξουσιοδότηση"
 
-#. <p class="lead text-left">@T["Do you want to grant <strong>{0}</strong> access to your data? (scopes requested: {1})", Model.ApplicationName, Model.Scope]</p>
+#. <p class="lead text-start">@T["Do you want to grant <strong>{0}</strong> access to your data? (scopes requested: {1})", Model.ApplicationName, Model.Scope]</p>
 #: OrchardCore.OpenId\Views\Access\Authorize.cshtml:12
 msgctxt "OrchardCore.OpenId.Views.Access.Authorize"
 msgid "Do you want to grant <strong>{0}</strong> access to your data? (scopes requested: {1})"
@@ -1012,7 +1012,7 @@ msgctxt "OrchardCore.OpenId.Views.Access.Logout"
 msgid "Log out"
 msgstr "Αποσύνδεση"
 
-#. <p class="lead text-left">@T["Are you sure you want to log out?"]</p>
+#. <p class="lead text-start">@T["Are you sure you want to log out?"]</p>
 #: OrchardCore.OpenId\Views\Access\Logout.cshtml:12
 msgctxt "OrchardCore.OpenId.Views.Access.Logout"
 msgid "Are you sure you want to log out?"
@@ -1058,7 +1058,7 @@ msgstr "Δημόσιος πελάτης"
 #: OrchardCore.OpenId\Views\Application\Create.cshtml:29
 msgctxt "OrchardCore.OpenId.Views.Application.Create"
 msgid "Confidential applications MUST send their client secret when communicating with the token and revocation endpoints. This guarantees that only the legit client can exchange an authorization code or get a refresh token."
-msgstr "Οι εμπιστευτικές εφαρμογές ΠΡΕΠΕΙ να στείλουν το μυστικό του πελάτη τους όταν επικοινωνούν με τα τελικά σημεία των συμβόλων και της ανάκλησης. Αυτό εγγυάται ότι μόνο ο νόμιμος πελάτης μπορεί να ανταλλάξει έναν κωδικό εξουσιοδότησης ή να πάρει ένα token ανανέωσης."
+msgstr "Οι εμπιστευτικές εφαρμογές ΠΡΕΠΕΙ να στείλουν το μυστικό του πελάτη τους όταν επικοινωνούν με τα τελικά σημεία των συμβόλων και της ανάκλησης. Αυτό εγγυάται ότι μόνο ο νόμιμος πελάτης μπορεί να ανταλλάξει έναν κωδικό εξουσιοδότησης ή να πάρει ένα σύμβολο (token) ανανέωσης."
 
 #. <label asp-for="ClientSecret">@T["Client Secret"]</label>
 #: OrchardCore.OpenId\Views\Application\Create.cshtml:32
@@ -1066,7 +1066,7 @@ msgctxt "OrchardCore.OpenId.Views.Application.Create"
 msgid "Client Secret"
 msgstr "Μυστικό Πελάτη"
 
-#. <label class="custom-control-label" asp-for="AllowAuthorizationCodeFlow">@T["Allow Authorization Code Flow"]</label>
+#. <label class="form-check-label" asp-for="AllowAuthorizationCodeFlow">@T["Allow Authorization Code Flow"]</label>
 #: OrchardCore.OpenId\Views\Application\Create.cshtml:41
 msgctxt "OrchardCore.OpenId.Views.Application.Create"
 msgid "Allow Authorization Code Flow"
@@ -1104,35 +1104,35 @@ msgctxt "OrchardCore.OpenId.Views.Application.Create"
 msgid "Recommended Parameters:"
 msgstr "Προτεινόμενες Παράμετροι:"
 
-#. <label class="custom-control-label" asp-for="AllowImplicitFlow">@T["Allow Implicit Flow"]</label>
+#. <label class="form-check-label" asp-for="AllowImplicitFlow">@T["Allow Implicit Flow"]</label>
 #: OrchardCore.OpenId\Views\Application\Create.cshtml:50
 msgctxt "OrchardCore.OpenId.Views.Application.Create"
 msgid "Allow Implicit Flow"
 msgstr "Επέτρεψε την Άρρητη Ροή"
 
-#. <label class="custom-control-label" asp-for="AllowHybridFlow">@T["Allow Hybrid Flow"]</label>
+#. <label class="form-check-label" asp-for="AllowHybridFlow">@T["Allow Hybrid Flow"]</label>
 #: OrchardCore.OpenId\Views\Application\Create.cshtml:59
 msgctxt "OrchardCore.OpenId.Views.Application.Create"
 msgid "Allow Hybrid Flow"
-msgstr ""
+msgstr "Να επιτρέπεται η υβριδική ροή"
 
-#. <label class="custom-control-label" asp-for="AllowPasswordFlow">@T["Allow Password Flow"]</label>
+#. <label class="form-check-label" asp-for="AllowPasswordFlow">@T["Allow Password Flow"]</label>
 #: OrchardCore.OpenId\Views\Application\Create.cshtml:68
 msgctxt "OrchardCore.OpenId.Views.Application.Create"
 msgid "Allow Password Flow"
 msgstr "Να επιτρέπεται η ροή κωδικών πρόσβασης"
 
-#. <label class="custom-control-label" asp-for="AllowClientCredentialsFlow">@T["Allow Client Credentials Flow"]</label>
+#. <label class="form-check-label" asp-for="AllowClientCredentialsFlow">@T["Allow Client Credentials Flow"]</label>
 #: OrchardCore.OpenId\Views\Application\Create.cshtml:77
 msgctxt "OrchardCore.OpenId.Views.Application.Create"
 msgid "Allow Client Credentials Flow"
 msgstr "Να επιτρέπεται η ροή διαπιστευτηρίων πελάτη"
 
-#. <label class="custom-control-label" asp-for="AllowRefreshTokenFlow">@T["Allow Refresh Token Flow"]</label>
+#. <label class="form-check-label" asp-for="AllowRefreshTokenFlow">@T["Allow Refresh Token Flow"]</label>
 #: OrchardCore.OpenId\Views\Application\Create.cshtml:86
 msgctxt "OrchardCore.OpenId.Views.Application.Create"
 msgid "Allow Refresh Token Flow"
-msgstr "Να επιτρέπεται η ανανέωση ροής Token"
+msgstr "Να επιτρέπεται η ανανέωση ροής Συμβόλου (Token)"
 
 #. <label asp-for="RedirectUris">@T["Redirect Uris"]</label>
 #: OrchardCore.OpenId\Views\Application\Create.cshtml:94
@@ -1146,7 +1146,7 @@ msgctxt "OrchardCore.OpenId.Views.Application.Create"
 msgid "Space delimited list of redirect URIs."
 msgstr "Χώρος περιορισμένης λίστα από URI ανακατεύθυνσης."
 
-#. <label class="custom-control-label" asp-for="AllowLogoutEndpoint">@T["Allow Logout Endpoint"]</label>
+#. <label class="form-check-label" asp-for="AllowLogoutEndpoint">@T["Allow Logout Endpoint"]</label>
 #: OrchardCore.OpenId\Views\Application\Create.cshtml:105
 msgctxt "OrchardCore.OpenId.Views.Application.Create"
 msgid "Allow Logout Endpoint"
@@ -1198,19 +1198,19 @@ msgstr "Ο τύπος συγκατάθεσης επηρεάζει τον τρό�
 #: OrchardCore.OpenId\Views\Application\Create.cshtml:129
 msgctxt "OrchardCore.OpenId.Views.Application.Create"
 msgid "When the consent is explicit, the authorization request must be approved by the end user. <strong>This is the recommended option.</strong>"
-msgstr ""
+msgstr "Όταν η συναίνεση είναι ρητή, το αίτημα εξουσιοδότησης πρέπει να εγκριθεί από τον τελικό χρήστη. <strong>Αυτή είναι η προτεινόμενη επιλογή.</strong>"
 
 #. <li>@T["When the consent is implicit, the authorization request is assumed to be pre-approved and no consent form is displayed."]</li>
 #: OrchardCore.OpenId\Views\Application\Create.cshtml:130
 msgctxt "OrchardCore.OpenId.Views.Application.Create"
 msgid "When the consent is implicit, the authorization request is assumed to be pre-approved and no consent form is displayed."
-msgstr ""
+msgstr "Όταν η συναίνεση είναι σιωπηρή, το αίτημα εξουσιοδότησης θεωρείται ότι έχει προεγκριθεί και δεν εμφανίζεται κανένα έντυπο συναίνεσης."
 
 #. <li>@T["When the consent is external, the authorization request is rejected unless a pre-existing authorization (granted programmatically) already exists."]</li>
 #: OrchardCore.OpenId\Views\Application\Create.cshtml:131
 msgctxt "OrchardCore.OpenId.Views.Application.Create"
 msgid "When the consent is external, the authorization request is rejected unless a pre-existing authorization (granted programmatically) already exists."
-msgstr ""
+msgstr "Όταν η συναίνεση είναι εξωτερική, το αίτημα εξουσιοδότησης απορρίπτεται εκτός εάν υπάρχει ήδη προϋπάρχουσα εξουσιοδότηση (που χορηγείται μέσω προγραμματισμού)."
 
 #. <h6>@T["Allowed Scopes"]</h6>
 #: OrchardCore.OpenId\Views\Application\Create.cshtml:138
@@ -1276,7 +1276,7 @@ msgstr "Δημόσιος πελάτης"
 #: OrchardCore.OpenId\Views\Application\Edit.cshtml:30
 msgctxt "OrchardCore.OpenId.Views.Application.Edit"
 msgid "Confidential applications MUST send their client secret when communicating with the token and revocation endpoints. This guarantees that only the legit client can exchange an authorization code or get a refresh token."
-msgstr "Οι εμπιστευτικές εφαρμογές ΠΡΕΠΕΙ να στείλουν το μυστικό πελάτη τους όταν επικοινωνούν με τα τελικά σημεία token και της ανάκλησης. Αυτό εγγυάται ότι μόνο ο νόμιμος πελάτης μπορεί να ανταλλάξει έναν κωδικό εξουσιοδότησης ή να πάρει ένα ανανεωμένο token."
+msgstr "Οι εμπιστευτικές εφαρμογές ΠΡΕΠΕΙ να στείλουν το μυστικό πελάτη τους όταν επικοινωνούν με τα τελικά σημεία token και της ανάκλησης. Αυτό εγγυάται ότι μόνο ο νόμιμος πελάτης μπορεί να ανταλλάξει έναν κωδικό εξουσιοδότησης ή να πάρει ένα ανανεωμένο σύμβολο (token)."
 
 #. <label asp-for="ClientSecret">@T["Client Secret"] (@T["enter a new value to replace the existing secret"])</label>
 #: OrchardCore.OpenId\Views\Application\Edit.cshtml:33
@@ -1290,7 +1290,7 @@ msgctxt "OrchardCore.OpenId.Views.Application.Edit"
 msgid "enter a new value to replace the existing secret"
 msgstr "εισάγετε μια νέα τιμή για να αντικαταστήσετε το υπάρχον μυστικό"
 
-#. <label class="custom-control-label" asp-for="AllowAuthorizationCodeFlow">@T["Allow Authorization Code Flow"]</label>
+#. <label class="form-check-label" asp-for="AllowAuthorizationCodeFlow">@T["Allow Authorization Code Flow"]</label>
 #: OrchardCore.OpenId\Views\Application\Edit.cshtml:42
 msgctxt "OrchardCore.OpenId.Views.Application.Edit"
 msgid "Allow Authorization Code Flow"
@@ -1328,35 +1328,35 @@ msgctxt "OrchardCore.OpenId.Views.Application.Edit"
 msgid "Recommended Parameters:"
 msgstr "Προτεινόμενες Παράμετροι:"
 
-#. <label class="custom-control-label" asp-for="AllowImplicitFlow">@T["Allow Implicit Flow"]</label>
+#. <label class="form-check-label" asp-for="AllowImplicitFlow">@T["Allow Implicit Flow"]</label>
 #: OrchardCore.OpenId\Views\Application\Edit.cshtml:51
 msgctxt "OrchardCore.OpenId.Views.Application.Edit"
 msgid "Allow Implicit Flow"
 msgstr "Επέτρεψε την Άρρητη Ροή"
 
-#. <label class="custom-control-label" asp-for="AllowHybridFlow">@T["Allow Hybrid Flow"]</label>
+#. <label class="form-check-label" asp-for="AllowHybridFlow">@T["Allow Hybrid Flow"]</label>
 #: OrchardCore.OpenId\Views\Application\Edit.cshtml:60
 msgctxt "OrchardCore.OpenId.Views.Application.Edit"
 msgid "Allow Hybrid Flow"
-msgstr ""
+msgstr "Να επιτρέπεται η υβριδική ροή"
 
-#. <label class="custom-control-label" asp-for="AllowPasswordFlow">@T["Allow Password Flow"]</label>
+#. <label class="form-check-label" asp-for="AllowPasswordFlow">@T["Allow Password Flow"]</label>
 #: OrchardCore.OpenId\Views\Application\Edit.cshtml:69
 msgctxt "OrchardCore.OpenId.Views.Application.Edit"
 msgid "Allow Password Flow"
 msgstr "Να Επιτρέπεται η Ροή Κωδικών Πρόσβασης"
 
-#. <label class="custom-control-label" asp-for="AllowClientCredentialsFlow">@T["Allow Client Credentials Flow"]</label>
+#. <label class="form-check-label" asp-for="AllowClientCredentialsFlow">@T["Allow Client Credentials Flow"]</label>
 #: OrchardCore.OpenId\Views\Application\Edit.cshtml:78
 msgctxt "OrchardCore.OpenId.Views.Application.Edit"
 msgid "Allow Client Credentials Flow"
 msgstr "Να Επιτρέπεται η Ροή Διαπιστευτηρίων Πελάτη"
 
-#. <label class="custom-control-label" asp-for="AllowRefreshTokenFlow">@T["Allow Refresh Token Flow"]</label>
+#. <label class="form-check-label" asp-for="AllowRefreshTokenFlow">@T["Allow Refresh Token Flow"]</label>
 #: OrchardCore.OpenId\Views\Application\Edit.cshtml:87
 msgctxt "OrchardCore.OpenId.Views.Application.Edit"
 msgid "Allow Refresh Token Flow"
-msgstr "Να Επιτρέπεται η Ανανέωση Ροής Token"
+msgstr "Να Επιτρέπεται η Ανανέωση Ροής Συμβόλου (Token)"
 
 #. <label asp-for="RedirectUris">@T["Redirect Uris"]</label>
 #: OrchardCore.OpenId\Views\Application\Edit.cshtml:95
@@ -1370,7 +1370,7 @@ msgctxt "OrchardCore.OpenId.Views.Application.Edit"
 msgid "Space delimited list of redirect URIs."
 msgstr "Χώρος περιορισμένης λίστας από URI ανακατεύθυνσης."
 
-#. <label class="custom-control-label" asp-for="AllowLogoutEndpoint">@T["Allow Logout Endpoint"]</label>
+#. <label class="form-check-label" asp-for="AllowLogoutEndpoint">@T["Allow Logout Endpoint"]</label>
 #: OrchardCore.OpenId\Views\Application\Edit.cshtml:107
 msgctxt "OrchardCore.OpenId.Views.Application.Edit"
 msgid "Allow Logout Endpoint"
@@ -1422,19 +1422,19 @@ msgstr "Ο τύπος συγκατάθεσης επηρεάζει τον τρό�
 #: OrchardCore.OpenId\Views\Application\Edit.cshtml:131
 msgctxt "OrchardCore.OpenId.Views.Application.Edit"
 msgid "When the consent is explicit, the authorization request must be approved by the end user. <strong>This is the recommended option.</strong>"
-msgstr ""
+msgstr "Όταν η συναίνεση είναι ρητή, το αίτημα εξουσιοδότησης πρέπει να εγκριθεί από τον τελικό χρήστη. <strong>Αυτή είναι η προτεινόμενη επιλογή.</strong>"
 
 #. <li>@T["When the consent is implicit, the authorization request is assumed to be pre-approved and no consent form is displayed."]</li>
 #: OrchardCore.OpenId\Views\Application\Edit.cshtml:132
 msgctxt "OrchardCore.OpenId.Views.Application.Edit"
 msgid "When the consent is implicit, the authorization request is assumed to be pre-approved and no consent form is displayed."
-msgstr ""
+msgstr "Όταν η συναίνεση είναι σιωπηρή, το αίτημα εξουσιοδότησης θεωρείται ότι έχει προεγκριθεί και δεν εμφανίζεται κανένα έντυπο συναίνεσης."
 
 #. <li>@T["When the consent is external, the authorization request is rejected unless a pre-existing authorization (granted programmatically) already exists."]</li>
 #: OrchardCore.OpenId\Views\Application\Edit.cshtml:133
 msgctxt "OrchardCore.OpenId.Views.Application.Edit"
 msgid "When the consent is external, the authorization request is rejected unless a pre-existing authorization (granted programmatically) already exists."
-msgstr ""
+msgstr "Όταν η συναίνεση είναι εξωτερική, το αίτημα εξουσιοδότησης απορρίπτεται εκτός εάν υπάρχει ήδη προϋπάρχουσα εξουσιοδότηση (που χορηγείται μέσω προγραμματισμού)."
 
 #. <h6>@T["Allowed Scopes"]</h6>
 #: OrchardCore.OpenId\Views\Application\Edit.cshtml:140
@@ -1488,13 +1488,13 @@ msgstr "Διαγραφή"
 #: OrchardCore.OpenId\Views\Items\OpenIdServerDeploymentStep.Edit.cshtml:3
 msgctxt "OrchardCore.OpenId.Views.Items.OpenIdServerDeploymentStep.Edit"
 msgid "OpenID Server Settings"
-msgstr ""
+msgstr "Ρυθμίσεις διακομιστή OpenID"
 
 #. <h5>@T["OpenID Server Settings"]</h5>
 #: OrchardCore.OpenId\Views\Items\OpenIdServerDeploymentStep.Summary.cshtml:3
 msgctxt "OrchardCore.OpenId.Views.Items.OpenIdServerDeploymentStep.Summary"
 msgid "OpenID Server Settings"
-msgstr ""
+msgstr "Ρυθμίσεις διακομιστή OpenID"
 
 #. <span class="hint">@T["Adds OpenID Server settings to the plan."]</span>
 #: OrchardCore.OpenId\Views\Items\OpenIdServerDeploymentStep.Summary.cshtml:5
@@ -1506,25 +1506,25 @@ msgstr "Προσθέτει ρυθμίσεις του διακομιστή OpenID
 #: OrchardCore.OpenId\Views\Items\OpenIdServerDeploymentStep.Thumbnail.cshtml:3
 msgctxt "OrchardCore.OpenId.Views.Items.OpenIdServerDeploymentStep.Thumbnail"
 msgid "OpenID Server Settings"
-msgstr ""
+msgstr "Ρυθμίσεις διακομιστή OpenID"
 
 #. <p>@T["Exports the OpenID Server settings."]</p>
 #: OrchardCore.OpenId\Views\Items\OpenIdServerDeploymentStep.Thumbnail.cshtml:4
 msgctxt "OrchardCore.OpenId.Views.Items.OpenIdServerDeploymentStep.Thumbnail"
 msgid "Exports the OpenID Server settings."
-msgstr ""
+msgstr "Εξάγει τις ρυθμίσεις διακομιστή OpenID."
 
 #. <h5>@T["OpenID Validation Settings"]</h5>
 #: OrchardCore.OpenId\Views\Items\OpenIdValidationDeploymentStep.Edit.cshtml:3
 msgctxt "OrchardCore.OpenId.Views.Items.OpenIdValidationDeploymentStep.Edit"
 msgid "OpenID Validation Settings"
-msgstr ""
+msgstr "Ρυθμίσεις επικύρωσης OpenID"
 
 #. <h5>@T["OpenID Validation Settings"]</h5>
 #: OrchardCore.OpenId\Views\Items\OpenIdValidationDeploymentStep.Summary.cshtml:3
 msgctxt "OrchardCore.OpenId.Views.Items.OpenIdValidationDeploymentStep.Summary"
 msgid "OpenID Validation Settings"
-msgstr ""
+msgstr "Ρυθμίσεις επικύρωσης OpenID"
 
 #. <span class="hint">@T["Adds OpenID Validation settings to the plan."]</span>
 #: OrchardCore.OpenId\Views\Items\OpenIdValidationDeploymentStep.Summary.cshtml:5
@@ -1536,13 +1536,13 @@ msgstr ""
 #: OrchardCore.OpenId\Views\Items\OpenIdValidationDeploymentStep.Thumbnail.cshtml:3
 msgctxt "OrchardCore.OpenId.Views.Items.OpenIdValidationDeploymentStep.Thumbnail"
 msgid "OpenID Validation Settings"
-msgstr ""
+msgstr "Ρυθμίσεις επικύρωσης OpenID"
 
 #. <p>@T["Exports the OpenID Validation settings."]</p>
 #: OrchardCore.OpenId\Views\Items\OpenIdValidationDeploymentStep.Thumbnail.cshtml:4
 msgctxt "OrchardCore.OpenId.Views.Items.OpenIdValidationDeploymentStep.Thumbnail"
 msgid "Exports the OpenID Validation settings."
-msgstr ""
+msgstr "Εξάγει τις ρυθμίσεις επικύρωσης OpenID."
 
 #. <zone Name="Title"><h1>@RenderTitleSegments(T["Create a new scope"])</h1></zone>
 #: OrchardCore.OpenId\Views\Scope\Create.cshtml:4
@@ -1578,7 +1578,7 @@ msgstr "Ενοικιαστές"
 #: OrchardCore.OpenId\Views\Scope\Create.cshtml:36
 msgctxt "OrchardCore.OpenId.Views.Scope.Create"
 msgid "Note: the server tenant is always included in the access token audiences, even if no scope is requested."
-msgstr ""
+msgstr "Σημείωση: Ο ενοικιαστής διακομιστή περιλαμβάνεται πάντα στο αρχείο πρόσβασης συμβόλου (token), ακόμα κι αν δεν ζητηθεί εύρος."
 
 #. <label asp-for="Resources">@T["Additional resources (API audiences)"]</label>
 #: OrchardCore.OpenId\Views\Scope\Create.cshtml:40
@@ -1632,7 +1632,7 @@ msgstr "Ενοικιαστές"
 #: OrchardCore.OpenId\Views\Scope\Edit.cshtml:36
 msgctxt "OrchardCore.OpenId.Views.Scope.Edit"
 msgid "Note: the server tenant is always included in the access token audiences, even if no scope is requested."
-msgstr ""
+msgstr "Σημείωση: Ο ενοικιαστής διακομιστή περιλαμβάνεται πάντα στο αρχείο πρόσβασης συμβόλου (token), ακόμα κι αν δεν ζητηθεί εύρος."
 
 #. <label asp-for="Resources">@T["Additional resources (API audiences)"]</label>
 #: OrchardCore.OpenId\Views\Scope\Edit.cshtml:40
@@ -1686,7 +1686,7 @@ msgstr "Ρυθμίστε τις ρυθμίσεις του διακομιστή O
 #: OrchardCore.OpenId\Views\ServerConfiguration\Index.cshtml:10
 msgctxt "OrchardCore.OpenId.Views.ServerConfiguration.Index"
 msgid "Update the server settings and reload the tenant"
-msgstr "Εενημερώστε τις ρυθμίσεις του διακομιστή και να γίνει επαναφόρτωση του ενοικιαστή"
+msgstr "Ενημερώστε τις ρυθμίσεις του διακομιστή και να γίνει επαναφόρτωση του ενοικιαστή"
 
 #. <zone Name="Title"><h1>@RenderTitleSegments(T["Configure OpenID validation settings"])</h1></zone>
 #: OrchardCore.OpenId\Views\ValidationConfiguration\Index.cshtml:3
