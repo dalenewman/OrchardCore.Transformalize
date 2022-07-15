@@ -3,7 +3,7 @@
     <TargetFramework>net6.0</TargetFramework>
     <AddRazorSupportForMvc>true</AddRazorSupportForMvc>
     <RootNamespace>TransformalizeModule</RootNamespace>
-    <Version>0.10.0-beta</Version>
+    <Version>0.10.2-beta</Version>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <Authors>Dale Newman</Authors>
     <Copyright>Copyright © 2013-2022</Copyright>
@@ -15,6 +15,8 @@
     <PackageTags>etl,data,forms,reports,transformalize</PackageTags>
     <NeutralLanguage>en-US</NeutralLanguage>
     <PackageReleaseNotes>added nuget package</PackageReleaseNotes>
+    <FileVersion>0.10.2</FileVersion>
+    <AssemblyVersion>0.10.2</AssemblyVersion>
   </PropertyGroup>
   <ItemGroup>
     <EmbeddedResource Remove="bundleconfig.json" />
