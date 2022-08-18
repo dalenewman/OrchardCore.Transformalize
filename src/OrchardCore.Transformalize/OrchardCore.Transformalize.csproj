@@ -3,7 +3,7 @@
     <TargetFramework>net6.0</TargetFramework>
     <AddRazorSupportForMvc>true</AddRazorSupportForMvc>
     <RootNamespace>TransformalizeModule</RootNamespace>
-    <Version>0.10.2-beta</Version>
+    <Version>0.10.3-beta</Version>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <Authors>Dale Newman</Authors>
     <Copyright>Copyright © 2013-2022</Copyright>
@@ -15,8 +15,8 @@
     <PackageTags>etl,data,forms,reports,transformalize</PackageTags>
     <NeutralLanguage>en-US</NeutralLanguage>
     <PackageReleaseNotes>added nuget package</PackageReleaseNotes>
-    <FileVersion>0.10.2</FileVersion>
-    <AssemblyVersion>0.10.2</AssemblyVersion>
+    <FileVersion>0.10.3</FileVersion>
+    <AssemblyVersion>0.10.3</AssemblyVersion>
   </PropertyGroup>
   <ItemGroup>
     <EmbeddedResource Remove="bundleconfig.json" />
@@ -30,6 +30,7 @@
   <ItemGroup>
     <PackageReference Include="Etch.OrchardCore.ContentPermissions" Version="1.3.0" />
     <PackageReference Include="Flurl" Version="3.0.6" />
+    <PackageReference Include="Nito.AsyncEx" Version="5.1.2" />
     <PackageReference Include="NodaTime" Version="3.1.0" />
     <PackageReference Include="OrchardCore.Alias" Version="1.4.0" />
     <PackageReference Include="OrchardCore.ContentFields" Version="1.4.0" />

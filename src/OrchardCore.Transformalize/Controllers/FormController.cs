@@ -57,7 +57,7 @@ namespace TransformalizeModule.Controllers {
          if (Request.Method == "POST" && _httpContext.HttpContext.Request.HasFormContentType) {
 
             if (!form.Process.Parameters.All(p => p.Valid)) {
-               _notifier.Error(H["The form did not pass validation.  Please correct it and re-submit."]);
+               await _notifier.ErrorAsync(H["The form did not pass validation.  Please correct it and re-submit."]);
                return View(form);
             }
 
@@ -69,7 +69,7 @@ namespace TransformalizeModule.Controllers {
             }
 
             if (!form.Process.Parameters.Any(p => p.PrimaryKey)) {
-               _notifier.Error(H["To save the form, you must specify one of the parameters as the primary key."]);
+               await _notifier.ErrorAsync(H["To save the form, you must specify one of the parameters as the primary key."]);
                return View(form);
             }
 
@@ -90,15 +90,15 @@ namespace TransformalizeModule.Controllers {
 
             try {
                _formService.Run(form.Process);
-               _notifier.Information(insert ? H["{0} inserted", form.Process.Name] : H["{0} updated", form.Process.Name]);
+               await _notifier.InformationAsync(insert ? H["{0} inserted", form.Process.Name] : H["{0} updated", form.Process.Name]);
                if (Request.Form["ReturnUrl"] != StringValues.Empty) {
                   return Redirect(Request.Form["ReturnUrl"].ToString());
                }
             } catch (Exception ex) {
                if (ex.Message.Contains("duplicate")) {
-                  _notifier.Error(H["The {0} save failed: {1}", form.Process.Name, "The database has rejected this update due to a unique constraint violation."]);
+                  await _notifier.ErrorAsync(H["The {0} save failed: {1}", form.Process.Name, "The database has rejected this update due to a unique constraint violation."]);
                } else {
-                  _notifier.Error(H["The {0} save failed: {1}", form.Process.Name, ex.Message]);
+                  await _notifier.ErrorAsync(H["The {0} save failed: {1}", form.Process.Name, ex.Message]);
                }
                _logger.Error(ex, () => ex.Message);
             }

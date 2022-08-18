@@ -100,7 +100,7 @@ namespace TransformalizeModule.Drivers {
 
             if (process.Warnings().Any()) {
                foreach (var warning in process.Warnings()) {
-                  _notifier.Warning(H[warning]);
+                  await _notifier.WarningAsync(H[warning]);
                }
             }
 

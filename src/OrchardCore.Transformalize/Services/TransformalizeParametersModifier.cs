@@ -32,6 +32,8 @@ using IContainer = TransformalizeModule.Services.Contracts.IContainer;
 using StackExchange.Profiling;
 using OrchardCore.DisplayManagement.Notify;
 using Microsoft.AspNetCore.Mvc.Localization;
+using System.Threading.Tasks;
+using Nito.AsyncEx;
 
 namespace TransformalizeModule.Services {
 
@@ -66,12 +68,16 @@ namespace TransformalizeModule.Services {
       }
 
       public string Modify(string cfg, int id, IDictionary<string, string> parameters) {
+         return AsyncContext.Run(() => ModifyAsync(cfg, id, parameters));
+      }
+
+      public async Task<string> ModifyAsync(string cfg, int id, IDictionary<string, string> parameters) {
          using (MiniProfiler.Current.Step("Transformalize Parameters")) {
-            return ModifyInternal(cfg, id, parameters);
+            return await ModifyInternalAsync(cfg, id, parameters);
          }
       }
 
-      private string ModifyInternal(string cfg, int id, IDictionary<string, string> parameters) {
+      private async Task<string> ModifyInternalAsync(string cfg, int id, IDictionary<string, string> parameters) {
 
          // using facade (which is all string properties) so things can be 
          // transformed before types are checked or place-holders are replaced
@@ -256,7 +262,7 @@ namespace TransformalizeModule.Services {
                      var response = jintVisibility.Visible(new JvRequest(output, parameter.Visible));
                      if (response.Faulted) {
                         _logger.Error(() => $"Parameter {parameter.Name} has a visible script error: {response.Message}");
-                        _notifier.Error(H[$"Parameter {parameter.Name} has a visible script error: {response.Message}"]);
+                        await _notifier.ErrorAsync(H[$"Parameter {parameter.Name} has a visible script error: {response.Message}"]);
                      }
                      parameter.Visible = response.Visible.ToString().ToLower();
                      if (parameter.Visible == "false") {
