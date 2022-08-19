@@ -33,6 +33,7 @@ using Transformalize.Nulls;
 using Transformalize.Transforms.Humanizer.Autofac;
 using Transformalize.Transforms.Json.Autofac;
 using Transformalize.Transforms.System;
+using Transformalize.Transforms.Globalization;
 using Transformalize.Validate.Jint.Autofac;
 using Transformalize.Providers.Ado.Autofac;
 using Transformalize.Providers.Bogus.Autofac;
@@ -67,6 +68,9 @@ using Transformalize.Transform.GoogleMaps;
 using TransformalizeModule.Services.Contracts;
 using Transformalize.Providers.Mail.Autofac;
 using System.IO;
+using Transformalize.Transforms.Geography;
+using Transformalize.Transforms.Compression;
+using Transformalize.Transforms.Xml;
 
 namespace TransformalizeModule.Services {
 
@@ -139,6 +143,14 @@ namespace TransformalizeModule.Services {
          tm.AddTransform(new TransformHolder((c) => new AddQueryParameterTransform(c), new AddQueryParameterTransform().GetSignatures()));
          tm.AddTransform(new TransformHolder((c) => new RemoveQueryParameterTransform(c), new RemoveQueryParameterTransform().GetSignatures()));
          tm.AddTransform(new TransformHolder((c) => new RemoveQueryParametersTransform(c), new RemoveQueryParametersTransform().GetSignatures()));
+         tm.AddTransform(new TransformHolder((c) => new SlugifyTransform(c), new SlugifyTransform().GetSignatures()));
+         tm.AddTransform(new TransformHolder((c) => new DistanceTransform(c), new DistanceTransform().GetSignatures()));
+         tm.AddTransform(new TransformHolder((c) => new GeohashEncodeTransform(c), new GeohashEncodeTransform().GetSignatures()));
+         tm.AddTransform(new TransformHolder((c) => new GeohashNeighborTransform(c), new GeohashNeighborTransform().GetSignatures()));
+         tm.AddTransform(new TransformHolder((c) => new CompressTransform(c), new CompressTransform().GetSignatures()));
+         tm.AddTransform(new TransformHolder((c) => new DecompressTransform(c), new DecompressTransform().GetSignatures()));
+         tm.AddTransform(new TransformHolder((c) => new FromXmlTransform(c), new FromXmlTransform().GetSignatures()));
+         tm.AddTransform(new TransformHolder((c) => new XPathTransform(c), new XPathTransform().GetSignatures()));
 
          builder.RegisterModule(tm);
 

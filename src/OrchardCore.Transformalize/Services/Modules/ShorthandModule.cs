@@ -13,6 +13,10 @@ using Transformalize.Transforms.Humanizer.Autofac;
 using Transformalize.Transforms.Json.Autofac;
 using Transformalize.Validate.Jint.Autofac;
 using Transformalize.Transforms.LambdaParser.Autofac;
+using Transformalize.Transforms.Globalization;
+using Transformalize.Transforms.Geography;
+using Transformalize.Transforms.Compression;
+using Transformalize.Transforms.Xml;
 
 namespace TransformalizeModule.Services.Modules {
 
@@ -51,6 +55,14 @@ namespace TransformalizeModule.Services.Modules {
          tm.AddTransform(new TransformHolder((c) => new AddQueryParameterTransform(), new AddQueryParameterTransform().GetSignatures()));
          tm.AddTransform(new TransformHolder((c) => new RemoveQueryParameterTransform(), new RemoveQueryParameterTransform().GetSignatures()));
          tm.AddTransform(new TransformHolder((c) => new RemoveQueryParametersTransform(), new RemoveQueryParametersTransform().GetSignatures()));
+         tm.AddTransform(new TransformHolder((c) => new SlugifyTransform(), new SlugifyTransform().GetSignatures()));
+         tm.AddTransform(new TransformHolder((c) => new DistanceTransform(c), new DistanceTransform().GetSignatures()));
+         tm.AddTransform(new TransformHolder((c) => new GeohashEncodeTransform(c), new GeohashEncodeTransform().GetSignatures()));
+         tm.AddTransform(new TransformHolder((c) => new GeohashNeighborTransform(c), new GeohashNeighborTransform().GetSignatures()));
+         tm.AddTransform(new TransformHolder((c) => new CompressTransform(c), new CompressTransform().GetSignatures()));
+         tm.AddTransform(new TransformHolder((c) => new DecompressTransform(c), new DecompressTransform().GetSignatures()));
+         tm.AddTransform(new TransformHolder((c) => new FromXmlTransform(c), new FromXmlTransform().GetSignatures()));
+         tm.AddTransform(new TransformHolder((c) => new XPathTransform(c), new XPathTransform().GetSignatures()));
 
          builder.RegisterModule(tm);
 
