@@ -1,93 +1,94 @@
 <Project Sdk="Microsoft.NET.Sdk.Razor">
-  <PropertyGroup>
-    <TargetFramework>net6.0</TargetFramework>
-    <AddRazorSupportForMvc>true</AddRazorSupportForMvc>
-    <RootNamespace>TransformalizeModule</RootNamespace>
-    <Version>0.10.7-beta</Version>
-    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <Authors>Dale Newman</Authors>
-    <Copyright>Copyright © 2013-2022</Copyright>
-    <Description />
-    <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
-    <PackageProjectUrl>https://github.com/dalenewman/OrchardCore.Transformalize</PackageProjectUrl>
-    <RepositoryUrl>https://github.com/dalenewman/OrchardCore.Transformalize</RepositoryUrl>
-    <RepositoryType>git</RepositoryType>
-    <PackageTags>etl,data,forms,reports,transformalize</PackageTags>
-    <NeutralLanguage>en-US</NeutralLanguage>
-    <PackageReleaseNotes>added nuget package</PackageReleaseNotes>
-    <FileVersion>0.10.7</FileVersion>
-    <AssemblyVersion>0.10.7</AssemblyVersion>
-  </PropertyGroup>
-  <ItemGroup>
-    <EmbeddedResource Remove="bundleconfig.json" />
-  </ItemGroup>
-  <ItemGroup>
-    <FrameworkReference Include="Microsoft.AspNetCore.App" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="bundleconfig.json" />
-  </ItemGroup>
-  <ItemGroup>
-    <PackageReference Include="Etch.OrchardCore.ContentPermissions" Version="1.3.0" />
-    <PackageReference Include="Flurl" Version="3.0.6" />
-    <PackageReference Include="Nito.AsyncEx" Version="5.1.2" />
-    <PackageReference Include="NodaTime" Version="3.1.0" />
-    <PackageReference Include="OrchardCore.Alias" Version="1.4.0" />
-    <PackageReference Include="OrchardCore.ContentFields" Version="1.4.0" />
-    <PackageReference Include="OrchardCore.ContentManagement" Version="1.4.0" />
-    <PackageReference Include="OrchardCore.Contents" Version="1.4.0" />
-    <PackageReference Include="OrchardCore.ContentTypes.Abstractions" Version="1.4.0" />
-    <PackageReference Include="OrchardCore.DisplayManagement" Version="1.4.0" />
-    <PackageReference Include="OrchardCore.Features" Version="1.4.0" />
-    <PackageReference Include="OrchardCore.FileStorage.FileSystem" Version="1.4.0" />
-    <PackageReference Include="OrchardCore.MiniProfiler" Version="1.4.0" />
-    <PackageReference Include="OrchardCore.Module.Targets" Version="1.4.0" />
-    <PackageReference Include="OrchardCore.Navigation" Version="1.4.0" />
-    <PackageReference Include="OrchardCore.Title" Version="1.4.0" />
-    <PackageReference Include="OrchardCore.Users" Version="1.4.0" />
-    <PackageReference Include="OrchardCore.Workflows" Version="1.4.0" />
-    <PackageReference Include="System.Text.Encoding.CodePages" Version="6.0.0" />
-    <PackageReference Include="Transformalize.Container.Autofac" Version="0.10.7-beta" />
-    <PackageReference Include="Transformalize.Provider.Ado.Autofac" Version="0.10.2-beta" />
-    <PackageReference Include="Transformalize.Provider.Bogus.Autofac" Version="0.10.0-beta" />
-    <PackageReference Include="Transformalize.Provider.CsvHelper.Autofac" Version="0.10.0-beta" />
-    <PackageReference Include="Transformalize.Provider.Elasticsearch.Autofac" Version="0.10.2-beta" />
-    <PackageReference Include="Transformalize.Provider.Excel" Version="0.10.1-beta" />
-    <PackageReference Include="Transformalize.Provider.File.Autofac" Version="0.10.5-beta" />
-    <PackageReference Include="Transformalize.Provider.GeoJson.Autofac" Version="0.10.0-beta" />
-    <PackageReference Include="Transformalize.Provider.Json.Autofac" Version="0.10.0-beta" />
-    <PackageReference Include="Transformalize.Provider.Mail.Autofac" Version="0.10.1-beta" />
-    <PackageReference Include="Transformalize.Provider.MySql.Autofac" Version="0.10.1-beta" />
-    <PackageReference Include="Transformalize.Provider.PostgreSql.Autofac" Version="0.10.2-beta" />
-    <PackageReference Include="Transformalize.Provider.Sqlite.Autofac" Version="0.10.1-beta" />
-    <PackageReference Include="Transformalize.Provider.SqlServer.Autofac" Version="0.10.7-beta" />
-    <PackageReference Include="Transformalize.Transform.Ado.Autofac" Version="0.10.2-beta" />
-    <PackageReference Include="Transformalize.Transform.Compression" Version="0.10.5-beta" />
-    <PackageReference Include="Transformalize.Transform.Fluid.Autofac" Version="0.10.1-beta" />
-    <PackageReference Include="Transformalize.Transform.Geography" Version="0.10.5-beta" />
-    <PackageReference Include="Transformalize.Transform.Globalization" Version="0.10.5-beta" />
-    <PackageReference Include="Transformalize.Transform.GoogleMaps" Version="0.10.1-beta" />
-    <PackageReference Include="Transformalize.Transform.Humanizer.Autofac" Version="0.10.1-beta" />
-    <PackageReference Include="Transformalize.Transform.Jint.3.Autofac" Version="0.10.0-beta" />
-    <PackageReference Include="Transformalize.Transform.Json.Autofac" Version="0.10.0-beta" />
-    <PackageReference Include="Transformalize.Transform.LambdaParser.Autofac" Version="0.10.1-beta" />
-    <PackageReference Include="Transformalize.Transform.Razor.Autofac" Version="0.10.1-beta" />
-    <PackageReference Include="Transformalize.Transform.Xml" Version="0.10.5-beta" />
-    <PackageReference Include="Transformalize.Validate.Jint.3.Autofac" Version="0.10.0-beta" />
-    <PackageReference Include="Transformalize" Version="0.10.7-beta" />
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Update="Recipes\batches.postgres.recipe.json">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </EmbeddedResource>
-    <EmbeddedResource Update="Recipes\batches.sqlite.recipe.json">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </EmbeddedResource>
-    <EmbeddedResource Update="Recipes\navigation.recipe.json">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </EmbeddedResource>
-    <EmbeddedResource Update="Recipes\samples.recipe.json">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </EmbeddedResource>
-  </ItemGroup>
+   <PropertyGroup>
+      <TargetFramework>net6.0</TargetFramework>
+      <AddRazorSupportForMvc>true</AddRazorSupportForMvc>
+      <RootNamespace>TransformalizeModule</RootNamespace>
+      <Version>0.10.9-beta</Version>
+      <FileVersion>0.10.9</FileVersion>
+      <AssemblyVersion>0.10.9</AssemblyVersion>
+      <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+      <Authors>Dale Newman</Authors>
+      <Copyright>Copyright © 2013-2022</Copyright>
+      <Description />
+      <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
+      <PackageProjectUrl>https://github.com/dalenewman/OrchardCore.Transformalize</PackageProjectUrl>
+      <RepositoryUrl>https://github.com/dalenewman/OrchardCore.Transformalize</RepositoryUrl>
+      <RepositoryType>git</RepositoryType>
+      <PackageTags>etl,data,forms,reports,transformalize</PackageTags>
+      <NeutralLanguage>en-US</NeutralLanguage>
+      <PackageReleaseNotes>added nuget package</PackageReleaseNotes>
+
+   </PropertyGroup>
+   <ItemGroup>
+      <EmbeddedResource Remove="bundleconfig.json" />
+   </ItemGroup>
+   <ItemGroup>
+      <FrameworkReference Include="Microsoft.AspNetCore.App" />
+   </ItemGroup>
+   <ItemGroup>
+      <None Include="bundleconfig.json" />
+   </ItemGroup>
+   <ItemGroup>
+      <PackageReference Include="Etch.OrchardCore.ContentPermissions" Version="1.3.0" />
+      <PackageReference Include="Flurl" Version="3.0.6" />
+      <PackageReference Include="Nito.AsyncEx" Version="5.1.2" />
+      <PackageReference Include="NodaTime" Version="3.1.0" />
+      <PackageReference Include="OrchardCore.Alias" Version="1.4.0" />
+      <PackageReference Include="OrchardCore.ContentFields" Version="1.4.0" />
+      <PackageReference Include="OrchardCore.ContentManagement" Version="1.4.0" />
+      <PackageReference Include="OrchardCore.Contents" Version="1.4.0" />
+      <PackageReference Include="OrchardCore.ContentTypes.Abstractions" Version="1.4.0" />
+      <PackageReference Include="OrchardCore.DisplayManagement" Version="1.4.0" />
+      <PackageReference Include="OrchardCore.Features" Version="1.4.0" />
+      <PackageReference Include="OrchardCore.FileStorage.FileSystem" Version="1.4.0" />
+      <PackageReference Include="OrchardCore.MiniProfiler" Version="1.4.0" />
+      <PackageReference Include="OrchardCore.Module.Targets" Version="1.4.0" />
+      <PackageReference Include="OrchardCore.Navigation" Version="1.4.0" />
+      <PackageReference Include="OrchardCore.Title" Version="1.4.0" />
+      <PackageReference Include="OrchardCore.Users" Version="1.4.0" />
+      <PackageReference Include="OrchardCore.Workflows" Version="1.4.0" />
+      <PackageReference Include="System.Text.Encoding.CodePages" Version="6.0.0" />
+      <PackageReference Include="Transformalize.Container.Autofac" Version="0.10.9-beta" />
+      <PackageReference Include="Transformalize.Provider.Ado.Autofac" Version="0.10.2-beta" />
+      <PackageReference Include="Transformalize.Provider.Bogus.Autofac" Version="0.10.0-beta" />
+      <PackageReference Include="Transformalize.Provider.CsvHelper.Autofac" Version="0.10.0-beta" />
+      <PackageReference Include="Transformalize.Provider.Elasticsearch.Autofac" Version="0.10.2-beta" />
+      <PackageReference Include="Transformalize.Provider.Excel" Version="0.10.1-beta" />
+      <PackageReference Include="Transformalize.Provider.File.Autofac" Version="0.10.5-beta" />
+      <PackageReference Include="Transformalize.Provider.GeoJson.Autofac" Version="0.10.0-beta" />
+      <PackageReference Include="Transformalize.Provider.Json.Autofac" Version="0.10.0-beta" />
+      <PackageReference Include="Transformalize.Provider.Mail.Autofac" Version="0.10.1-beta" />
+      <PackageReference Include="Transformalize.Provider.MySql.Autofac" Version="0.10.1-beta" />
+      <PackageReference Include="Transformalize.Provider.PostgreSql.Autofac" Version="0.10.2-beta" />
+      <PackageReference Include="Transformalize.Provider.Sqlite.Autofac" Version="0.10.1-beta" />
+      <PackageReference Include="Transformalize.Provider.SqlServer.Autofac" Version="0.10.9-beta" />
+      <PackageReference Include="Transformalize.Transform.Ado.Autofac" Version="0.10.2-beta" />
+      <PackageReference Include="Transformalize.Transform.Compression" Version="0.10.5-beta" />
+      <PackageReference Include="Transformalize.Transform.Fluid.Autofac" Version="0.10.1-beta" />
+      <PackageReference Include="Transformalize.Transform.Geography" Version="0.10.5-beta" />
+      <PackageReference Include="Transformalize.Transform.Globalization" Version="0.10.5-beta" />
+      <PackageReference Include="Transformalize.Transform.GoogleMaps" Version="0.10.1-beta" />
+      <PackageReference Include="Transformalize.Transform.Humanizer.Autofac" Version="0.10.1-beta" />
+      <PackageReference Include="Transformalize.Transform.Jint.3.Autofac" Version="0.10.0-beta" />
+      <PackageReference Include="Transformalize.Transform.Json.Autofac" Version="0.10.0-beta" />
+      <PackageReference Include="Transformalize.Transform.LambdaParser.Autofac" Version="0.10.1-beta" />
+      <PackageReference Include="Transformalize.Transform.Razor.Autofac" Version="0.10.1-beta" />
+      <PackageReference Include="Transformalize.Transform.Xml" Version="0.10.5-beta" />
+      <PackageReference Include="Transformalize.Validate.Jint.3.Autofac" Version="0.10.0-beta" />
+      <PackageReference Include="Transformalize" Version="0.10.9-beta" />
+   </ItemGroup>
+   <ItemGroup>
+      <EmbeddedResource Update="Recipes\batches.postgres.recipe.json">
+         <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </EmbeddedResource>
+      <EmbeddedResource Update="Recipes\batches.sqlite.recipe.json">
+         <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </EmbeddedResource>
+      <EmbeddedResource Update="Recipes\navigation.recipe.json">
+         <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </EmbeddedResource>
+      <EmbeddedResource Update="Recipes\samples.recipe.json">
+         <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </EmbeddedResource>
+   </ItemGroup>
 </Project>

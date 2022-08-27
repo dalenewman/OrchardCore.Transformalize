@@ -303,19 +303,16 @@ namespace TransformalizeModule.Services {
                   pipeline.Register(ctx.IsRegisteredWithName(entity.Key, typeof(IInputProvider)) ? ctx.ResolveNamed<IInputProvider>(entity.Key) : null);
                }
 
-               // transforms
+               // register transform and validator operations
                pipeline.Register(new IncrementTransform(context));
                pipeline.Register(new DefaultTransform(context, context.GetAllEntityFields().Where(f => !f.System)));
+               pipeline.Register(new SystemHashcodeTransform(new PipelineContext(ctx.Resolve<IPipelineLogger>(), process, entity)));
                pipeline.Register(TransformFactory.GetTransforms(ctx, context, entity.GetAllFields().Where(f => f.Transforms.Any())));
-               if (!process.ReadOnly) {
-                  pipeline.Register(new SystemFieldsTransform(new PipelineContext(ctx.Resolve<IPipelineLogger>(), process, entity)));
-               }
+               pipeline.Register(new SystemFieldsTransform(new PipelineContext(ctx.Resolve<IPipelineLogger>(), process, entity)));
                pipeline.Register(ValidateFactory.GetValidators(ctx, context, entity.GetAllFields().Where(f => f.Validators.Any())));
-
                if (!process.ReadOnly && !output.Provider.In("internal", "log")) {
                   pipeline.Register(new StringTruncateTransfom(new PipelineContext(ctx.Resolve<IPipelineLogger>(), process, entity)));
                }
-
                pipeline.Register(new LogTransform(context));
 
                // writer, TODO: rely on IOutputProvider instead
@@ -353,14 +350,12 @@ namespace TransformalizeModule.Services {
                   return pipeline;
                }
 
-               // register transforms
+               // register transform and validator operations
                pipeline.Register(new IncrementTransform(context));
                pipeline.Register(new LogTransform(context));
                pipeline.Register(new DefaultTransform(new PipelineContext(ctx.Resolve<IPipelineLogger>(), calc, entity), entity.CalculatedFields));
-
                pipeline.Register(TransformFactory.GetTransforms(ctx, context, entity.CalculatedFields));
                pipeline.Register(ValidateFactory.GetValidators(ctx, context, entity.GetAllFields().Where(f => f.Validators.Any())));
-
                pipeline.Register(new StringTruncateTransfom(new PipelineContext(ctx.Resolve<IPipelineLogger>(), calc, entity)));
 
                // register input and output
