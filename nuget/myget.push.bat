@@ -1,2 +1,2 @@
 REM - package is generated on build
-nuget push "..\src\OrchardCore.Transformalize\bin\Release\OrchardCore.Transformalize.0.10.9-beta.nupkg" -source https://www.myget.org/F/transformalize/api/v3/index.json
+nuget push "..\src\OrchardCore.Transformalize\bin\Release\OrchardCore.Transformalize.0.10.10-beta.nupkg" -source https://www.myget.org/F/transformalize/api/v3/index.json
