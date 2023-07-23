@@ -1,6 +1,4 @@
 ﻿using OrchardCore.ContentFields.Fields;
-using System;
-using System.Collections.Generic;
 
 namespace TransformalizeModule.Ext {
 

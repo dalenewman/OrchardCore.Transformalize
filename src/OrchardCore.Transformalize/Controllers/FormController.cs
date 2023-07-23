@@ -1,18 +1,14 @@
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using TransformalizeModule.Services.Contracts;
-using TransformalizeModule.Services;
-using TransformalizeModule.Models;
-using Microsoft.AspNetCore.Authorization;
-using System.Linq;
-using OrchardCore.DisplayManagement.Notify;
-using Microsoft.AspNetCore.Mvc.Localization;
-using System;
 using Autofac;
-using IContainer = TransformalizeModule.Services.Contracts.IContainer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Localization;
 using Microsoft.Extensions.Primitives;
-using System.Collections.Generic;
+using OrchardCore.DisplayManagement.Notify;
+using TransformalizeModule.Models;
+using TransformalizeModule.Services;
+using TransformalizeModule.Services.Contracts;
+using IContainer = TransformalizeModule.Services.Contracts.IContainer;
 
 namespace TransformalizeModule.Controllers {
 

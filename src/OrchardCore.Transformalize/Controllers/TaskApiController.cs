@@ -1,11 +1,10 @@
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using TransformalizeModule.Services.Contracts;
-using TransformalizeModule.Services;
-using TransformalizeModule.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using Transformalize.Configuration;
+using TransformalizeModule.Models;
+using TransformalizeModule.Services;
+using TransformalizeModule.Services.Contracts;
 
 namespace TransformalizeModule.Controllers {
 

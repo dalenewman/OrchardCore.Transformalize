@@ -20,9 +20,6 @@ using Esprima;
 using Jint;
 using Microsoft.Extensions.Caching.Memory;
 using OrchardCore.Environment.Cache;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 using Transformalize;
 using Transformalize.Configuration;
@@ -37,7 +34,6 @@ namespace TransformalizeModule.Services.Transforms {
 
       private readonly Engine _jint = new Engine();
       private readonly ParameterMatcher _parameterMatcher = new ParameterMatcher();
-      private readonly Dictionary<int, string> _errors = new Dictionary<int, string>();
       private readonly IMemoryCache _memoryCache;
       private readonly ISignal _signal;
       private readonly IReader _reader;
@@ -133,14 +129,14 @@ namespace TransformalizeModule.Services.Transforms {
                }
             }
 
-            if(scriptBuilder.Length > 0) {
+            if (scriptBuilder.Length > 0) {
                scriptBuilder.AppendLine(Context.Operation.Script);
             } else {
                scriptBuilder.Append(Context.Operation.Script);
             }
 
             try {
-               transform.Script = new JavaScriptParser(scriptBuilder.ToString(), new ParserOptions() { Tolerant = true }).ParseScript();
+               transform.Script = new JavaScriptParser(new ParserOptions() { Tolerant = true }).ParseScript(scriptBuilder.ToString());
             } catch (ParserException ex) {
                Context.Error(ex.Message);
                Utility.CodeToError(Context, scriptBuilder.ToString());
@@ -164,21 +160,18 @@ namespace TransformalizeModule.Services.Transforms {
                   TryFirst = false;
                   var obj = _jint.Evaluate(transform.Script).ToObject();
                   var value = obj == null ? null : Context.Field.Convert(obj);
-                  if (value == null && !_errors.ContainsKey(0)) {
+                  if (value == null) {
                      Context.Error($"Jint transform in {Context.Field.Alias} returns null!");
-                     _errors[0] = $"Jint transform in {Context.Field.Alias} returns null!";
                   } else {
                      row[Context.Field] = value;
                   }
                } catch (Jint.Runtime.JavaScriptException jse) {
-                  if (!_errors.ContainsKey(jse.LineNumber)) {
-                     Context.Error("Script: " + Context.Operation.Script.Replace("{", "{{").Replace("}", "}}"));
-                     Context.Error(jse, "Error Message: " + jse.Message);
-                     Context.Error("Variables:");
-                     foreach (var field in transform.Input) {
-                        Context.Error($"{field.Alias}:{row[field]}");
-                     }
-                     _errors[jse.LineNumber] = jse.Message;
+
+                  Utility.CodeToError(Context, Context.Operation.Script);
+                  Context.Error(jse, "Error Message: " + jse.Message);
+                  Context.Error("Variables:");
+                  foreach (var field in transform.Input) {
+                     Context.Error($"{field.Alias}:{row[field]}");
                   }
                }
             } else {

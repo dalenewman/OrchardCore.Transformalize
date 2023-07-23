@@ -1,31 +1,29 @@
-using System;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.DependencyInjection;
-using TransformalizeModule.Models;
+using Microsoft.Extensions.Options;
 using OrchardCore.ContentManagement;
-using OrchardCore.Modules;
-using OrchardCore.ResourceManagement;
-using OrchardCore.Data.Migration;
 using OrchardCore.ContentManagement.Display.ContentDisplay;
-using TransformalizeModule.Drivers;
-using TransformalizeModule.Services.Contracts;
-using TransformalizeModule.Services;
-using TransformalizeModule.Handlers;
 using OrchardCore.ContentManagement.Handlers;
-using Microsoft.AspNetCore.Http;
+using OrchardCore.Data.Migration;
 using OrchardCore.DisplayManagement.Handlers;
-using OrchardCore.Settings;
+using OrchardCore.Environment.Shell;
+using OrchardCore.Modules;
 using OrchardCore.Navigation;
+using OrchardCore.ResourceManagement;
 using OrchardCore.Security.Permissions;
-using TransformalizeModule.Navigation;
+using OrchardCore.Settings;
+using OrchardCore.Workflows.Helpers;
 using Transformalize.Contracts;
 using Transformalize.Logging;
-using OrchardCore.Workflows.Helpers;
 using TransformalizeModule.Activities;
-using Microsoft.Extensions.Options;
-using OrchardCore.Environment.Shell;
-using System.IO;
+using TransformalizeModule.Drivers;
+using TransformalizeModule.Handlers;
+using TransformalizeModule.Models;
+using TransformalizeModule.Navigation;
+using TransformalizeModule.Services;
+using TransformalizeModule.Services.Contracts;
 
 namespace TransformalizeModule {
    public class Startup : StartupBase {

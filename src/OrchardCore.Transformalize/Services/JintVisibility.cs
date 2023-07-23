@@ -38,7 +38,7 @@ namespace TransformalizeModule.Services {
          };
 
          try {
-            script = new JavaScriptParser(request.Script, new ParserOptions() { Tolerant = true }).ParseScript();
+            script = new JavaScriptParser(new ParserOptions() { Tolerant = true }).ParseScript(request.Script);
          } catch (ParserException ex) {
             result.ParserException = ex;
             result.Message = $"{ex.Message} at column {ex.Column}.";
@@ -62,7 +62,7 @@ namespace TransformalizeModule.Services {
             }
          } catch (JavaScriptException jse) {
             result.Faulted = true;
-            result.Message = $"{jse.Message} at column {jse.Column}.";
+            result.Message = jse.Message;
             result.JavaScriptException = jse;
          }
 

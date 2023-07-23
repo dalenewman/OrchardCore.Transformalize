@@ -1,16 +1,13 @@
-using System;
-using System.Threading.Tasks;
-using Microsoft.Extensions.Localization;
-using TransformalizeModule.ViewModels;
-using OrchardCore.DisplayManagement.Views;
-using OrchardCore.Settings;
-using TransformalizeModule.Models;
-using OrchardCore.DisplayManagement.Entities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Localization;
+using OrchardCore.DisplayManagement.Entities;
 using OrchardCore.DisplayManagement.Handlers;
+using OrchardCore.DisplayManagement.Views;
+using OrchardCore.Settings;
 using Transformalize.Configuration;
-using System.Linq;
+using TransformalizeModule.Models;
+using TransformalizeModule.ViewModels;
 
 namespace TransformalizeModule.Drivers {
    public class TransformalizeSettingsDisplayDriver : SectionDisplayDriver<ISite, TransformalizeSettings> {

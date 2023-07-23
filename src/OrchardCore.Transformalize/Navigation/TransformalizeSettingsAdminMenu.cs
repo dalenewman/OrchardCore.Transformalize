@@ -1,8 +1,5 @@
 ﻿using Microsoft.Extensions.Localization;
 using OrchardCore.Navigation;
-using System;
-using System.Threading.Tasks;
-
 
 namespace TransformalizeModule.Navigation {
    public class TransformalizeSettingsAdminMenu : INavigationProvider {

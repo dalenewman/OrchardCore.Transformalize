@@ -1,5 +1,5 @@
-using OrchardCore.ContentManagement;
 using OrchardCore.ContentFields.Fields;
+using OrchardCore.ContentManagement;
 
 namespace TransformalizeModule.Models {
    public class TransformalizeReportPart : ContentPart {

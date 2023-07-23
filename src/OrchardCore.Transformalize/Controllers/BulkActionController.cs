@@ -1,17 +1,14 @@
-using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using OrchardCore.Users.Models;
+using OrchardCore.Users.Services;
+using System.Dynamic;
+using System.Text;
+using Transformalize.Configuration;
+using TransformalizeModule.Models;
+using TransformalizeModule.Services;
 using TransformalizeModule.Services.Contracts;
 using TransformalizeModule.ViewModels;
-using System.Collections.Generic;
-using TransformalizeModule.Models;
-using System.Linq;
-using TransformalizeModule.Services;
-using System.Dynamic;
-using Transformalize.Configuration;
-using OrchardCore.Users.Services;
-using OrchardCore.Users.Models;
-using System.Text;
-using Microsoft.AspNetCore.Authorization;
 
 namespace TransformalizeModule.Controllers {
 

@@ -1,13 +1,11 @@
+using Microsoft.Extensions.Logging;
 using OrchardCore.Alias.Settings;
+using OrchardCore.ContentFields.Fields;
+using OrchardCore.ContentFields.Settings;
 using OrchardCore.ContentManagement.Metadata;
 using OrchardCore.ContentManagement.Metadata.Settings;
 using OrchardCore.Data.Migration;
-using OrchardCore.ContentFields.Fields;
-using OrchardCore.ContentFields.Settings;
 using OrchardCore.Features.Services;
-using System.Threading.Tasks;
-using System.Linq;
-using Microsoft.Extensions.Logging;
 
 namespace TransformalizeModule {
    public class Migrations : DataMigration {

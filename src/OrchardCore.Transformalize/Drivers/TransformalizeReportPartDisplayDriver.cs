@@ -1,24 +1,19 @@
-using System.Threading.Tasks;
+using Autofac;
+using Microsoft.AspNetCore.Mvc.Localization;
 using Microsoft.Extensions.Localization;
+using OrchardCore.ContentFields.Fields;
 using OrchardCore.ContentManagement.Display.ContentDisplay;
 using OrchardCore.ContentManagement.Display.Models;
 using OrchardCore.DisplayManagement.ModelBinding;
-using OrchardCore.DisplayManagement.Views;
-using TransformalizeModule.Models;
-using TransformalizeModule.ViewModels;
-using Microsoft.AspNetCore.Mvc.Localization;
 using OrchardCore.DisplayManagement.Notify;
-using System;
-using Transformalize.Logging;
-using Transformalize.Contracts;
-using System.Collections.Generic;
-using TransformalizeModule.Services.Contracts;
+using OrchardCore.DisplayManagement.Views;
 using OrchardCore.Environment.Cache;
-using Autofac;
 using Transformalize.Configuration;
-using System.Linq;
-using OrchardCore.ContentFields.Fields;
-using GraphQL;
+using Transformalize.Contracts;
+using Transformalize.Logging;
+using TransformalizeModule.Models;
+using TransformalizeModule.Services.Contracts;
+using TransformalizeModule.ViewModels;
 
 namespace TransformalizeModule.Drivers {
    public class TransformalizeReportPartDisplayDriver : ContentPartDisplayDriver<TransformalizeReportPart> {

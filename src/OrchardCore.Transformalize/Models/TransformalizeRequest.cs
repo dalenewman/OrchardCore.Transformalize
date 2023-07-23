@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-
-namespace TransformalizeModule.Models {
+﻿namespace TransformalizeModule.Models {
    public class TransformalizeRequest {
       private string _format = null;
 

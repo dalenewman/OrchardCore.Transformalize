@@ -17,7 +17,6 @@
 #endregion
 
 using Autofac;
-using System.Linq;
 using Transformalize.Actions;
 using Transformalize.Configuration;
 using Transformalize.Context;
@@ -96,7 +95,7 @@ namespace TransformalizeModule.Services.Modules {
          }
       }
 
-      private static IAction SwitchAction(IComponentContext ctx, Process process, Action action) {
+      private static IAction SwitchAction(IComponentContext ctx, Process process, Transformalize.Configuration.Action action) {
 
          var context = new PipelineContext(ctx.Resolve<IPipelineLogger>(), process);
 

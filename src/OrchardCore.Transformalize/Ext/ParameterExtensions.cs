@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using Parameter = Transformalize.Configuration.Parameter;
+﻿using Parameter = Transformalize.Configuration.Parameter;
 
 namespace TransformalizeModule.Ext {
 

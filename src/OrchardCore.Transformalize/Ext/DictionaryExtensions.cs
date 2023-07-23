@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace TransformalizeModule.Ext {
+﻿namespace TransformalizeModule.Ext {
    public static class DictionaryExtensions {
       public static int GetIntegerOrDefault(this IDictionary<string,string> dict, string name, Func<int> getDefault) {
          if (!dict.ContainsKey(name)) {
