@@ -1,0 +1,40 @@
+<Project Sdk="Microsoft.NET.Sdk.Razor">
+
+   <PropertyGroup>
+      <TargetFramework>net7.0</TargetFramework>
+      <AddRazorSupportForMvc>true</AddRazorSupportForMvc>
+      <RootNamespace>ProxyModule</RootNamespace>
+      <Version>0.1.0</Version>
+      <FileVersion>0.1.0</FileVersion>
+      <AssemblyVersion>0.1.0</AssemblyVersion>
+      <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+      <Authors>Dale Newman</Authors>
+      <Copyright>Copyright © 2023</Copyright>
+      <Description>for secured access to internal resources</Description>
+      <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
+      <PackageProjectUrl>https://github.com/dalenewman/OrchardCore.Proxy</PackageProjectUrl>
+      <RepositoryUrl>https://github.com/dalenewman/OrchardCore.Proxy</RepositoryUrl>
+      <RepositoryType>git</RepositoryType>
+      <PackageTags></PackageTags>
+      <NeutralLanguage>en-US</NeutralLanguage>
+      <PackageReleaseNotes>update for orchard core 1.6</PackageReleaseNotes>
+      <Nullable>enable</Nullable>
+      <ImplicitUsings>enable</ImplicitUsings>
+   </PropertyGroup>
+
+   <ItemGroup>
+      <FrameworkReference Include="Microsoft.AspNetCore.App" />
+   </ItemGroup>
+
+   <ItemGroup>
+      <PackageReference Include="Etch.OrchardCore.ContentPermissions" Version="1.5.0" />
+      <PackageReference Include="OrchardCore.Alias" Version="1.6.0" />
+      <PackageReference Include="OrchardCore.ContentFields" Version="1.6.0" />
+      <PackageReference Include="OrchardCore.Features" Version="1.6.0" />
+      <PackageReference Include="OrchardCore.Module.Targets" Version="1.6.0" />
+      <PackageReference Include="OrchardCore.ContentManagement" Version="1.6.0" />
+      <PackageReference Include="OrchardCore.ContentTypes.Abstractions" Version="1.6.0" />
+      <PackageReference Include="OrchardCore.DisplayManagement" Version="1.6.0" />
+   </ItemGroup>
+
+</Project>

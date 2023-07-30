@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.30114.105
+# Visual Studio Version 17
+VisualStudioVersion = 17.6.33829.357
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Site", "src\Site\Site.csproj", "{86A408EA-A33A-4F8B-935B-1177580EEA8B}"
 EndProject
@@ -22,6 +22,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "nuget", "nuget", "{ABE80D99
 		nuget\myget.push.bat = nuget\myget.push.bat
 	EndProjectSection
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OrchardCore.Proxy", "src\OrchardCore.Proxy\OrchardCore.Proxy.csproj", "{43FB332D-8550-4EED-AA1A-66E8490C20BA}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -36,6 +38,10 @@ Global
 		{C1ADD792-2B57-4D9D-A92E-50CFDE3FBD6C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C1ADD792-2B57-4D9D-A92E-50CFDE3FBD6C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C1ADD792-2B57-4D9D-A92E-50CFDE3FBD6C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{43FB332D-8550-4EED-AA1A-66E8490C20BA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{43FB332D-8550-4EED-AA1A-66E8490C20BA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{43FB332D-8550-4EED-AA1A-66E8490C20BA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{43FB332D-8550-4EED-AA1A-66E8490C20BA}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

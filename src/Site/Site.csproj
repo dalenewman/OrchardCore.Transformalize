@@ -30,6 +30,7 @@
    </ItemGroup>
 
    <ItemGroup>
+      <ProjectReference Include="..\OrchardCore.Proxy\OrchardCore.Proxy.csproj" />
       <ProjectReference Include="..\OrchardCore.Transformalize\OrchardCore.Transformalize.csproj" />
    </ItemGroup>
 
