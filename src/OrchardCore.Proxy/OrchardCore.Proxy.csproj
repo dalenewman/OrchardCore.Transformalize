@@ -17,7 +17,7 @@
       <RepositoryType>git</RepositoryType>
       <PackageTags></PackageTags>
       <NeutralLanguage>en-US</NeutralLanguage>
-      <PackageReleaseNotes>update for orchard core 1.6</PackageReleaseNotes>
+      <PackageReleaseNotes>develop</PackageReleaseNotes>
       <Nullable>enable</Nullable>
       <ImplicitUsings>enable</ImplicitUsings>
    </PropertyGroup>

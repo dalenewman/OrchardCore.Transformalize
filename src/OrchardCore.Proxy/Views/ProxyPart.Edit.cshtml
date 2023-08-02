@@ -1,0 +1,17 @@
+﻿@model EditProxyPartViewModel
+@using ProxyModule.ViewModels;
+@using ProxyModule 
+
+@{
+   var Area = Common.ModuleName;
+   var ContentItemId = Model.ProxyPart.ContentItem.ContentItemId;
+   var viewLink = Url.Action("Index", "Proxy", new { Area , ContentItemId });
+}
+
+<fieldset>
+   <div class="btn-group float-right" role="group">
+      <a href="@viewLink" class="btn btn-success btn-sm" role="button" title="view this proxy">
+         <span class="fas fa-eye"></span>
+      </a>
+   </div>
+</fieldset>

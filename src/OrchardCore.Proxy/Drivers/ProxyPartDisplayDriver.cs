@@ -3,9 +3,7 @@ using Microsoft.Extensions.Localization;
 using OrchardCore.ContentManagement.Display.ContentDisplay;
 using OrchardCore.ContentManagement.Display.Models;
 using OrchardCore.DisplayManagement.ModelBinding;
-using OrchardCore.DisplayManagement.Notify;
 using OrchardCore.DisplayManagement.Views;
-using OrchardCore.Environment.Cache;
 using ProxyModule.Models;
 using ProxyModule.ViewModels;
 
@@ -44,11 +42,17 @@ namespace ProxyModule.Drivers {
             part.ForwardHeaders.Value = model.ForwardHeaders.Value;
          }
 
-         // TODO: validate that ServiceUrl is valid URL
+         if (!IsValidUri(model.ServiceUrl.Text)) {
+            updater.ModelState.AddModelError(Prefix, S["Please set service url to a valid absolute url."]);
+         }
 
          return Edit(part, context);
 
       }
 
+      public static bool IsValidUri(string uri) {
+         return Uri.TryCreate(uri, UriKind.Absolute, out _);
+      }
    }
+
 }

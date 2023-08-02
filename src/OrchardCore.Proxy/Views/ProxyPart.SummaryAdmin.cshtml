@@ -1,0 +1,13 @@
+﻿@model ProxyPart
+@using ProxyModule.Models
+@{
+    var part = (ProxyPart)Model;
+    var url = string.Empty;
+    var service = string.Empty;
+    if (part != null) {
+        var trailingSlash = part.ServiceUrl.Text.EndsWith("/") ? "/" : "";
+        url = Url.Content(string.Format("~/Proxy/{0}{1}", part.ContentItem.Id, trailingSlash));
+        service = part.ServiceUrl.Text;
+    }
+}
+Use <a href="@url" target="_blank">@url</a> to access <a href="@service" target="_blank">@service</a>.
