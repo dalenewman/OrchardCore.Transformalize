@@ -23,3 +23,6 @@
 **/values.dev.yaml
 LICENSE
 README.md
+**/App_Data/Sites
+**/App_Data/tenants.json
+**/App_Data/logs
