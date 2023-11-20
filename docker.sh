@@ -2,10 +2,17 @@
 
 # docker buildx create --driver=docker-container --name=container
 
-version="0.11.1"
+version="0.11.2"
 build="mcr.microsoft.com/dotnet/sdk:8.0"
 base="mcr.microsoft.com/dotnet/aspnet:8.0"
 name="transformalize.orchard"
+
+# docker build -f "./src/Site/Dockerfile" \
+#   --force-rm \
+#   -t $name:local \
+#   --build-arg BASE_IMAGE=$base \
+#   --build-arg BUILD_IMAGE=$build \
+#   "."
 
 # docker build -f "./src/Site/Dockerfile" \
 #   --force-rm \
