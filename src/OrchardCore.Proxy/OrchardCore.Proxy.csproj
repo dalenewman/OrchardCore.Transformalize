@@ -4,9 +4,9 @@
       <TargetFramework>net8.0</TargetFramework>
       <AddRazorSupportForMvc>true</AddRazorSupportForMvc>
       <RootNamespace>ProxyModule</RootNamespace>
-      <Version>0.1.0</Version>
-      <FileVersion>0.1.0</FileVersion>
-      <AssemblyVersion>0.1.0</AssemblyVersion>
+      <Version>0.11.4</Version>
+      <FileVersion>0.11.4</FileVersion>
+      <AssemblyVersion>0.11.4</AssemblyVersion>
       <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
       <Authors>Dale Newman</Authors>
       <Copyright>Copyright © 2023</Copyright>
