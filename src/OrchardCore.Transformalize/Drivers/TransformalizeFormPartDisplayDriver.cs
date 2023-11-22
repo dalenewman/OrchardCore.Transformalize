@@ -76,7 +76,9 @@ namespace TransformalizeModule.Drivers {
 
       public override async Task<IDisplayResult> UpdateAsync(TransformalizeFormPart part, IUpdateModel updater, UpdatePartEditorContext context) {
 
-         var model = new EditTransformalizeFormPartViewModel();
+         var model = new EditTransformalizeFormPartViewModel { 
+            TransformalizeFormPart = part
+         };
 
          if (await updater.TryUpdateModelAsync(model, Prefix)) {
             part.Arrangement.Text = model.Arrangement.Text;

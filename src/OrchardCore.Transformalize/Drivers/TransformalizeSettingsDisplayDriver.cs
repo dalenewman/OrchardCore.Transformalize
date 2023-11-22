@@ -93,37 +93,14 @@ namespace TransformalizeModule.Drivers {
                }
             }
 
-            // default page sizes, todo: de-duplicate code with default page sizes extended
-            if (string.IsNullOrWhiteSpace(model.DefaultPageSizes)) {
-               context.Updater.ModelState.AddModelError(Prefix, S["Default Page Sizes must be a comma delimited list of integers."]);
-            } else {
-               var clean = true;
-               foreach (var size in model.DefaultPageSizes.Split(',', StringSplitOptions.RemoveEmptyEntries)) {
-                  if (!int.TryParse(size, out int result)) {
-                     context.Updater.ModelState.AddModelError(Prefix, S["Default Page Sizes value {0} is not a valid integer.",  size]);
-                     clean = false;
-                  }
-               }
-               if (clean) {
-                  settings.DefaultPageSizes = model.DefaultPageSizes;
-               }
+            if (PageSizesOkay(context, "Default Page Sizes", model.DefaultPageSizes)) {
+               settings.DefaultPageSizes = model.DefaultPageSizes;
             }
 
-            // default page sizes extended, todo: de-duplicate code with default page sizes
-            if (string.IsNullOrWhiteSpace(model.DefaultPageSizesExtended)) {
-               context.Updater.ModelState.AddModelError(Prefix, S["Default Page Sizes Extended must be a comma delimited list of integers."]);
-            } else {
-               var clean = true;
-               foreach (var size in model.DefaultPageSizesExtended.Split(',', StringSplitOptions.RemoveEmptyEntries)) {
-                  if (!int.TryParse(size, out int result)) {
-                     context.Updater.ModelState.AddModelError(Prefix, S["Default Page Sizes Extended value {0} is not a valid integer.", size]);
-                     clean = false;
-                  }
-               }
-               if (clean) {
-                  settings.DefaultPageSizesExtended = model.DefaultPageSizesExtended;
-               }
+            if (PageSizesOkay(context, "Default Page Sizes Extended", model.DefaultPageSizesExtended)) {
+               settings.DefaultPageSizesExtended = model.DefaultPageSizesExtended;
             }
+
          }
 
          return await EditAsync(settings, context);
@@ -133,6 +110,22 @@ namespace TransformalizeModule.Drivers {
          var user = _hca.HttpContext?.User;
 
          return user != null && await _authorizationService.AuthorizeAsync(user, Permissions.ManageTransformalizeSettings);
+      }
+
+      private bool PageSizesOkay(BuildEditorContext context, string name, string value) {
+         if (string.IsNullOrWhiteSpace(value)) {
+            context.Updater.ModelState.AddModelError(Prefix, S["{0} must be a comma delimited list of integers.", name]);
+            return false;
+         } else {
+            var clean = true;
+            foreach (var size in value.Split(',', StringSplitOptions.RemoveEmptyEntries)) {
+               if (!int.TryParse(size, out int result)) {
+                  context.Updater.ModelState.AddModelError(Prefix, S["{0} value {1} is not a valid integer.", name, size]);
+                  clean = false;
+               }
+            }
+            return clean;
+         }
       }
 
    }

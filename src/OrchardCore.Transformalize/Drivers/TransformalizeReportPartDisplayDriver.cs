@@ -85,7 +85,9 @@ namespace TransformalizeModule.Drivers {
          //_notifier.Information(H["Part - Bulk Actions:{0}", part.BulkActions.Value]);
          //_notifier.Information(H["Part - Bulk Action Field:{0}", part.BulkActionValueField.Text]);
 
-         var model = new EditTransformalizeReportPartViewModel();
+         var model = new EditTransformalizeReportPartViewModel { 
+            TransformalizeReportPart = part 
+         };
 
          if (await updater.TryUpdateModelAsync(model, Prefix)) {
             //_notifier.Information(H["Model - Bulk Actions:{0}", model.BulkActions.Value]);
@@ -93,7 +95,7 @@ namespace TransformalizeModule.Drivers {
 
             part.Arrangement.Text = model.Arrangement.Text;
             part.PageSizes.Text = model.PageSizes.Text;
-            part.PageSizesExtended.Text = model.PageSizes.Text;
+            part.PageSizesExtended.Text = model.PageSizesExtended.Text;
 
             part.BulkActions.Value = model.BulkActions.Value;
             part.BulkActionValueField.Text = model.BulkActionValueField.Text;

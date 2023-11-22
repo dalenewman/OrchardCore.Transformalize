@@ -1,8 +1,11 @@
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 using OrchardCore.ContentFields.Fields;
 using TransformalizeModule.Models;
 
 namespace TransformalizeModule.ViewModels {
    public class EditTransformalizeFormPartViewModel {
+
+      [BindNever]
       public TransformalizeFormPart TransformalizeFormPart { get; set; }
       public TextField Arrangement { get; set; }
       public BooleanField LocationEnableHighAccuracy { get; set; }

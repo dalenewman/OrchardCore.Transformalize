@@ -34,7 +34,9 @@ namespace ProxyModule.Drivers {
          // this driver override makes sure all the 
          // part fields are updated before the arrangement model is updated / validated
 
-         var model = new EditProxyPartViewModel();
+         var model = new EditProxyPartViewModel {
+            ProxyPart = part
+         };
 
          if (await updater.TryUpdateModelAsync(model, Prefix)) {
 

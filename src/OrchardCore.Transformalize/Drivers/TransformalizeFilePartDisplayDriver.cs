@@ -20,7 +20,9 @@ namespace TransformalizeModule.Drivers {
 
       public override async Task<IDisplayResult> UpdateAsync(TransformalizeFilePart part, IUpdateModel updater, UpdatePartEditorContext context) {
 
-         var model = new EditTransformalizeFilePartViewModel();
+         var model = new EditTransformalizeFilePartViewModel {
+            TransformalizeFilePart = part
+         };
 
          if (await updater.TryUpdateModelAsync(model, Prefix)) {
             part.OriginalName.Text = model.OriginalName.Text;
