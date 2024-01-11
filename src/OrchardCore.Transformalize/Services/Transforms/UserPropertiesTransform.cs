@@ -6,11 +6,11 @@ using Transformalize.Contracts;
 using Transformalize.Transforms;
 
 namespace TransformalizeModule.Services.Transforms {
-   public class UserEmailTransform : BaseTransform {
+   public class UserPropertiesTransform : BaseTransform {
 
-      private readonly string _userEmail = string.Empty;
+      private readonly string _userProperties = string.Empty;
 
-      public UserEmailTransform(
+      public UserPropertiesTransform(
          IHttpContextAccessor httpContext = null,
          IUserService userService = null,
          IContext context = null
@@ -26,24 +26,32 @@ namespace TransformalizeModule.Services.Transforms {
          
          if (httpContext == null) {
             Run = false;
-            Context.Error($"{nameof(UserEmailTransform)} requires an instance of IHttpContextAccessor");
+            Context.Error($"{nameof(UserPropertiesTransform)} requires an instance of IHttpContextAccessor");
          } else {
             var username = httpContext.HttpContext.User?.Identity?.Name ?? "Anonymous";
             if(username != "Anonymous") {
                if (userService.GetUserAsync(username).Result is User user) {
-                  _userEmail = user.Email;
+                  _userProperties = user.Properties.ToString();
+                  if(Context.Field.Length != "max") {
+                     if (int.TryParse(Context.Field.Length, out int len)) { 
+                        if (len < _userProperties.Length) {
+                           Context.Warn($"{nameof(UserPropertiesTransform)} properties length {_userProperties.Length} is more than your field length {len}.");
+                        }
+                     }
+
+                  }
                }
             }
          }
 
       }
       public override IRow Operate(IRow row) {
-         row[Context.Field] = _userEmail;
+         row[Context.Field] = _userProperties;
          return row;
       }
 
       public override IEnumerable<OperationSignature> GetSignatures() {
-         yield return new OperationSignature("useremail");
+         yield return new OperationSignature("userproperties");
       }
    }
 }

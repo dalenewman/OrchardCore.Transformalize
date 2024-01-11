@@ -4,7 +4,7 @@
    "description": "Provides navigation editor and main menu for setup recipes that didn't create them (e.g. SaaS)",
    "author": "Dale Newman",
    "website": "https://github.com/dalenewman/OrchardCore.Transformalize",
-   "version": "0.8.21",
+   "version": "0.11.5",
    "issetuprecipe": false,
    "categories": [ "default" ],
    "tags": [ "navigation", "menu" ],
@@ -41,6 +41,7 @@
                      {
                         "ContentType": "LinkMenuItem",
                         "ContentItemId": "[js: uuid()]",
+                        "DisplayText": "Reports",
                         "LinkMenuItemPart": {
                            "Name": "Reports",
                            "Url": "~/#reports"
@@ -49,6 +50,7 @@
                      {
                         "ContentType": "LinkMenuItem",
                         "ContentItemId": "[js: uuid()]",
+                        "DisplayText": "Tasks",
                         "LinkMenuItemPart": {
                            "Name": "Tasks",
                            "Url": "~/#tasks"

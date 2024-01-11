@@ -100,5 +100,371 @@
     "inputFiles": [
       "wwwroot/Scripts/load-image.all.js"
     ]
+  },
+  {
+    "outputFileName": "wwwroot/Scripts/codemirror/codemirror.min.css",
+    "inputFiles": [
+      "wwwroot/Scripts/codemirror/codemirror.css"
+    ]
+  },
+  {
+    "outputFileName": "wwwroot/Scripts/codemirror/codemirror.min.js",
+    "inputFiles": [
+      "wwwroot/Scripts/codemirror/codemirror.js"
+    ]
+  },
+  {
+    "outputFileName": "wwwroot/Scripts/codemirror/mode/css/css.min.js",
+    "inputFiles": [
+      "wwwroot/Scripts/codemirror/mode/css/css.js"
+    ]
+  },
+  {
+    "outputFileName": "wwwroot/Scripts/codemirror/mode/htmlmixed/htmlmixed.min.js",
+    "inputFiles": [
+      "wwwroot/Scripts/codemirror/mode/htmlmixed/htmlmixed.js"
+    ]
+  },
+  {
+    "outputFileName": "wwwroot/Scripts/codemirror/mode/javascript/javascript.min.js",
+    "inputFiles": [
+      "wwwroot/Scripts/codemirror/mode/javascript/javascript.js"
+    ]
+  },
+  {
+    "outputFileName": "wwwroot/Scripts/codemirror/mode/sql/sql.min.js",
+    "inputFiles": [
+      "wwwroot/Scripts/codemirror/mode/sql/sql.js"
+    ]
+  },
+  {
+    "outputFileName": "wwwroot/Scripts/codemirror/mode/xml/xml.min.js",
+    "inputFiles": [
+      "wwwroot/Scripts/codemirror/mode/xml/xml.js"
+    ]
+  },
+  {
+    "outputFileName": "wwwroot/Scripts/codemirror/addon/dialog/dialog.min.css",
+    "inputFiles": [
+      "wwwroot/Scripts/codemirror/addon/dialog/dialog.css"
+    ]
+  },
+  {
+    "outputFileName": "wwwroot/Scripts/codemirror/addon/dialog/dialog.min.js",
+    "inputFiles": [
+      "wwwroot/Scripts/codemirror/addon/dialog/dialog.js"
+    ]
+  },
+  {
+    "outputFileName": "wwwroot/Scripts/codemirror/addon/display/autorefresh.min.js",
+    "inputFiles": [
+      "wwwroot/Scripts/codemirror/addon/display/autorefresh.js"
+    ]
+  },
+  {
+    "outputFileName": "wwwroot/Scripts/codemirror/addon/display/fullscreen.min.css",
+    "inputFiles": [
+      "wwwroot/Scripts/codemirror/addon/display/fullscreen.css"
+    ]
+  },
+  {
+    "outputFileName": "wwwroot/Scripts/codemirror/addon/display/fullscreen.min.js",
+    "inputFiles": [
+      "wwwroot/Scripts/codemirror/addon/display/fullscreen.js"
+    ]
+  },
+  {
+    "outputFileName": "wwwroot/Scripts/codemirror/addon/edit/closebrackets.min.js",
+    "inputFiles": [
+      "wwwroot/Scripts/codemirror/addon/edit/closebrackets.js"
+    ]
+  },
+  {
+    "outputFileName": "wwwroot/Scripts/codemirror/addon/edit/closetag.min.js",
+    "inputFiles": [
+      "wwwroot/Scripts/codemirror/addon/edit/closetag.js"
+    ]
+  },
+  {
+    "outputFileName": "wwwroot/Scripts/codemirror/addon/edit/continuelist.min.js",
+    "inputFiles": [
+      "wwwroot/Scripts/codemirror/addon/edit/continuelist.js"
+    ]
+  },
+  {
+    "outputFileName": "wwwroot/Scripts/codemirror/addon/edit/matchbrackets.min.js",
+    "inputFiles": [
+      "wwwroot/Scripts/codemirror/addon/edit/matchbrackets.js"
+    ]
+  },
+  {
+    "outputFileName": "wwwroot/Scripts/codemirror/addon/edit/matchtags.min.js",
+    "inputFiles": [
+      "wwwroot/Scripts/codemirror/addon/edit/matchtags.js"
+    ]
+  },
+  {
+    "outputFileName": "wwwroot/Scripts/codemirror/addon/edit/trailingspace.min.js",
+    "inputFiles": [
+      "wwwroot/Scripts/codemirror/addon/edit/trailingspace.js"
+    ]
+  },
+  {
+    "outputFileName": "wwwroot/Scripts/codemirror/addon/fold/brace-fold.min.js",
+    "inputFiles": [
+      "wwwroot/Scripts/codemirror/addon/fold/brace-fold.js"
+    ]
+  },
+  {
+    "outputFileName": "wwwroot/Scripts/codemirror/addon/fold/comment-fold.min.js",
+    "inputFiles": [
+      "wwwroot/Scripts/codemirror/addon/fold/comment-fold.js"
+    ]
+  },
+  {
+    "outputFileName": "wwwroot/Scripts/codemirror/addon/fold/foldcode.min.js",
+    "inputFiles": [
+      "wwwroot/Scripts/codemirror/addon/fold/foldcode.js"
+    ]
+  },
+  {
+    "outputFileName": "wwwroot/Scripts/codemirror/addon/fold/foldgutter.min.css",
+    "inputFiles": [
+      "wwwroot/Scripts/codemirror/addon/fold/foldgutter.css"
+    ]
+  },
+  {
+    "outputFileName": "wwwroot/Scripts/codemirror/addon/fold/foldgutter.min.js",
+    "inputFiles": [
+      "wwwroot/Scripts/codemirror/addon/fold/foldgutter.js"
+    ]
+  },
+  {
+    "outputFileName": "wwwroot/Scripts/codemirror/addon/fold/indent-fold.min.js",
+    "inputFiles": [
+      "wwwroot/Scripts/codemirror/addon/fold/indent-fold.js"
+    ]
+  },
+  {
+    "outputFileName": "wwwroot/Scripts/codemirror/addon/fold/markdown-fold.min.js",
+    "inputFiles": [
+      "wwwroot/Scripts/codemirror/addon/fold/markdown-fold.js"
+    ]
+  },
+  {
+    "outputFileName": "wwwroot/Scripts/codemirror/addon/fold/xml-fold.min.js",
+    "inputFiles": [
+      "wwwroot/Scripts/codemirror/addon/fold/xml-fold.js"
+    ]
+  },
+  {
+    "outputFileName": "wwwroot/Scripts/codemirror/addon/hint/anyword-hint.min.js",
+    "inputFiles": [
+      "wwwroot/Scripts/codemirror/addon/hint/anyword-hint.js"
+    ]
+  },
+  {
+    "outputFileName": "wwwroot/Scripts/codemirror/addon/hint/css-hint.min.js",
+    "inputFiles": [
+      "wwwroot/Scripts/codemirror/addon/hint/css-hint.js"
+    ]
+  },
+  {
+    "outputFileName": "wwwroot/Scripts/codemirror/addon/hint/html-hint.min.js",
+    "inputFiles": [
+      "wwwroot/Scripts/codemirror/addon/hint/html-hint.js"
+    ]
+  },
+  {
+    "outputFileName": "wwwroot/Scripts/codemirror/addon/hint/javascript-hint.min.js",
+    "inputFiles": [
+      "wwwroot/Scripts/codemirror/addon/hint/javascript-hint.js"
+    ]
+  },
+  {
+    "outputFileName": "wwwroot/Scripts/codemirror/addon/hint/show-hint.min.css",
+    "inputFiles": [
+      "wwwroot/Scripts/codemirror/addon/hint/show-hint.css"
+    ]
+  },
+  {
+    "outputFileName": "wwwroot/Scripts/codemirror/addon/hint/show-hint.min.js",
+    "inputFiles": [
+      "wwwroot/Scripts/codemirror/addon/hint/show-hint.js"
+    ]
+  },
+  {
+    "outputFileName": "wwwroot/Scripts/codemirror/addon/hint/sql-hint.min.js",
+    "inputFiles": [
+      "wwwroot/Scripts/codemirror/addon/hint/sql-hint.js"
+    ]
+  },
+  {
+    "outputFileName": "wwwroot/Scripts/codemirror/addon/hint/xml-hint.min.js",
+    "inputFiles": [
+      "wwwroot/Scripts/codemirror/addon/hint/xml-hint.js"
+    ]
+  },
+  {
+    "outputFileName": "wwwroot/Scripts/codemirror/addon/mode/multiplex.min.js",
+    "inputFiles": [
+      "wwwroot/Scripts/codemirror/addon/mode/multiplex.js"
+    ]
+  },
+  {
+    "outputFileName": "wwwroot/Scripts/codemirror/addon/mode/simple.min.js",
+    "inputFiles": [
+      "wwwroot/Scripts/codemirror/addon/mode/simple.js"
+    ]
+  },
+  {
+    "outputFileName": "wwwroot/Scripts/codemirror/addon/search/jump-to-line.min.js",
+    "inputFiles": [
+      "wwwroot/Scripts/codemirror/addon/search/jump-to-line.js"
+    ]
+  },
+  {
+    "outputFileName": "wwwroot/Scripts/codemirror/addon/search/matchesonscrollbar.min.css",
+    "inputFiles": [
+      "wwwroot/Scripts/codemirror/addon/search/matchesonscrollbar.css"
+    ]
+  },
+  {
+    "outputFileName": "wwwroot/Scripts/codemirror/addon/search/matchesonscrollbar.min.js",
+    "inputFiles": [
+      "wwwroot/Scripts/codemirror/addon/search/matchesonscrollbar.js"
+    ]
+  },
+  {
+    "outputFileName": "wwwroot/Scripts/codemirror/addon/search/match-highlighter.min.js",
+    "inputFiles": [
+      "wwwroot/Scripts/codemirror/addon/search/match-highlighter.js"
+    ]
+  },
+  {
+    "outputFileName": "wwwroot/Scripts/codemirror/addon/search/search.min.js",
+    "inputFiles": [
+      "wwwroot/Scripts/codemirror/addon/search/search.js"
+    ]
+  },
+  {
+    "outputFileName": "wwwroot/Scripts/codemirror/addon/search/searchcursor.min.js",
+    "inputFiles": [
+      "wwwroot/Scripts/codemirror/addon/search/searchcursor.js"
+    ]
+  },
+  {
+    "outputFileName": "wwwroot/Scripts/report.min.js",
+    "inputFiles": [
+      "wwwroot/Scripts/report.js"
+    ]
+  },
+  {
+    "outputFileName": "wwwroot/Scripts/form.min.js",
+    "inputFiles": [
+      "wwwroot/Scripts/form.js"
+    ]
+  },
+  {
+    "outputFileName": "wwwroot/Scripts/pickadate/legacy.min.js",
+    "inputFiles": [
+      "wwwroot/Scripts/pickadate/legacy.js"
+    ]
+  },
+  {
+    "outputFileName": "wwwroot/Scripts/pickadate/picker.min.js",
+    "inputFiles": [
+      "wwwroot/Scripts/pickadate/picker.js"
+    ]
+  },
+  {
+    "outputFileName": "wwwroot/Scripts/prismjs/prism.min.js",
+    "inputFiles": [
+      "wwwroot/Scripts/prismjs/prism.js"
+    ]
+  },
+  {
+    "outputFileName": "wwwroot/Scripts/prismjs/components/prism-csharp.min.js",
+    "inputFiles": [
+      "wwwroot/Scripts/prismjs/components/prism-csharp.js"
+    ]
+  },
+  {
+    "outputFileName": "wwwroot/Scripts/prismjs/components/prism-javascript.min.js",
+    "inputFiles": [
+      "wwwroot/Scripts/prismjs/components/prism-javascript.js"
+    ]
+  },
+  {
+    "outputFileName": "wwwroot/Scripts/prismjs/components/prism-json.min.js",
+    "inputFiles": [
+      "wwwroot/Scripts/prismjs/components/prism-json.js"
+    ]
+  },
+  {
+    "outputFileName": "wwwroot/Scripts/prismjs/components/prism-liquid.min.js",
+    "inputFiles": [
+      "wwwroot/Scripts/prismjs/components/prism-liquid.js"
+    ]
+  },
+  {
+    "outputFileName": "wwwroot/Scripts/prismjs/components/prism-markup.min.js",
+    "inputFiles": [
+      "wwwroot/Scripts/prismjs/components/prism-markup.js"
+    ]
+  },
+  {
+    "outputFileName": "wwwroot/Scripts/prismjs/components/prism-sql.min.js",
+    "inputFiles": [
+      "wwwroot/Scripts/prismjs/components/prism-sql.js"
+    ]
+  },
+  {
+    "outputFileName": "wwwroot/Scripts/jquery.blockUI.min.js",
+    "inputFiles": [
+      "wwwroot/Scripts/jquery.blockUI.js"
+    ]
+  },
+  {
+    "outputFileName": "wwwroot/Scripts/mapbox-gl-draw.min.js",
+    "inputFiles": [
+      "wwwroot/Scripts/mapbox-gl-draw.js"
+    ]
+  },
+  {
+    "outputFileName": "wwwroot/Scripts/moment.min.js",
+    "inputFiles": [
+      "wwwroot/Scripts/moment.js"
+    ]
+  },
+  {
+    "outputFileName": "wwwroot/Scripts/parsley.min.js",
+    "inputFiles": [
+      "wwwroot/Scripts/parsley.js"
+    ]
+  },
+  {
+    "outputFileName": "wwwroot/Scripts/turf.min.js",
+    "inputFiles": [
+      "wwwroot/Scripts/turf.js"
+    ]
+  },
+  {
+    "outputFileName": "wwwroot/Styles/prismjs/prism.min.css",
+    "inputFiles": [
+      "wwwroot/Styles/prismjs/prism.css"
+    ]
+  },
+  {
+    "outputFileName": "wwwroot/Styles/mapbox-gl.min.css",
+    "inputFiles": [
+      "wwwroot/Styles/mapbox-gl.css"
+    ]
+  },
+  {
+    "outputFileName": "wwwroot/Styles/mapbox-gl-draw.min.css",
+    "inputFiles": [
+      "wwwroot/Styles/mapbox-gl-draw.css"
+    ]
   }
 ]

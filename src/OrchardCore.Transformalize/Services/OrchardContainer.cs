@@ -130,6 +130,7 @@ namespace TransformalizeModule.Services {
          tm.AddTransform(new TransformHolder((c) => new UsernameTransform(_httpContext, c), new UsernameTransform().GetSignatures()));
          tm.AddTransform(new TransformHolder((c) => new UserIdTransform(_httpContext, _userService, c), new UserIdTransform().GetSignatures()));
          tm.AddTransform(new TransformHolder((c) => new UserEmailTransform(_httpContext, _userService, c), new UserEmailTransform().GetSignatures()));
+         tm.AddTransform(new TransformHolder((c) => new UserPropertiesTransform(_httpContext, _userService, c), new UserPropertiesTransform().GetSignatures()));
          tm.AddTransform(new TransformHolder((c) => new OrchardRazorTransform(c, _memoryCache, _signal), new OrchardRazorTransform().GetSignatures()));
          tm.AddTransform(new TransformHolder((c) => new OrchardFluidTransform(c, _memoryCache, _signal), new OrchardFluidTransform().GetSignatures()));
          tm.AddTransform(new TransformHolder((c) => new OrchardJintTransform(c, new DefaultReader(new FileReader(), new WebReader()), _memoryCache, _signal), new OrchardJintTransform().GetSignatures()));

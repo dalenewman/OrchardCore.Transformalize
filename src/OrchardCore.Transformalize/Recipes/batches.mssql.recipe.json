@@ -1,0 +1,128 @@
+{
+   "name": "Transformalize.Batches.MSSQL",
+   "displayName": "Transformalize Batches MSSQL",
+   "description": "Batch Create and Batch Write Tasks Needed for Bulk Actions.",
+   "author": "Vlad",
+   "website": "https://github.com/dalenewman/Transformalize",
+   "version": "0.11.5",
+   "issetuprecipe": false,
+   "tags": [ "reporting", "etl" ],
+   "categories": [],
+   "steps": [
+      {
+         "name": "content",
+         "data": [
+            {
+               "ContentItemId": "[js: uuid()]",
+               "ContentType": "TransformalizeTask",
+               "DisplayText": "Batch Create",
+               "Latest": true,
+               "Published": true,
+               "PublishedUtc": "[js: new Date().toISOString()]",
+               "Owner": "[js: parameters('AdminUserId')]",
+               "Author": "[js: parameters('AdminUsername')]",
+               "TitlePart": {
+                  "Title": "Batch Create"
+               },
+               "AliasPart": {
+                  "Alias": "batch-create"
+               },
+               "TransformalizeTaskPart": {
+                  "Arrangement": {
+                     "Text": "<cfg name=\"Batch Create\" mode=\"@[Mode]\">\r\n \r\n  <maps>\r\n     <add name=\"Modes\">\r\n       <items>\r\n         <add from=\"Initialize\" to=\"init\" />\r\n         <add from=\"Default\" to=\"default\" />\r\n       </items>\r\n    </add>\r\n  </maps>\r\n  \r\n  <!-- this task creates and returns a batch id for logged in user -->\r\n  \r\n  <parameters>\r\n    <add name=\"Mode\" value=\"default\" prompt=\"true\" map=\"Modes\" />\r\n    <add name=\"Created\" type=\"datetime\" t=\"now()\" />\r\n    <add name=\"UserId\" type=\"int\" />\r\n    <add name=\"UserName\" />\r\n    <add name=\"ReportContentItemId\" />\r\n    <add name=\"ReportTitle\" />\r\n    <add name=\"TaskContentItemId\" />\r\n    <add name=\"TaskTitle\" />\r\n    <add name=\"Description\" />\r\n  </parameters>\r\n  \r\n  <connections>\r\n    <add name=\"db\" />\r\n  </connections>\r\n  \r\n  <actions>\r\n    <add name=\"Create\" \r\n         type=\"run\" \r\n         description=\"Create the batch tables during in init mode.\"\r\n         connection=\"db\" \r\n         mode=\"init\"\r\n         command=\"\r\nIF (NOT EXISTS (SELECT * \r\n                 FROM INFORMATION_SCHEMA.TABLES \r\n                 WHERE TABLE_SCHEMA = 'dbo' \r\n                 AND  TABLE_NAME = 'BatchStatus'))\r\nBEGIN\r\nCREATE TABLE [dbo].[BatchStatus](\r\n\t[Id] [int] NOT NULL,\r\n\t[Status] [varchar](128) NOT NULL,\r\nPRIMARY KEY CLUSTERED \r\n(\r\n\t[Id] ASC\r\n)WITH (STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]\r\n) ON [PRIMARY]\r\nEND\r\n                  \r\nINSERT INTO BatchStatus(Id,Status) SELECT 1, 'Review' WHERE NOT EXISTS(SELECT * FROM BatchStatus WHERE Id = 1);\r\nINSERT INTO BatchStatus(Id,Status) SELECT 2, 'Running' WHERE NOT EXISTS(SELECT * FROM BatchStatus WHERE Id = 2);\r\nINSERT INTO BatchStatus(Id,Status) SELECT 3, 'Completed' WHERE NOT EXISTS(SELECT * FROM BatchStatus WHERE Id = 3);\r\nINSERT INTO BatchStatus(Id,Status) SELECT 4, 'Failed' WHERE NOT EXISTS(SELECT * FROM BatchStatus WHERE Id = 4);\r\n\r\nIF (NOT EXISTS (SELECT * \r\n                 FROM INFORMATION_SCHEMA.TABLES \r\n                 WHERE TABLE_SCHEMA = 'dbo' \r\n                 AND  TABLE_NAME = 'Batch'))\r\nBEGIN\r\nCREATE TABLE [dbo].[Batch](\r\n\t[Id] [bigint] IDENTITY(1,1) NOT NULL,\r\n\t[Created] [datetime] NOT NULL,\r\n\t[UserId] [int] NOT NULL,\r\n\t[Username] [varchar](128) NOT NULL,\r\n\t[ReportContentItemId] [varchar](128) NOT NULL,\r\n\t[ReportTitle] [varchar](128) NOT NULL,\r\n\t[TaskContentItemId] [varchar](128) NOT NULL,\r\n\t[TaskTitle] [varchar](128) NOT NULL,\r\n\t[Description] [varchar](255) NOT NULL,\r\n\t[BatchStatusId] [int] NULL,\r\n\t[Message] [varchar](1024) NOT NULL,\r\nPRIMARY KEY CLUSTERED \r\n(\r\n\t[Id] ASC\r\n)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]\r\n) ON [PRIMARY]\r\n                  \r\nALTER TABLE [dbo].[Batch]  WITH CHECK ADD FOREIGN KEY([BatchStatusId])\r\nREFERENCES [dbo].[BatchStatus] ([Id])\r\nEND                  \r\n\" />\r\n  </actions>\r\n  \r\n  <entities>\r\n    <add name=\"Script\" \r\n         input=\"db\" \r\n         query=\"\r\nINSERT INTO Batch(Created,UserId,UserName,ReportContentItemId,ReportTitle,TaskContentItemId,TaskTitle,Description,BatchStatusId,Message)\r\nSELECT @Created,@UserId,@UserName,@ReportContentItemId,@ReportTitle,@TaskContentItemId,@TaskTitle,@Description,1,'' \r\nSELECT TOP 1 b.Id AS BatchId\r\nFROM Batch b\r\nWHERE UserId = @UserId\r\nORDER BY b.Id DESC\r\n            \">\r\n      <fields>\r\n          <add name=\"BatchId\" type=\"int64\" primary-key=\"true\" />\r\n      </fields>\r\n    </add>\r\n  </entities>\r\n</cfg>"
+                  }
+               },
+               "CommonPart": {}
+            },
+            {
+               "ContentItemId": "[js: uuid()]",
+               "ContentType": "TransformalizeTask",
+               "DisplayText": "Batch Fail",
+               "Latest": true,
+               "Published": true,
+               "PublishedUtc": "[js: new Date().toISOString()]",
+               "Owner": "[js: parameters('AdminUserId')]",
+               "Author": "[js: parameters('AdminUsername')]",
+               "TitlePart": {
+                  "Title": "Batch Fail"
+               },
+               "AliasPart": {
+                  "Alias": "batch-fail"
+               },
+               "TransformalizeTaskPart": {
+                  "Arrangement": {
+                     "Text": "<cfg name=\"Batch Fail\">\r\n  <parameters>\r\n    <add name=\"BatchId\" type=\"int\" value=\"0\" />\r\n    <add name=\"RecordsAffected\" type=\"int\" value=\"0\" />\r\n    <add name=\"Message\" value=\"\" />\r\n  </parameters>\r\n  <connections>\r\n    <add name=\"db\" />\r\n  </connections>\r\n  <actions>\r\n    <add name=\"Create\" type=\"run\" connection=\"db\" command=\"UPDATE [Batch] SET [BatchStatusId] = 4, [Message] = 'Failed' WHERE Id = @BatchId\" />\r\n  </actions>\r\n</cfg>"
+                  }
+               },
+               "CommonPart": {}
+            },
+            {
+               "ContentItemId": "[js: uuid()]",
+               "ContentType": "TransformalizeTask",
+               "DisplayText": "Batch Success",
+               "Latest": true,
+               "Published": true,
+               "PublishedUtc": "[js: new Date().toISOString()]",
+               "Owner": "[js: parameters('AdminUserId')]",
+               "Author": "[js: parameters('AdminUsername')]",
+               "TitlePart": {
+                  "Title": "Batch Success"
+               },
+               "AliasPart": {
+                  "Alias": "batch-success"
+               },
+               "TransformalizeTaskPart": {
+                  "Arrangement": {
+                     "Text": "<cfg name=\"Batch Success\">\r\n  <parameters>\r\n    <add name=\"BatchId\" type=\"int64\" value=\"0\" />\r\n    <add name=\"RecordsAffected\" type=\"int\" value=\"0\" />\r\n  </parameters>\r\n  <connections>\r\n      <add name=\"db\" />\r\n  </connections>\r\n  <actions>\r\n    <add name=\"Create\" type=\"run\" connection=\"db\" command=\"UPDATE [Batch] SET [BatchStatusId] = 3, [Message] = 'Success' WHERE [Id] = @BatchId\" />\r\n  </actions>\r\n</cfg>"
+                  }
+               },
+               "CommonPart": {}
+            },
+            {
+               "ContentItemId": "[js: uuid()]",
+               "ContentType": "TransformalizeTask",
+               "DisplayText": "Batch Summary",
+               "Latest": true,
+               "Published": true,
+               "PublishedUtc": "[js: new Date().toISOString()]",
+               "Owner": "[js: parameters('AdminUserId')]",
+               "Author": "[js: parameters('AdminUsername')]",
+               "TitlePart": {
+                  "Title": "Batch Summary"
+               },
+               "AliasPart": {
+                  "Alias": "batch-summary"
+               },
+               "TransformalizeTaskPart": {
+                  "Arrangement": {
+                     "Text": "<cfg name=\"Batch Summary\" read-only=\"true\">\r\n\r\n  <parameters>\r\n    <add name=\"BatchId\" type=\"int64\" value=\"0\" prompt=\"true\" v=\"required()\" />\r\n  </parameters>\r\n  <connections>\r\n    <add name=\"db\" />\r\n  </connections>\r\n  <maps>\r\n    <!-- Bootstrap 4 Contextual Classes are primary, secondary, success, danger, warning, info, light, and dark -->\r\n    <add name=\"ContextualClasses\">\r\n      <items>\r\n        <add from=\"Review\" to=\"secondary\"/>\r\n        <add from=\"Completed\" to=\"success\"/>\r\n        <add from=\"Failed\" to=\"danger\"/>\r\n        <add from=\"Running\" to=\"warning\"/>\r\n      </items>\r\n    </add>\r\n  </maps>\r\n\r\n  <entities>\r\n    <add name=\"Script\" \r\n         input=\"db\" \r\n         query=\"\r\nSELECT\r\n    b.Description,\r\n    b.Id AS BatchId,\r\n    Created,\r\n    b.ReportTitle,\r\n    b.ReportContentItemId,\r\n    b.TaskContentItemId,\r\n    bs.Status, \r\n    Message,\r\n    COALESCE(br.Records, 0) AS Records\r\nFROM Batch b\r\nINNER JOIN BatchStatus bs ON (b.BatchStatusId = bs.Id)\r\nLEFT OUTER JOIN (\r\n    SELECT COUNT(*) AS Records\r\n    FROM BatchRecord br\r\n    WHERE BatchId = @BatchId\r\n) br ON (1=1)\r\nWHERE b.Id = @BatchId        \">\r\n      <fields>\r\n        <add name=\"Description\" label=\"Bulk Action\" t='format(<strong>{Description}</strong>)' raw=\"true\" />\r\n        <add name=\"BatchId\" type=\"int64\" primary-key=\"true\" />\r\n        <add name=\"Created\" type=\"datetime\" t=\"convert().toLocalTime()\" />\r\n        <add name=\"ReportTitle\" label=\"Report\" />\r\n        <add name=\"ReportContentItemId\" label=\"Report Id\" />\r\n        <add name=\"TaskContentItemId\" label=\"Task Id\" />\r\n        <add name=\"Status\" output=\"false\" />\r\n        <add input=\"false\" name=\"ContextualClass\" t=\"copy(Status).map(ContextualClasses)\" output=\"false\" />\r\n        <add input=\"false\" name=\"Badge\" label=\"Status\" raw=\"true\" t='format(<span class=\"badge bg-{ContextualClass}\">{Status}</span>)' />\r\n        <add name=\"Message\" />\r\n        <add name=\"Records\" type=\"int\" />\r\n      </fields>\r\n    </add>\r\n  </entities>\r\n</cfg>"
+                  }
+               },
+               "CommonPart": {}
+            },
+            {
+               "ContentItemId": "[js: uuid()]",
+               "ContentType": "TransformalizeTask",
+               "DisplayText": "Batch Write",
+               "Latest": true,
+               "Published": true,
+               "PublishedUtc": "[js: new Date().toISOString()]",
+               "Owner": "[js: parameters('AdminUserId')]",
+               "Author": "[js: parameters('AdminUsername')]",
+               "TitlePart": {
+                  "Title": "Batch Write"
+               },
+               "AliasPart": {
+                  "Alias": "batch-write"
+               },
+               "TransformalizeTaskPart": {
+                  "Arrangement": {
+                     "Text": "<cfg name=\"Batch Write\" mode=\"@[Mode]\" output=\"db\">\r\n  <maps>\r\n     <add name=\"Modes\">\r\n       <items>\r\n         <add from=\"Initialize\" to=\"init\" />\r\n         <add from=\"Default\" to=\"default\" />\r\n       </items>\r\n    </add>\r\n  </maps>\r\n  <parameters>\r\n    <add name=\"BatchId\" type=\"int64\" value=\"0\" />\r\n    <add name=\"Mode\" value=\"default\" prompt=\"true\" map=\"Modes\" />\r\n  </parameters>\r\n  <connections>\r\n    <!-- the bulk action controller in this module provides the input -->\r\n    <add name=\"input\" provider=\"internal\" />\r\n    <add name=\"db\" />\r\n  </connections>\r\n  <entities>\r\n    <add name=\"Record\" update=\"false\">\r\n      <rows>\r\n        <!-- orchard inserts rows -->\r\n      </rows>\r\n      <fields>\r\n        <add name=\"BatchId\" type=\"int64\" input=\"false\" default=\"@[BatchId]\" primary-key=\"true\" />\r\n        <add name=\"BatchValue\" length=\"255\" primary-key=\"true\" />\r\n      </fields>\r\n    </add>\r\n  </entities>\r\n</cfg>"
+                  }
+               },
+               "CommonPart": {}
+            }
+         ]
+      }
+   ]
+}

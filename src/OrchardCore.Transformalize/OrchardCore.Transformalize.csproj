@@ -3,9 +3,10 @@
       <TargetFramework>net8.0</TargetFramework>
       <AddRazorSupportForMvc>true</AddRazorSupportForMvc>
       <RootNamespace>TransformalizeModule</RootNamespace>
-      <Version>0.11.4</Version>
-      <FileVersion>0.11.4</FileVersion>
-      <AssemblyVersion>0.11.4</AssemblyVersion>
+      <Version>0.11.5</Version>
+      <FileVersion>0.11.5</FileVersion>
+      <AssemblyVersion>0.11.5</AssemblyVersion>
+      <ReleaseVersion>0.11.5</ReleaseVersion>
       <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
       <Authors>Dale Newman</Authors>
       <Copyright>Copyright © 2013-2023</Copyright>
@@ -17,8 +18,8 @@
       <PackageTags>etl,data,forms,reports,transformalize</PackageTags>
       <NeutralLanguage>en-US</NeutralLanguage>
       <PackageReleaseNotes>update for orchard core 1.6</PackageReleaseNotes>
-	   <Nullable>enable</Nullable>
-	   <ImplicitUsings>enable</ImplicitUsings>
+	  <Nullable>enable</Nullable>
+	  <ImplicitUsings>enable</ImplicitUsings>
    </PropertyGroup>
    <ItemGroup>
       <EmbeddedResource Remove="bundleconfig.json" />
