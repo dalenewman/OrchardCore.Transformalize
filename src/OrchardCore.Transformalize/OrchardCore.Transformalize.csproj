@@ -3,7 +3,7 @@
       <TargetFramework>net8.0</TargetFramework>
       <AddRazorSupportForMvc>true</AddRazorSupportForMvc>
       <RootNamespace>TransformalizeModule</RootNamespace>
-      <Version>0.11.5</Version>
+      <Version>0.11.5-beta</Version>
       <FileVersion>0.11.5</FileVersion>
       <AssemblyVersion>0.11.5</AssemblyVersion>
       <ReleaseVersion>0.11.5</ReleaseVersion>
