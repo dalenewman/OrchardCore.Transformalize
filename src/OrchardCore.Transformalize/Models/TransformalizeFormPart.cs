@@ -35,7 +35,7 @@ namespace TransformalizeModule.Models {
     <!-- hint: define a connection here or use one from common settings (e.g. Transformalize > Settings) -->
     <!-- hint: if the table does not already exist, you'll have to create it yourself -->
     <!-- caution: currently the built-in orchard connection doesn't work with forms --> 
-    <add name=""connection-name"" table=""table-name"" />
+    <add name=""connection-name"" table=""table-name"" provider=""sqlserver"" />
   </connections>
 
 </cfg>" };

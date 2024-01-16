@@ -11,9 +11,9 @@ namespace TransformalizeModule.ViewModels {
       public BooleanField LocationEnableHighAccuracy { get; set; }
       public NumericField LocationMaximumAge { get; set; }
       public NumericField LocationTimeout { get; set; }
-      public string CreateCommand { get; set; }
-      public string InsertCommand { get; set; }
-      public string UpdateCommand { get; set; }
-      public string SelectCommand { get; set; }
+      public string CreateCommand { get; set; } = string.Empty;
+      public string InsertCommand { get; set; } = string.Empty;
+      public string UpdateCommand { get; set; } = string.Empty;
+      public string SelectCommand { get; set; } = string.Empty;
    }
 }
