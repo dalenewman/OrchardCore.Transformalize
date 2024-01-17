@@ -3,13 +3,12 @@
       <TargetFramework>net8.0</TargetFramework>
       <AddRazorSupportForMvc>true</AddRazorSupportForMvc>
       <RootNamespace>TransformalizeModule</RootNamespace>
-      <Version>0.11.5-beta</Version>
-      <FileVersion>0.11.5</FileVersion>
-      <AssemblyVersion>0.11.5</AssemblyVersion>
-      <ReleaseVersion>0.11.5</ReleaseVersion>
+      <Version>0.12.0-beta</Version>
+      <FileVersion>0.12.0</FileVersion>
+      <AssemblyVersion>0.12.0</AssemblyVersion>
       <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
       <Authors>Dale Newman</Authors>
-      <Copyright>Copyright © 2013-2023</Copyright>
+      <Copyright>Copyright © 2013-2024</Copyright>
       <Description />
       <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
       <PackageProjectUrl>https://github.com/dalenewman/OrchardCore.Transformalize</PackageProjectUrl>
@@ -17,7 +16,7 @@
       <RepositoryType>git</RepositoryType>
       <PackageTags>etl,data,forms,reports,transformalize</PackageTags>
       <NeutralLanguage>en-US</NeutralLanguage>
-      <PackageReleaseNotes>update for orchard core 1.6</PackageReleaseNotes>
+      <PackageReleaseNotes>update for orchard core 1.8.1</PackageReleaseNotes>
 	  <Nullable>enable</Nullable>
 	  <ImplicitUsings>enable</ImplicitUsings>
    </PropertyGroup>
@@ -31,24 +30,24 @@
       <None Include="bundleconfig.json" />
    </ItemGroup>
    <ItemGroup>
-      <PackageReference Include="Etch.OrchardCore.ContentPermissions" Version="1.5.0" />
+      <PackageReference Include="Etch.OrchardCore.ContentPermissions" Version="1.6.0" />
       <PackageReference Include="Flurl" Version="3.0.7" />
       <PackageReference Include="Nito.AsyncEx" Version="5.1.2" />
       <PackageReference Include="NodaTime" Version="3.1.9" />
-      <PackageReference Include="OrchardCore.Alias" Version="1.6.0" />
-      <PackageReference Include="OrchardCore.ContentFields" Version="1.6.0" />
-      <PackageReference Include="OrchardCore.ContentManagement" Version="1.6.0" />
-      <PackageReference Include="OrchardCore.Contents" Version="1.6.0" />
-      <PackageReference Include="OrchardCore.ContentTypes.Abstractions" Version="1.6.0" />
-      <PackageReference Include="OrchardCore.DisplayManagement" Version="1.6.0" />
-      <PackageReference Include="OrchardCore.Features" Version="1.6.0" />
-      <PackageReference Include="OrchardCore.FileStorage.FileSystem" Version="1.6.0" />
-      <PackageReference Include="OrchardCore.MiniProfiler" Version="1.6.0" />
-      <PackageReference Include="OrchardCore.Module.Targets" Version="1.6.0" />
-      <PackageReference Include="OrchardCore.Navigation" Version="1.6.0" />
-      <PackageReference Include="OrchardCore.Title" Version="1.6.0" />
-      <PackageReference Include="OrchardCore.Users" Version="1.6.0" />
-      <PackageReference Include="OrchardCore.Workflows" Version="1.6.0" />
+      <PackageReference Include="OrchardCore.Alias" Version="1.8.1" />
+      <PackageReference Include="OrchardCore.ContentFields" Version="1.8.1" />
+      <PackageReference Include="OrchardCore.ContentManagement" Version="1.8.1" />
+      <PackageReference Include="OrchardCore.Contents" Version="1.8.1" />
+      <PackageReference Include="OrchardCore.ContentTypes.Abstractions" Version="1.8.1" />
+      <PackageReference Include="OrchardCore.DisplayManagement" Version="1.8.1" />
+      <PackageReference Include="OrchardCore.Features" Version="1.8.1" />
+      <PackageReference Include="OrchardCore.FileStorage.FileSystem" Version="1.8.1" />
+      <PackageReference Include="OrchardCore.MiniProfiler" Version="1.8.1" />
+      <PackageReference Include="OrchardCore.Module.Targets" Version="1.8.1" />
+      <PackageReference Include="OrchardCore.Navigation" Version="1.8.1" />
+      <PackageReference Include="OrchardCore.Title" Version="1.8.1" />
+      <PackageReference Include="OrchardCore.Users" Version="1.8.1" />
+      <PackageReference Include="OrchardCore.Workflows" Version="1.8.1" />
       <PackageReference Include="System.Text.Encoding.CodePages" Version="7.0.0" />
       <PackageReference Include="Transformalize.Container.Autofac" Version="0.10.12-beta" />
       <PackageReference Include="Transformalize.Provider.Ado.Autofac" Version="0.10.2-beta" />

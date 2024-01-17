@@ -7,9 +7,9 @@
       <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
       <DockerfileContext>..\..</DockerfileContext>
       <DockerfileTag>transformalize.orchard</DockerfileTag>
-      <Version>0.11.5-beta</Version>
-      <FileVersion>0.11.5</FileVersion>
-      <AssemblyVersion>0.11.5</AssemblyVersion>
+      <Version>0.12.0-beta</Version>
+      <FileVersion>0.12.0</FileVersion>
+      <AssemblyVersion>0.12.0</AssemblyVersion>
       <ReleaseVersion>0.11.5</ReleaseVersion>      
       <RazorRuntimeCompilation>true</RazorRuntimeCompilation>
       <CopyRefAssembliesToPublishDirectory>true</CopyRefAssembliesToPublishDirectory>
@@ -23,10 +23,26 @@
    </ItemGroup>
 
    <ItemGroup>
-      <PackageReference Include="Etch.OrchardCore.ContentPermissions" Version="1.5.0" />
+      <Content Include="App_Data\samples**">
+         <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </Content>
+      <Content Include="App_Data\northwind.db">
+         <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </Content>
+      <Content Include="App_Data\starbucks.db">
+         <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </Content>
+      <Content Include="App_Data\file-1.txt">
+         <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </Content>
+   </ItemGroup>
+
+   <ItemGroup>
+      <PackageReference Include="Etch.OrchardCore.ContentPermissions" Version="1.6.0" />
       <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.18.1" />
-      <PackageReference Include="OrchardCore.Logging.NLog" Version="1.6.0" />
-      <PackageReference Include="OrchardCore.Application.Cms.Targets" Version="1.6.0" />
+      <PackageReference Include="OrchardCore.Application.Cms.Targets" Version="1.8.1" />
+      <PackageReference Include="Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation" Version="8.0.1" Condition="'$(RazorRuntimeCompilation)' == 'true'" />
+      <PackageReference Include="OrchardCore.Logging.Serilog" Version="1.8.1" />
    </ItemGroup>
 
    <ItemGroup>
@@ -34,13 +50,11 @@
       <ProjectReference Include="..\OrchardCore.Transformalize\OrchardCore.Transformalize.csproj" />
    </ItemGroup>
 
+
+
    <!-- Watcher include and excludes -->
    <ItemGroup>
       <Watch Include="**\*.cs" Exclude="Recipes\**;Assets\**;node_modules\**\*;**\*.js.map;obj\**\*;bin\**\*" />
-   </ItemGroup>
-
-   <ItemGroup>
-      <PackageReference Include="Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation" Version="7.0.9" Condition="'$(RazorRuntimeCompilation)' == 'true'" />
    </ItemGroup>
 
 </Project>

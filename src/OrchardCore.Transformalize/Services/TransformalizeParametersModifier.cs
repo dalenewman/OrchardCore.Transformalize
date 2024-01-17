@@ -67,17 +67,17 @@ namespace TransformalizeModule.Services {
          H = htmlLocalizer;
       }
 
-      public string Modify(string cfg, int id, IDictionary<string, string> parameters) {
+      public string Modify(string cfg, long id, IDictionary<string, string> parameters) {
          return AsyncContext.Run(() => ModifyAsync(cfg, id, parameters));
       }
 
-      public async Task<string> ModifyAsync(string cfg, int id, IDictionary<string, string> parameters) {
+      public async Task<string> ModifyAsync(string cfg, long id, IDictionary<string, string> parameters) {
          using (MiniProfiler.Current.Step("Transformalize Parameters")) {
             return await ModifyInternalAsync(cfg, id, parameters);
          }
       }
 
-      private async Task<string> ModifyInternalAsync(string cfg, int id, IDictionary<string, string> parameters) {
+      private async Task<string> ModifyInternalAsync(string cfg, long id, IDictionary<string, string> parameters) {
 
          // using facade (which is all string properties) so things can be 
          // transformed before types are checked or place-holders are replaced
@@ -187,7 +187,7 @@ namespace TransformalizeModule.Services {
 
          // create process to transform and validate the parameter values
          var process = new Process {
-            Id = id,
+            Id = (int)id,   // TODO: Update it to a long in Transformalize
             Name = "Transformalize Parameters",
             ReadOnly = true,
             Mode = "form",  // causes auto post-back's to resolve to either true or false

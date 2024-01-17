@@ -104,7 +104,7 @@ namespace TransformalizeModule.Services {
                }
             }
 
-            process.Id = item.Id;
+            process.Id = (int)item.Id;  // TODO: Update Id to long in Transformalize
 
             return process;
          }).As<Process>().InstancePerDependency();

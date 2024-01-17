@@ -4,12 +4,12 @@
       <TargetFramework>net8.0</TargetFramework>
       <AddRazorSupportForMvc>true</AddRazorSupportForMvc>
       <RootNamespace>ProxyModule</RootNamespace>
-      <Version>0.11.5-beta</Version>
-      <FileVersion>0.11.5</FileVersion>
-      <AssemblyVersion>0.11.5</AssemblyVersion>
+      <Version>0.12.0-beta</Version>
+      <FileVersion>0.12.0</FileVersion>
+      <AssemblyVersion>0.12.0</AssemblyVersion>
       <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
       <Authors>Dale Newman</Authors>
-      <Copyright>Copyright © 2023</Copyright>
+      <Copyright>Copyright © 2023-2024</Copyright>
       <Description>for secured access to internal resources</Description>
       <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
       <PackageProjectUrl>https://github.com/dalenewman/OrchardCore.Proxy</PackageProjectUrl>
@@ -27,14 +27,14 @@
    </ItemGroup>
 
    <ItemGroup>
-      <PackageReference Include="Etch.OrchardCore.ContentPermissions" Version="1.5.0" />
-      <PackageReference Include="OrchardCore.Alias" Version="1.6.0" />
-      <PackageReference Include="OrchardCore.ContentFields" Version="1.6.0" />
-      <PackageReference Include="OrchardCore.Features" Version="1.6.0" />
-      <PackageReference Include="OrchardCore.Module.Targets" Version="1.6.0" />
-      <PackageReference Include="OrchardCore.ContentManagement" Version="1.6.0" />
-      <PackageReference Include="OrchardCore.ContentTypes.Abstractions" Version="1.6.0" />
-      <PackageReference Include="OrchardCore.DisplayManagement" Version="1.6.0" />
+      <PackageReference Include="Etch.OrchardCore.ContentPermissions" Version="1.6.0" />
+      <PackageReference Include="OrchardCore.Alias" Version="1.8.1" />
+      <PackageReference Include="OrchardCore.ContentFields" Version="1.8.1" />
+      <PackageReference Include="OrchardCore.Features" Version="1.8.1" />
+      <PackageReference Include="OrchardCore.Module.Targets" Version="1.8.1" />
+      <PackageReference Include="OrchardCore.ContentManagement" Version="1.8.1" />
+      <PackageReference Include="OrchardCore.ContentTypes.Abstractions" Version="1.8.1" />
+      <PackageReference Include="OrchardCore.DisplayManagement" Version="1.8.1" />
    </ItemGroup>
 
 </Project>

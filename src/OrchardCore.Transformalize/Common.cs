@@ -25,7 +25,7 @@ namespace TransformalizeModule {
       public const string BulkActionSuccessTaskHint = "Default task to indicate the task succeeded.";
       public const string BulkActionFailTaskHint = "Default task to indicate the task failed.";
 
-      public static string GetCacheKey(int contentItemId) {
+      public static string GetCacheKey(long contentItemId) {
          return contentItemId + KeySuffix;
       }
 

@@ -19,8 +19,6 @@
 using Autofac;
 using Cfg.Net.Contracts;
 using TransformalizeModule.Services.Contracts;
-using System.Collections.Generic;
-using System.Linq;
 using Transformalize.Configuration;
 using Transformalize.Contracts;
 using Transformalize.Impl;
@@ -51,15 +49,15 @@ namespace TransformalizeModule.Services {
          _container = container;
       }
 
-      public string Modify(string cfg, int id, IDictionary<string, string> parameters) {
+      public string Modify(string cfg, long id, IDictionary<string, string> parameters) {
          using (MiniProfiler.Current.Step("Load Form")) {
             return ModifyInternal(cfg, id, parameters);
          }
       }
 
-      private string ModifyInternal(string cfg, int id, IDictionary<string,string> parameters) {
+      private string ModifyInternal(string cfg, long id, IDictionary<string,string> parameters) {
 
-         var process = new Process(cfg) { Id = id };
+         var process = new Process(cfg) { Id = (int)id };  // TODO: Update Id to long in Transformalize
 
          // if there aren't any parameters, just leave
          if (!process.Parameters.Any()) {
@@ -113,7 +111,7 @@ namespace TransformalizeModule.Services {
 
          // create process to load the form submission
          var modified = new Process {
-            Id = id,
+            Id = (int)id, // TODO: Update Id to long in Transformalize
             Name = "Load Form",
             ReadOnly = true,
             Entities = new List<Entity> { entity },
