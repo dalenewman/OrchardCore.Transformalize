@@ -28,13 +28,13 @@
 
    <ItemGroup>
       <PackageReference Include="Etch.OrchardCore.ContentPermissions" Version="1.6.0" />
-      <PackageReference Include="OrchardCore.Alias" Version="1.8.1" />
-      <PackageReference Include="OrchardCore.ContentFields" Version="1.8.1" />
-      <PackageReference Include="OrchardCore.Features" Version="1.8.1" />
-      <PackageReference Include="OrchardCore.Module.Targets" Version="1.8.1" />
-      <PackageReference Include="OrchardCore.ContentManagement" Version="1.8.1" />
-      <PackageReference Include="OrchardCore.ContentTypes.Abstractions" Version="1.8.1" />
-      <PackageReference Include="OrchardCore.DisplayManagement" Version="1.8.1" />
+      <PackageReference Include="OrchardCore.Alias" Version="1.8.2" />
+      <PackageReference Include="OrchardCore.ContentFields" Version="1.8.2" />
+      <PackageReference Include="OrchardCore.Features" Version="1.8.2" />
+      <PackageReference Include="OrchardCore.Module.Targets" Version="1.8.2" />
+      <PackageReference Include="OrchardCore.ContentManagement" Version="1.8.2" />
+      <PackageReference Include="OrchardCore.ContentTypes.Abstractions" Version="1.8.2" />
+      <PackageReference Include="OrchardCore.DisplayManagement" Version="1.8.2" />
    </ItemGroup>
 
 </Project>
