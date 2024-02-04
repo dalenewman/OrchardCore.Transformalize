@@ -33,7 +33,7 @@ namespace TransformalizeModule.Services.Transforms {
             var username = httpContext.HttpContext.User?.Identity?.Name ?? "Anonymous";
             if(username != "Anonymous") {
                if (userService.GetUserAsync(username).Result is User user) {
-                  _userId = user.Id;
+                  _userId = (int)user.Id; // TODO: Update Id to long in Transformalize
                }
             }
          }

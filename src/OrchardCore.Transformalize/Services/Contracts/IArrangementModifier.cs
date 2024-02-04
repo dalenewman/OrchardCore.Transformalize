@@ -1,7 +1,7 @@
 ﻿#region license
 // Transformalize
 // Configurable Extract, Transform, and Load
-// Copyright 2013-2017 Dale Newman
+// Copyright 2013-2024 Dale Newman
 //  
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -17,13 +17,12 @@
 #endregion
 
 using Cfg.Net.Contracts;
-using System.Collections.Generic;
 
 namespace TransformalizeModule.Services.Contracts {
 
    public interface IArrangementModifier {
       ISerializer Serializer { get; set; }
-      string Modify(string cfg, int id, IDictionary<string, string> parameters);
+      string Modify(string cfg, long id, IDictionary<string, string> parameters);
    }
 
    // for dependency injection
