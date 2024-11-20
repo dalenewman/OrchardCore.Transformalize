@@ -1,0 +1,36 @@
+<cfg name="Batch Write" mode="@[Mode]" output="db">
+  
+  <maps>
+     <add name="Modes">
+       <items>
+         <add from="Initialize" to="init" />
+         <add from="Default" to="default" />
+       </items>
+    </add>
+  </maps>
+
+  <parameters>
+    <add name="BatchId" type="int64" value="0" />
+    <add name="Mode" value="default" prompt="true" map="Modes" />
+  </parameters>
+
+  <connections>
+    <!-- the bulk action controller in this module provides the input -->
+    <add name="input" provider="internal" />
+    <!-- setup db connection in transformalize common arrangement -->
+    <add name="db" />
+  </connections>
+
+  <entities>
+    <add name="Record" update="false">
+      <rows>
+        <!-- orchard inserts rows -->
+      </rows>
+      <fields>
+        <add name="BatchId" type="int64" input="false" default="@[BatchId]" primary-key="true" />
+        <add name="BatchValue" length="255" primary-key="true" />
+      </fields>
+    </add>
+  </entities>
+
+</cfg>

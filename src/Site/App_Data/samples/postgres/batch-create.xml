@@ -1,0 +1,86 @@
+<cfg name="Batch Create Postgres" read-only="true" mode="@[Mode]">
+ 
+  <maps>
+     <add name="Modes">
+       <items>
+         <add from="Initialize" to="init" />
+         <add from="Default" to="default" />
+       </items>
+    </add>
+  </maps>
+  
+  <!-- this task creates and returns a batch id for logged in user -->
+  
+  <parameters>
+    <add name="Mode" value="default" prompt="true" map="Modes" />
+    <add name="Created" type="datetime" t="now()" />
+    <add name="UserId" type="int" />
+    <add name="UserName" />
+    <add name="ReportContentItemId" />
+    <add name="ReportTitle" />
+    <add name="TaskContentItemId" />
+    <add name="TaskTitle" />
+    <add name="Description" />
+  </parameters>
+  
+  <connections>
+    <!-- setup db connection in transformalize common arrangement -->
+    <add name="db" />
+  </connections>
+  
+  <actions>
+    <add name="Create" 
+         type="run" 
+         description="Create the batch tables during in init mode."
+         connection="db" 
+         mode="init"
+         command="
+CREATE TABLE IF NOT EXISTS BatchStatus (
+    Id INT NOT NULL PRIMARY KEY,
+    Status VARCHAR(128) NOT NULL
+);
+
+INSERT INTO BatchStatus(Id,Status) SELECT 1, 'Review' WHERE NOT EXISTS(SELECT * FROM BatchStatus WHERE Id = 1);
+INSERT INTO BatchStatus(Id,Status) SELECT 2, 'Running' WHERE NOT EXISTS(SELECT * FROM BatchStatus WHERE Id = 2);
+INSERT INTO BatchStatus(Id,Status) SELECT 3, 'Completed' WHERE NOT EXISTS(SELECT * FROM BatchStatus WHERE Id = 3);
+INSERT INTO BatchStatus(Id,Status) SELECT 4, 'Failed' WHERE NOT EXISTS(SELECT * FROM BatchStatus WHERE Id = 4);
+
+/* GENERATED ALWAYS AS IDENTITY */
+CREATE TABLE IF NOT EXISTS Batch (
+    Id INT NOT NULL PRIMARY KEY,
+    Created TIMESTAMP NOT NULL,
+    UserId INT NOT NULL,
+    Username VARCHAR(128) NOT NULL,
+    ReportContentItemId VARCHAR(128) NOT NULL,
+    ReportTitle VARCHAR(128) NOT NULL,
+    TaskContentItemId VARCHAR(128) NOT NULL,
+    TaskTitle VARCHAR(128) NOT NULL,
+    Description VARCHAR(255) NOT NULL,
+    BatchStatusId INT,
+    Message VARCHAR(1024) NOT NULL,
+    FOREIGN KEY (BatchStatusId) REFERENCES BatchStatus(Id)
+);
+
+CREATE INDEX IF NOT EXISTS IX_Batch_BatchStatusId ON Batch(BatchStatusId);" />
+  </actions>
+  
+  <entities>
+    <add name="Script" 
+         input="db" 
+         query="
+                  INSERT INTO Batch(Id,Created,UserId,UserName,ReportContentItemId,ReportTitle,TaskContentItemId,TaskTitle,Description,BatchStatusId,Message)
+                  SELECT COALESCE(MAX(Id),0)+1,@Created,@UserId,@UserName,@ReportContentItemId,@ReportTitle,@TaskContentItemId,@TaskTitle,@Description,1,'' 
+                  FROM Batch;
+                
+                  SELECT b.Id AS BatchId
+                  FROM Batch b
+                  WHERE UserId = @UserId
+                  ORDER BY b.Id DESC
+                  LIMIT 1
+                  ">
+      <fields>
+          <add name="BatchId" type="int" primary-key="true" />
+      </fields>
+    </add>
+  </entities>
+</cfg>

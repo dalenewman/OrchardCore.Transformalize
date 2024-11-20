@@ -1,0 +1,12 @@
+<cfg name="Batch Success">
+  <parameters>
+    <add name="BatchId" type="int64" value="0" />
+    <add name="RecordsAffected" type="int" value="0" />
+  </parameters>
+  <connections>
+      <add name="db" />
+  </connections>
+  <actions>
+    <add name="Create" type="run" connection="db" command="UPDATE [Batch] SET [BatchStatusId] = 3, [Message] = 'Success' WHERE [Id] = @BatchId" />
+  </actions>
+</cfg>

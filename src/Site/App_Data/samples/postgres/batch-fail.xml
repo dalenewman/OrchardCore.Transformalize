@@ -1,0 +1,22 @@
+<cfg name="Batch Fail Postgres">
+ 
+  <parameters>
+    <add name="BatchId" type="int" value="0" />
+    <add name="RecordsAffected" type="int" value="0" />
+    <add name="Message" value="" />
+  </parameters>
+  
+  <connections>
+    <!-- setup db connection in transformalize common arrangement -->
+    <add name="db" />
+  </connections>
+  
+  <actions>
+    <add name="Create" type="run" connection="db" 
+         command="UPDATE Batch 
+                  SET BatchStatusId = 4,
+                      Message = @RecordsAffected || ' Records Affected. ' || @Message
+                  WHERE Id = @BatchId;" />
+  </actions>
+
+</cfg>

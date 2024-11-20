@@ -1,0 +1,102 @@
+<cfg name="Batch Create" mode="@[Mode]">
+ 
+  <maps>
+     <add name="Modes">
+       <items>
+         <add from="Initialize" to="init" />
+         <add from="Default" to="default" />
+       </items>
+    </add>
+  </maps>
+  
+  <!-- this task creates and returns a batch id for logged in user -->
+  
+  <parameters>
+    <add name="Mode" value="default" prompt="true" map="Modes" />
+    <add name="Created" type="datetime" t="now()" />
+    <add name="UserId" type="int" />
+    <add name="UserName" />
+    <add name="ReportContentItemId" />
+    <add name="ReportTitle" />
+    <add name="TaskContentItemId" />
+    <add name="TaskTitle" />
+    <add name="Description" />
+  </parameters>
+  
+  <connections>
+    <add name="db" />
+  </connections>
+  
+  <actions>
+    <add name="Create" 
+         type="run" 
+         description="Create the batch tables during in init mode."
+         connection="db" 
+         mode="init"
+         command="
+IF (NOT EXISTS (SELECT * 
+                 FROM INFORMATION_SCHEMA.TABLES 
+                 WHERE TABLE_SCHEMA = 'dbo' 
+                 AND  TABLE_NAME = 'BatchStatus'))
+BEGIN
+CREATE TABLE [dbo].[BatchStatus](
+	[Id] [int] NOT NULL,
+	[Status] [varchar](128) NOT NULL,
+PRIMARY KEY CLUSTERED 
+(
+	[Id] ASC
+)WITH (STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+END
+                  
+INSERT INTO BatchStatus(Id,Status) SELECT 1, 'Review' WHERE NOT EXISTS(SELECT * FROM BatchStatus WHERE Id = 1);
+INSERT INTO BatchStatus(Id,Status) SELECT 2, 'Running' WHERE NOT EXISTS(SELECT * FROM BatchStatus WHERE Id = 2);
+INSERT INTO BatchStatus(Id,Status) SELECT 3, 'Completed' WHERE NOT EXISTS(SELECT * FROM BatchStatus WHERE Id = 3);
+INSERT INTO BatchStatus(Id,Status) SELECT 4, 'Failed' WHERE NOT EXISTS(SELECT * FROM BatchStatus WHERE Id = 4);
+
+IF (NOT EXISTS (SELECT * 
+                 FROM INFORMATION_SCHEMA.TABLES 
+                 WHERE TABLE_SCHEMA = 'dbo' 
+                 AND  TABLE_NAME = 'Batch'))
+BEGIN
+CREATE TABLE [dbo].[Batch](
+	[Id] [bigint] IDENTITY(1,1) NOT NULL,
+	[Created] [datetime] NOT NULL,
+	[UserId] [int] NOT NULL,
+	[Username] [varchar](128) NOT NULL,
+	[ReportContentItemId] [varchar](128) NOT NULL,
+	[ReportTitle] [varchar](128) NOT NULL,
+	[TaskContentItemId] [varchar](128) NOT NULL,
+	[TaskTitle] [varchar](128) NOT NULL,
+	[Description] [varchar](255) NOT NULL,
+	[BatchStatusId] [int] NULL,
+	[Message] [varchar](1024) NOT NULL,
+PRIMARY KEY CLUSTERED 
+(
+	[Id] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
+                  
+ALTER TABLE [dbo].[Batch]  WITH CHECK ADD FOREIGN KEY([BatchStatusId])
+REFERENCES [dbo].[BatchStatus] ([Id])
+END                  
+" />
+  </actions>
+  
+  <entities>
+    <add name="Script" 
+         input="db" 
+         query="
+INSERT INTO Batch(Created,UserId,UserName,ReportContentItemId,ReportTitle,TaskContentItemId,TaskTitle,Description,BatchStatusId,Message)
+SELECT @Created,@UserId,@UserName,@ReportContentItemId,@ReportTitle,@TaskContentItemId,@TaskTitle,@Description,1,'' 
+SELECT TOP 1 b.Id AS BatchId
+FROM Batch b
+WHERE UserId = @UserId
+ORDER BY b.Id DESC
+            ">
+      <fields>
+          <add name="BatchId" type="int64" primary-key="true" />
+      </fields>
+    </add>
+  </entities>
+</cfg>
