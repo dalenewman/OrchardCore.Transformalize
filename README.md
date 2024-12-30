@@ -49,17 +49,16 @@ task for processing.
 ```
 -->
 
-Five configurable tasks must be defined in order to run bulk actions:
+Configurable tasks must be defined to run bulk actions:
 
 1. `batch-create`: create and return a batch identifier
-1. `batch-write`: write batch values.
-1. `batch-summary`: gather review and result summary for a batch.
+1. `batch-write`: write batch values
+1. `batch-summary`: query batch summary
 1. `batch-run`: indicate the task is running (not yet implemented)
 1. `batch-success`: indicate the task succeeded
 1. `batch-fail`: indicate the task failed
 
-A recipe named "Transformalize Batches SQLite" provides an 
-example set of the above tasks.
+There are recipes for MSSQL, PostgreSql, and SQLite for the above tasks. Initially, The "batch write" task must be run once in _init_ mode to setup the necessary tables/views.
 
 ---
 
@@ -73,7 +72,7 @@ action to change color associated with the record.
 ---
 
 ### Development
-- Visual Studio 2019 with ASP.NET Core related workloads:
+- Visual Studio 2022 with ASP.NET Core related workloads:
   - ASP.NET and Web Development
   - .NET Core Cross-Platform Development
 - Relies on nuget source https://www.myget.org/F/transformalize/api/v3/index.json

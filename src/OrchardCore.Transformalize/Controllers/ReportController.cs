@@ -94,7 +94,7 @@ namespace TransformalizeModule.Controllers {
          }
 
          Response.ContentType = "application/json";
-         Response.Headers.Add("content-disposition", "attachment; filename=" + o.File);
+         Response.Headers["content-disposition"] = "attachment; filename=" + o.File;
 
          StreamWriter sw;
 
@@ -150,7 +150,7 @@ namespace TransformalizeModule.Controllers {
          }
 
          Response.ContentType = "application/vnd.geo+json";
-         Response.Headers.Add("content-disposition", "attachment; filename=" + o.File);
+         Response.Headers["content-disposition"] = "attachment; filename=" + o.File;
 
          StreamWriter sw;
          

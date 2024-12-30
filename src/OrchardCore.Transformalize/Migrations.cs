@@ -26,7 +26,7 @@ namespace TransformalizeModule {
 
       public int Create() {
 
-         _contentDefinitionManager.AlterPartDefinition("TransformalizeReportPart", part => part
+         _contentDefinitionManager.AlterPartDefinitionAsync("TransformalizeReportPart", part => part
              .WithDisplayName("Transformalize Report Part")
              .WithDescription("Fields for Transformalize Report content type")
              .WithField("Arrangement", field => field
@@ -118,7 +118,7 @@ namespace TransformalizeModule {
               )
          );
 
-         _contentDefinitionManager.AlterTypeDefinition("TransformalizeReport", builder => builder
+         _contentDefinitionManager.AlterTypeDefinitionAsync("TransformalizeReport", builder => builder
              .Creatable()
              .Listable()
              .WithPart("TitlePart", part => part.WithPosition("1"))
@@ -132,7 +132,7 @@ namespace TransformalizeModule {
              .WithPart("CommonPart", part => part.WithPosition("4"))
          );
 
-         _contentDefinitionManager.AlterPartDefinition("TransformalizeTaskPart", part => part
+         _contentDefinitionManager.AlterPartDefinitionAsync("TransformalizeTaskPart", part => part
              .WithDisplayName("Transformalize Task Part")
              .WithDescription("Provides fields for Transformalize Task content type")
              .WithField("Arrangement", field => field
@@ -148,7 +148,7 @@ namespace TransformalizeModule {
             )
          );
 
-         _contentDefinitionManager.AlterTypeDefinition("TransformalizeTask", builder => builder
+         _contentDefinitionManager.AlterTypeDefinitionAsync("TransformalizeTask", builder => builder
              .Creatable()
              .Listable()
              .WithPart("TitlePart", part => part.WithPosition("1"))
@@ -166,7 +166,7 @@ namespace TransformalizeModule {
       }
 
       public int UpdateFrom1() {
-         _contentDefinitionManager.AlterPartDefinition("TransformalizeReportPart", part => part
+         _contentDefinitionManager.AlterPartDefinitionAsync("TransformalizeReportPart", part => part
           .WithField("Map", field => field
              .OfType(nameof(BooleanField))
              .WithDisplayName("Map")
@@ -218,7 +218,7 @@ namespace TransformalizeModule {
       }
 
       public int UpdateFrom2() {
-         _contentDefinitionManager.AlterPartDefinition("TransformalizeReportPart", part => part
+         _contentDefinitionManager.AlterPartDefinitionAsync("TransformalizeReportPart", part => part
           .WithField("MapRadiusField", field => field
              .OfType(nameof(TextField))
              .WithDisplayName("Map Radius Field")
@@ -244,7 +244,7 @@ namespace TransformalizeModule {
       }
 
       public int UpdateFrom3() {
-         _contentDefinitionManager.AlterPartDefinition("TransformalizeReportPart", part => part
+         _contentDefinitionManager.AlterPartDefinitionAsync("TransformalizeReportPart", part => part
           .WithField("PageSizesExtended", field => field
                  .OfType(nameof(TextField))
                  .WithDisplayName("Page Sizes Extended")
@@ -261,7 +261,7 @@ namespace TransformalizeModule {
       }
 
       public int UpdateFrom4() {
-         _contentDefinitionManager.AlterPartDefinition("TransformalizeReportPart", part => part
+         _contentDefinitionManager.AlterPartDefinitionAsync("TransformalizeReportPart", part => part
          .WithField("Calendar", field => field
                 .OfType(nameof(BooleanField))
                 .WithDisplayName("Calendar")
@@ -335,7 +335,7 @@ namespace TransformalizeModule {
 
       public int UpdateFrom5() {
 
-         _contentDefinitionManager.AlterPartDefinition("TransformalizeFormPart", part => part
+         _contentDefinitionManager.AlterPartDefinitionAsync("TransformalizeFormPart", part => part
              .WithDisplayName("Transformalize Form Part")
              .WithDescription("Provides fields for Transformalize Form content type")
              .WithField("Arrangement", field => field
@@ -351,7 +351,7 @@ namespace TransformalizeModule {
             )
          );
 
-         _contentDefinitionManager.AlterTypeDefinition("TransformalizeForm", builder => builder
+         _contentDefinitionManager.AlterTypeDefinitionAsync("TransformalizeForm", builder => builder
              .Creatable()
              .Listable()
              .WithPart("TitlePart", part => part.WithPosition("1"))
@@ -371,7 +371,7 @@ namespace TransformalizeModule {
 
       public int UpdateFrom6() {
 
-         _contentDefinitionManager.AlterPartDefinition("TransformalizeFilePart", part => part
+         _contentDefinitionManager.AlterPartDefinitionAsync("TransformalizeFilePart", part => part
              .WithDisplayName("Transformalize File Part")
              .WithDescription("Provides fields for Transformalize File content type")
              .WithField("OriginalName", field => field
@@ -395,7 +395,7 @@ namespace TransformalizeModule {
             )
          );
 
-         _contentDefinitionManager.AlterTypeDefinition("TransformalizeFile", builder => builder
+         _contentDefinitionManager.AlterTypeDefinitionAsync("TransformalizeFile", builder => builder
              .WithPart("AliasPart", part => part
                  .WithPosition("1")
                  .WithSettings(new AliasPartSettings {
@@ -416,7 +416,7 @@ namespace TransformalizeModule {
 
       public int UpdateFrom8() {
 
-         _contentDefinitionManager.AlterPartDefinition("TransformalizeFormPart", part => part
+         _contentDefinitionManager.AlterPartDefinitionAsync("TransformalizeFormPart", part => part
          .WithField("LocationEnableHighAccuracy", field => field
                 .OfType(nameof(BooleanField))
                 .WithDisplayName("Enable High Accuracy")

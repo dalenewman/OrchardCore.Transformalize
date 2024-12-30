@@ -16,38 +16,6 @@
     <add name="db" provider="sqlite" file="App_Data\batches.db" />
   </connections>
   
-  <actions>
-    <add name="Create" type="run" connection="db" mode="init"
-         command="
-                  CREATE TABLE IF NOT EXISTS BatchStatus (
-                    Id INTEGER NOT NULL PRIMARY KEY,
-                    Status TEXT NOT NULL
-                  );
-
-                  INSERT INTO BatchStatus(Id,Status) SELECT 1, 'Waiting' WHERE NOT EXISTS(SELECT * FROM BatchStatus WHERE Id = 1);
-                  INSERT INTO BatchStatus(Id,Status) SELECT 2, 'Running' WHERE NOT EXISTS(SELECT * FROM BatchStatus WHERE Id = 2);
-                  INSERT INTO BatchStatus(Id,Status) SELECT 3, 'Completed' WHERE NOT EXISTS(SELECT * FROM BatchStatus WHERE Id = 3);
-                  INSERT INTO BatchStatus(Id,Status) SELECT 4, 'Failed' WHERE NOT EXISTS(SELECT * FROM BatchStatus WHERE Id = 4);
-
-                  CREATE TABLE IF NOT EXISTS 'Batch' (
-                    Id INTEGER NOT NULL PRIMARY KEY,
-                    Created TEXT NOT NULL,
-                    UserId INTEGER NOT NULL,
-                    Username TEXT NOT NULL,
-                    ReportContentItemId TEXT NOT NULL,
-                    ReportTitle TEXT NOT NULL,
-                    TaskContentItemId TEXT NOT NULL,
-                    TaskTitle TEXT NOT NULL,
-                    Description TEXT NOT NULL,
-                    BatchStatusId INTEGER,
-                    Message TEXT NOT NULL,
-                    FOREIGN KEY (BatchStatusId) REFERENCES BatchStatus(Id)
-                  );
-                  
-                  CREATE INDEX IF NOT EXISTS IX_Batch_BatchStatusId ON 'Batch'(BatchStatusId);             
-                  " />
-  </actions>
-  
   <entities>
     <add name="Script" 
          connection="db" 

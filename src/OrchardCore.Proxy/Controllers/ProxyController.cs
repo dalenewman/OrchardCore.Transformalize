@@ -29,7 +29,7 @@ namespace ProxyModule.Controllers {
             "Proxy-Connection"
         };
 
-      private static Regex _proxyTrimmer;
+      private static readonly Dictionary<string, Regex> _proxyTrimmers = [];
       private readonly IStringLocalizer<ProxyController> S;
       private readonly ILogger<ProxyController> _logger;
       private readonly IContentManager _contentManager;
@@ -68,11 +68,14 @@ namespace ProxyModule.Controllers {
             return new StatusCodeResult(500);
          }
 
-         if (_proxyTrimmer == null) {
-            _proxyTrimmer = new Regex(string.Format(@"{0}/Proxy/{1}", Url.Content("~").TrimEnd('/'), contentItemId), RegexOptions.Compiled);
+         if (!_proxyTrimmers.TryGetValue(contentItemId, out var proxyTrimmer))
+         {
+             proxyTrimmer = new Regex(string.Format(@"{0}/Proxy/{1}", Url.Content("~").TrimEnd('/'), contentItemId), RegexOptions.Compiled);
+             _proxyTrimmers[contentItemId] = proxyTrimmer;
          }
 
-         var url = _proxyTrimmer.Replace(HttpContext.Request.Path + HttpContext.Request.QueryString, string.Empty);
+         var url = proxyTrimmer.Replace(HttpContext.Request.Path + HttpContext.Request.QueryString, string.Empty);
+
 
          return await RelayContent(CombinePath(part.ServiceUrl.Text, url), Request, Response, _logger, S, part.ForwardHeaders.Value);
       }

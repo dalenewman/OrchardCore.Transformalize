@@ -26,7 +26,7 @@ namespace ProxyModule {
 
       public int Create() {
 
-         _contentDefinitionManager.AlterPartDefinition("ProxyPart", part => part
+         _contentDefinitionManager.AlterPartDefinitionAsync("ProxyPart", part => part
              .WithDisplayName("Proxy Part")
              .WithDescription("Fields for Proxy content type")
              .WithField("ServiceUrl", field => field
@@ -51,7 +51,7 @@ namespace ProxyModule {
            )
          );
 
-         _contentDefinitionManager.AlterTypeDefinition("Proxy", builder => builder
+         _contentDefinitionManager.AlterTypeDefinitionAsync("Proxy", builder => builder
              .Creatable()
              .Listable()
              .WithPart("TitlePart", part => part.WithPosition("1"))

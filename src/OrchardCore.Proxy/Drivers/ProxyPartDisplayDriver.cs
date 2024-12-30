@@ -39,12 +39,15 @@ namespace ProxyModule.Drivers {
          };
 
          if (await updater.TryUpdateModelAsync(model, Prefix)) {
-
-            part.ServiceUrl.Text = model.ServiceUrl.Text;
-            part.ForwardHeaders.Value = model.ForwardHeaders.Value;
+            if (model.ServiceUrl != null) {
+               part.ServiceUrl.Text = model.ServiceUrl.Text;
+            }
+            if (model.ForwardHeaders != null) {
+               part.ForwardHeaders.Value = model.ForwardHeaders.Value;
+            }
          }
 
-         if (!IsValidUri(model.ServiceUrl.Text)) {
+         if (model.ServiceUrl != null && !IsValidUri(model.ServiceUrl.Text)) {
             updater.ModelState.AddModelError(Prefix, S["Please set service url to a valid absolute url."]);
          }
 
