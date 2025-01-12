@@ -9,7 +9,7 @@
       <AssemblyVersion>0.12.1</AssemblyVersion>
       <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
       <Authors>Dale Newman</Authors>
-      <Copyright>Copyright © 2023-2024</Copyright>
+      <Copyright>Copyright © 2023-2025</Copyright>
       <Description>for secured access to internal resources</Description>
       <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
       <PackageProjectUrl>https://github.com/dalenewman/OrchardCore.Proxy</PackageProjectUrl>

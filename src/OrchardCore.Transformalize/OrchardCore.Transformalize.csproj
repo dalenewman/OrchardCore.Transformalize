@@ -8,7 +8,7 @@
       <AssemblyVersion>0.12.1</AssemblyVersion>
       <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
       <Authors>Dale Newman</Authors>
-      <Copyright>Copyright © 2013-2024</Copyright>
+      <Copyright>Copyright © 2013-2025</Copyright>
       <Description />
       <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
       <PackageProjectUrl>https://github.com/dalenewman/OrchardCore.Transformalize</PackageProjectUrl>
@@ -69,7 +69,7 @@
       <PackageReference Include="Transformalize.Provider.SqlServer.Autofac" Version="0.10.10-beta" />
       <PackageReference Include="Transformalize.Transform.Ado.Autofac" Version="0.10.4-beta" />
       <PackageReference Include="Transformalize.Transform.Compression" Version="0.11.1-beta" />
-      <PackageReference Include="Transformalize.Transform.Fluid.Autofac" Version="0.10.2-beta" />
+      <PackageReference Include="Transformalize.Transform.Fluid.Autofac" Version="0.11.1-beta" />
       <PackageReference Include="Transformalize.Transform.Geography" Version="0.11.1-beta" />
       <PackageReference Include="Transformalize.Transform.Globalization" Version="0.11.1-beta" />
       <PackageReference Include="Transformalize.Transform.GoogleMaps" Version="0.10.1-beta" />
