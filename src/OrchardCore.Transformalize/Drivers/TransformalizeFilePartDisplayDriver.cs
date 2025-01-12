@@ -10,7 +10,7 @@ namespace TransformalizeModule.Drivers {
 
       public TransformalizeFilePartDisplayDriver() {}
 
-      public override IDisplayResult Edit(TransformalizeFilePart part) {
+      public override IDisplayResult Edit(TransformalizeFilePart part, BuildPartEditorContext context) {
          return Initialize<EditTransformalizeFilePartViewModel>("TransformalizeFilePart_Edit", model => {
             model.TransformalizeFilePart = part;
             model.OriginalName = part.OriginalName;
@@ -18,13 +18,13 @@ namespace TransformalizeModule.Drivers {
          }).Location("Content:1");
       }
 
-      public override async Task<IDisplayResult> UpdateAsync(TransformalizeFilePart part, IUpdateModel updater, UpdatePartEditorContext context) {
+      public override async Task<IDisplayResult> UpdateAsync(TransformalizeFilePart part, UpdatePartEditorContext context) {
 
          var model = new EditTransformalizeFilePartViewModel {
             TransformalizeFilePart = part
          };
 
-         if (await updater.TryUpdateModelAsync(model, Prefix)) {
+         if (await context.Updater.TryUpdateModelAsync(model, Prefix)) {
             part.OriginalName.Text = model.OriginalName.Text;
             part.FullPath.Text = model.FullPath.Text;
          }

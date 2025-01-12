@@ -37,20 +37,20 @@ namespace TransformalizeModule.Drivers {
          _signal = signal;
       }
 
-      public override IDisplayResult Edit(TransformalizeTaskPart part) {
+      public override IDisplayResult Edit(TransformalizeTaskPart part, BuildPartEditorContext context) {
          return Initialize<EditTransformalizeTaskPartViewModel>("TransformalizeTaskPart_Edit", model => {
             model.TransformalizeTaskPart = part;
             model.Arrangement = part.Arrangement;
          }).Location("Content:1");
       }
 
-      public override async Task<IDisplayResult> UpdateAsync(TransformalizeTaskPart part, IUpdateModel updater, UpdatePartEditorContext context) {
+      public override async Task<IDisplayResult> UpdateAsync(TransformalizeTaskPart part, UpdatePartEditorContext context) {
 
          var model = new EditTransformalizeTaskPartViewModel { 
             TransformalizeTaskPart = part
          };
 
-         if (await updater.TryUpdateModelAsync(model, Prefix)) {
+         if (await context.Updater.TryUpdateModelAsync(model, Prefix)) {
             part.Arrangement.Text = model.Arrangement.Text;
          }
 
@@ -59,7 +59,7 @@ namespace TransformalizeModule.Drivers {
             var process = _container.CreateScope(model.Arrangement.Text, part.ContentItem, new Dictionary<string, string>(), false).Resolve<Process>();
             if (process.Errors().Any()) {
                foreach (var error in process.Errors()) {
-                  updater.ModelState.AddModelError(Prefix, S[error]);
+                  context.Updater.ModelState.AddModelError(Prefix, S[error]);
                }
             }
             if (process.Warnings().Any()) {
@@ -69,10 +69,10 @@ namespace TransformalizeModule.Drivers {
             }
 
          } catch (Exception ex) {
-            updater.ModelState.AddModelError(Prefix, S[ex.Message]);
+            context.Updater.ModelState.AddModelError(Prefix, S[ex.Message]);
          }
 
-         if (updater.ModelState.IsValid) {
+         if (context.Updater.ModelState.IsValid) {
             await _signal.SignalTokenAsync(Common.GetCacheKey(part.ContentItem.Id));
          }
 

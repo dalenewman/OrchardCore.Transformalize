@@ -48,7 +48,7 @@ namespace TransformalizeModule.Drivers {
          _settings = settings;
       }
 
-      public override IDisplayResult Edit(TransformalizeFormPart part) {
+      public override IDisplayResult Edit(TransformalizeFormPart part, BuildPartEditorContext context) {
 
          var commands = new AdoFormCommands();
          var process = _configurationContainer.CreateScope(part.Arrangement.Text, part.ContentItem, new Dictionary<string, string>(), false).Resolve<Process>();
@@ -74,13 +74,13 @@ namespace TransformalizeModule.Drivers {
          }).Location("Content:1");
       }
 
-      public override async Task<IDisplayResult> UpdateAsync(TransformalizeFormPart part, IUpdateModel updater, UpdatePartEditorContext context) {
+      public override async Task<IDisplayResult> UpdateAsync(TransformalizeFormPart part, UpdatePartEditorContext context) {
 
          var model = new EditTransformalizeFormPartViewModel { 
             TransformalizeFormPart = part
          };
 
-         if (await updater.TryUpdateModelAsync(model, Prefix)) {
+         if (await context.Updater.TryUpdateModelAsync(model, Prefix)) {
             part.Arrangement.Text = model.Arrangement.Text;
             part.LocationEnableHighAccuracy.Value = model.LocationEnableHighAccuracy.Value;
             part.LocationMaximumAge.Value = model.LocationMaximumAge.Value;
@@ -92,7 +92,7 @@ namespace TransformalizeModule.Drivers {
             var process = _configurationContainer.CreateScope(model.Arrangement.Text, part.ContentItem, new Dictionary<string, string>(), false).Resolve<Process>();
             if (process.Errors().Any()) {
                foreach (var error in process.Errors()) {
-                  updater.ModelState.AddModelError(Prefix, S[error]);
+                  context.Updater.ModelState.AddModelError(Prefix, S[error]);
                }
             }
 
@@ -103,18 +103,18 @@ namespace TransformalizeModule.Drivers {
             }
 
             if (!process.Connections.Any(c => c.Table != "[default]" && !string.IsNullOrEmpty(c.Table))) {
-               updater.ModelState.AddModelError(Prefix, S["A form requires one connection to have a table defined.  The submissions are stored in this table."]);
+               context.Updater.ModelState.AddModelError(Prefix, S["A form requires one connection to have a table defined.  The submissions are stored in this table."]);
             }
 
             if (process.Parameters.Where(p => p.PrimaryKey).Count() != 1) {
-               updater.ModelState.AddModelError(Prefix, S["A form requires one parameter to be marked as the primary key."]);
+               context.Updater.ModelState.AddModelError(Prefix, S["A form requires one parameter to be marked as the primary key."]);
             }
 
          } catch (Exception ex) {
-            updater.ModelState.AddModelError(Prefix, S[ex.Message]);
+            context.Updater.ModelState.AddModelError(Prefix, S[ex.Message]);
          }
 
-         if (updater.ModelState.IsValid) {
+         if (context.Updater.ModelState.IsValid) {
             await _signal.SignalTokenAsync(Common.GetCacheKey(part.ContentItem.Id));
          }
 

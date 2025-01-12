@@ -15,8 +15,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 #endregion
-using Esprima;
-using Esprima.Ast;
+using Acornima;
 using Jint;
 using Jint.Runtime;
 using Transformalize.Impl;
@@ -29,7 +28,6 @@ namespace TransformalizeModule.Services {
 
       public JvResult Visible(JvRequest request) {
 
-         Script script;
          var result = new JvResult();
 
          if(string.IsNullOrEmpty(request.Script)) {
@@ -38,8 +36,8 @@ namespace TransformalizeModule.Services {
          };
 
          try {
-            script = new JavaScriptParser(new ParserOptions() { Tolerant = true }).ParseScript(request.Script);
-         } catch (ParserException ex) {
+            var script = new Parser(new ParserOptions()).ParseScript(request.Script);
+         } catch (ParseErrorException  ex) {
             result.ParserException = ex;
             result.Message = $"{ex.Message} at column {ex.Column}.";
             result.Faulted = true;
@@ -51,7 +49,7 @@ namespace TransformalizeModule.Services {
          }
 
          try {
-            var cv = _jint.Evaluate(script);
+            var cv = _jint.Evaluate(request.Script);
             if (cv.IsBoolean()) {
                result.Visible = (bool)cv.ToObject();
                return result;
@@ -84,7 +82,7 @@ namespace TransformalizeModule.Services {
    public class JvResult {
 
       public bool Visible { get; set; }
-      public ParserException ParserException { get; set; }
+      public ParseErrorException ParserException { get; set; }
       public JavaScriptException JavaScriptException { get; set; }
 
       public string Message { get; set; }

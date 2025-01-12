@@ -21,7 +21,7 @@ namespace ProxyModule.Drivers {
          H = htmlLocalizer;
       }
 
-      public override IDisplayResult Edit(ProxyPart part) {
+      public override IDisplayResult Edit(ProxyPart part, BuildPartEditorContext context) {
          return Initialize<EditProxyPartViewModel>("ProxyPart_Edit", model => {
             model.ProxyPart = part;
             model.ServiceUrl = part.ServiceUrl;
@@ -29,7 +29,7 @@ namespace ProxyModule.Drivers {
          }).Location("Content:1");
       }
 
-      public override async Task<IDisplayResult> UpdateAsync(ProxyPart part, IUpdateModel updater, UpdatePartEditorContext context) {
+      public override async Task<IDisplayResult> UpdateAsync(ProxyPart part, UpdatePartEditorContext context) {
 
          // this driver override makes sure all the 
          // part fields are updated before the arrangement model is updated / validated
@@ -38,7 +38,7 @@ namespace ProxyModule.Drivers {
             ProxyPart = part
          };
 
-         if (await updater.TryUpdateModelAsync(model, Prefix)) {
+         if (await context.Updater.TryUpdateModelAsync(model, Prefix)) {
             if (model.ServiceUrl != null) {
                part.ServiceUrl.Text = model.ServiceUrl.Text;
             }
@@ -48,7 +48,7 @@ namespace ProxyModule.Drivers {
          }
 
          if (model.ServiceUrl != null && !IsValidUri(model.ServiceUrl.Text)) {
-            updater.ModelState.AddModelError(Prefix, S["Please set service url to a valid absolute url."]);
+            context.Updater.ModelState.AddModelError(Prefix, S["Please set service url to a valid absolute url."]);
          }
 
          return Edit(part, context);

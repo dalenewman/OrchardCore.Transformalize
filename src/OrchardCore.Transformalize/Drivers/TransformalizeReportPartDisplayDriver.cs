@@ -41,7 +41,7 @@ namespace TransformalizeModule.Drivers {
       // change display for admin content items view?
       // public override IDisplayResult Display(TransformalizeReportPart part) => View(nameof(TransformalizeReportPart), part);
 
-      public override IDisplayResult Edit(TransformalizeReportPart part) {
+      public override IDisplayResult Edit(TransformalizeReportPart part, BuildPartEditorContext context) {
          return Initialize<EditTransformalizeReportPartViewModel>("TransformalizeReportPart_Edit", model => {
             // it did not work out when i tried to flatten model (e.g. BulkActions.Value => BulkActions (a bool))
             model.TransformalizeReportPart = part;
@@ -77,7 +77,7 @@ namespace TransformalizeModule.Drivers {
          }).Location("Content:1");
       }
 
-      public override async Task<IDisplayResult> UpdateAsync(TransformalizeReportPart part, IUpdateModel updater, UpdatePartEditorContext context) {
+      public override async Task<IDisplayResult> UpdateAsync(TransformalizeReportPart part,UpdatePartEditorContext context) {
 
          // this driver override makes sure all the 
          // part fields are updated before the arrangement model is updated / validated
@@ -89,7 +89,7 @@ namespace TransformalizeModule.Drivers {
             TransformalizeReportPart = part 
          };
 
-         if (await updater.TryUpdateModelAsync(model, Prefix)) {
+         if (await context.Updater.TryUpdateModelAsync(model, Prefix)) {
             //_notifier.Information(H["Model - Bulk Actions:{0}", model.BulkActions.Value]);
             //_notifier.Information(H["Model - Bulk Action Field:{0}", model.BulkActionValueField.Text]);
 
@@ -126,19 +126,19 @@ namespace TransformalizeModule.Drivers {
 
          if (model.BulkActions.Value) {
             if (string.IsNullOrEmpty(model.BulkActionValueField.Text)) {
-               updater.ModelState.AddModelError(Prefix, S["Please set the bulk action value field for bulk actions."]);
+               context.Updater.ModelState.AddModelError(Prefix, S["Please set the bulk action value field for bulk actions."]);
             }
          }
 
-         CheckPageSizes(model.PageSizes, updater);
-         CheckPageSizes(model.PageSizesExtended, updater);
+         CheckPageSizes(model.PageSizes, context.Updater);
+         CheckPageSizes(model.PageSizesExtended, context.Updater);
 
          try {
             var logger = new MemoryLogger(LogLevel.Error);
             var process = _container.CreateScope(model.Arrangement.Text, part.ContentItem, new Dictionary<string, string>(), false).Resolve<Process>();
             if (process.Errors().Any()) {
                foreach (var error in process.Errors()) {
-                  updater.ModelState.AddModelError(Prefix, S[error]);
+                  context.Updater.ModelState.AddModelError(Prefix, S[error]);
                }
             }
             if (process.Warnings().Any()) {
@@ -153,42 +153,42 @@ namespace TransformalizeModule.Drivers {
                if (part.BulkActions.Value) {
                   if (!string.IsNullOrEmpty(part.BulkActionValueField.Text)) {
                      if (fields.All(f => f.Alias != part.BulkActionValueField.Text)) {
-                        updater.ModelState.AddModelError(Prefix, S["The field {0} does not exist.", part.BulkActionValueField.Text]);
+                        context.Updater.ModelState.AddModelError(Prefix, S["The field {0} does not exist.", part.BulkActionValueField.Text]);
                      }
                   }
                }
 
                if (part.Calendar.Value) {
                   if (fields.All(f => f.Alias != part.CalendarIdField.Text)) {
-                     updater.ModelState.AddModelError(Prefix, S["The field {0} used for calendar id does not exist.", part.CalendarIdField.Text]);
+                     context.Updater.ModelState.AddModelError(Prefix, S["The field {0} used for calendar id does not exist.", part.CalendarIdField.Text]);
                   }
                   if (fields.All(f => f.Alias != part.CalendarUrlField.Text)) {
-                     updater.ModelState.AddModelError(Prefix, S["The field {0} used for calendar URL does not exist.", part.CalendarUrlField.Text]);
+                     context.Updater.ModelState.AddModelError(Prefix, S["The field {0} used for calendar URL does not exist.", part.CalendarUrlField.Text]);
                   }
                   if (fields.All(f => f.Alias != part.CalendarTitleField.Text)) {
-                     updater.ModelState.AddModelError(Prefix, S["The field {0} used for calendar title does not exist.", part.CalendarTitleField.Text]);
+                     context.Updater.ModelState.AddModelError(Prefix, S["The field {0} used for calendar title does not exist.", part.CalendarTitleField.Text]);
                   }
                   if (fields.All(f => f.Alias != part.CalendarClassField.Text)) {
-                     updater.ModelState.AddModelError(Prefix, S["The field {0} used for calendar class does not exist.", part.CalendarClassField.Text]);
+                     context.Updater.ModelState.AddModelError(Prefix, S["The field {0} used for calendar class does not exist.", part.CalendarClassField.Text]);
                   }
                   if (fields.All(f => f.Alias != part.CalendarStartField.Text)) {
-                     updater.ModelState.AddModelError(Prefix, S["The field {0} used for calendar start does not exist.", part.CalendarStartField.Text]);
+                     context.Updater.ModelState.AddModelError(Prefix, S["The field {0} used for calendar start does not exist.", part.CalendarStartField.Text]);
                   }
                   if (fields.All(f => f.Alias != part.CalendarEndField.Text)) {
-                     updater.ModelState.AddModelError(Prefix, S["The field {0} used for calendar end does not exist.", part.CalendarEndField.Text]);
+                     context.Updater.ModelState.AddModelError(Prefix, S["The field {0} used for calendar end does not exist.", part.CalendarEndField.Text]);
                   }
                }
 
                if (part.Map.Value) {
 
                   if (fields.All(f => f.Alias != part.MapDescriptionField.Text)) {
-                     updater.ModelState.AddModelError(Prefix, S["The field {0} used for map description does not exist.", part.MapDescriptionField.Text]);
+                     context.Updater.ModelState.AddModelError(Prefix, S["The field {0} used for map description does not exist.", part.MapDescriptionField.Text]);
                   }
                   if (fields.All(f => f.Alias != part.MapLatitudeField.Text)) {
-                     updater.ModelState.AddModelError(Prefix, S["The field {0} used for map latitude does not exist.", part.MapLatitudeField.Text]);
+                     context.Updater.ModelState.AddModelError(Prefix, S["The field {0} used for map latitude does not exist.", part.MapLatitudeField.Text]);
                   }
                   if (fields.All(f => f.Alias != part.MapLongitudeField.Text)) {
-                     updater.ModelState.AddModelError(Prefix, S["The field {0} used for map longitude does not exist.", part.MapLongitudeField.Text]);
+                     context.Updater.ModelState.AddModelError(Prefix, S["The field {0} used for map longitude does not exist.", part.MapLongitudeField.Text]);
                   }
 
                   // Map Color #ffc0cb
@@ -196,7 +196,7 @@ namespace TransformalizeModule.Drivers {
                      part.MapColorField.Text = "#ffc0cb";
                   } else {
                      if (fields.All(f => f.Alias != part.MapColorField.Text)) {
-                        updater.ModelState.AddModelError(Prefix, S["The field {0} used for map color does not exist.", part.MapColorField.Text]);
+                        context.Updater.ModelState.AddModelError(Prefix, S["The field {0} used for map color does not exist.", part.MapColorField.Text]);
                      }
                   }
 
@@ -206,11 +206,11 @@ namespace TransformalizeModule.Drivers {
                   } else {
                      if (double.TryParse(part.MapOpacityField.Text, out double opacity)) {
                         if (opacity < 0 || opacity > 1) {
-                           updater.ModelState.AddModelError(Prefix, S["Map opacity must be between 0 and 1."]);
+                           context.Updater.ModelState.AddModelError(Prefix, S["Map opacity must be between 0 and 1."]);
                         }
                      } else {
                         if (fields.All(f => f.Alias != part.MapOpacityField.Text)) {
-                           updater.ModelState.AddModelError(Prefix, S["The field {0} used for map opacity does not exist.", part.MapOpacityField.Text]);
+                           context.Updater.ModelState.AddModelError(Prefix, S["The field {0} used for map opacity does not exist.", part.MapOpacityField.Text]);
                         }
                      }
                   }
@@ -221,21 +221,21 @@ namespace TransformalizeModule.Drivers {
                   } else {
                      if (!int.TryParse(part.MapRadiusField.Text, out int radius)) {
                         if (fields.All(f => f.Alias != part.MapRadiusField.Text)) {
-                           updater.ModelState.AddModelError(Prefix, S["The field {0} used for map radius does not exist.", part.MapRadiusField.Text]);
+                           context.Updater.ModelState.AddModelError(Prefix, S["The field {0} used for map radius does not exist.", part.MapRadiusField.Text]);
                         }
                      }
                   }
                }
 
             } else {
-               updater.ModelState.AddModelError(Prefix, S["Please define an entity."]);
+               context.Updater.ModelState.AddModelError(Prefix, S["Please define an entity."]);
             }
 
          } catch (Exception ex) {
-            updater.ModelState.AddModelError(Prefix, S[ex.Message]);
+            context.Updater.ModelState.AddModelError(Prefix, S[ex.Message]);
          }
 
-         if (updater.ModelState.IsValid) {
+         if (context.Updater.ModelState.IsValid) {
             await _signal.SignalTokenAsync(Common.GetCacheKey(part.ContentItem.Id));
          }
 
