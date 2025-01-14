@@ -52,10 +52,11 @@
       <PackageReference Include="NodaTime" Version="3.1.10" />
       <PackageReference Include="System.Text.Encoding.CodePages" Version="7.0.0" />
 
+
       <PackageReference Include="Transformalize" Version="0.11.1-beta" />
       <PackageReference Include="Transformalize.Container.Autofac" Version="0.11.1-beta" />
-      <PackageReference Include="Transformalize.Provider.Ado.Autofac" Version="0.10.3-beta" />
-      <PackageReference Include="Transformalize.Provider.Bogus.Autofac" Version="0.10.0-beta" />
+      <PackageReference Include="Transformalize.Provider.Ado.Autofac" Version="0.11.1-beta" />
+      <PackageReference Include="Transformalize.Provider.Bogus.Autofac" Version="0.11.1-beta" />
       <PackageReference Include="Transformalize.Provider.CsvHelper.Autofac" Version="0.10.2-beta" />
       <PackageReference Include="Transformalize.Provider.Elasticsearch.Autofac" Version="0.10.2-beta" />
       <PackageReference Include="Transformalize.Provider.Excel" Version="0.10.1-beta" />
@@ -63,11 +64,11 @@
       <PackageReference Include="Transformalize.Provider.GeoJson.Autofac" Version="0.10.0-beta" />
       <PackageReference Include="Transformalize.Provider.Json.Autofac" Version="0.10.1-beta" />
       <PackageReference Include="Transformalize.Provider.Mail.Autofac" Version="0.10.2-beta" />
-      <PackageReference Include="Transformalize.Provider.MySql.Autofac" Version="0.10.2-beta" />
-      <PackageReference Include="Transformalize.Provider.PostgreSql.Autofac" Version="0.10.3-beta" />
+      <PackageReference Include="Transformalize.Provider.MySql.Autofac" Version="0.11.1-beta" />
+      <PackageReference Include="Transformalize.Provider.PostgreSql.Autofac" Version="0.11.1-beta" />
       <PackageReference Include="Transformalize.Provider.Sqlite.Autofac" Version="0.10.4-beta" />
-      <PackageReference Include="Transformalize.Provider.SqlServer.Autofac" Version="0.10.10-beta" />
-      <PackageReference Include="Transformalize.Transform.Ado.Autofac" Version="0.10.4-beta" />
+      <PackageReference Include="Transformalize.Provider.SqlServer.Autofac" Version="0.11.1-beta" />
+      <PackageReference Include="Transformalize.Transform.Ado.Autofac" Version="0.11.1-beta" />
       <PackageReference Include="Transformalize.Transform.Compression" Version="0.11.1-beta" />
       <PackageReference Include="Transformalize.Transform.Fluid.Autofac" Version="0.11.1-beta" />
       <PackageReference Include="Transformalize.Transform.Geography" Version="0.11.1-beta" />
@@ -80,7 +81,6 @@
       <PackageReference Include="Transformalize.Transform.Razor.Autofac" Version="0.10.1-beta" />
       <PackageReference Include="Transformalize.Transform.Xml" Version="0.11.1-beta" />
       <PackageReference Include="Transformalize.Validate.Jint.Autofac" Version="0.11.2-beta" />
-
    </ItemGroup>
    <ItemGroup>
       <EmbeddedResource Update="Recipes\batches.postgres.recipe.json">
