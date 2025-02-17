@@ -31,6 +31,7 @@
    </ItemGroup>
    <ItemGroup>
       
+      <!-- orchard -->
       <PackageReference Include="OrchardCore.Alias" Version="2.1.3" />
       <PackageReference Include="OrchardCore.ContentFields" Version="2.1.3" />
       <PackageReference Include="OrchardCore.ContentManagement" Version="2.1.3" />
@@ -46,42 +47,49 @@
       <PackageReference Include="OrchardCore.Users" Version="2.1.3" />
       <PackageReference Include="OrchardCore.Workflows" Version="2.1.3" />
 
+      <!-- third party modules -->
       <PackageReference Include="Etch.OrchardCore.ContentPermissions" Version="1.7.0" />
+
+      <!-- misc -->
       <PackageReference Include="Flurl" Version="3.0.7" />
       <PackageReference Include="Nito.AsyncEx" Version="5.1.2" />
-      <PackageReference Include="NodaTime" Version="3.1.10" />
+      <PackageReference Include="NodaTime" Version="3.2.0" />
       <PackageReference Include="System.Text.Encoding.CodePages" Version="7.0.0" />
 
-
+      <!-- transformalize updated -->
       <PackageReference Include="Transformalize" Version="0.11.1-beta" />
       <PackageReference Include="Transformalize.Container.Autofac" Version="0.11.1-beta" />
       <PackageReference Include="Transformalize.Provider.Ado.Autofac" Version="0.11.1-beta" />
       <PackageReference Include="Transformalize.Provider.Bogus.Autofac" Version="0.11.1-beta" />
-      <PackageReference Include="Transformalize.Provider.CsvHelper.Autofac" Version="0.10.2-beta" />
-      <PackageReference Include="Transformalize.Provider.Elasticsearch.Autofac" Version="0.10.2-beta" />
-      <PackageReference Include="Transformalize.Provider.Excel" Version="0.10.1-beta" />
+      <PackageReference Include="Transformalize.Provider.CsvHelper.Autofac" Version="0.11.1-beta" />
       <PackageReference Include="Transformalize.Provider.File.Autofac" Version="0.11.1-beta" />
-      <PackageReference Include="Transformalize.Provider.GeoJson.Autofac" Version="0.10.0-beta" />
-      <PackageReference Include="Transformalize.Provider.Json.Autofac" Version="0.10.1-beta" />
-      <PackageReference Include="Transformalize.Provider.Mail.Autofac" Version="0.10.2-beta" />
       <PackageReference Include="Transformalize.Provider.MySql.Autofac" Version="0.11.1-beta" />
       <PackageReference Include="Transformalize.Provider.PostgreSql.Autofac" Version="0.11.1-beta" />
-      <PackageReference Include="Transformalize.Provider.Sqlite.Autofac" Version="0.10.4-beta" />
+      <PackageReference Include="Transformalize.Provider.Sqlite.Autofac" Version="0.11.1-beta" />
       <PackageReference Include="Transformalize.Provider.SqlServer.Autofac" Version="0.11.1-beta" />
       <PackageReference Include="Transformalize.Transform.Ado.Autofac" Version="0.11.1-beta" />
       <PackageReference Include="Transformalize.Transform.Compression" Version="0.11.1-beta" />
       <PackageReference Include="Transformalize.Transform.Fluid.Autofac" Version="0.11.1-beta" />
       <PackageReference Include="Transformalize.Transform.Geography" Version="0.11.1-beta" />
       <PackageReference Include="Transformalize.Transform.Globalization" Version="0.11.1-beta" />
+      <PackageReference Include="Transformalize.Transform.Jint.Autofac" Version="0.11.2-beta" />
+      <PackageReference Include="Transformalize.Transform.Xml" Version="0.11.1-beta" />
+      <PackageReference Include="Transformalize.Validate.Jint.Autofac" Version="0.11.2-beta" />
+
+      <!-- transformalize old -->
+      <PackageReference Include="Transformalize.Provider.Elasticsearch.Autofac" Version="0.10.2-beta" />
+      <PackageReference Include="Transformalize.Provider.Excel" Version="0.10.1-beta" />
+      <PackageReference Include="Transformalize.Provider.GeoJson.Autofac" Version="0.10.0-beta" />
+      <PackageReference Include="Transformalize.Provider.Json.Autofac" Version="0.10.1-beta" />
+      <PackageReference Include="Transformalize.Provider.Mail.Autofac" Version="0.10.2-beta" />
       <PackageReference Include="Transformalize.Transform.GoogleMaps" Version="0.10.1-beta" />
       <PackageReference Include="Transformalize.Transform.Humanizer.Autofac" Version="0.10.1-beta" />
-      <PackageReference Include="Transformalize.Transform.Jint.Autofac" Version="0.11.2-beta" />
       <PackageReference Include="Transformalize.Transform.Json.Autofac" Version="0.10.1-beta" />
       <PackageReference Include="Transformalize.Transform.LambdaParser.Autofac" Version="0.10.1-beta" />
       <PackageReference Include="Transformalize.Transform.Razor.Autofac" Version="0.10.1-beta" />
-      <PackageReference Include="Transformalize.Transform.Xml" Version="0.11.1-beta" />
-      <PackageReference Include="Transformalize.Validate.Jint.Autofac" Version="0.11.2-beta" />
+
    </ItemGroup>
+   
    <ItemGroup>
       <EmbeddedResource Update="Recipes\batches.postgres.recipe.json">
          <CopyToOutputDirectory>Always</CopyToOutputDirectory>
