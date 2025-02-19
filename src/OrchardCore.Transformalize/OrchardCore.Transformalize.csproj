@@ -81,7 +81,7 @@
       <PackageReference Include="Transformalize.Provider.Excel" Version="0.10.1-beta" />
       <PackageReference Include="Transformalize.Provider.GeoJson.Autofac" Version="0.10.0-beta" />
       <PackageReference Include="Transformalize.Provider.Json.Autofac" Version="0.10.1-beta" />
-      <PackageReference Include="Transformalize.Provider.Mail.Autofac" Version="0.10.2-beta" />
+      <PackageReference Include="Transformalize.Provider.Mail.Autofac" Version="0.11.1-beta" />
       <PackageReference Include="Transformalize.Transform.GoogleMaps" Version="0.10.1-beta" />
       <PackageReference Include="Transformalize.Transform.Humanizer.Autofac" Version="0.10.1-beta" />
       <PackageReference Include="Transformalize.Transform.Json.Autofac" Version="0.10.1-beta" />
