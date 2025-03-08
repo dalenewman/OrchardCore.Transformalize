@@ -17,8 +17,8 @@
       <PackageTags>etl,data,forms,reports,transformalize</PackageTags>
       <NeutralLanguage>en-US</NeutralLanguage>
       <PackageReleaseNotes>update for orchard core 1.8.1</PackageReleaseNotes>
-	  <Nullable>enable</Nullable>
-	  <ImplicitUsings>enable</ImplicitUsings>
+      <Nullable>enable</Nullable>
+      <ImplicitUsings>enable</ImplicitUsings>
    </PropertyGroup>
    <ItemGroup>
       <EmbeddedResource Remove="bundleconfig.json" />
@@ -30,22 +30,22 @@
       <None Include="bundleconfig.json" />
    </ItemGroup>
    <ItemGroup>
-      
+
       <!-- orchard -->
-      <PackageReference Include="OrchardCore.Alias" Version="2.1.3" />
-      <PackageReference Include="OrchardCore.ContentFields" Version="2.1.3" />
-      <PackageReference Include="OrchardCore.ContentManagement" Version="2.1.3" />
-      <PackageReference Include="OrchardCore.Contents" Version="2.1.3" />
-      <PackageReference Include="OrchardCore.ContentTypes.Abstractions" Version="2.1.3" />
-      <PackageReference Include="OrchardCore.DisplayManagement" Version="2.1.3" />
-      <PackageReference Include="OrchardCore.Features" Version="2.1.3" />
-      <PackageReference Include="OrchardCore.FileStorage.FileSystem" Version="2.1.3" />
-      <PackageReference Include="OrchardCore.MiniProfiler" Version="2.1.3" />
-      <PackageReference Include="OrchardCore.Module.Targets" Version="2.1.3" />
-      <PackageReference Include="OrchardCore.Navigation" Version="2.1.3" />
-      <PackageReference Include="OrchardCore.Title" Version="2.1.3" />
-      <PackageReference Include="OrchardCore.Users" Version="2.1.3" />
-      <PackageReference Include="OrchardCore.Workflows" Version="2.1.3" />
+      <PackageReference Include="OrchardCore.Alias" Version="2.1.6" />
+      <PackageReference Include="OrchardCore.ContentFields" Version="2.1.6" />
+      <PackageReference Include="OrchardCore.ContentManagement" Version="2.1.6" />
+      <PackageReference Include="OrchardCore.Contents" Version="2.1.6" />
+      <PackageReference Include="OrchardCore.ContentTypes.Abstractions" Version="2.1.6" />
+      <PackageReference Include="OrchardCore.DisplayManagement" Version="2.1.6" />
+      <PackageReference Include="OrchardCore.Features" Version="2.1.6" />
+      <PackageReference Include="OrchardCore.FileStorage.FileSystem" Version="2.1.6" />
+      <PackageReference Include="OrchardCore.MiniProfiler" Version="2.1.6" />
+      <PackageReference Include="OrchardCore.Module.Targets" Version="2.1.6" />
+      <PackageReference Include="OrchardCore.Navigation" Version="2.1.6" />
+      <PackageReference Include="OrchardCore.Title" Version="2.1.6" />
+      <PackageReference Include="OrchardCore.Users" Version="2.1.6" />
+      <PackageReference Include="OrchardCore.Workflows" Version="2.1.6" />
 
       <!-- third party modules -->
       <PackageReference Include="Etch.OrchardCore.ContentPermissions" Version="1.7.0" />
@@ -80,7 +80,7 @@
       <PackageReference Include="Transformalize.Transform.Json.Autofac" Version="0.11.1-beta" />
       <PackageReference Include="Transformalize.Transform.GoogleMaps" Version="0.11.1-beta" />
       <PackageReference Include="Transformalize.Transform.Razor.Autofac" Version="0.11.1-beta" />
-      
+
       <!-- transformalize old -->
       <PackageReference Include="Transformalize.Provider.Elasticsearch.Autofac" Version="0.10.2-beta" />
       <PackageReference Include="Transformalize.Provider.Excel" Version="0.10.1-beta" />
@@ -89,8 +89,11 @@
       <PackageReference Include="Transformalize.Transform.LambdaParser.Autofac" Version="0.10.1-beta" />
 
    </ItemGroup>
-   
+
    <ItemGroup>
+      <EmbeddedResource Update="Recipes\batches.mssql.recipe.json">
+         <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </EmbeddedResource>
       <EmbeddedResource Update="Recipes\batches.postgres.recipe.json">
          <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       </EmbeddedResource>
@@ -104,4 +107,5 @@
          <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       </EmbeddedResource>
    </ItemGroup>
+
 </Project>
