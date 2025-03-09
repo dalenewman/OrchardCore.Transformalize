@@ -54,7 +54,6 @@
       <PackageReference Include="Flurl" Version="3.0.7" />
       <PackageReference Include="Nito.AsyncEx" Version="5.1.2" />
       <PackageReference Include="NodaTime" Version="3.2.0" />
-      <PackageReference Include="System.Text.Encoding.CodePages" Version="7.0.0" />
 
       <!-- transformalize updated -->
       <PackageReference Include="Transformalize" Version="0.11.1-beta" />
@@ -82,9 +81,9 @@
       <PackageReference Include="Transformalize.Transform.Razor.Autofac" Version="0.11.1-beta" />
       <PackageReference Include="Transformalize.Transform.Humanizer.Autofac" Version="0.11.1-beta" />
       <PackageReference Include="Transformalize.Provider.Elasticsearch.Autofac" Version="0.11.1-beta" />
+      <PackageReference Include="Transformalize.Provider.Excel" Version="0.11.1-beta" />
       
       <!-- transformalize old -->
-      <PackageReference Include="Transformalize.Provider.Excel" Version="0.10.1-beta" />
       <PackageReference Include="Transformalize.Provider.GeoJson.Autofac" Version="0.10.0-beta" />
       <PackageReference Include="Transformalize.Transform.LambdaParser.Autofac" Version="0.10.1-beta" />
 
