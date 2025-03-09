@@ -16,7 +16,7 @@
       <RepositoryType>git</RepositoryType>
       <PackageTags>etl,data,forms,reports,transformalize</PackageTags>
       <NeutralLanguage>en-US</NeutralLanguage>
-      <PackageReleaseNotes>update for orchard core 1.8.1</PackageReleaseNotes>
+      <PackageReleaseNotes>update for orchard core 2</PackageReleaseNotes>
       <Nullable>enable</Nullable>
       <ImplicitUsings>enable</ImplicitUsings>
    </PropertyGroup>
@@ -82,9 +82,9 @@
       <PackageReference Include="Transformalize.Transform.Humanizer.Autofac" Version="0.11.1-beta" />
       <PackageReference Include="Transformalize.Provider.Elasticsearch.Autofac" Version="0.11.1-beta" />
       <PackageReference Include="Transformalize.Provider.Excel" Version="0.11.1-beta" />
-      
+      <PackageReference Include="Transformalize.Provider.GeoJson.Autofac" Version="0.11.1-beta" />
+
       <!-- transformalize old -->
-      <PackageReference Include="Transformalize.Provider.GeoJson.Autofac" Version="0.10.0-beta" />
       <PackageReference Include="Transformalize.Transform.LambdaParser.Autofac" Version="0.10.1-beta" />
 
    </ItemGroup>
