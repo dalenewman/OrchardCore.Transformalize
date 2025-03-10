@@ -260,38 +260,38 @@ namespace TransformalizeModule {
          // mapbox-gl 
          _manifest
             .DefineScript("mapbox-gl")
+            .SetCdn("https://cdnjs.cloudflare.com/ajax/libs/mapbox-gl/3.6.0/mapbox-gl.min.js", "https://cdnjs.cloudflare.com/ajax/libs/mapbox-gl/3.6.0/mapbox-gl.js")
+            .SetCdnIntegrity("sha256-vX/UjDfsGzuQ3yOalPSb5LsgTtPsMOMXJDkEdHNZN90=", "sha256-El6IPTmbQmUpQGSfohIZ/EJAwtBHjMVivKDENsRYR2I=")
             .SetUrl($"~/{Common.ModuleName}/Scripts/mapbox-gl.min.js", $"~/{Common.ModuleName}/Scripts/mapbox-gl.js")
-            .SetCdn("https://cdnjs.cloudflare.com/ajax/libs/mapbox-gl/1.11.0/mapbox-gl.min.js", "https://cdnjs.cloudflare.com/ajax/libs/mapbox-gl/1.11.0/mapbox-gl.js")
-            .SetCdnIntegrity("sha256-hLz/HqgIJeNiL4hp7kU0r9ADehgHb1JjZUYvbOECxGE=", "sha256-W5jjCUuqo0OITPxQlNtQW7e+YHLzNGgI9XOtTSBWtbI=")
-            .SetVersion("1.11.0");
+            .SetVersion("3.6.0");
 
          _manifest
              .DefineStyle("mapbox-gl")
+             .SetCdn("https://cdnjs.cloudflare.com/ajax/libs/mapbox-gl/3.6.0/mapbox-gl.min.css", "https://cdnjs.cloudflare.com/ajax/libs/mapbox-gl/3.6.0/mapbox-gl.css")
+             .SetCdnIntegrity("sha256-IF6XQEns8/1a1aGEcAm/L5jJLZuFQxSYB9BusB5zxFk=", "sha256-phBoVBJfBh4yTgoQQfJaE8JpuQFnXiQNcRMuYywgINw=")
              .SetUrl($"~/{Common.ModuleName}/Styles/mapbox-gl.min.css", $"~/{Common.ModuleName}/Styles/mapbox-gl.css")
-             .SetCdn("https://cdnjs.cloudflare.com/ajax/libs/mapbox-gl/1.11.0/mapbox-gl.min.css", "https://cdnjs.cloudflare.com/ajax/libs/mapbox-gl/1.11.0/mapbox-gl.css")
-             .SetCdnIntegrity("sha256-ETq/yEgk/50QT5U21jYaBxXCgyJNasHovjc3h06k+kw=", "sha256-+A0NJBMh5IIbhodBU6EO4tNTW4dNHmW7LgzCwGGsD1I=")
-             .SetVersion("1.11.0");
+             .SetVersion("3.6.0");
 
          _manifest
             .DefineScript("mapbox-gl-draw")
-            .SetCdn("https://cdn.jsdelivr.net/npm/@mapbox/mapbox-gl-draw@1.1.2/dist/mapbox-gl-draw.js", "https://cdn.jsdelivr.net/npm/@mapbox/mapbox-gl-draw@1.1.2/dist/mapbox-gl-draw-unminified.js")
-            .SetCdnIntegrity("sha256-SUQgYRFU5w8druRUF892Yk8vffWzabkNDl/2J0FsGGU=", "sha256-Uw4D7+Dcz15WM0mKBUcIiobarKkhotl9Y8zETc7yszw=")
-            .SetUrl($"~/{Common.ModuleName}/Scripts/mapbox-gl-draw.min.js", $"~/{Common.ModuleName}/Scripts/mapbox-gl.js")
-            .SetVersion("1.1.2");
+            .SetCdn("https://cdnjs.cloudflare.com/ajax/libs/mapbox-gl-draw/1.4.3/mapbox-gl-draw.js", "https://cdnjs.cloudflare.com/ajax/libs/mapbox-gl-draw/1.4.3/mapbox-gl-draw-unminified.js")
+            .SetCdnIntegrity("sha256-FD4+Xf03zRK5hC+WbuacQlCZctfkC20j0wgoxNy48pI=", "sha256-CBIeMLsftxcKtFXkOg5DEWOl2DJTQ49Ie9AQ3heWqys=")
+            .SetUrl($"~/{Common.ModuleName}/Scripts/mapbox-gl-draw.min.js", $"~/{Common.ModuleName}/Scripts/mapbox-gl-draw.js")
+            .SetVersion("1.4.3");
 
          _manifest
              .DefineStyle("mapbox-gl-draw")
-             .SetCdn("https://cdn.jsdelivr.net/npm/@mapbox/mapbox-gl-draw@1.1.2/dist/mapbox-gl-draw.css", "https://cdn.jsdelivr.net/npm/@mapbox/mapbox-gl-draw@1.1.2/dist/mapbox-gl-draw.css")
-             .SetCdnIntegrity("sha256-M/XwXDzL3ye8si/4fN/D8RxD/wq0y/M5nlOXsRAcZvc=", "sha256-M/XwXDzL3ye8si/4fN/D8RxD/wq0y/M5nlOXsRAcZvc=")
+             .SetCdn("https://cdnjs.cloudflare.com/ajax/libs/mapbox-gl-draw/1.4.3/mapbox-gl-draw.min.css", "https://cdnjs.cloudflare.com/ajax/libs/mapbox-gl-draw/1.4.3/mapbox-gl-draw.css")
+             .SetCdnIntegrity("sha256-kRyG3UPDXf0G8tGwgWFV7mdVu+EkzeItDSQQF745xsc=", "sha256-17tTeM3yuBswUqyCE0vegMfNFyPAQk2mLxjdOYNFv7U=")
              .SetUrl($"~/{Common.ModuleName}/Styles/mapbox-gl-draw.min.css", $"~/{Common.ModuleName}/Styles/mapbox-gl-draw.css")
-             .SetVersion("1.1.2");
+             .SetVersion("1.4.3");
 
          _manifest
             .DefineScript("turf")
-            .SetUrl($"~/{Common.ModuleName}/Scripts/turf.min.js", $"~/{Common.ModuleName}/Scripts/turf.js")
-            .SetCdn("https://cdn.jsdelivr.net/npm/@turf/turf@5.1.6/turf.min.js", "https://cdn.jsdelivr.net/npm/@turf/turf@5.1.6/turf.js")
-            .SetCdnIntegrity("sha256-Nhtik+K3xORhs5S9o0qlol4eRNB9O5OyTOJqbLucPk8=", "sha256-9WY2IAez52ncSmDHF2+kRA47S3/U9rBcRB6x2bUpfR4=")
-            .SetVersion("5.1.6");
+            .SetCdn("https://cdnjs.cloudflare.com/ajax/libs/Turf.js/6.5.0/turf.min.js")
+            .SetCdnIntegrity("sha256-0A8+j/io+cED2tYcL9S7WBQ+FASq398J4pttsaLeCj8=")
+            .SetUrl($"~/{Common.ModuleName}/Scripts/turf.min.js")
+            .SetVersion("6.5.0");
 
          _manifest
             .DefineScript("bootstrap-calendar")
