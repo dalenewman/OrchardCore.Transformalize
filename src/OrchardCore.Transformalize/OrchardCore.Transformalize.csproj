@@ -83,9 +83,7 @@
       <PackageReference Include="Transformalize.Provider.Elasticsearch.Autofac" Version="0.11.1-beta" />
       <PackageReference Include="Transformalize.Provider.Excel" Version="0.11.1-beta" />
       <PackageReference Include="Transformalize.Provider.GeoJson.Autofac" Version="0.11.1-beta" />
-
-      <!-- transformalize old -->
-      <PackageReference Include="Transformalize.Transform.LambdaParser.Autofac" Version="0.10.1-beta" />
+      <PackageReference Include="Transformalize.Transform.LambdaParser.Autofac" Version="0.11.1-beta" />
 
    </ItemGroup>
 
