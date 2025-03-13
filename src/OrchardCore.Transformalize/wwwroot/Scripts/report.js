@@ -65,6 +65,7 @@ function bulkAction(page, name) {
       $form.append($(".AntiForge").html());
       $form.append('<input type="hidden" name="ActionName" value="' + name + '" />');
       $form.append('<input type="hidden" name="ActionCount" value="' + controls.bulkActionLength + '" />');
+      $form.append('<input type="hidden" name="ReturnUrl" value="' + window.location.href + '" />');
       controls.submit(page);
    }
 }
@@ -76,7 +77,7 @@ function updateBulkActions() {
       var link = $(this);
       var len = (all ? "All" : $('#select-all:checked').length > 0 ? length - 1 : length);
       controls.bulkActionLength = len;
-      link.html(link.attr('rel') + ' <span class="badge badge-pill badge-dark">' + len + "</span>");
+      link.html(link.attr('rel') + ' <span class="badge text-bg-dark">' + len + "</span>");
    });
 }
 

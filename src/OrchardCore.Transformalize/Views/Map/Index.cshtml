@@ -322,7 +322,7 @@
                         var link = $(this);
                         $("input[name=bulk-action-length]").val(selected.features.length);
                         controls.bulkActionLength = selected.features.length;
-                        link.html(link.attr('rel') + ' <span class="badge badge-pill badge-dark">' + selected.features.length + "</span>");
+                        link.html(link.attr('rel') + ' <span class="badge text-bg-dark">' + selected.features.length + "</span>");
                      });
                   } else {
                      // update the little badges
@@ -330,7 +330,7 @@
                         var link = $(this);
                         $("input[name=bulk-action-length]").val(0);
                         controls.bulkActionLength = 0;
-                        link.html(link.attr('rel') + ' <span class="badge badge-pill badge-dark"></span>');
+                        link.html(link.attr('rel') + ' <span class="badge text-bg-dark"></span>');
                      });
                   }
                }

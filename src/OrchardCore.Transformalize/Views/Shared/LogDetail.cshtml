@@ -28,7 +28,7 @@
                   foreach (var warning in Model.Process.Warnings()) {
                      <tr>
                         <td> </td>
-                        <td><span class="badge badge-warning">Warning</span></td>
+                        <td><span class="badge text-bg-warning">Warning</span></td>
                         <td>@Model.Process.Name</td>
                         <td> </td>
                         <td>@warning</td>
@@ -39,7 +39,7 @@
                   foreach (var error in Model.Process.Errors()) {
                      <tr>
                         <td> </td>
-                        <td><span class="badge badge-danger">Error</span></td>
+                        <td><span class="badge text-bg-danger">Error</span></td>
                         <td>@Model.Process.Name</td>
                         <td> </td>
                         <td>@error</td>
@@ -55,19 +55,19 @@
                   <td>
                      @switch (entry.LogLevel) {
                         case LogLevel.Info:
-                           <span class="badge badge-info">Info</span>
+                           <span class="badge text-bg-info">Info</span>
                            break;
                         case LogLevel.Debug:
-                           <span class="badge badge-secondary">Debug</span>
+                           <span class="badge text-bg-secondary">Debug</span>
                            break;
                         case LogLevel.Error:
-                           <span class="badge badge-danger">Error</span>
+                           <span class="badge text-bg-danger">Error</span>
                            break;
                         case LogLevel.Warn:
-                           <span class="badge badge-warning">Warning</span>
+                           <span class="badge text-bg-warning">Warning</span>
                            break;
                         default:
-                           <span class="badge badge-light">None</span>
+                           <span class="badge text-bg-light">None</span>
                            break;
                      }
 

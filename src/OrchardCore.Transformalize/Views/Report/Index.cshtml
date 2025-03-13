@@ -93,6 +93,12 @@
       margin-top: 7px !important;
    }
 
+   .small-badge {
+      font-size: 0.75em;
+      padding: 0.2em 0.4em;
+      line-height: 1;
+   }
+
    @foreach (var script in Model.Process.Scripts.Where(s => s.Global && s.Language == "css" && string.IsNullOrEmpty(s.File))) {
    <text>/* @script.Name css script */</text>
    @Html.Raw(script.Content)
@@ -216,12 +222,12 @@
                                     case "bool":
                                     case "boolean":
                                        if ((bool)row[field.Alias]) {
-                                          <span class="badge badge-pill alert-success">
-                                             <span class="fas fa-check"></span>
+                                          <span class="badge text-bg-success small-badge" aria-label="Yes">
+                                             <span class="fas fa-check" aria-hidden="true"></span>
                                           </span>
                                        } else {
-                                          <span class="badge badge-pill alert-danger">
-                                             <span class="fas fa-times"></span>
+                                          <span class="badge text-bg-danger small-badge" aria-label="No">
+                                             <span class="fas fa-times" aria-hidden="true"></span>
                                           </span>
                                        }
                                        break;
