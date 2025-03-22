@@ -51,8 +51,7 @@
                 placeholder="@Model.Parameter.Label"
                 @(Html.Raw(Model.Parameter.Width > 0 ? "style=\"width:" + Model.Parameter.Width + "px\"" : string.Empty)) />
       } else {
-         <select class=""
-                 size="1"
+         <select size="1"
                  title="All"
                  data-actions-box="true"
                  data-width="fit"

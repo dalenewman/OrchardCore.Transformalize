@@ -169,20 +169,20 @@ namespace TransformalizeModule {
              .SetCdnIntegrity("sha256-Ng5EdzHS/CC37tR7tE75e4Th9+fBvOB4eYITOkXS22Q=", "sha256-9PjI1IwVXcv44E37KbDVAJdEYNCCBK3+Ddo757s6L8g=")
              .SetVersion("5.52.2");
 
-         // 1.14.0-beta for Bootstrap 5 Support
+         // 1.14.0-beta3 for Bootstrap 5 Support
          _manifest
-             .DefineScript("bootstrap-select-beta")
+             .DefineScript("bootstrap-select-beta3")
              .SetDependencies("jQuery", "bootstrap")
              .SetUrl($"~/{Common.ModuleName}/Scripts/bootstrap-select.min.js", $"~/{Common.ModuleName}/Scripts/bootstrap-select.js")
-             .SetCdn("https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.14.0-beta2/js/bootstrap-select.min.js", "https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.14.0-beta2/js/bootstrap-select.js")
-             .SetCdnIntegrity("sha512-FHZVRMUW9FsXobt+ONiix6Z0tIkxvQfxtCSirkKc5Sb4TKHmqq1dZa8DphF0XqKb3ldLu/wgMa8mT6uXiLlRlw==", "sha512-ygyrAVxux4a+xKAg4oj7ZKVKZgx+3lT4CYLkoYNT5VaSZcqfYDGDQkiNUBvS/Ggul5g10aCIlMsZ9qrjoUME9A==")
+             .SetCdn("https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.14.0-beta3/js/bootstrap-select.min.js", "https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.14.0-beta3/js/bootstrap-select.js")
+             .SetCdnIntegrity("sha512-yrOmjPdp8qH8hgLfWpSFhC/+R9Cj9USL8uJxYIveJZGAiedxyIxwNw4RsLDlcjNlIRR4kkHaDHSmNHAkxFTmgg==", "sha512-ndehf3lK6GqdbSjARTyQyamMu2k6VcKG9yG+uza6TBtFX40SALRDvbw/CsdxgqSk5p3k9gvZnbzmcP1JOcRUGQ==")
              .SetVersion("1.14.0");
 
          _manifest
-             .DefineStyle("bootstrap-select-beta")
+             .DefineStyle("bootstrap-select-beta3")
              .SetUrl($"~/{Common.ModuleName}/Styles/bootstrap-select.min.css", $"~/{Common.ModuleName}/Styles/bootstrap-select.css")
-             .SetCdn("https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.14.0-beta2/css/bootstrap-select.min.css", "https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.14.0-beta2/css/bootstrap-select.css")
-             .SetCdnIntegrity("sha512-mR/b5Y7FRsKqrYZou7uysnOdCIJib/7r5QeJMFvLNHNhtye3xJp1TdJVPLtetkukFn227nKpXD9OjUc09lx97Q==", "sha512-txEvwMt/+RgCCbxKwzCZNTusZHDw1To/n29O2UglIWO01ce9Ys/QOp3YV/ZEOyxxKTQuFFNZFgaOiPmN6EgPyw==")
+             .SetCdn("https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.14.0-beta3/css/bootstrap-select.min.css", "https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.14.0-beta3/css/bootstrap-select.css")
+             .SetCdnIntegrity("sha512-g2SduJKxa4Lbn3GW+Q7rNz+pKP9AWMR++Ta8fgwsZRCUsawjPvF/BxSMkGS61VsR9yinGoEgrHPGPn2mrj8+4w==", "sha512-JWw0M82pi7GIUtAZX0w+zrER725lLReU7KprmCWGJejW4k/ZAtGR6Veij9DoTcUvHTLn1OzpaDr2fkop/lJICw==")
              .SetVersion("1.14.0");
 
          // Prismjs
