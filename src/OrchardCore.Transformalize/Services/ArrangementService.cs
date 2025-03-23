@@ -1,11 +1,11 @@
-﻿using Etch.OrchardCore.ContentPermissions.Services;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using TransformalizeModule.Models;
 using TransformalizeModule.Services.Contracts;
 using TransformalizeModule.ViewModels;
 using OrchardCore.ContentManagement;
+using OrchardCoreContrib.ContentPermissions.Services;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -46,8 +46,8 @@ namespace TransformalizeModule.Services {
          return contentItem;
       }
 
-      public bool CanAccess(ContentItem contentItem) {
-         return _contentPermissionsService.CanAccess(contentItem);
+      public async Task<bool> CanAccess(ContentItem contentItem) {
+         return await _contentPermissionsService.AuthorizeAsync(contentItem);
       }
 
       public void SetupInvalidParametersResponse<T>(TransformalizeRequest request, TransformalizeResponse<T> response) {

@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 namespace TransformalizeModule.Services.Contracts {
    public interface IArrangementService {
       Task<ContentItem> GetByIdOrAliasAsync(string idOrAlias);
-      bool CanAccess(ContentItem contentItem);
+      Task<bool> CanAccess(ContentItem contentItem);
       void SetupInvalidParametersResponse<TPart>(TransformalizeRequest request, TransformalizeResponse<TPart> response);
       void SetupPermissionsResponse<TPart>(TransformalizeRequest request, TransformalizeResponse<TPart> response);
       void SetupNotFoundResponse<TPart>(TransformalizeRequest request, TransformalizeResponse<TPart> response);

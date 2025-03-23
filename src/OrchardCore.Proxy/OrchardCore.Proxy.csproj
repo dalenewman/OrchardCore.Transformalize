@@ -4,9 +4,9 @@
       <TargetFramework>net8.0</TargetFramework>
       <AddRazorSupportForMvc>true</AddRazorSupportForMvc>
       <RootNamespace>ProxyModule</RootNamespace>
-      <Version>0.12.1</Version>
-      <FileVersion>0.12.1</FileVersion>
-      <AssemblyVersion>0.12.1</AssemblyVersion>
+      <Version>0.13.0</Version>
+      <FileVersion>0.13.0</FileVersion>
+      <AssemblyVersion>0.13.0</AssemblyVersion>
       <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
       <Authors>Dale Newman</Authors>
       <Copyright>Copyright © 2023-2025</Copyright>
@@ -35,7 +35,7 @@
       <PackageReference Include="OrchardCore.ContentTypes.Abstractions" Version="2.1.6" />
       <PackageReference Include="OrchardCore.DisplayManagement" Version="2.1.6" />
 
-      <PackageReference Include="Etch.OrchardCore.ContentPermissions" Version="1.7.0" />
+      <PackageReference Include="OrchardCoreContrib.ContentPermissions" Version="1.0.0" />
    </ItemGroup>
 
 </Project>

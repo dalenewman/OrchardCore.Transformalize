@@ -3,9 +3,9 @@
       <TargetFramework>net8.0</TargetFramework>
       <AddRazorSupportForMvc>true</AddRazorSupportForMvc>
       <RootNamespace>TransformalizeModule</RootNamespace>
-      <Version>0.12.1</Version>
-      <FileVersion>0.12.1</FileVersion>
-      <AssemblyVersion>0.12.1</AssemblyVersion>
+      <Version>0.13.0</Version>
+      <FileVersion>0.13.0</FileVersion>
+      <AssemblyVersion>0.13.0</AssemblyVersion>
       <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
       <Authors>Dale Newman</Authors>
       <Copyright>Copyright © 2013-2025</Copyright>
@@ -48,12 +48,12 @@
       <PackageReference Include="OrchardCore.Workflows" Version="2.1.6" />
 
       <!-- third party modules -->
-      <PackageReference Include="Etch.OrchardCore.ContentPermissions" Version="1.7.0" />
 
       <!-- misc -->
       <PackageReference Include="Flurl" Version="3.0.7" />
       <PackageReference Include="Nito.AsyncEx" Version="5.1.2" />
       <PackageReference Include="NodaTime" Version="3.2.0" />
+      <PackageReference Include="OrchardCoreContrib.ContentPermissions" Version="1.0.0" />
 
       <!-- transformalize updated -->
       <PackageReference Include="Transformalize" Version="0.11.1-beta" />

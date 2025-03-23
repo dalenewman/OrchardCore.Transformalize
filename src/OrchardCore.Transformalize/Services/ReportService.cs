@@ -28,8 +28,8 @@ namespace TransformalizeModule.Services {
          _httpContextAccessor = httpContextAccessor;
       }
 
-      public bool CanAccess(ContentItem contentItem) {
-         return _arrangementService.CanAccess(contentItem);
+      public async Task<bool> CanAccess(ContentItem contentItem) {
+         return await _arrangementService.CanAccess(contentItem);
       }
 
       public async Task<ContentItem> GetByIdOrAliasAsync(string idOrAlias) {
@@ -83,7 +83,8 @@ namespace TransformalizeModule.Services {
             return response;
          }
 
-         if (request.Secure && !CanAccess(response.ContentItem)) {
+         var authorized = await CanAccess(response.ContentItem);
+         if (request.Secure && !authorized) {
             SetupPermissionsResponse(request, response);
             return response;
          }
