@@ -10,7 +10,7 @@ using Transformalize.Transforms;
 namespace TransformalizeModule.Services.Transforms {
    public class UserIdTransform : BaseTransform {
 
-      private readonly int _userId;
+      private readonly long _userId;
 
       public UserIdTransform(
          IHttpContextAccessor httpContext = null,
@@ -33,7 +33,7 @@ namespace TransformalizeModule.Services.Transforms {
             var username = httpContext.HttpContext.User?.Identity?.Name ?? "Anonymous";
             if(username != "Anonymous") {
                if (userService.GetUserAsync(username).Result is User user) {
-                  _userId = (int)user.Id; // TODO: Update Id to long in Transformalize
+                  _userId = user.Id;
                }
             }
          }

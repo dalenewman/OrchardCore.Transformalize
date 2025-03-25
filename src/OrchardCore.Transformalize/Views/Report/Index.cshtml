@@ -16,13 +16,13 @@
 <script asp-name="jQuery" at="Head"></script>
 <script asp-name="jQuery-ui" at="Foot"></script>
 <script asp-name="popper" at="Foot"></script>
-<script asp-name="bootstrap-select-beta" version="1.14.0" at="Foot"></script>
+<script asp-name="bootstrap-select-beta3" version="1.14.0" at="Foot"></script>
 <script asp-name="prism" version="1.20.0" at="Foot"></script>
 <script asp-name="prism-markup" version="1.20.0" at="Foot"></script>
 <script asp-name="block-ui" version="2.70.0" at="Foot"></script>
 
 <style asp-name="jQuery-ui"></style>
-<style asp-name="bootstrap-select-beta" version="1.14.0"></style>
+<style asp-name="bootstrap-select-beta3" version="1.14.0"></style>
 <style asp-name="prism" version="1.20.0"></style>
 
 <style>
@@ -91,6 +91,12 @@
 
    td > div > input[type="checkbox"] {
       margin-top: 7px !important;
+   }
+
+   .small-badge {
+      font-size: 0.75em;
+      padding: 0.2em 0.4em;
+      line-height: 1;
    }
 
    @foreach (var script in Model.Process.Scripts.Where(s => s.Global && s.Language == "css" && string.IsNullOrEmpty(s.File))) {
@@ -216,12 +222,12 @@
                                     case "bool":
                                     case "boolean":
                                        if ((bool)row[field.Alias]) {
-                                          <span class="badge badge-pill alert-success">
-                                             <span class="fas fa-check"></span>
+                                          <span class="badge text-bg-success small-badge" aria-label="Yes">
+                                             <span class="fas fa-check" aria-hidden="true"></span>
                                           </span>
                                        } else {
-                                          <span class="badge badge-pill alert-danger">
-                                             <span class="fas fa-times"></span>
+                                          <span class="badge text-bg-danger small-badge" aria-label="No">
+                                             <span class="fas fa-times" aria-hidden="true"></span>
                                           </span>
                                        }
                                        break;

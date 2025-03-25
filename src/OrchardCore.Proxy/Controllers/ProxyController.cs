@@ -3,7 +3,7 @@ using ProxyModule.Models;
 using System.Text.RegularExpressions;
 using Microsoft.Extensions.Logging;
 using OrchardCore.ContentManagement;
-using Etch.OrchardCore.ContentPermissions.Services;
+using OrchardCoreContrib.ContentPermissions.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Localization;
 
@@ -59,7 +59,8 @@ namespace ProxyModule.Controllers {
             return new StatusCodeResult(404);
          }
 
-         if (!_contentPermissionsService.CanAccess(contentItem)) {
+         var authorized = await _contentPermissionsService.AuthorizeAsync(contentItem);
+         if (!authorized) {
             return new StatusCodeResult(401);
          }
 

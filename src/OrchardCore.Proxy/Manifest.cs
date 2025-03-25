@@ -4,10 +4,10 @@ using OrchardCore.Modules.Manifest;
     Name = "OrchardCore.Proxy",
     Author = "Dale Newman",
     Website = "https://github.com/dalenewman/OrchardCore.Proxy",
-    Version = "0.0.1",
+    Version = "0.13.1",
     Description = "for secured access to internal resources",
     Category = "Security",
     Dependencies = new[]{
-        "Etch.OrchardCore.ContentPermissions"
+        "OrchardCoreContrib.ContentPermissions"
     }
 )]

@@ -16,7 +16,6 @@
 // limitations under the License.
 #endregion
 using Cfg.Net.Contracts;
-using Esprima;
 using Jint;
 using Microsoft.Extensions.Caching.Memory;
 using OrchardCore.Environment.Cache;
@@ -136,8 +135,8 @@ namespace TransformalizeModule.Services.Transforms {
             }
 
             try {
-               transform.Script = new JavaScriptParser(new ParserOptions() { Tolerant = true }).ParseScript(scriptBuilder.ToString());
-            } catch (ParserException ex) {
+               transform.Script = Engine.PrepareScript(scriptBuilder.ToString());
+            } catch (Exception ex) {
                Context.Error(ex.Message);
                Utility.CodeToError(Context, scriptBuilder.ToString());
                Run = false;

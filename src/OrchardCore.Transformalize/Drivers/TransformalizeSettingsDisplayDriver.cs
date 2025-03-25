@@ -26,7 +26,7 @@ namespace TransformalizeModule.Drivers {
       }
 
       // Here's the EditAsync override to display editor for our site settings on the Dashboard.
-      public override async Task<IDisplayResult> EditAsync(TransformalizeSettings settings, BuildEditorContext context) {
+      public override async Task<IDisplayResult> EditAsync(ISite model, TransformalizeSettings settings, BuildEditorContext context) {
 
          if (!await IsAuthorizedToManageTransformalizeSettingsAsync()) {
             return null;
@@ -52,7 +52,7 @@ namespace TransformalizeModule.Drivers {
 
       }
 
-      public override async Task<IDisplayResult> UpdateAsync(TransformalizeSettings settings, BuildEditorContext context) {
+      public override async Task<IDisplayResult> UpdateAsync(ISite model, TransformalizeSettings settings, UpdateEditorContext context) {
 
          if (context.GroupId == Common.SettingsGroupId) {
 
@@ -61,49 +61,49 @@ namespace TransformalizeModule.Drivers {
             }
 
             // this gets what's coming from the editor into model
-            var model = new TransformalizeSettingsViewModel();
+            var viewModel = new TransformalizeSettingsViewModel();
 
-            await context.Updater.TryUpdateModelAsync(model, Prefix);
+            await context.Updater.TryUpdateModelAsync(viewModel, Prefix);
 
-            settings.MapBoxToken = model.MapBoxToken;
-            settings.GoogleApiKey = model.GoogleApiKey;
+            settings.MapBoxToken = viewModel.MapBoxToken;
+            settings.GoogleApiKey = viewModel.GoogleApiKey;
 
-            settings.BulkActionCreateTask = model.BulkActionCreateTask;
-            settings.BulkActionWriteTask = model.BulkActionWriteTask;
-            settings.BulkActionSummaryTask = model.BulkActionSummaryTask;
-            settings.BulkActionRunTask = model.BulkActionRunTask;
-            settings.BulkActionSuccessTask = model.BulkActionSuccessTask;
-            settings.BulkActionFailTask = model.BulkActionFailTask;
+            settings.BulkActionCreateTask = viewModel.BulkActionCreateTask;
+            settings.BulkActionWriteTask = viewModel.BulkActionWriteTask;
+            settings.BulkActionSummaryTask = viewModel.BulkActionSummaryTask;
+            settings.BulkActionRunTask = viewModel.BulkActionRunTask;
+            settings.BulkActionSuccessTask = viewModel.BulkActionSuccessTask;
+            settings.BulkActionFailTask = viewModel.BulkActionFailTask;
 
             // common arrangement
-            if (string.IsNullOrWhiteSpace(model.CommonArrangement)) {
-               settings.CommonArrangement = model.CommonArrangement;
+            if (string.IsNullOrWhiteSpace(viewModel.CommonArrangement)) {
+               settings.CommonArrangement = viewModel.CommonArrangement;
             } else {
                try {
-                  var process = new Process(model.CommonArrangement);
+                  var process = new Process(viewModel.CommonArrangement);
                   if (process.Errors().Any()) {
                      foreach (var error in process.Errors()) {
                         context.Updater.ModelState.AddModelError(Prefix, S[error]);
                      }
                   } else {
-                     settings.CommonArrangement = model.CommonArrangement;
+                     settings.CommonArrangement = viewModel.CommonArrangement;
                   }
                } catch (Exception ex) {
                   context.Updater.ModelState.AddModelError(Prefix, S[ex.Message]);
                }
             }
 
-            if (PageSizesOkay(context, "Default Page Sizes", model.DefaultPageSizes)) {
-               settings.DefaultPageSizes = model.DefaultPageSizes;
+            if (PageSizesOkay(context, "Default Page Sizes", viewModel.DefaultPageSizes)) {
+               settings.DefaultPageSizes = viewModel.DefaultPageSizes;
             }
 
-            if (PageSizesOkay(context, "Default Page Sizes Extended", model.DefaultPageSizesExtended)) {
-               settings.DefaultPageSizesExtended = model.DefaultPageSizesExtended;
+            if (PageSizesOkay(context, "Default Page Sizes Extended", viewModel.DefaultPageSizesExtended)) {
+               settings.DefaultPageSizesExtended = viewModel.DefaultPageSizesExtended;
             }
 
          }
 
-         return await EditAsync(settings, context);
+         return await EditAsync(model, settings, context);
       }
 
       private async Task<bool> IsAuthorizedToManageTransformalizeSettingsAsync() {

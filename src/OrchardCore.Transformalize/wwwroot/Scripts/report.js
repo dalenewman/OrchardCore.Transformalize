@@ -65,6 +65,7 @@ function bulkAction(page, name) {
       $form.append($(".AntiForge").html());
       $form.append('<input type="hidden" name="ActionName" value="' + name + '" />');
       $form.append('<input type="hidden" name="ActionCount" value="' + controls.bulkActionLength + '" />');
+      $form.append('<input type="hidden" name="ReturnUrl" value="' + window.location.href + '" />');
       controls.submit(page);
    }
 }
@@ -76,7 +77,7 @@ function updateBulkActions() {
       var link = $(this);
       var len = (all ? "All" : $('#select-all:checked').length > 0 ? length - 1 : length);
       controls.bulkActionLength = len;
-      link.html(link.attr('rel') + ' <span class="badge badge-pill badge-dark">' + len + "</span>");
+      link.html(link.attr('rel') + ' <span class="badge text-bg-dark">' + len + "</span>");
    });
 }
 
@@ -103,8 +104,6 @@ $(document).ready(function () {
    });
 
    $('#id_report select').selectpicker({
-      iconBase: "fas",
-      tickIcon: "fa-check",
       liveSearch: true,
       deselectAllText: "Off",
       noneSelectedText: "All",
@@ -113,7 +112,8 @@ $(document).ready(function () {
       selectedTextFormat: "count > 2",
       style: "btn-sm btn-light",
       width: "fit",
-      sanitize: false
+      sanitize: false,
+      showTick: true
    });
 
    $("#id_report select").on("changed.bs.select", function (e, clickedIndex, isSelected, previousValue) {
@@ -122,6 +122,18 @@ $(document).ready(function () {
       if (!this.multiple || $(this).val().length === 0) {
          controls.submit(1);
       }
+
+      // suggested by copilot... 
+      //var $option = $(this).find('option').eq(clickedIndex);
+      //var $dropdownItem = $('#bs-select-' + $(this).attr('id') + '-' + clickedIndex);
+
+      //if (isSelected) {
+      //   $dropdownItem.addClass('selected');
+      //} else {
+      //   $dropdownItem.removeClass('selected');
+      //}
+
+
    });
    $("#id_report select").css("visibility", "visible");
 

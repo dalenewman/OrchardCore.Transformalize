@@ -57,7 +57,7 @@ namespace TransformalizeModule.Services {
 
       private string ModifyInternal(string cfg, long id, IDictionary<string,string> parameters) {
 
-         var process = new Process(cfg) { Id = (int)id };  // TODO: Update Id to long in Transformalize
+         var process = new Process(cfg) { Id = id };
 
          // if there aren't any parameters, just leave
          if (!process.Parameters.Any()) {
@@ -111,7 +111,7 @@ namespace TransformalizeModule.Services {
 
          // create process to load the form submission
          var modified = new Process {
-            Id = (int)id, // TODO: Update Id to long in Transformalize
+            Id = id,
             Name = "Load Form",
             ReadOnly = true,
             Entities = new List<Entity> { entity },

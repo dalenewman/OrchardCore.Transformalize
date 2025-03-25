@@ -35,23 +35,23 @@
 
 <script asp-name="jQuery" at="Head"></script>
 <script asp-name="jQuery-ui" at="Foot"></script>
-<script asp-name="bootstrap-select-beta" version="1.14.0" at="Foot"></script>
+<script asp-name="bootstrap-select-beta3" version="1.14.0" at="Foot"></script>
 <script asp-name="block-ui" version="2.70.0" at="Foot"></script>
-<script asp-name="mapbox-gl" version="1.11.0" at="Head"></script>
+<script asp-name="mapbox-gl" version="3.6.0" at="Head"></script>
 @if (hasActions) { 
-   <script asp-name="mapbox-gl-draw" version="1.1.2" at="Foot"></script>
+   <script asp-name="mapbox-gl-draw" version="1.4.3" at="Foot"></script>
 }
-<script asp-name="turf" version="5.1.6" at="Foot"></script>
+<script asp-name="turf" version="6.5.0" at="Foot"></script>
 
 @foreach (var script in Model.Process.Scripts.Where(s => s.Global && !string.IsNullOrEmpty(s.File) && (s.Language == "js" || s.Language == Transformalize.Constants.DefaultSetting && s.File.EndsWith(".js", StringComparison.OrdinalIgnoreCase)))) {
    <script at="Foot" src="@script.File"></script>
 }
 
 <style asp-name="jQuery-ui"></style>
-<style asp-name="bootstrap-select-beta" version="1.14.0"></style>
-<style asp-name="mapbox-gl" version="1.11.0"></style>
+<style asp-name="bootstrap-select-beta3" version="1.14.0"></style>
+<style asp-name="mapbox-gl" version="3.6.0"></style>
 @if (hasActions) { 
-   <style asp-name="mapbox-gl-draw" version="1.1.2"></style>
+   <style asp-name="mapbox-gl-draw" version="1.4.3"></style>
 }
 
 @foreach (var script in Model.Process.Scripts.Where(s => s.Global && !string.IsNullOrEmpty(s.File) && (s.Language == "css" || s.Language == Transformalize.Constants.DefaultSetting && s.File.EndsWith(".css", StringComparison.OrdinalIgnoreCase)))) {
@@ -322,7 +322,7 @@
                         var link = $(this);
                         $("input[name=bulk-action-length]").val(selected.features.length);
                         controls.bulkActionLength = selected.features.length;
-                        link.html(link.attr('rel') + ' <span class="badge badge-pill badge-dark">' + selected.features.length + "</span>");
+                        link.html(link.attr('rel') + ' <span class="badge text-bg-dark">' + selected.features.length + "</span>");
                      });
                   } else {
                      // update the little badges
@@ -330,7 +330,7 @@
                         var link = $(this);
                         $("input[name=bulk-action-length]").val(0);
                         controls.bulkActionLength = 0;
-                        link.html(link.attr('rel') + ' <span class="badge badge-pill badge-dark"></span>');
+                        link.html(link.attr('rel') + ' <span class="badge text-bg-dark"></span>');
                      });
                   }
                }

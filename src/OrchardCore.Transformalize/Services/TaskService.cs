@@ -23,7 +23,7 @@ namespace TransformalizeModule.Services {
          _runService = runService;
       }
 
-      public bool CanAccess(ContentItem contentItem) {
+      public Task<bool> CanAccess(ContentItem contentItem) {
          return _arrangementService.CanAccess(contentItem);
       }
 
@@ -54,7 +54,8 @@ namespace TransformalizeModule.Services {
             return response;
          }
 
-         if (request.Secure && !CanAccess(response.ContentItem)) {
+         var authorized = await CanAccess(response.ContentItem);
+         if (request.Secure && !authorized) {
             SetupPermissionsResponse(request, response);
             return response;
          }

@@ -2,18 +2,14 @@
 using OrchardCore.Navigation;
 
 namespace TransformalizeModule.Navigation {
-   public class TransformalizeSettingsAdminMenu : INavigationProvider {
+   public class TransformalizeSettingsAdminMenu : AdminNavigationProvider {
       private readonly IStringLocalizer T;
 
       public TransformalizeSettingsAdminMenu(IStringLocalizer<TransformalizeSettingsAdminMenu> stringLocalizer) {
          T = stringLocalizer;
       }
 
-      public Task BuildNavigationAsync(string name, NavigationBuilder builder) {
-
-         if (!string.Equals(name, "admin", StringComparison.OrdinalIgnoreCase)) {
-            return Task.CompletedTask;
-         }
+      protected override ValueTask BuildAsync(NavigationBuilder builder) { 
 
          builder.Add(T["Transformalize"], configuration => configuration
             .Id("tfl")
@@ -25,7 +21,7 @@ namespace TransformalizeModule.Navigation {
             )
          );
 
-         return Task.CompletedTask;
+         return ValueTask.CompletedTask;
       }
 
    }

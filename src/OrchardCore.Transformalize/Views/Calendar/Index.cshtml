@@ -30,7 +30,7 @@
 
 <script asp-name="jQuery" at="Head"></script>
 <script asp-name="jQuery-ui" at="Foot"></script>
-<script asp-name="bootstrap-select-beta" version="1.14.0" at="Foot"></script>
+<script asp-name="bootstrap-select-beta3" version="1.14.0" at="Foot"></script>
 <script asp-name="block-ui" version="2.70.0" at="Foot"></script>
 <script asp-name="underscore" at="Foot"></script>
 <script asp-name="bootstrap-calendar" version="0.2.5" at="Foot"></script>
@@ -40,7 +40,7 @@
 }
 
 <style asp-name="jQuery-ui"></style>
-<style asp-name="bootstrap-select-beta" version="1.14.0"></style>
+<style asp-name="bootstrap-select-beta3" version="1.14.0"></style>
 <style asp-name="bootstrap-calendar" version="0.2.5"></style>
 
 @foreach (var script in Model.Process.Scripts.Where(s => s.Global && !string.IsNullOrEmpty(s.File) && (s.Language == "css" || s.Language == Transformalize.Constants.DefaultSetting && s.File.EndsWith(".css", StringComparison.OrdinalIgnoreCase)))) {

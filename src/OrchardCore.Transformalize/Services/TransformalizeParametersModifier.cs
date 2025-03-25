@@ -187,7 +187,7 @@ namespace TransformalizeModule.Services {
 
          // create process to transform and validate the parameter values
          var process = new Process {
-            Id = (int)id,   // TODO: Update it to a long in Transformalize
+            Id = id,
             Name = "Transformalize Parameters",
             ReadOnly = true,
             Mode = "form",  // causes auto post-back's to resolve to either true or false
