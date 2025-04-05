@@ -112,6 +112,8 @@
    <input id="id_sort" class="bsh" type="hidden" name="sort" value="@(Context.Request.Query["sort"].ToString() ?? string.Empty)" />
    <input id="id_page" class="bsh" type="hidden" name="page" value="@firstEntity.Page" />
    <input id="id_size" class="bsh" type="hidden" name="size" value="@(firstEntity.Size)" />
+   <input id="id_c" class="bsh" type="hidden" name="c" value="@(Context.Request.Query["c"].ToString() ?? string.Empty)" />
+   <input id="id_t" class="bsh" type="hidden" name="t" value="@(Context.Request.Query["t"].ToString() ?? string.Empty)" />
 
    @foreach (var parameter in Model.Process.Parameters.Where(p => !p.Prompt && Context.Request.Query[p.Name].ToString() != null).Select(p => p.Name)) {
       <input type="hidden" name="@parameter" value="@(Context.Request.Query[parameter].ToString())" />

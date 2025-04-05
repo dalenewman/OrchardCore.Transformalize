@@ -32,7 +32,7 @@ namespace TransformalizeModule.Controllers {
       [HttpGet]
       public async Task<ActionResult> Index(string contentItemId, bool log = false) {
 
-         var report = await _reportService.Validate(new TransformalizeRequest(contentItemId, HttpContext.User.Identity.Name));
+         var report = await _reportService.Validate(new TransformalizeRequest(contentItemId));
 
          if (report.Fails()) {
             return report.ActionResult;
@@ -43,7 +43,7 @@ namespace TransformalizeModule.Controllers {
             return View("Log", new LogViewModel(_logger.Log, report.Process, report.ContentItem));
          }
 
-         return log ? View("Log", new LogViewModel(_logger.Log, report.Process, report.ContentItem)) : View(new ReportViewModel(report.Process, report.ContentItem, contentItemId));
+         return log ? View("Log", new LogViewModel(_logger.Log, report.Process, report.ContentItem)) : View(new ReportViewModel(report.Process, report.ContentItem, contentItemId) { BreadCrumbs = report.BreadCrumbs });
 
       }
 
@@ -55,7 +55,7 @@ namespace TransformalizeModule.Controllers {
       [HttpGet]
       public async Task<ActionResult> Run(string contentItemId, string format = "json") {
 
-         var request = new TransformalizeRequest(contentItemId, HttpContext.User.Identity.Name) { Format = format };
+         var request = new TransformalizeRequest(contentItemId) { Format = format };
          var report = await _reportService.Validate(request);
 
          if (report.Fails()) {
@@ -75,7 +75,7 @@ namespace TransformalizeModule.Controllers {
       [HttpGet]
       public async Task<ActionResult> StreamJson(string contentItemId) {
 
-         var request = new TransformalizeRequest(contentItemId, HttpContext.User.Identity.Name) { Mode = "stream" };
+         var request = new TransformalizeRequest(contentItemId) { Mode = "stream" };
          var stream = await _reportService.Validate(request).ConfigureAwait(false);
 
          if (stream.Fails()) {
@@ -113,7 +113,7 @@ namespace TransformalizeModule.Controllers {
       [HttpGet]
       public async Task<ActionResult> StreamGeoJson(string contentItemId) {
 
-         var request = new TransformalizeRequest(contentItemId, HttpContext.User.Identity.Name) { Mode = "stream" };
+         var request = new TransformalizeRequest(contentItemId) { Mode = "stream" };
          var stream = await _reportService.Validate(request).ConfigureAwait(false);
 
          if (stream.Fails()) {
@@ -169,7 +169,7 @@ namespace TransformalizeModule.Controllers {
       [HttpGet]
       public async Task<ActionResult> StreamCsv(string contentItemId) {
 
-         var request = new TransformalizeRequest(contentItemId, HttpContext.User.Identity.Name) { Mode = "stream" };
+         var request = new TransformalizeRequest(contentItemId) { Mode = "stream" };
          var stream = await _reportService.Validate(request).ConfigureAwait(false);
 
          if (stream.Fails()) {

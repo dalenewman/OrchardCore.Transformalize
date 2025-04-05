@@ -25,6 +25,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "nuget", "nuget", "{ABE80D99
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OrchardCore.Proxy", "src\OrchardCore.Proxy\OrchardCore.Proxy.csproj", "{43FB332D-8550-4EED-AA1A-66E8490C20BA}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Transformalize", "..\Transformalize\src\Transformalize\Transformalize.csproj", "{12FCB374-ECBB-4FBB-8FB3-FBBDBF5F299A}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -43,6 +45,10 @@ Global
 		{43FB332D-8550-4EED-AA1A-66E8490C20BA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{43FB332D-8550-4EED-AA1A-66E8490C20BA}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{43FB332D-8550-4EED-AA1A-66E8490C20BA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{12FCB374-ECBB-4FBB-8FB3-FBBDBF5F299A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{12FCB374-ECBB-4FBB-8FB3-FBBDBF5F299A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{12FCB374-ECBB-4FBB-8FB3-FBBDBF5F299A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{12FCB374-ECBB-4FBB-8FB3-FBBDBF5F299A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

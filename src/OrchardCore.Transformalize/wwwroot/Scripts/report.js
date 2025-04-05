@@ -122,19 +122,8 @@ $(document).ready(function () {
       if (!this.multiple || $(this).val().length === 0) {
          controls.submit(1);
       }
-
-      // suggested by copilot... 
-      //var $option = $(this).find('option').eq(clickedIndex);
-      //var $dropdownItem = $('#bs-select-' + $(this).attr('id') + '-' + clickedIndex);
-
-      //if (isSelected) {
-      //   $dropdownItem.addClass('selected');
-      //} else {
-      //   $dropdownItem.removeClass('selected');
-      //}
-
-
    });
+
    $("#id_report select").css("visibility", "visible");
 
    $('.search-button').bind('click', function () {

@@ -13,6 +13,7 @@
 
    var hasParameters = Model.Process.Parameters.Any(p => p.Prompt);
    var entity = Model.Process.Entities.FirstOrDefault() ?? new Entity { Name = "Missing Entity" };
+   var entityTitle = entity.Label == string.Empty ? entity.Alias : entity.Label;
 
    var settings = Context.RequestServices.GetService<ISettingsService>();
    var pageSizes = new List<int>();
@@ -77,11 +78,21 @@
          </div>
       </div>
 
-      <div class="col-md-6">
+@*       <div class="col-md-6">
          @if (entity.Page == 0 || Model.Process.Mode == "map" && !Model.Part.PageSizesExtended.Enabled() || Model.Process.Mode == "calendar" && !Model.Part.PageSizesExtended.Enabled()) {
             <h3 class="text-primary" style="margin: 2px 0px 0px 0px;">@(entity.Label == string.Empty ? entity.Alias : entity.Label)</h3>
          } else {
             <nav aria-label="...">
+
+               @if(Model.BreadCrumbs.Any()){
+               <ol class="breadcrumb">
+                  @foreach(var breadcrumb in Model.BreadCrumbs){
+                     <li class="breadcrumb-item"><a href="@breadcrumb.Url">@breadcrumb.Title</a></li>
+                  }
+                  <li class="breadcrumb-item active" aria-current="page">@(entity.Label == string.Empty ? entity.Alias : entity.Label)</li>
+               </ol>
+               }
+
                <ul class="pagination pagination-sm" style="text-align: center;">
                   @if (entity.Pagination.HasPrevious) {
                      <li class="page-item" title="first page"><a class="page-link" href="javascript:controls.submit(@entity.Pagination.First)"><span class="fas fa-step-backward"></span></a></li>
@@ -90,6 +101,7 @@
                      <li class="page-item disabled"><a href="" class="page-link"><span class="fas fa-step-backward"></span></a></li>
                      <li class="page-item disabled"><a href="" class="page-link"><span class="fas fa-chevron-left"></span></a></li>
                   }
+
                   <li class="page-item disabled" style="white-space:nowrap;">
                      @if (entity.Hits > 0) {
                         <a class="page-link" href="">@(entity.Pagination.StartRow.ToString("#,##0"))-@(entity.Pagination.EndRow.ToString("#,##0")) of @(entity.Hits.ToString("#,##0")) <strong>@(entity.Label == string.Empty ? entity.Alias : entity.Label)</strong></a>
@@ -108,7 +120,65 @@
                </ul>
             </nav>
          }
-      </div>
+      </div> *@
+
+    <div class="col-md-6">
+    @if (entity.Page == 0 || Model.Process.Mode == "map" && !Model.Part.PageSizesExtended.Enabled() || Model.Process.Mode == "calendar" && !Model.Part.PageSizesExtended.Enabled()) {
+        <h3 class="text-primary" style="margin: 2px 0px 0px 0px;">@(entity.Label == string.Empty ? entity.Alias : entity.Label)</h3>
+    } else {
+         <nav aria-label="breadcrumb-and-pagination" style="--bs-breadcrumb-divider: url(&#34;data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='8' height='8'%3E%3Cpath d='M2.5 0L1 1.5 3.5 4 1 6.5 2.5 8l4-4-4-4z' fill='currentColor'/%3E%3C/svg%3E&#34;);">
+            <div class="d-flex justify-content-between align-items-center">
+                @if (Model.BreadCrumbs.Any()) {
+                    <ol class="breadcrumb mb-0">
+                        @foreach (var breadcrumb in Model.BreadCrumbs) {
+                            <li class="breadcrumb-item"><a href="@breadcrumb.Url">@breadcrumb.Title</a></li>
+                        }
+                     @if(entityTitle != "Browse" ){
+                        <li class="breadcrumb-item active" aria-current="page"><strong>@entityTitle</strong></li>
+                     }
+                    </ol>
+                }
+
+                <ul class="pagination pagination-sm mb-0">
+                    @if (entity.Pagination.HasPrevious) {
+                        <li class="page-item" title="first page"><a class="page-link" href="javascript:controls.submit(@entity.Pagination.First)"><span class="fas fa-step-backward"></span></a></li>
+                        <li class="page-item" title="previous page"><a class="page-link" href="javascript:controls.submit(@entity.Pagination.Previous)"><span class="fas fa-chevron-left"></span></a></li>
+                    } else {
+                        <li class="page-item disabled"><a href="" class="page-link"><span class="fas fa-step-backward"></span></a></li>
+                        <li class="page-item disabled"><a href="" class="page-link"><span class="fas fa-chevron-left"></span></a></li>
+                    }
+
+                    @if(Model.BreadCrumbs.Any()){
+                       <li class="page-item disabled" style="white-space:nowrap;">
+                           @if (entity.Hits > 0) {
+                               <a class="page-link" href="">@(entity.Pagination.StartRow.ToString("#,##0"))-@(entity.Pagination.EndRow.ToString("#,##0")) of @(entity.Hits.ToString("#,##0"))</a>
+                           } else {
+                               <a class="page-link" href=""> </a>
+                           }
+                       </li>
+                    } else {
+                       <li class="page-item disabled" style="white-space:nowrap;">
+                           @if (entity.Hits > 0) {
+                               <a class="page-link" href="">@(entity.Pagination.StartRow.ToString("#,##0"))-@(entity.Pagination.EndRow.ToString("#,##0")) of @(entity.Hits.ToString("#,##0")) <strong>@entityTitle</strong></a>
+                           } else {
+                               <a class="page-link" href=""><strong>@entityTitle</strong></a>
+                           }
+                       </li>
+                    }
+
+                    @if (entity.Pagination.HasNext) {
+                        <li class="page-item" title="next page"><a class="page-link" href="javascript:controls.submit(@entity.Pagination.Next)"><span class="fas fa-chevron-right"></span></a></li>
+                        <li class="page-item" title="last page"><a class="page-link" href="javascript:controls.submit(@entity.Pagination.Last)"><span class="fas fa-step-forward"></span></a></li>
+                    } else {
+                        <li class="page-item disabled"><a class="page-link" href=""><span class="fas fa-chevron-right"></span></a></li>
+                        <li class="page-item disabled"><a class="page-link" href=""><span class="fas fa-step-forward"></span></a></li>
+                    }
+                </ul>
+            </div>
+        </nav>
+         }
+   </div>
+
 
       <div class="col-md-3">
          <div class="btn-group float-end" role="group">

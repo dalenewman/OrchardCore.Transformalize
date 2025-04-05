@@ -27,7 +27,7 @@ namespace TransformalizeModule.Controllers {
 
       public async Task<ActionResult> Run(string contentItemId, string format = null) {
 
-         var request = new TransformalizeRequest(contentItemId, HttpContext.User.Identity.Name) { 
+         var request = new TransformalizeRequest(contentItemId) { 
             Format = format, 
             InternalParameters = Common.GetFileParameters(Request)
          };
@@ -50,7 +50,7 @@ namespace TransformalizeModule.Controllers {
 
       public async Task<ActionResult> Form(string contentItemId) {
 
-         var bulkAction = await _formService.ValidateParameters(new TransformalizeRequest(contentItemId, HttpContext.User.Identity.Name));
+         var bulkAction = await _formService.ValidateParameters(new TransformalizeRequest(contentItemId));
 
          if (bulkAction.Fails()) {
             return bulkAction.ActionResult;
@@ -61,7 +61,7 @@ namespace TransformalizeModule.Controllers {
 
       public async Task<ActionResult> Review(string contentItemId) {
 
-         var task = await _formService.ValidateParameters(new TransformalizeRequest(contentItemId, HttpContext.User.Identity.Name));
+         var task = await _formService.ValidateParameters(new TransformalizeRequest(contentItemId));
 
          if (task.Fails()) {
             return task.ActionResult;

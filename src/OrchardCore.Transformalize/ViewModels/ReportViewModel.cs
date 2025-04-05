@@ -37,6 +37,8 @@ namespace TransformalizeModule.ViewModels {
       public ContentItem Item { get; set; }
       public TransformalizeReportPart Part { get; set;}
 
+      public List<BreadCrumb> BreadCrumbs { get; set; } = new List<BreadCrumb>();
+
       public ReportViewModel(Process process, ContentItem item, string idOrAlias) {
          Process = process;
          Item = item;

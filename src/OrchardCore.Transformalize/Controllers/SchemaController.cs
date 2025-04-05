@@ -23,7 +23,7 @@ namespace TransformalizeModule.Controllers {
 
       public async Task<ActionResult> Index(string contentItemId, string format = "xml") {
 
-         var request = new TransformalizeRequest(contentItemId, HttpContext.User.Identity.Name) { Format = format };
+         var request = new TransformalizeRequest(contentItemId) { Format = format };
          var task = await _schemaService.Validate(request);
 
          if (task.Fails()) {

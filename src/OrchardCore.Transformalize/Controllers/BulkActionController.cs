@@ -41,8 +41,7 @@ namespace TransformalizeModule.Controllers {
       [HttpPost]
       public async Task<ActionResult> Create(BulkActionRequest request) {
 
-         var userName = HttpContext.User.Identity.Name;
-         var report = await _reportService.Validate(new TransformalizeRequest(request.ContentItemId, userName));
+         var report = await _reportService.Validate(new TransformalizeRequest(request.ContentItemId));
          if (report.Fails()) {
             return report.ActionResult;
          }
@@ -54,7 +53,7 @@ namespace TransformalizeModule.Controllers {
          // confirm we have an action registered in the report
          if (report.Process.Actions.Any(a => a.Name == request.ActionName)) {
 
-            var bulkAction = await _taskService.Validate(new TransformalizeRequest(request.ActionName, userName) { Secure = false });
+            var bulkAction = await _taskService.Validate(new TransformalizeRequest(request.ActionName) { Secure = false });
 
             if (bulkAction.Fails() && bulkAction.Process.Message != Common.InvalidParametersMessage) {
                return bulkAction.ActionResult;
@@ -63,7 +62,7 @@ namespace TransformalizeModule.Controllers {
             var taskNames = _settingsService.GetBulkActionTaskNames(report.Part);
 
             #region batch creation
-            var user = await _userService.GetUserAsync(userName) as User;
+            var user = await _userService.GetUserAsync(HttpContext.User.Identity.Name) as User;
 
             var createParameters = new Dictionary<string, string> {
 
@@ -87,7 +86,7 @@ namespace TransformalizeModule.Controllers {
                { "Description", report.Process.Actions.First(a=>a.Name == request.ActionName).Description }
             };
 
-            var create = await _taskService.Validate(new TransformalizeRequest(taskNames.Create, userName) { Secure = false, InternalParameters = createParameters });
+            var create = await _taskService.Validate(new TransformalizeRequest(taskNames.Create) { Secure = false, InternalParameters = createParameters });
 
             if (create.Fails()) {
                return create.ActionResult;
@@ -95,7 +94,7 @@ namespace TransformalizeModule.Controllers {
 
             await _taskService.RunAsync(create.Process);
             if (create.Process.Status != 200) {
-               _logger.Warn(() => $"User {userName} received error running action {taskNames.Create}.");
+               _logger.Warn(() => $"User {user.UserName} received error running action {taskNames.Create}.");
                return View("Log", new LogViewModel(_logger.Log, create.Process, create.ContentItem));
             }
 
@@ -123,7 +122,7 @@ namespace TransformalizeModule.Controllers {
                writeParameters[field.Alias] = entity.Rows[0][field.Alias].ToString();
             }
 
-            var write = await _taskService.Validate(new TransformalizeRequest(taskNames.Write, userName) { Secure = false, InternalParameters = writeParameters });
+            var write = await _taskService.Validate(new TransformalizeRequest(taskNames.Write) { Secure = false, InternalParameters = writeParameters });
 
             if (write.Fails()) {
                return write.ActionResult;
@@ -161,7 +160,7 @@ namespace TransformalizeModule.Controllers {
             return RedirectToAction("Review", ParametersToRouteValues(writeParameters));
 
          } else {
-            _logger.Warn(() => $"User {userName} called missing action {request.ActionName} in {report.ContentItem.DisplayText}.");
+            _logger.Warn(() => $"User {HttpContext.User.Identity.Name} called missing action {request.ActionName} in {report.ContentItem.DisplayText}.");
          }
 
          return View("Log", new LogViewModel(_logger.Log, report.Process, report.ContentItem));
@@ -171,13 +170,13 @@ namespace TransformalizeModule.Controllers {
       public async Task<ActionResult> Review(BulkActionReviewRequest request) {
 
          var userName = HttpContext.User.Identity.Name;
-         var report = await _reportService.Validate(new TransformalizeRequest(request.ReportContentItemId, userName));
+         var report = await _reportService.Validate(new TransformalizeRequest(request.ReportContentItemId));
          if (report.Fails()) {
             return report.ActionResult;
          }
 
          var taskNames = _settingsService.GetBulkActionTaskNames(report.Part);
-         var batchSummary = await _taskService.Validate(new TransformalizeRequest(taskNames.Summary, HttpContext.User.Identity.Name) { Secure = false });
+         var batchSummary = await _taskService.Validate(new TransformalizeRequest(taskNames.Summary) { Secure = false });
 
          if (batchSummary.Fails()) {
             return batchSummary.ActionResult;
@@ -185,7 +184,7 @@ namespace TransformalizeModule.Controllers {
 
          await _taskService.RunAsync(batchSummary.Process);
 
-         var bulkAction = await _formService.ValidateParameters(new TransformalizeRequest(request.TaskContentItemId, HttpContext.User.Identity.Name));
+         var bulkAction = await _formService.ValidateParameters(new TransformalizeRequest(request.TaskContentItemId));
 
          if (bulkAction.Fails()) {
             return bulkAction.ActionResult;
@@ -196,7 +195,7 @@ namespace TransformalizeModule.Controllers {
 
       public async Task<ActionResult> Form(BulkActionReviewRequest request) {
 
-         var bulkAction = await _formService.ValidateParameters(new TransformalizeRequest(request.TaskContentItemId, HttpContext.User.Identity.Name));
+         var bulkAction = await _formService.ValidateParameters(new TransformalizeRequest(request.TaskContentItemId));
 
          if (bulkAction.Fails()) {
             return bulkAction.ActionResult;
@@ -208,16 +207,14 @@ namespace TransformalizeModule.Controllers {
 
       public async Task<ActionResult> Run(BulkActionReviewRequest request) {
 
-         var user = HttpContext.User.Identity.Name;
-
-         var report = await _reportService.Validate(new TransformalizeRequest(request.ReportContentItemId, user));
+         var report = await _reportService.Validate(new TransformalizeRequest(request.ReportContentItemId));
          if (report.Fails()) {
             return report.ActionResult;
          }
 
          var taskNames = _settingsService.GetBulkActionTaskNames(report.Part);
 
-         var bulkAction = await _taskService.Validate(new TransformalizeRequest(request.TaskContentItemId, user));
+         var bulkAction = await _taskService.Validate(new TransformalizeRequest(request.TaskContentItemId));
 
          if (bulkAction.Fails()) {
             return bulkAction.ActionResult;
@@ -229,7 +226,7 @@ namespace TransformalizeModule.Controllers {
          var closeParameters = new Dictionary<string, string>() { { "RecordsAffected", recordsAffected.ToString() } };
 
          if (bulkAction.Process.Status == 200) {
-            var batchSuccess = await _taskService.Validate(new TransformalizeRequest(taskNames.Success, user) { InternalParameters = closeParameters });
+            var batchSuccess = await _taskService.Validate(new TransformalizeRequest(taskNames.Success) { InternalParameters = closeParameters });
 
             if (batchSuccess.Fails()) {
                _logger.Warn(() => $"{bulkAction.ContentItem.DisplayText} succeeded but {taskNames.Success} failed to load.");
@@ -242,7 +239,7 @@ namespace TransformalizeModule.Controllers {
                message.AppendLine(error.Message);
             }
             closeParameters["Message"] = message.ToString();
-            var batchFail = await _taskService.Validate(new TransformalizeRequest(taskNames.Fail, user) { InternalParameters = closeParameters });
+            var batchFail = await _taskService.Validate(new TransformalizeRequest(taskNames.Fail) { InternalParameters = closeParameters });
 
             if (batchFail.Fails()) {
                _logger.Warn(() => $"{bulkAction.ContentItem.DisplayText} failed and {taskNames.Fail} failed to load.");
@@ -258,13 +255,13 @@ namespace TransformalizeModule.Controllers {
 
       public async Task<ActionResult> Result(BulkActionReviewRequest request) {
 
-         var report = await _reportService.Validate(new TransformalizeRequest(request.ReportContentItemId, HttpContext.User.Identity.Name));
+         var report = await _reportService.Validate(new TransformalizeRequest(request.ReportContentItemId));
          if (report.Fails()) {
             return report.ActionResult;
          }
 
          var taskNames = _settingsService.GetBulkActionTaskNames(report.Part);
-         var batchSummary = await _taskService.Validate(new TransformalizeRequest(taskNames.Summary, HttpContext.User.Identity.Name) { Secure = false });
+         var batchSummary = await _taskService.Validate(new TransformalizeRequest(taskNames.Summary) { Secure = false });
 
          if (batchSummary.Fails()) {
             return batchSummary.ActionResult;

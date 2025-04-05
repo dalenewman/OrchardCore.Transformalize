@@ -86,6 +86,9 @@
       <PackageReference Include="Transformalize.Transform.LambdaParser.Autofac" Version="0.11.1-beta" />
 
    </ItemGroup>
+   <ItemGroup>
+     <ProjectReference Include="..\..\..\Transformalize\src\Transformalize\Transformalize.csproj" />
+   </ItemGroup>
 
    <ItemGroup>
       <EmbeddedResource Update="Recipes\batches.mssql.recipe.json">
