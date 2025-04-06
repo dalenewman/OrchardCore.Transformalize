@@ -70,8 +70,8 @@
          <div class="btn-group float-start" role="group" style="padding-left: 20px;">
             @foreach (var action in Model.Process.Actions.Where(a => a.Type == "open")) {
                var url = new Flurl.Url(action.Url);
-               if (!url.QueryParams.Any(qp => qp.Name == "ReturnUrl")) {
-                  url.SetQueryParam("ReturnUrl", Context.Request.GetEncodedUrl().Replace("http:","https:"));
+               if (!url.QueryParams.Any(qp => qp.Name == Common.ReturnUrlName)) {
+                  url.SetQueryParam(Common.ReturnUrlName, Context.Request.GetEncodedUrl().Replace("http:", "https:"));
                }
                <a href="@url" title="@action.Description" rel="nofollow" class="btn btn-sm @action.Class"><i class="fas fa-@action.Icon" aria-hidden="true">@action.Name</i></a>
             }
@@ -186,9 +186,19 @@
             @if (entity.Name != "Missing Entity") {
 
                if (Model.Item != null && await auth.AuthorizeAsync(Context.User, OrchardCore.Contents.Permissions.EditContent, Model.Item)) {
-                  <button title="edit this report" type="button" class="btn btn-warning btn-sm" onclick="window.open('@(Url.Content("~/Admin/Contents/ContentItems/" + Model.Item.ContentItemId + "/Edit?" + Common.ReturnUrlName + "=" + System.Net.WebUtility.UrlEncode(Context.Request.Path + Context.Request.QueryString)))', '_self');">
-                     <span class="fas fa-edit"></span>
-                  </button>
+                  if (Model.BreadCrumbs.Any()){
+                     if (!string.IsNullOrEmpty(Context.Request.Query["t"].ToString())){
+                        var currentUrl = Context.Request.GetEncodedUrl();
+                        var saveUrl = new Flurl.Url(currentUrl).SetQueryParam("save", "true");
+                        <button title="save and edit this" type="button" class="btn btn-warning btn-sm" onclick="window.open('@saveUrl', '_self');">
+                           <span class="fas fa-edit"></span>
+                        </button>
+                     }
+                  } else {
+                     <button title="edit this report" type="button" class="btn btn-warning btn-sm" onclick="window.open('@(Url.Content("~/Admin/Contents/ContentItems/" + Model.Item.ContentItemId + "/Edit?" + Common.ReturnUrlName + "=" + System.Net.WebUtility.UrlEncode(Context.Request.Path + Context.Request.QueryString)))', '_self');">
+                        <span class="fas fa-edit"></span>
+                     </button>
+                  }
                }
 
                @*if (Model.Process.Mode == "map") {

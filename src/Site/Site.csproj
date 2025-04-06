@@ -7,9 +7,9 @@
       <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
       <DockerfileContext>..\..</DockerfileContext>
       <DockerfileTag>transformalize.orchard</DockerfileTag>
-      <Version>0.13.0</Version>
-      <FileVersion>0.13.0</FileVersion>
-      <AssemblyVersion>0.13.0</AssemblyVersion>
+      <Version>0.13.1</Version>
+      <FileVersion>0.13.1</FileVersion>
+      <AssemblyVersion>0.13.1</AssemblyVersion>
       <ReleaseVersion>0.13.0</ReleaseVersion>      
       <RazorRuntimeCompilation>true</RazorRuntimeCompilation>
       <CopyRefAssembliesToPublishDirectory>true</CopyRefAssembliesToPublishDirectory>
@@ -46,7 +46,6 @@
    </ItemGroup>
 
    <ItemGroup>
-      <ProjectReference Include="..\..\..\Transformalize\src\Transformalize\Transformalize.csproj" />
       <ProjectReference Include="..\OrchardCore.Proxy\OrchardCore.Proxy.csproj" />
       <ProjectReference Include="..\OrchardCore.Transformalize\OrchardCore.Transformalize.csproj" />
    </ItemGroup>

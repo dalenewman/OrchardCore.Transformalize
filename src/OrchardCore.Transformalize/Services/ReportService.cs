@@ -4,7 +4,10 @@ using TransformalizeModule.Services.Contracts;
 using OrchardCore.ContentManagement;
 using Transformalize.Configuration;
 using OrchardCore.Title.Models;
+using OrchardCore.Alias.Models;
 using Microsoft.AspNetCore.WebUtilities;
+using Microsoft.AspNetCore.Routing;
+using System.Xml.Linq;
 
 namespace TransformalizeModule.Services {
 
@@ -16,6 +19,7 @@ namespace TransformalizeModule.Services {
       private readonly IHttpContextAccessor _httpContextAccessor;
       private readonly ISettingsService _settings;
       private readonly ISchemaService _schemaService;
+      private readonly IContentManager _contentManager;
       private readonly IDictionary<string, string> _parameters;
 
       public ReportService(
@@ -25,7 +29,8 @@ namespace TransformalizeModule.Services {
          IHttpContextAccessor httpContextAccessor,
          ISettingsService settings,
          IParameterService parameterService,
-         ISchemaService schemaService
+         ISchemaService schemaService,
+         IContentManager contentManager
       ) {
          _loadService = loadService;
          _streamService = streamService;
@@ -33,6 +38,7 @@ namespace TransformalizeModule.Services {
          _httpContextAccessor = httpContextAccessor;
          _settings = settings;
          _schemaService = schemaService;
+         _contentManager = contentManager;
          _parameters = parameterService.GetParameters();
       }
 
@@ -281,7 +287,7 @@ namespace TransformalizeModule.Services {
          var originalName = connection.Name;
          process.Connections.First().Name = "input";
 
-         currentUrl = QueryHelpersExt.RemoveQueryString(currentUrl, ["size", "sort"]);
+         currentUrl = new Flurl.Url(currentUrl).RemoveQueryParams("size", "sort").ToString();
 
          var separator = currentUrl.Contains('?') ? "&" : "?";
 
@@ -361,38 +367,81 @@ namespace TransformalizeModule.Services {
          response.ContentItem.Weld(new TitlePart { Title = "Tables or Views" });
       }
 
-      private void PrepareTable(TransformalizeResponse<TransformalizeReportPart> response, Connection connection, string schema, string table) {
+      private async void PrepareTable(TransformalizeResponse<TransformalizeReportPart> response, Connection connection, string schema, string table) {
 
          // Create a views arrangement for connection
          var process = new Process { Name = table, ReadOnly = true };
-         process.Connections.Add(connection);
-         process.Connections.First().Name = "input";
+         process.Connections.Add(new Connection { Name = connection.Name });
 
          process.Entities.Add(new Entity {
             Name = table,
             Schema = schema,
-            Input = "input"
+            Input = connection.Name
          });
 
-         process.Actions.Add(new Transformalize.Configuration.Action() { 
+         process.Actions.Add(new Transformalize.Configuration.Action() {
             Type = "humanize-labels"
          });
 
          process.Load();
 
-         response.ContentItem = new ContentItem();
+         if (_httpContextAccessor.HttpContext.Request.Query.ContainsKey("save") && _httpContextAccessor.HttpContext.Request.Query["save"].ToString() == "true") {
+
+            response.ContentItem = new ContentItem();
+            FigureShitOut(ref response, ref process, table);
+
+            var contentItem = await _contentManager.NewAsync("TransformalizeReport");
+            contentItem.Apply(new TitlePart { Title = table });
+            contentItem.Apply(new AliasPart { Alias = contentItem.ContentItemId });
+            await _contentManager.CreateAsync(contentItem);
+
+            process.Name = contentItem.ContentItemId;
+            process.Connections[0].ConnectionString = string.Empty;
+            process.Connections[0].Database = string.Empty;
+            process.Connections[0].User = string.Empty;
+            process.Connections[0].Password = string.Empty;
+            process.Connections[0].Browse = false;
+            process.Connections.RemoveAt(1);
+            contentItem.Alter<TransformalizeReportPart>(part => { part.Arrangement.Text = RemoveXmlProperty(process.Serialize(),"provider"); });
+            await _contentManager.UpdateAsync(contentItem);
+
+            var editUrl = $"/Admin/Contents/ContentItems/{contentItem.ContentItemId}/Edit";
+            _httpContextAccessor.HttpContext.Response.Redirect(editUrl);
+
+         } else {
+            response.ContentItem = new ContentItem();
+            FigureShitOut(ref response, ref process, table);
+         }
+      }
+
+      public void FigureShitOut(ref TransformalizeResponse<TransformalizeReportPart> response, ref Process process, string table) {
+
+         response.ContentItem.Weld(new TitlePart { Title = table });
          response.Part = new TransformalizeReportPart();
          response.Part.Arrangement.Text = process.Serialize();
          response.ContentItem.Weld(response.Part);
+
          process = _schemaService.LoadForSchema(response.ContentItem, "xml");
+         process.Load();
          process = _schemaService.GetSchemaAsync(process).Result;
          foreach (var hiddenField in _httpContextAccessor.HttpContext.Request.Query["hide"].ToString().Split('.', StringSplitOptions.RemoveEmptyEntries)) {
             foreach (var field in process.Entities[0].Fields.Where(f => f.Name.Equals(hiddenField))) {
                field.Output = false;
             }
          }
-         response.Part.Arrangement.Text =  process.Serialize();
-         response.ContentItem.Weld(new TitlePart { Title = table });
+         response.Part.Arrangement.Text = process.Serialize();
+         response.ContentItem.Weld(response.Part);
       }
+
+      public static string RemoveXmlProperty(string xml, string property) {
+         var xDocument = XDocument.Parse(xml);
+
+         foreach (var element in xDocument.Descendants()) {
+            element.Attribute(property)?.Remove();
+         }
+
+         return xDocument.ToString();
+      }
+
    }
 }

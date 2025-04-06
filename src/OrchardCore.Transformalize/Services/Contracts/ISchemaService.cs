@@ -1,6 +1,5 @@
 ﻿using TransformalizeModule.Models;
 using OrchardCore.ContentManagement;
-using System.Threading.Tasks;
 using Transformalize.Configuration;
 
 namespace TransformalizeModule.Services.Contracts {
