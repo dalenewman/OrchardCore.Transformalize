@@ -41,7 +41,7 @@ namespace TransformalizeModule.Controllers {
       public async Task<ActionResult> Index(string contentItemId) {
 
          var form = await _formService.ValidateForm(
-            new TransformalizeRequest(contentItemId, HttpContext.User.Identity.Name) {
+            new TransformalizeRequest(contentItemId) {
                InternalParameters = Common.GetFileParameters(Request)
             }
          );
@@ -107,7 +107,7 @@ namespace TransformalizeModule.Controllers {
       public async Task<ActionResult> Form(string contentItemId) {
 
          var form = await _formService.ValidateForm(
-            new TransformalizeRequest(contentItemId, HttpContext.User.Identity.Name) {
+            new TransformalizeRequest(contentItemId) {
                InternalParameters = Common.GetFileParameters(Request)
             }
          );
@@ -122,7 +122,7 @@ namespace TransformalizeModule.Controllers {
       [HttpGet]
       public async Task<ActionResult> Run(string contentItemId, string format = "json") {
 
-         var request = new TransformalizeRequest(contentItemId, HttpContext.User.Identity.Name) { 
+         var request = new TransformalizeRequest(contentItemId) { 
             Format = format,
             InternalParameters = Common.GetFileParameters(Request)
          };

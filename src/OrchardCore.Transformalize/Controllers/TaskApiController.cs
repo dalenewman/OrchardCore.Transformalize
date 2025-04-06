@@ -42,7 +42,7 @@ namespace TransformalizeModule.Controllers {
             };
          }
 
-         var request = new TransformalizeRequest(contentItemId, HttpContext.User.Identity.Name) {
+         var request = new TransformalizeRequest(contentItemId) {
             Format = format,
             InternalParameters = Common.GetFileParameters(Request)
          };

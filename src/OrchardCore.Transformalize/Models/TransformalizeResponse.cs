@@ -24,7 +24,7 @@ namespace TransformalizeModule.Models {
       public ActionResult ActionResult { get; set; }
       public bool Valid { get; set; }
       public bool Fails() => !Valid;
-
+      public List<BreadCrumb> BreadCrumbs { get; set; } = new List<BreadCrumb>();
       public TransformalizeResponse(string format = null) {
          // this provides a non-null Process and determines the default serializer (xml or json)
          Process = format switch {

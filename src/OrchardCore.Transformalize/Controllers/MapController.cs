@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http.Features;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Server.Kestrel.Https;
 using TransformalizeModule.Models;
 using TransformalizeModule.Services;
 using TransformalizeModule.Services.Contracts;
@@ -28,7 +29,7 @@ namespace TransformalizeModule.Controllers {
       [HttpGet]
       public async Task<ActionResult> Index(string contentItemId) {
 
-         var request = new TransformalizeRequest(contentItemId, HttpContext.User.Identity.Name) { Mode = "map" };
+         var request = new TransformalizeRequest(contentItemId) { Mode = "map" };
          var map = await _reportService.Validate(request);
 
          if (map.Fails()) {
@@ -36,7 +37,7 @@ namespace TransformalizeModule.Controllers {
          }
 
          if (string.IsNullOrEmpty(_settings.Settings.MapBoxToken)) {
-            _logger.Warn(() => $"User {request.User} requested map without mapbox token {request.ContentItemId}.");
+            _logger.Warn(() => $"User {HttpContext.User.Identity.Name} requested map without mapbox token {request.ContentItemId}.");
 
             map.Process.Status = 404;
             map.Process.Message = "MapBox Token Not Found";
@@ -57,7 +58,7 @@ namespace TransformalizeModule.Controllers {
       [HttpGet]
       public async Task<ActionResult> Stream(string contentItemId) {
 
-         var request = new TransformalizeRequest(contentItemId, HttpContext.User.Identity.Name) { Mode = "stream-map" };
+         var request = new TransformalizeRequest(contentItemId) { Mode = "stream-map" };
          var map = await _reportService.Validate(request);
 
          if (map.Fails()) {

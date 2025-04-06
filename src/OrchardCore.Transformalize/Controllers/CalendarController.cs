@@ -28,7 +28,7 @@ namespace TransformalizeModule.Controllers {
       [HttpGet]
       public async Task<ActionResult> Index(string contentItemId) {
 
-         var request = new TransformalizeRequest(contentItemId, HttpContext.User.Identity.Name) { Mode = "calendar" };
+         var request = new TransformalizeRequest(contentItemId) { Mode = "calendar" };
          var calendar = await _reportService.Validate(request);
 
          if (calendar.Fails()) {
@@ -48,7 +48,7 @@ namespace TransformalizeModule.Controllers {
       [HttpGet]
       public async Task<ActionResult> Stream(string contentItemId) {
 
-         var request = new TransformalizeRequest(contentItemId, HttpContext.User.Identity.Name) { Mode = "stream-calendar" };
+         var request = new TransformalizeRequest(contentItemId) { Mode = "stream-calendar" };
          var map = await _reportService.Validate(request);
 
          if (map.Fails()) {

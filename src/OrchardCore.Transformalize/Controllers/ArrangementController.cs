@@ -30,7 +30,7 @@ namespace TransformalizeModule.Controllers {
       [HttpGet]
       public async Task<ActionResult> TransformalizeParameters(string contentItemId) {
 
-         var request = new TransformalizeRequest(contentItemId, HttpContext.User.Identity.Name) { Format = "xml" };
+         var request = new TransformalizeRequest(contentItemId) { Format = "xml" };
 
          var item = await _commonService.Validate(request);
 

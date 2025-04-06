@@ -46,7 +46,7 @@ namespace TransformalizeModule.Activities {
       public override async Task<ActivityExecutionResult> ExecuteAsync(WorkflowExecutionContext workflowContext, ActivityContext activityContext) {
 
          var alias = await _expressionEvaluator.EvaluateAsync(Alias, workflowContext, null);
-         var request = new TransformalizeRequest(alias, null) { Secure = false, InternalParameters = GetParameters(workflowContext) };
+         var request = new TransformalizeRequest(alias) {Secure = false, InternalParameters = GetParameters(workflowContext) };
          var task = await _taskService.Validate(request);
 
          if (task.Fails()) {
