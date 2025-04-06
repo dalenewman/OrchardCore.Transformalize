@@ -27,81 +27,81 @@
 
 <style>
    .btn-sort {
-      background-color: #dbdbdb;
-      border-color: #d2d1d1;
-      color: #727272;
+   background-color: #dbdbdb;
+   border-color: #d2d1d1;
+   color: #727272;
    }
 
    td.sorter .btn-sm {
-      font-size: 7px !important;
+   font-size: 7px !important;
    }
 
    td.sorter {
-      padding: 0 3px 3px 4px !important;
+   padding: 0 3px 3px 4px !important;
    }
 
    thead > tr > td > input.form-control {
-      padding-left: 4px;
-      padding-right: 4px;
-      height: 30px;
+   padding-left: 4px;
+   padding-right: 4px;
+   height: 30px;
    }
 
    #busy {
-      position: fixed;
-      left: 46%;
-      top: 40%;
-      display: none;
-      background: transparent url(@Url.Content($"~/{Common.ModuleName}/Styles/busy.gif"));
-      background-size: 149px 149px;
-      background-repeat: no-repeat;
-      z-index: 1020;
-      height: 150px;
-      width: 150px;
+   position: fixed;
+   left: 46%;
+   top: 40%;
+   display: none;
+   background: transparent url(@Url.Content($"~/{Common.ModuleName}/Styles/busy.gif"));
+   background-size: 149px 149px;
+   background-repeat: no-repeat;
+   z-index: 1020;
+   height: 150px;
+   width: 150px;
    }
 
    #busy-holder {
-      background: transparent;
-      width: 100%;
-      height: 100%;
+   background: transparent;
+   width: 100%;
+   height: 100%;
    }
 
    .table-sm > tbody > tr > td {
-      padding: 2px;
+   padding: 2px;
    }
 
    tr.action-row {
-      font-size: smaller;
-      font-weight: bolder;
+   font-size: smaller;
+   font-weight: bolder;
    }
 
    div.table-responsive {
-      min-height: 600px;
+   min-height: 600px;
    }
 
    main.container {
-      max-width: 98%;
+   max-width: 98%;
    }
    .navbar {
-       padding: 0px;
+   padding: 0px;
    }
 
    div.comment {
-      padding: 0;
+   padding: 0;
    }
 
    td > div > input[type="checkbox"] {
-      margin-top: 7px !important;
+   margin-top: 7px !important;
    }
 
    .small-badge {
-      font-size: 0.75em;
-      padding: 0.2em 0.4em;
-      line-height: 1;
+   font-size: 0.75em;
+   padding: 0.2em 0.4em;
+   line-height: 1;
    }
 
    @foreach (var script in Model.Process.Scripts.Where(s => s.Global && s.Language == "css" && string.IsNullOrEmpty(s.File))) {
-   <text>/* @script.Name css script */</text>
-   @Html.Raw(script.Content)
+      <text>/* @script.Name css script */</text>
+      @Html.Raw(script.Content)
 
    }
 
@@ -112,6 +112,7 @@
    <input id="id_sort" class="bsh" type="hidden" name="sort" value="@(Context.Request.Query["sort"].ToString() ?? string.Empty)" />
    <input id="id_page" class="bsh" type="hidden" name="page" value="@firstEntity.Page" />
    <input id="id_size" class="bsh" type="hidden" name="size" value="@(firstEntity.Size)" />
+   <input id="id_hide" class="bsh" type="hidden" name="hide" value="@(Context.Request.Query["hide"].ToString() ?? string.Empty)" />
    <input id="id_c" class="bsh" type="hidden" name="c" value="@(Context.Request.Query["c"].ToString() ?? string.Empty)" />
    <input id="id_t" class="bsh" type="hidden" name="t" value="@(Context.Request.Query["t"].ToString() ?? string.Empty)" />
 
@@ -162,11 +163,17 @@
                               var field = fields[i];
                               var number = i + 1;
                               if (field.Sortable == "true") {
-                                 <td class="sorter" data-order-by="@(number)">
-                                    <div class="btn-group btn-group-sm" style="width: 41px;">
+                                 <td class="sorter" data-order-by="@(number)" data-field-name="@field.Name">
+                                    <div class="btn-group btn-group-sm">
                                        <a href="javascript:void()" title="Sort Ascending by @field.Label" class="btn btn-sm @(sortService.Sort(number, expression) == Direction.Asc ? "btn-primary" : "btn-sort") sortable">
                                           <span class="fas fa-chevron-up"></span>
                                        </a>
+                                       @if(Model.BreadCrumbs.Any() && !string.IsNullOrEmpty(Context.Request.Query["t"].ToString())){
+                                          var hideExpression = Context.Request.Query["hide"].ToString() ?? string.Empty;
+                                          <a href="javascript:void()" title="Hide @field.Name" class="btn btn-sm btn-danger hidable">
+                                             <span class="fas fa-times"></span>
+                                          </a>
+                                       }
                                        <a href="javascript:void()" title="Sort Descending by @field.Label" class="btn btn-sm @(sortService.Sort(number, expression) == Direction.Desc ? "btn-primary" : "btn-sort") sortable">
                                           <span class="fas fa-chevron-down"></span>
                                        </a>

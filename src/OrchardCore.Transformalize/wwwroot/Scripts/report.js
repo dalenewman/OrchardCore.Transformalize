@@ -195,7 +195,7 @@ $(document).ready(function () {
    $('.sortable').click(function () {
       $(this).toggleClass('btn-sort').toggleClass('btn-primary');
 
-      $(this).siblings().each(function (i) {
+      $(this).siblings('.sortable').each(function (i) {
          if ($(this).hasClass('btn-primary')) {
             $(this).removeClass('btn-primary').addClass('btn-sort');
          }
@@ -206,7 +206,7 @@ $(document).ready(function () {
          var field = $(this).attr('data-order-by');
          if (field) {
             var index = 0;
-            $('a', $(this)).each(function (j) {
+            $('a.sortable', $(this)).each(function (j) {
                if ($(this).hasClass('btn-primary')) {
                   switch (index) {
                      case 0:
@@ -226,6 +226,23 @@ $(document).ready(function () {
       var expression = sort.replace(/^\.+|\.+$/gm, '');
       console.log(expression);
       controls.setSort(expression);
+      controls.submit(server.entity.page === 0 ? 0 : 1);
+   });
+
+   $('.hidable').click(function () {
+
+      var hide = $('#id_hide').val();
+      var field = $(this).closest('td.sorter').attr('data-field-name');
+
+      if (field) {
+         if (hide) {
+            hide += '.' + field;
+         } else {
+            hide = field;
+         }
+      }
+
+      $('#id_hide').val(hide);
       controls.submit(server.entity.page === 0 ? 0 : 1);
    });
 

@@ -385,7 +385,13 @@ namespace TransformalizeModule.Services {
          response.Part.Arrangement.Text = process.Serialize();
          response.ContentItem.Weld(response.Part);
          process = _schemaService.LoadForSchema(response.ContentItem, "xml");
-         response.Part.Arrangement.Text =  _schemaService.GetSchemaAsync(process).Result.Serialize();
+         process = _schemaService.GetSchemaAsync(process).Result;
+         foreach (var hiddenField in _httpContextAccessor.HttpContext.Request.Query["hide"].ToString().Split('.', StringSplitOptions.RemoveEmptyEntries)) {
+            foreach (var field in process.Entities[0].Fields.Where(f => f.Name.Equals(hiddenField))) {
+               field.Output = false;
+            }
+         }
+         response.Part.Arrangement.Text =  process.Serialize();
          response.ContentItem.Weld(new TitlePart { Title = table });
       }
    }
