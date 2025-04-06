@@ -115,6 +115,7 @@
    <input id="id_hide" class="bsh" type="hidden" name="hide" value="@(Context.Request.Query["hide"].ToString() ?? string.Empty)" />
    <input id="id_c" class="bsh" type="hidden" name="c" value="@(Context.Request.Query["c"].ToString() ?? string.Empty)" />
    <input id="id_t" class="bsh" type="hidden" name="t" value="@(Context.Request.Query["t"].ToString() ?? string.Empty)" />
+   <input id="id_return_url" class="bsh" type="hidden" name="@Common.ReturnUrlName" value="@(Context.Request.Query[Common.ReturnUrlName].ToString() ?? string.Empty)" />
 
    @foreach (var parameter in Model.Process.Parameters.Where(p => !p.Prompt && Context.Request.Query[p.Name].ToString() != null).Select(p => p.Name)) {
       <input type="hidden" name="@parameter" value="@(Context.Request.Query[parameter].ToString())" />

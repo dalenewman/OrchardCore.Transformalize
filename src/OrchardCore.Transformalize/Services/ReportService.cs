@@ -6,7 +6,6 @@ using Transformalize.Configuration;
 using OrchardCore.Title.Models;
 using OrchardCore.Alias.Models;
 using Microsoft.AspNetCore.WebUtilities;
-using Microsoft.AspNetCore.Routing;
 using System.Xml.Linq;
 
 namespace TransformalizeModule.Services {
@@ -101,11 +100,16 @@ namespace TransformalizeModule.Services {
                if (TryConnection(out Connection connection)) {
 
                   response.BreadCrumbs.Add(new BreadCrumb("Browse", req.Path));
+
                   if (TryTable(out string schema, out string table)) {
-                     response.BreadCrumbs.Add(new BreadCrumb(connection.Name, QueryHelpers.AddQueryString(req.Path, "c", connection.Name)));
+                     if(TryReturnUrl(out string returnUrl)) {
+                        response.BreadCrumbs.Add(new BreadCrumb(connection.Name, returnUrl));
+                     } else {
+                        response.BreadCrumbs.Add(new BreadCrumb(connection.Name, QueryHelpers.AddQueryString(req.Path, "c", connection.Name)));
+                     }
                      PrepareTable(response, connection, schema, table);
                   } else {
-                     PrepareTables(response, connection, $"{req.Scheme}://{req.Host}{req.Path}{req.QueryString}");
+                     PrepareTables(response, connection, $"{req.Path}{req.QueryString}");
                   }
 
                } else {
@@ -287,9 +291,9 @@ namespace TransformalizeModule.Services {
          var originalName = connection.Name;
          process.Connections.First().Name = "input";
 
-         currentUrl = new Flurl.Url(currentUrl).RemoveQueryParams("size", "sort").ToString();
+         var modifiedUrl = new Flurl.Url(currentUrl).RemoveQueryParams("size", "sort").ToString();
 
-         var separator = currentUrl.Contains('?') ? "&" : "?";
+         var separator = modifiedUrl.Contains('?') ? "&" : "?";
 
          if (connection.Provider.Equals("sqlite")) {
             process.Entities.Add(new Entity {
@@ -308,13 +312,15 @@ namespace TransformalizeModule.Services {
                      Type = "string",
                      Length= "128",
                      Raw = true,
-                     T = $"format(<a href=\"{currentUrl}{separator}t={{name}}\">{{name}}</a>)"
+                     T = $"format(<a href=\"{modifiedUrl}{separator}t={{name}}&{Common.ReturnUrlName}={Uri.EscapeDataString(currentUrl)}\">{{name}}</a>)",
+                     Parameter = "search"
                   },
                   new Field {
                      Name = "type",
                      Label="Type",
                      Type = "string",
-                     Length = "128"
+                     Length = "128",
+                     Parameter = "facet"
                   }
                }
             });
@@ -340,7 +346,8 @@ namespace TransformalizeModule.Services {
                   Name = "table_schema",
                   Label="Schema",
                   Type = "string",
-                  Length= "128"
+                  Length= "128",
+                  Parameter = "facet"
                },
                new Field {
                   Name = "table_name",
@@ -348,13 +355,15 @@ namespace TransformalizeModule.Services {
                   Type = "string",
                   Length= "128",
                   Raw = true,
-                  T = $"copy(table_schema,table_name).format(<a href=\"{currentUrl}{separator}t={{table_schema}}.{{table_name}}\">{{table_name}}</a>)"
+                  T = $"copy(table_schema,table_name).format(<a href=\"{modifiedUrl}{separator}t={{table_schema}}.{{table_name}}&{Common.ReturnUrlName}={Uri.EscapeDataString(currentUrl)}\">{{table_name}}</a>)",
+                  Parameter = "search"
                },
                new Field {
                   Name = "table_type",
                   Label="Type",
                   Type = "string",
-                  Length = "128"
+                  Length = "128",
+                  Parameter = "facet"
                }
             }
             });
@@ -441,6 +450,17 @@ namespace TransformalizeModule.Services {
          }
 
          return xDocument.ToString();
+      }
+
+      private bool TryReturnUrl(out string returnUrl) {
+         returnUrl = string.Empty;
+         var req = _httpContextAccessor.HttpContext.Request;
+
+         if (req.Query.ContainsKey(Common.ReturnUrlName) && !string.IsNullOrWhiteSpace(req.Query[Common.ReturnUrlName].ToString())) {
+            returnUrl = Uri.UnescapeDataString(req.Query[Common.ReturnUrlName].ToString());
+            return true;
+         }
+         return false;
       }
 
    }

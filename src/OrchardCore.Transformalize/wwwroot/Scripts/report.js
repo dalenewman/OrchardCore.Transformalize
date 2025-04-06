@@ -243,6 +243,7 @@ $(document).ready(function () {
       }
 
       $('#id_hide').val(hide);
+      controls.setSort("");
       controls.submit(server.entity.page === 0 ? 0 : 1);
    });
 
