@@ -43,12 +43,13 @@
    default:
       var requestedValue = input == string.Empty ? Model.Parameter.Value : input;
       if (string.IsNullOrEmpty(Model.Parameter.Map)) {
-         <input class="form-control form-control-sm"
+         <input class="form-control form-control-sm field-search"
                 name="@Model.Parameter.Name"
                 type="text"
                 required="@Model.Parameter.Required"
                 value="@requestedValue"
                 placeholder="@Model.Parameter.Label"
+                autocomplete="off"
                 @(Html.Raw(Model.Parameter.Width > 0 ? "style=\"width:" + Model.Parameter.Width + "px\"" : string.Empty)) />
       } else {
          <select size="1"

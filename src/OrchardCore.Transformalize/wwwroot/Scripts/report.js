@@ -41,6 +41,12 @@ function removeUrlParameter(url, parameter) {
    }
 }
 
+function getUrlParameter(name) {
+   let regex = new RegExp('[?&]' + name + '=([^&#]*)');
+   let results = regex.exec(window.location.search);
+   return results ? decodeURIComponent(results[1]) : null;
+}
+
 function bulkAction(page, name) {
    var length = $('.bulk-action:checked').length;
    if (length > 0) {
@@ -99,7 +105,9 @@ function edit(action) {
 
    if (action === 'hide') {
       hide = _.union(hide, fields);
-      controls.setSort("");
+      if (fields.length > 0) {
+         controls.setSort("");
+      }
    } else if (action === 'search') {
       search = _.union(search, fields);
       facet = _.difference(facet, search);
@@ -147,6 +155,20 @@ $(document).ready(function () {
       controls.lastChecked = this;
    });
 
+   $('.field-search').on('keypress', function (e) {
+      if (e.keyCode === 13) { // Enter key pressed
+         e.preventDefault(); // prevent form submission
+
+         let inputValue = $(this).val(); // Get the current input value
+
+         if (inputValue !== "" && inputValue !== "*") {
+            $('#id_last').val($(this).attr('name'));
+         }
+         controls.submit(1);
+
+      }
+   });
+
    $('#id_report select').selectpicker({
       liveSearch: true,
       deselectAllText: "Off",
@@ -169,10 +191,6 @@ $(document).ready(function () {
    });
 
    $("#id_report select").css("visibility", "visible");
-
-   $('.search-button').bind('click', function () {
-      $('#id_report').submit();
-   });
 
    $(".form-control.date").datepicker({ dateFormat: "yy-mm-dd" });
 
@@ -287,5 +305,21 @@ $(document).ready(function () {
          $(this).select();
       }
    });
+
+   // Get the 'last' parameter value from the URL
+   let lastValue = getUrlParameter('last');
+
+   // If 'last' has a value, focus on the input element and position the cursor at the end
+   if (lastValue) {
+      let inputElement = $('input[name="' + lastValue + '"]');
+      if (inputElement.length) {
+         inputElement.focus(); // Focus on the input element
+
+         // Position the cursor at the end of the text
+         let inputElementDom = inputElement[0]; // Get the raw DOM element
+         let textLength = inputElementDom.value.length; // Get the length of the current text
+         inputElementDom.setSelectionRange(textLength, textLength); // Set the cursor position
+      }
+   }
 
 });

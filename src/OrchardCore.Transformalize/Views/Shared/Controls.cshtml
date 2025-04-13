@@ -85,50 +85,6 @@
          </div>
       </div>
 
-@*       <div class="col-md-6">
-         @if (entity.Page == 0 || Model.Process.Mode == "map" && !Model.Part.PageSizesExtended.Enabled() || Model.Process.Mode == "calendar" && !Model.Part.PageSizesExtended.Enabled()) {
-            <h3 class="text-primary" style="margin: 2px 0px 0px 0px;">@(entity.Label == string.Empty ? entity.Alias : entity.Label)</h3>
-         } else {
-            <nav aria-label="...">
-
-               @if(Model.BreadCrumbs.Any()){
-               <ol class="breadcrumb">
-                  @foreach(var breadcrumb in Model.BreadCrumbs){
-                     <li class="breadcrumb-item"><a href="@breadcrumb.Url">@breadcrumb.Title</a></li>
-                  }
-                  <li class="breadcrumb-item active" aria-current="page">@(entity.Label == string.Empty ? entity.Alias : entity.Label)</li>
-               </ol>
-               }
-
-               <ul class="pagination pagination-sm" style="text-align: center;">
-                  @if (entity.Pagination.HasPrevious) {
-                     <li class="page-item" title="first page"><a class="page-link" href="javascript:controls.submit(@entity.Pagination.First)"><span class="fas fa-step-backward"></span></a></li>
-                     <li class="page-item" title="previous page"><a class="page-link" href="javascript:controls.submit(@entity.Pagination.Previous)"><span class="fas fa-chevron-left"></span></a></li>
-                  } else {
-                     <li class="page-item disabled"><a href="" class="page-link"><span class="fas fa-step-backward"></span></a></li>
-                     <li class="page-item disabled"><a href="" class="page-link"><span class="fas fa-chevron-left"></span></a></li>
-                  }
-
-                  <li class="page-item disabled" style="white-space:nowrap;">
-                     @if (entity.Hits > 0) {
-                        <a class="page-link" href="">@(entity.Pagination.StartRow.ToString("#,##0"))-@(entity.Pagination.EndRow.ToString("#,##0")) of @(entity.Hits.ToString("#,##0")) <strong>@(entity.Label == string.Empty ? entity.Alias : entity.Label)</strong></a>
-                     } else {
-                        <a class="page-link" href=""><strong>@(entity.Label == string.Empty ? entity.Alias : entity.Label)</strong></a>
-                     }
-                  </li>
-
-                  @if (entity.Pagination.HasNext) {
-                     <li class="page-item" title="next page"><a class="page-link" href="javascript:controls.submit(@entity.Pagination.Next)"><span class="fas fa-chevron-right"></span></a></li>
-                     <li class="page-item" title="last page"><a class="page-link" href="javascript:controls.submit(@entity.Pagination.Last)"><span class="fas fa-step-forward"></span></a></li>
-                  } else {
-                     <li class="page-item disabled"><a class="page-link" href=""><span class="fas fa-chevron-right"></span></a></li>
-                     <li class="page-item disabled"><a class="page-link" href=""><span class="fas fa-step-forward"></span></a></li>
-                  }
-               </ul>
-            </nav>
-         }
-      </div> *@
-
     <div class="col-md-6">
     @if (entity.Page == 0 || Model.Process.Mode == "map" && !Model.Part.PageSizesExtended.Enabled() || Model.Process.Mode == "calendar" && !Model.Part.PageSizesExtended.Enabled()) {
         <h3 class="text-primary" style="margin: 2px 0px 0px 0px;">@(entity.Label == string.Empty ? entity.Alias : entity.Label)</h3>

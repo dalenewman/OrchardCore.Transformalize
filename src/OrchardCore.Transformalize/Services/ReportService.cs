@@ -93,7 +93,7 @@ namespace TransformalizeModule.Services {
 
          if (response.ContentItem == null) {
 
-            if (_httpContextAccessor.HttpContext.User.IsInRole("Administrator")) {
+            if (_httpContextAccessor.HttpContext!.User.IsInRole("Administrator")) {
 
                var req = _httpContextAccessor.HttpContext.Request;
 
@@ -257,22 +257,31 @@ namespace TransformalizeModule.Services {
                   Type = "string",
                   Length = "128",
                   Sortable = "false"
+               },
+               new Field {
+                  Name = "Database",
+                  Label = "Database / File",
+                  Type = "string",
+                  Length = "128",
+                  Sortable = "false"
                }
             }
          });
 
          process.Load();
 
-         foreach (var connection in _settings.Process.Connections.Where(c => c.Browse).OrderBy(c => c.Name)) {
+         foreach (var c in _settings.Process.Connections.Where(c => c.Browse).OrderBy(c => c.Name)) {
 
-            var newUrl = QueryHelpers.AddQueryString(currentUrl, "c", connection.Name);
+            var newUrl = QueryHelpers.AddQueryString(currentUrl, "c", c.Name);
 
-            process.Entities[0].Rows.Add(new Transformalize.Impl.CfgRow(["Name", "Provider"]) {
+            var database = c.Provider == "sqlite" ? c.File : c.Database;
+            process.Entities[0].Rows.Add(new Transformalize.Impl.CfgRow(["Name", "Provider", "Database"]) {
                Map = new Dictionary<string, short> {
                         { "Name", 0 },
-                        { "Provider", 1 }
+                        { "Provider", 1 },
+                        { "Database", 2 }
                      },
-               Storage = [$"<a href=\"{newUrl}\">{connection.Name}</a>", connection.Provider]
+               Storage = [$"<a href=\"{newUrl}\">{c.Name}</a>", c.Provider, database]
             });
          }
 
