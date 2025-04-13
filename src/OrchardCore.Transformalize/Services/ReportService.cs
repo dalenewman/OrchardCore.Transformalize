@@ -394,10 +394,10 @@ namespace TransformalizeModule.Services {
 
          process.Load();
 
-         if (_httpContextAccessor.HttpContext.Request.Query.ContainsKey("save") && _httpContextAccessor.HttpContext.Request.Query["save"].ToString() == "true") {
+         if (_httpContextAccessor.HttpContext!.Request.Query.ContainsKey("save") && _httpContextAccessor.HttpContext.Request.Query["save"].ToString() == "true") {
 
             response.ContentItem = new ContentItem();
-            FigureShitOut(ref response, ref process, table);
+            ComposeArrangement(ref response, ref process, table);
 
             var contentItem = await _contentManager.NewAsync("TransformalizeReport");
             contentItem.Apply(new TitlePart { Title = table });
@@ -419,11 +419,11 @@ namespace TransformalizeModule.Services {
 
          } else {
             response.ContentItem = new ContentItem();
-            FigureShitOut(ref response, ref process, table);
+            ComposeArrangement(ref response, ref process, table);
          }
       }
 
-      public void FigureShitOut(ref TransformalizeResponse<TransformalizeReportPart> response, ref Process process, string table) {
+      public void ComposeArrangement(ref TransformalizeResponse<TransformalizeReportPart> response, ref Process process, string table) {
 
          response.ContentItem.Weld(new TitlePart { Title = table });
          response.Part = new TransformalizeReportPart();
@@ -433,11 +433,25 @@ namespace TransformalizeModule.Services {
          process = _schemaService.LoadForSchema(response.ContentItem, "xml");
          process.Load();
          process = _schemaService.GetSchemaAsync(process).Result;
-         foreach (var hiddenField in _httpContextAccessor.HttpContext.Request.Query["hide"].ToString().Split('.', StringSplitOptions.RemoveEmptyEntries)) {
-            foreach (var field in process.Entities[0].Fields.Where(f => f.Name.Equals(hiddenField))) {
-               field.Output = false;
-            }
+
+         var req = _httpContextAccessor.HttpContext!.Request;
+
+         foreach (var f in req.Query["h"].ToString().Split('.', StringSplitOptions.RemoveEmptyEntries).Select(h => int.TryParse(h, out var result) ? result : (int?)null).Where(h => h.HasValue)) {
+            process.Entities[0].Fields[(int)f!].Output = false;
          }
+
+         foreach (var f in req.Query["s"].ToString().Split('.', StringSplitOptions.RemoveEmptyEntries).Select(h => int.TryParse(h, out var result) ? result : (int?)null).Where(h => h.HasValue)) {
+            process.Entities[0].Fields[(int)f!].Parameter = "search";
+         }
+
+         foreach (var f in req.Query["f1"].ToString().Split('.', StringSplitOptions.RemoveEmptyEntries).Select(h => int.TryParse(h, out var result) ? result : (int?)null).Where(h => h.HasValue)) {
+            process.Entities[0].Fields[(int)f!].Parameter = "facet";
+         }
+
+         foreach (var f in req.Query["f2"].ToString().Split('.', StringSplitOptions.RemoveEmptyEntries).Select(h => int.TryParse(h, out var result) ? result : (int?)null).Where(h => h.HasValue)) {
+            process.Entities[0].Fields[(int)f!].Parameter = "facets";
+         }
+
          response.Part.Arrangement.Text = process.Serialize();
          response.ContentItem.Weld(response.Part);
       }

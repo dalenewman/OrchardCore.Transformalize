@@ -41,7 +41,7 @@ namespace TransformalizeModule.Controllers {
             return View("Log", new LogViewModel(_logger.Log, calendar.Process, calendar.ContentItem));
          }
 
-         return View(new ReportViewModel(calendar.Process, calendar.ContentItem, contentItemId) { Settings = _settings.Settings });
+         return View(new ReportViewModel(calendar.Process, calendar.ContentItem, HttpContext.Request.Query, contentItemId) { Settings = _settings.Settings });
 
       }
 

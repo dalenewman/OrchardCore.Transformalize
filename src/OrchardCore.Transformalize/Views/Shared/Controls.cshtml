@@ -52,14 +52,21 @@
 
                <button id="id_clear" title="Clear the Parameters" type="button" class="btn btn-info btn-sm">Clear</button>
 
-               if (Model.Part.BulkActions.Value) {
+               if (Model.Part!.BulkActions.Value || Model.Browsing()) {
                   <div class="btn-group btn-group-sm" role="group" aria-label="bulk actions drop down">
                      <button id="idActionDropdown" type="button" class="btn btn-sm btn-danger dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                         Action
                      </button>
                      <div class="dropdown-menu" aria-labelledby="idActionDropdown">
-                        @foreach (var action in Model.Process.Actions.Where(a => a.Type != "open" && !string.IsNullOrEmpty(a.Name))) {
-                           <a class="bulk-action-link dropdown-item" rel="@action.Description" href="javascript:bulkAction(1, '@action.Name');">@action.Description</a>
+                        @if(Model.Part.BulkActions.Value){
+                           foreach (var action in Model.Process.Actions.Where(a => a.Type != "open" && !string.IsNullOrEmpty(a.Name))) {
+                              <a class="bulk-action-link dropdown-item" rel="@action.Description" href="javascript:bulkAction(1, '@action.Name');">@action.Description</a>
+                           }
+                        } else { // browsing
+                           <a class="bulk-action-link dropdown-item" rel="hide" href="javascript:edit('hide');">Hide</a>
+                           <a class="bulk-action-link dropdown-item" rel="search" href="javascript:edit('search');">Search</a>
+                           <a class="bulk-action-link dropdown-item" rel="facet" href="javascript:edit('facet');">Facet</a>
+                           <a class="bulk-action-link dropdown-item" rel="facets" href="javascript:edit('facets');">Facets</a>
                         }
                      </div>
                   </div>

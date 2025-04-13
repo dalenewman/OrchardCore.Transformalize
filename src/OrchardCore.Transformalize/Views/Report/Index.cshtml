@@ -20,6 +20,7 @@
 <script asp-name="prism" version="1.20.0" at="Foot"></script>
 <script asp-name="prism-markup" version="1.20.0" at="Foot"></script>
 <script asp-name="block-ui" version="2.70.0" at="Foot"></script>
+<script asp-name="underscore" version="1.4.1" at="Foot"></script>
 
 <style asp-name="jQuery-ui"></style>
 <style asp-name="bootstrap-select-beta3" version="1.14.0"></style>
@@ -112,10 +113,15 @@
    <input id="id_sort" class="bsh" type="hidden" name="sort" value="@(Context.Request.Query["sort"].ToString() ?? string.Empty)" />
    <input id="id_page" class="bsh" type="hidden" name="page" value="@firstEntity.Page" />
    <input id="id_size" class="bsh" type="hidden" name="size" value="@(firstEntity.Size)" />
-   <input id="id_hide" class="bsh" type="hidden" name="hide" value="@(Context.Request.Query["hide"].ToString() ?? string.Empty)" />
-   <input id="id_c" class="bsh" type="hidden" name="c" value="@(Context.Request.Query["c"].ToString() ?? string.Empty)" />
-   <input id="id_t" class="bsh" type="hidden" name="t" value="@(Context.Request.Query["t"].ToString() ?? string.Empty)" />
    <input id="id_return_url" class="bsh" type="hidden" name="@Common.ReturnUrlName" value="@(Context.Request.Query[Common.ReturnUrlName].ToString() ?? string.Empty)" />
+   
+   @* browsing/editing related *@
+   <input id="id_c" class="bsh" type="hidden" name="c" alt="connection" value="@(Context.Request.Query["c"].ToString() ?? string.Empty)" />
+   <input id="id_t" class="bsh" type="hidden" name="t" alt="table" value="@(Context.Request.Query["t"].ToString() ?? string.Empty)" />
+   <input id="id_h" class="bsh" type="hidden" name="h" alt="hidden" value="@(Context.Request.Query["h"].ToString() ?? string.Empty)" />
+   <input id="id_s" class="bsh" type="hidden" name="s" alt="search" value="@(Context.Request.Query["s"].ToString() ?? string.Empty)" />
+   <input id="id_f1" class="bsh" type="hidden" name="f1" alt="facet" value="@(Context.Request.Query["f1"].ToString() ?? string.Empty)" />
+   <input id="id_f2" class="bsh" type="hidden" name="f2" alt="facets" value="@(Context.Request.Query["f2"].ToString() ?? string.Empty)" />
 
    @foreach (var parameter in Model.Process.Parameters.Where(p => !p.Prompt && Context.Request.Query[p.Name].ToString() != null).Select(p => p.Name)) {
       <input type="hidden" name="@parameter" value="@(Context.Request.Query[parameter].ToString())" />
@@ -169,10 +175,9 @@
                                        <a href="javascript:void()" title="Sort Ascending by @field.Label" class="btn btn-sm @(sortService.Sort(number, expression) == Direction.Asc ? "btn-primary" : "btn-sort") sortable">
                                           <span class="fas fa-chevron-up"></span>
                                        </a>
-                                       @if(Model.BreadCrumbs.Any() && !string.IsNullOrEmpty(Context.Request.Query["t"].ToString())){
-                                          var hideExpression = Context.Request.Query["hide"].ToString() ?? string.Empty;
-                                          <a href="javascript:void()" title="Hide @field.Name" class="btn btn-sm btn-danger hidable">
-                                             <span class="fas fa-times"></span>
+                                       @if(Model.Browsing()){
+                                          <a href="javascript:void()" title="Hide @field.Name" class="btn btn-sm btn-sort hidable">
+                                             <input type="checkbox" class="field-check" data-index="@field.Index" />
                                           </a>
                                        }
                                        <a href="javascript:void()" title="Sort Descending by @field.Label" class="btn btn-sm @(sortService.Sort(number, expression) == Direction.Desc ? "btn-primary" : "btn-sort") sortable">

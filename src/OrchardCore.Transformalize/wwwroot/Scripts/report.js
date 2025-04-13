@@ -81,6 +81,50 @@ function updateBulkActions() {
    });
 }
 
+function edit(action) {
+   const fields = [];
+
+   // Collect selected fields and ensure they are integers
+   $(".field-check:checked").each(function () {
+      fields.push(parseInt($(this).data("index"), 10)); // Convert data-index to integers
+   });
+
+   console.log(action + " fields:", fields);
+
+   // Get existing comma-delimited values from form fields and convert them to integers
+   let hide = $('#id_h').val().split(".").filter(Boolean).map(Number);
+   let search = $('#id_s').val().split(".").filter(Boolean).map(Number);
+   let facet = $('#id_f1').val().split(".").filter(Boolean).map(Number);
+   let facets = $('#id_f2').val().split(".").filter(Boolean).map(Number);
+
+   if (action === 'hide') {
+      hide = _.union(hide, fields);
+      controls.setSort("");
+   } else if (action === 'search') {
+      search = _.union(search, fields);
+      facet = _.difference(facet, search);
+      facets = _.difference(facets, search);
+   } else if (action === 'facet') {
+      facet = _.union(facet, fields);
+      search = _.difference(search, facet);
+      facets = _.difference(facets, facet);
+   } else if (action === 'facets') {
+      facets = _.union(facets, fields);
+      search = _.difference(search, facets);
+      facet = _.difference(facet, facets);
+   }
+
+   // Update form fields with updated comma-delimited lists
+   $('#id_h').val(hide.sort((a, b) => a - b).join("."));
+   $('#id_s').val(search.sort((a, b) => a - b).join("."));
+   $('#id_f1').val(facet.sort((a, b) => a - b).join("."));
+   $('#id_f2').val(facets.sort((a, b) => a - b).join("."));
+
+   // console.log({ hide: hide, search: search, facet: facet, facets: facets });
+
+   controls.submit(server.entity.page === 0 ? 0 : 1);
+}
+
 $(document).ready(function () {
 
    var cleared = "_Cleared";
@@ -226,24 +270,6 @@ $(document).ready(function () {
       var expression = sort.replace(/^\.+|\.+$/gm, '');
       console.log(expression);
       controls.setSort(expression);
-      controls.submit(server.entity.page === 0 ? 0 : 1);
-   });
-
-   $('.hidable').click(function () {
-
-      var hide = $('#id_hide').val();
-      var field = $(this).closest('td.sorter').attr('data-field-name');
-
-      if (field) {
-         if (hide) {
-            hide += '.' + field;
-         } else {
-            hide = field;
-         }
-      }
-
-      $('#id_hide').val(hide);
-      controls.setSort("");
       controls.submit(server.entity.page === 0 ? 0 : 1);
    });
 

@@ -1,10 +1,8 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using TransformalizeModule.Models;
 using OrchardCore.ContentManagement;
 using Transformalize.Configuration;
 using OrchardCore.Title.Models;
+using Microsoft.AspNetCore.Http;
 
 namespace TransformalizeModule.ViewModels {
    public class ReportViewModel {
@@ -13,7 +11,8 @@ namespace TransformalizeModule.ViewModels {
       private Dictionary<string, Parameter> _inlines;
       private Process _process;
       private HashSet<string> _topParameters;
-     
+      private readonly IQueryCollection _queryCollection;
+
       public TransformalizeSettings Settings { get; set; }
 
       // temps
@@ -39,12 +38,18 @@ namespace TransformalizeModule.ViewModels {
 
       public List<BreadCrumb> BreadCrumbs { get; set; } = new List<BreadCrumb>();
 
-      public ReportViewModel(Process process, ContentItem item, string idOrAlias) {
+      public ReportViewModel(
+         Process process, 
+         ContentItem item,
+         IQueryCollection queryCollection,
+         string idOrAlias
+      ) {
          Process = process;
          Item = item;
          Part = item.As<TransformalizeReportPart>();
          IdOrAlias = idOrAlias;
          Title = item.As<TitlePart>().Title;
+         _queryCollection = queryCollection;
       }
 
       public Dictionary<string, Parameter> InlineParameters {
@@ -112,6 +117,10 @@ namespace TransformalizeModule.ViewModels {
 
             return _parameterLookup;
          }
+      }
+
+      public bool Browsing() {
+         return BreadCrumbs.Any() && !string.IsNullOrEmpty(_queryCollection["t"].ToString());
       }
 
    }
