@@ -40,15 +40,18 @@ namespace TransformalizeModule.Services {
 
       private readonly IDbConnectionAccessor _dbConnectionAccessor;
       private readonly IStore _store;
+      private readonly CombinedLogger<SettingsService> _logger;
 
       public SettingsService(
          ISiteService siteService, 
          IDbConnectionAccessor dbConnectionAccessor,
-         IStore store
+         IStore store,
+         CombinedLogger<SettingsService> logger
       ) {
 
          _dbConnectionAccessor = dbConnectionAccessor;
          _store = store;
+         _logger = logger;
 
          using (MiniProfiler.Current.Step("Common Settings Setup")) {
 
@@ -223,10 +226,10 @@ namespace TransformalizeModule.Services {
                      connection.ConnectionString = cn.ConnectionString;
                      connection.Provider = _store.Configuration.SqlDialect.Name.ToLower();
                   }
+               } else {
+                  _logger.Warn(() => $"Missing common connection \"{connection.Name}\".");
                }
-
             }
-
          }
 
          // common fields

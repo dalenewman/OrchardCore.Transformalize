@@ -7,6 +7,8 @@ using OrchardCore.Title.Models;
 using OrchardCore.Alias.Models;
 using Microsoft.AspNetCore.WebUtilities;
 using System.Xml.Linq;
+using OrchardCore.Data;
+using YesSql;
 
 namespace TransformalizeModule.Services {
 
@@ -20,6 +22,8 @@ namespace TransformalizeModule.Services {
       private readonly ISchemaService _schemaService;
       private readonly IContentManager _contentManager;
       private readonly IDictionary<string, string> _parameters;
+      private readonly IDbConnectionAccessor _dbConnectionAccessor;
+      private readonly IStore _store;
 
       public ReportService(
          IArrangementLoadService loadService,
@@ -29,7 +33,9 @@ namespace TransformalizeModule.Services {
          ISettingsService settings,
          IParameterService parameterService,
          ISchemaService schemaService,
-         IContentManager contentManager
+         IContentManager contentManager,
+         IDbConnectionAccessor dbConnectionAccessor,
+         IStore store
       ) {
          _loadService = loadService;
          _streamService = streamService;
@@ -39,6 +45,8 @@ namespace TransformalizeModule.Services {
          _schemaService = schemaService;
          _contentManager = contentManager;
          _parameters = parameterService.GetParameters();
+         _dbConnectionAccessor = dbConnectionAccessor;
+         _store = store;
       }
 
       public async Task<bool> CanAccess(ContentItem contentItem) {
@@ -102,7 +110,7 @@ namespace TransformalizeModule.Services {
                   response.BreadCrumbs.Add(new BreadCrumb("Browse", req.Path));
 
                   if (TryTable(out string schema, out string table)) {
-                     if(TryReturnUrl(out string returnUrl)) {
+                     if (TryReturnUrl(out string returnUrl)) {
                         response.BreadCrumbs.Add(new BreadCrumb(connection.Name, returnUrl));
                      } else {
                         response.BreadCrumbs.Add(new BreadCrumb(connection.Name, QueryHelpers.AddQueryString(req.Path, "c", connection.Name)));
@@ -193,8 +201,21 @@ namespace TransformalizeModule.Services {
 
       private bool TryConnection(out Connection connection) {
          connection = new Connection();
-         if (_parameters.ContainsKey("c") && _settings.Connections.ContainsKey(_parameters["c"])) {
-            connection = _settings.Connections[_parameters["c"]];
+         if (_parameters.ContainsKey("c")) {
+            if (_settings.Connections.ContainsKey(_parameters["c"])) {
+               connection = _settings.Connections[_parameters["c"]];
+            } else if (_parameters["c"] == "orchard") {
+               using (var cn = _dbConnectionAccessor.CreateConnection()) {
+                  connection.ConnectionString = cn.ConnectionString;
+                  connection.Name = "orchard";
+                  connection.Provider = _store.Configuration.SqlDialect.Name.ToLower();
+                  if (connection.Provider == "sqlite") {
+                     connection.File = cn.Database;
+                  }
+               }
+            } else {
+               return false;
+            }
             return true;
          }
          return false;
@@ -282,6 +303,21 @@ namespace TransformalizeModule.Services {
                         { "Database", 2 }
                      },
                Storage = [$"<a href=\"{newUrl}\">{c.Name}</a>", c.Provider, database]
+            });
+         }
+
+         // add orchard's connection
+         if (!process.Connections.Exists(c => c.Name == "orchard")) {
+
+            var newUrl = QueryHelpers.AddQueryString(currentUrl, "c", "orchard");
+
+            process.Entities[0].Rows.Add(new Transformalize.Impl.CfgRow(["Name", "Provider", "Database"]) {
+               Map = new Dictionary<string, short> {
+                        { "Name", 0 },
+                        { "Provider", 1 },
+                        { "Database", 2 }
+                     },
+               Storage = [$"<a href=\"{newUrl}\">orchard</a>", "orchard", "orchard"]
             });
          }
 
@@ -389,7 +425,7 @@ namespace TransformalizeModule.Services {
 
          // Create a views arrangement for connection
          var process = new Process { Name = table, ReadOnly = true };
-         process.Connections.Add(new Connection { Name = connection.Name });
+         process.Connections.Add(connection);
 
          process.Entities.Add(new Entity {
             Name = table,
@@ -420,7 +456,7 @@ namespace TransformalizeModule.Services {
             process.Connections[0].Password = string.Empty;
             process.Connections[0].Browse = false;
             process.Connections.RemoveAt(1);
-            contentItem.Alter<TransformalizeReportPart>(part => { part.Arrangement.Text = RemoveXmlProperty(process.Serialize(),"provider"); });
+            contentItem.Alter<TransformalizeReportPart>(part => { part.Arrangement.Text = RemoveXmlProperty(process.Serialize(), "provider"); });
             await _contentManager.UpdateAsync(contentItem);
 
             var editUrl = $"/Admin/Contents/ContentItems/{contentItem.ContentItemId}/Edit";
