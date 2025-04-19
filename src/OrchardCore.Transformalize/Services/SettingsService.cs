@@ -221,7 +221,7 @@ namespace TransformalizeModule.Services {
                   process.Connections[i] = Connections[connection.Name];
                   process.Connections[i].Key = key;
                   process.Connections[i].Table = table;
-               } else if (connection.Name == "orchard"){
+               } else if (connection.Name == Common.OrchardConnectionName){
                   using(var cn = _dbConnectionAccessor.CreateConnection()) {
                      connection.ConnectionString = cn.ConnectionString;
                      connection.Provider = _store.Configuration.SqlDialect.Name.ToLower();
@@ -309,7 +309,7 @@ namespace TransformalizeModule.Services {
                   var table = connection.Table;
                   process.Connections[i] = ConnectionsFacade[connection.Name];
                   process.Connections[i].Table = table;
-               } else if(connection.Name == "orchard") {
+               } else if(connection.Name == Common.OrchardConnectionName) {
                   using(var cn = _dbConnectionAccessor.CreateConnection()) {
                      connection.ConnectionString = cn.ConnectionString;
                      connection.Provider = _store.Configuration.SqlDialect.Name.ToLower();

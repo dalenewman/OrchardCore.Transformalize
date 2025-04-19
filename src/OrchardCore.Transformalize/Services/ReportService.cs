@@ -204,13 +204,15 @@ namespace TransformalizeModule.Services {
          if (_parameters.ContainsKey("c")) {
             if (_settings.Connections.ContainsKey(_parameters["c"])) {
                connection = _settings.Connections[_parameters["c"]];
-            } else if (_parameters["c"] == "orchard") {
+            } else if (_parameters["c"] == Common.OrchardConnectionName) {
                using (var cn = _dbConnectionAccessor.CreateConnection()) {
                   connection.ConnectionString = cn.ConnectionString;
-                  connection.Name = "orchard";
+                  connection.Name = Common.OrchardConnectionName;
                   connection.Provider = _store.Configuration.SqlDialect.Name.ToLower();
                   if (connection.Provider == "sqlite") {
                      connection.File = cn.Database;
+                  } else if (connection.Provider == "postgresql") {
+                     connection.Enclose = true; // orchard encloses it's objects, requiring case sensativity and double quotes
                   }
                }
             } else {
@@ -306,10 +308,17 @@ namespace TransformalizeModule.Services {
             });
          }
 
-         // add orchard's connection
-         if (!process.Connections.Exists(c => c.Name == "orchard")) {
+         AddOrchardConnection(currentUrl, process);
 
-            var newUrl = QueryHelpers.AddQueryString(currentUrl, "c", "orchard");
+         response.Part.Arrangement.Text = process.Serialize();
+         response.ContentItem.Weld(response.Part);
+         response.ContentItem.Weld(new TitlePart { Title = "Connections" });
+      }
+
+      private static void AddOrchardConnection(string currentUrl, Process process) {
+         if (!process.Connections.Exists(c => c.Name == Common.OrchardConnectionName)) {
+
+            var newUrl = QueryHelpers.AddQueryString(currentUrl, "c", Common.OrchardConnectionName);
 
             process.Entities[0].Rows.Add(new Transformalize.Impl.CfgRow(["Name", "Provider", "Database"]) {
                Map = new Dictionary<string, short> {
@@ -317,13 +326,9 @@ namespace TransformalizeModule.Services {
                         { "Provider", 1 },
                         { "Database", 2 }
                      },
-               Storage = [$"<a href=\"{newUrl}\">orchard</a>", "orchard", "orchard"]
+               Storage = [$"<a href=\"{newUrl}\">{Common.OrchardConnectionName}</a>", Common.OrchardConnectionName, Common.OrchardConnectionName]
             });
          }
-
-         response.Part.Arrangement.Text = process.Serialize();
-         response.ContentItem.Weld(response.Part);
-         response.ContentItem.Weld(new TitlePart { Title = "Connections" });
       }
 
       private void PrepareTables(TransformalizeResponse<TransformalizeReportPart> response, Connection connection, string currentUrl) {

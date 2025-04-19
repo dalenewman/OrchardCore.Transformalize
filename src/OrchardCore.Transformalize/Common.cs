@@ -12,6 +12,7 @@ namespace TransformalizeModule {
       public const string CodeMirrorVersion = "5.52.2";
       public const string InvalidParametersMessage = "Parameter Validation Failed";
       public const string InvalidContentTypeMessage = "Invalid Content Type";
+      public const string OrchardConnectionName = "orchard";
 
       public const string TaskReferrer = "TaskReferrer";
       public const string TaskContentItemId = "TaskContentItemId";
