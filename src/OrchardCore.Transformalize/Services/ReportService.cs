@@ -341,7 +341,7 @@ namespace TransformalizeModule.Services {
          var originalName = connection.Name;
          process.Connections.First().Name = "input";
 
-         var modifiedUrl = new Flurl.Url(currentUrl).RemoveQueryParams("size", "sort").ToString();
+         var modifiedUrl = new Flurl.Url(currentUrl).RemoveQueryParams("size", "sort", "page").ToString();
 
          var separator = modifiedUrl.Contains('?') ? "&" : "?";
 
