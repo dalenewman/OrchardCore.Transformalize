@@ -108,6 +108,10 @@ function edit(action) {
       if (fields.length > 0) {
          controls.setSort("");
       }
+      // Remove hidden fields from search, facet, and facets
+      search = _.difference(search, fields);
+      facet = _.difference(facet, fields);
+      facets = _.difference(facets, fields);
    } else if (action === 'search') {
       search = _.union(search, fields);
       facet = _.difference(facet, search);
@@ -120,6 +124,11 @@ function edit(action) {
       facets = _.union(facets, fields);
       search = _.difference(search, facets);
       facet = _.difference(facet, facets);
+   } else if (action === 'clear') {
+      // Clear search, facet, and facets for the specific column(s)
+      search = _.difference(search, fields);
+      facet = _.difference(facet, fields);
+      facets = _.difference(facets, fields);
    }
 
    // Update form fields with updated comma-delimited lists
