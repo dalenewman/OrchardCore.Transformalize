@@ -201,7 +201,7 @@
                               <td style="padding-left: 3px;">
                                  @if (Model.InlineParameters.ContainsKey(field.Alias)) {
                                     var parameter = Model.InlineParameters[field.Alias];
-                                    @Html.Partial("Parameter", new ParameterViewModel { Maps = Model.Process.Maps, Parameter = parameter })
+                                    @Html.Partial("Parameter", new ParameterViewModel { Maps = Model.Process.Maps, Parameter = parameter, Field = field })
                                  }
                               </td>
                            }
