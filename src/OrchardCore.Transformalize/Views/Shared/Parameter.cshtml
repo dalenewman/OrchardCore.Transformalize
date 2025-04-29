@@ -62,14 +62,13 @@
             @{
                var items = Model.Maps.First(m => m.Name == Model.Parameter.Map).Items;
                var split = input.Split(",");
-               var displayMap = Model.Field != null && Model.Field.Map.Contains(':') 
-                  ? Model.Maps.FirstOrDefault(m => m.Name == Model.Field.Map) 
-                  : null;
+               var displayMap = Model.Field != null && Model.Field.Map != string.Empty ? Model.Maps.FirstOrDefault(m => m.Name == Model.Field.Map) : null;
 
                if (Model.Parameter.Multiple) {
                   var values = string.IsNullOrEmpty(Context.Request.Query[Model.Parameter.Name].ToString()) ? new HashSet<string>() : new HashSet<string>(split);
                   foreach (var item in items) {
                      if (item.To != null && item.From != null) {
+                        Model.ModifyMapItem(displayMap, item);
                         <option value="@item.To" selected="@(values.Contains(item.To.ToString()))">@item.From</option>
                      }
                   }
@@ -77,15 +76,8 @@
                   <option value="*" selected="@(requestedValue == "*")">All</option>
                   foreach (var item in items) {
                      if (item.To != null && item.From != null) {
-                        if(displayMap != null){
-                           var mappedItem = displayMap.Items.FirstOrDefault(i=>item.From.ToString().StartsWith(i.From + " ("));
-                           if(mappedItem != null){
-                              item.From = item.From.ToString().Replace(mappedItem.From + " (", mappedItem.To + " (");
-                           }
-                           <option value="@item.To" selected="@(item.To.ToString() == requestedValue)">@item.From</option>
-                        }else {
-                           <option value="@item.To" selected="@(item.To.ToString() == requestedValue)">@item.From</option>
-                        }
+                        Model.ModifyMapItem(displayMap, item);
+                        <option value="@item.To" selected="@(item.To.ToString() == requestedValue)">@item.From</option>
                      }
                   }
                }
