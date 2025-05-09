@@ -15,6 +15,7 @@
 
 <script asp-name="jQuery" at="Head"></script>
 <script asp-name="jQuery-ui" at="Foot"></script>
+<script asp-name="jquery-drag-table" version="2.0.15" at="Foot"></script>
 <script asp-name="popper" at="Foot"></script>
 <script asp-name="bootstrap-select-beta3" version="1.14.0" at="Foot"></script>
 <script asp-name="prism" version="1.20.0" at="Foot"></script>
@@ -24,6 +25,7 @@
 
 <style asp-name="jQuery-ui"></style>
 <style asp-name="bootstrap-select-beta3" version="1.14.0"></style>
+<style asp-name="jquery-drag-table" version="2.0.15"></style>
 <style asp-name="prism" version="1.20.0"></style>
 
 <style>
@@ -123,6 +125,7 @@
    <input id="id_s" type="hidden" name="s" alt="search" value="@(Context.Request.Query["s"].ToString() ?? string.Empty)" />
    <input id="id_f1" type="hidden" name="f1" alt="facet" value="@(Context.Request.Query["f1"].ToString() ?? string.Empty)" />
    <input id="id_f2" type="hidden" name="f2" alt="facets" value="@(Context.Request.Query["f2"].ToString() ?? string.Empty)" />
+   <input id="id_o" type="hidden" name="o" alt="order" value="@(Context.Request.Query["o"].ToString() ?? string.Empty)" />
 
    @foreach (var parameter in Model.Process.Parameters.Where(p => !p.Prompt && Context.Request.Query[p.Name].ToString() != null).Select(p => p.Name)) {
       <input type="hidden" name="@parameter" value="@(Context.Request.Query[parameter].ToString())" />
@@ -158,7 +161,7 @@
                            </th>
                         }
                         @foreach (var field in fields) {
-                           <th title="@field.Name">@field.Label</th>
+                           <th title="@field.Name" data-index="@field.Src">@field.Label</th>
                         }
                      </tr>
                      @if (isSortable) {
@@ -178,7 +181,7 @@
                                        </a>
                                        @if(Model.Browsing()){
                                           <a href="javascript:void()" title="@field.Name @field.Type @field.Length" class="btn btn-sm btn-sort hidable" >
-                                             <input type="checkbox" class="field-check shift-select" data-index="@field.Index" />
+                                             <input type="checkbox" class="field-check shift-select" data-index="@field.Src" />
                                           </a>
                                        }
                                        <a href="javascript:void()" title="Sort Descending by @field.Label" class="btn btn-sm @(sortService.Sort(number, expression) == Direction.Desc ? "btn-primary" : "btn-sort") sortable">

@@ -466,5 +466,17 @@
     "inputFiles": [
       "wwwroot/Styles/mapbox-gl-draw.css"
     ]
+  },
+  {
+    "outputFileName": "wwwroot/Scripts/jquery.dragtable.min.js",
+    "inputFiles": [
+      "wwwroot/Scripts/jquery.dragtable.js"
+    ]
+  },
+  {
+    "outputFileName": "wwwroot/Styles/dragtable.min.css",
+    "inputFiles": [
+      "wwwroot/Styles/dragtable.css"
+    ]
   }
 ]

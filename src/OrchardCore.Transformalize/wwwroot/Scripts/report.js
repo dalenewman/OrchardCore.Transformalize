@@ -92,26 +92,46 @@ function edit(action) {
 
    // Collect selected fields and ensure they are integers
    $(".field-check:checked").each(function () {
-      fields.push(parseInt($(this).data("index"), 10)); // Convert data-index to integers
+      fields.push($(this).data("index"));
    });
 
-   console.log(action + " fields:", fields);
+   console.log(action + " fields:", fields.join("."));
 
-   // Get existing comma-delimited values from form fields and convert them to integers
-   let hide = $('#id_h').val().split(".").filter(Boolean).map(Number);
-   let search = $('#id_s').val().split(".").filter(Boolean).map(Number);
-   let facet = $('#id_f1').val().split(".").filter(Boolean).map(Number);
-   let facets = $('#id_f2').val().split(".").filter(Boolean).map(Number);
+   // Get existing comma-delimited values from form fields
+   let hide = $('#id_h').val().split(".").filter(Boolean);
+   let search = $('#id_s').val().split(".").filter(Boolean);
+   let facet = $('#id_f1').val().split(".").filter(Boolean);
+   let facets = $('#id_f2').val().split(".").filter(Boolean);
+   let order = $('#id_o').val().split(".").filter(Boolean);
 
    if (action === 'hide') {
       hide = _.union(hide, fields);
       if (fields.length > 0) {
          controls.setSort("");
       }
-      // Remove hidden fields from search, facet, and facets
-      search = _.difference(search, fields);
-      facet = _.difference(facet, fields);
-      facets = _.difference(facets, fields);
+
+      // hide them on client first
+      hide.forEach(function (index) {
+         // find matching column
+         var columnPosition = $("th[data-index='" + index + "']").index() + 1;
+
+         if (columnPosition > 0) { // ensure it exists
+            // hide the header
+            $("th[data-index='" + index + "']").hide();
+
+            // gide the corresponding cells using the actual position
+            $("tr").each(function () {
+               $(this).find("td:nth-child(" + columnPosition + ")").hide();
+            });
+         }
+      });
+
+      // remove hidden fields from search, facet, facets, and order
+      search = _.difference(search, hide);
+      facet = _.difference(facet, hide);
+      facets = _.difference(facets, hide);
+      order = _.difference(order, hide);
+
    } else if (action === 'search') {
       search = _.union(search, fields);
       facet = _.difference(facet, search);
@@ -129,17 +149,37 @@ function edit(action) {
       search = _.difference(search, fields);
       facet = _.difference(facet, fields);
       facets = _.difference(facets, fields);
+   } else if (action === 'order') {
+      order = _.difference(order, hide);
+      controls.setSort("");
    }
 
    // Update form fields with updated comma-delimited lists
-   $('#id_h').val(hide.sort((a, b) => a - b).join("."));
-   $('#id_s').val(search.sort((a, b) => a - b).join("."));
-   $('#id_f1').val(facet.sort((a, b) => a - b).join("."));
-   $('#id_f2').val(facets.sort((a, b) => a - b).join("."));
+   $('#id_h').val(hide.join("."));
+   $('#id_s').val(search.join("."));
+   $('#id_f1').val(facet.join("."));
+   $('#id_f2').val(facets.join("."));
+   $('#id_o').val(order.join("."));
 
-   // console.log({ hide: hide, search: search, facet: facet, facets: facets });
+   console.log({
+      hide: hide,
+      search: search,
+      facet: facet,
+      facets: facets,
+      order: order
+   });
 
-   controls.submit(server.entity.page === 0 ? 0 : 1);
+   if (action !== 'order' && action !== 'hide') {
+      controls.submit(server.entity.page === 0 ? 0 : 1);
+   }
+}
+
+function setColumnOrder() {
+   var indexString = $("th[data-index]").map(function () {
+      return $(this).attr("data-index");
+   }).get().join(".");
+   $('#id_o').val(indexString);
+   console.log("column order: " + indexString);
 }
 
 $(document).ready(function () {
@@ -314,6 +354,13 @@ $(document).ready(function () {
          $(this).select();
       }
    });
+
+   $("table:first").dragtable({
+      persistState: function (table) {
+         setColumnOrder();
+         edit("order");
+      }
+   }); 
 
    // Get the 'last' parameter value from the URL
    let lastValue = getUrlParameter('last');

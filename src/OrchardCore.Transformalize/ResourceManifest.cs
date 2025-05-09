@@ -372,6 +372,17 @@ namespace TransformalizeModule {
             .SetCdnIntegrity("sha512-YuZemcyQ8r4w8tdxIzkJVgWfHrzSQN9PuF18I490DE8H97DOkrt+bolBf3/mve+9t8SLWODBzFCCPxH/vZYqBg==", "sha512-mYoXRCW7jn4Pm7gT7iqWdM42rpYge7g/Hegu5ttt+KqTmiuX8y6OpFUU644Ld+PlTTiS5Cecoiwoc+5homJ1oQ==")
             .SetVersion("1.9.0");
 
+         // misc
+
+         _manifest
+            .DefineScript("jquery-drag-table")
+            .SetUrl($"~/{Common.ModuleName}/Scripts/jquery.dragtable.js", $"~/{Common.ModuleName}/Scripts/jquery.dragtable.min.js")
+            .SetVersion("2.0.15");
+
+         _manifest
+            .DefineStyle("jquery-drag-table")
+            .SetUrl($"~/{Common.ModuleName}/Styles/dragtable.css", $"~/{Common.ModuleName}/Styles/dragtable.min.css")
+            .SetVersion("2.0.15");
 
       }
 

@@ -461,6 +461,11 @@ namespace TransformalizeModule.Services {
             process.Connections[0].Password = string.Empty;
             process.Connections[0].Browse = false;
             process.Connections.RemoveAt(1);
+
+            foreach(var field in process.Entities[0].Fields) {
+               field.Src = string.Empty;
+            }
+
             contentItem.Alter<TransformalizeReportPart>(part => { part.Arrangement.Text = RemoveXmlProperty(process.Serialize(), "provider"); });
             await _contentManager.UpdateAsync(contentItem);
 
@@ -486,21 +491,33 @@ namespace TransformalizeModule.Services {
 
          var req = _httpContextAccessor.HttpContext!.Request;
 
-         foreach (var f in req.Query["h"].ToString().Split('.', StringSplitOptions.RemoveEmptyEntries).Select(h => int.TryParse(h, out var result) ? result : (int?)null).Where(h => h.HasValue)) {
-            process.Entities[0].Fields[(int)f!].Output = false;
+         var shortened = GetShortestUniqueVersions(process.Entities[0].Fields.Select(f => f.Name).ToArray());
+         for (int i = 0; i < shortened.Length; i++) {
+            process.Entities[0].Fields[i].Src = shortened[i].Shortened;
          }
 
-         foreach (var f in req.Query["s"].ToString().Split('.', StringSplitOptions.RemoveEmptyEntries).Select(h => int.TryParse(h, out var result) ? result : (int?)null).Where(h => h.HasValue)) {
-            process.Entities[0].Fields[(int)f!].Parameter = "search";
+         foreach (var src in req.Query["h"].ToString().Split('.', StringSplitOptions.RemoveEmptyEntries)) {
+            process.Entities[0].Fields.First(f=>f.Src == src).Output = false;
          }
 
-         foreach (var f in req.Query["f1"].ToString().Split('.', StringSplitOptions.RemoveEmptyEntries).Select(h => int.TryParse(h, out var result) ? result : (int?)null).Where(h => h.HasValue)) {
-            process.Entities[0].Fields[(int)f!].Parameter = "facet";
+         foreach (var src in req.Query["s"].ToString().Split('.', StringSplitOptions.RemoveEmptyEntries)) {
+            process.Entities[0].Fields.First(f => f.Src == src).Parameter = "search";
          }
 
-         foreach (var f in req.Query["f2"].ToString().Split('.', StringSplitOptions.RemoveEmptyEntries).Select(h => int.TryParse(h, out var result) ? result : (int?)null).Where(h => h.HasValue)) {
-            process.Entities[0].Fields[(int)f!].Parameter = "facets";
+         foreach (var src in req.Query["f1"].ToString().Split('.', StringSplitOptions.RemoveEmptyEntries)) {
+            process.Entities[0].Fields.First(f => f.Src == src).Parameter = "facet";
          }
+
+         foreach (var src in req.Query["f2"].ToString().Split('.', StringSplitOptions.RemoveEmptyEntries)) {
+            process.Entities[0].Fields.First(f => f.Src == src).Parameter = "facets";
+         }
+
+         var order = req.Query["o"].ToString().Split('.', StringSplitOptions.RemoveEmptyEntries);
+         process.Entities[0].Fields = process.Entities[0].Fields.OrderBy(f => Array.IndexOf(order, f.Src)).ToList();
+         process.Entities[0].Fields = process.Entities[0].Fields
+             .OrderBy(f => !f.Output) // sort output true first
+             .ThenBy(f => Array.IndexOf(order, f.Src)) // then by source
+             .ToList();
 
          response.Part.Arrangement.Text = process.Serialize();
          response.ContentItem.Weld(response.Part);
@@ -526,6 +543,30 @@ namespace TransformalizeModule.Services {
          }
          return false;
       }
+
+      private class StringEntry {
+         public int Index { get; set; }
+         public required string Original { get; set; }
+         public required string Shortened { get; set; }
+      }
+
+      static StringEntry[] GetShortestUniqueVersions(string[] input) {
+         var uniqueVersions = new Dictionary<string, StringEntry>();
+
+         for (int i = 0; i < input.Length; i++) {
+            string str = input[i];
+            for (int j = 1; j <= str.Length; j++) {
+               string candidate = str.Substring(0, j);
+               if (!uniqueVersions.Values.Any(e => e.Shortened == candidate)) {
+                  uniqueVersions[str] = new StringEntry { Index = i, Original = str, Shortened = candidate };
+                  break;
+               }
+            }
+         }
+
+         return uniqueVersions.Values.ToArray();
+      }
+
 
    }
 }

@@ -7,9 +7,9 @@
       <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
       <DockerfileContext>..\..</DockerfileContext>
       <DockerfileTag>transformalize.orchard</DockerfileTag>
-      <Version>0.13.11</Version>
-      <FileVersion>0.13.11</FileVersion>
-      <AssemblyVersion>0.13.11</AssemblyVersion>
+      <Version>0.13.12</Version>
+      <FileVersion>0.13.12</FileVersion>
+      <AssemblyVersion>0.13.12</AssemblyVersion>
       <ReleaseVersion>0.13.0</ReleaseVersion>      
       <RazorRuntimeCompilation>true</RazorRuntimeCompilation>
       <CopyRefAssembliesToPublishDirectory>true</CopyRefAssembliesToPublishDirectory>
