@@ -505,7 +505,16 @@ namespace TransformalizeModule.Services {
          }
 
          foreach (var src in req.Query["f1"].ToString().Split('.', StringSplitOptions.RemoveEmptyEntries)) {
-            process.Entities[0].Fields.First(f => f.Src == src).Parameter = "facet";
+            var field = process.Entities[0].Fields.First(f => f.Src == src);
+            field.Parameter = "facet";
+            if(field.Type == "bool") {
+               var input = process.Entities[0].Input;
+               if (process.Connections.First(c=>c.Name == input).Provider == "postgresql") {
+                  field.Map = "false:No,true:Yes";
+               } else {
+                  field.Map = "0:No,1:Yes";
+               }
+            }
          }
 
          foreach (var src in req.Query["f2"].ToString().Split('.', StringSplitOptions.RemoveEmptyEntries)) {
@@ -545,7 +554,6 @@ namespace TransformalizeModule.Services {
       }
 
       private class StringEntry {
-         public int Index { get; set; }
          public required string Original { get; set; }
          public required string Shortened { get; set; }
       }
@@ -558,7 +566,7 @@ namespace TransformalizeModule.Services {
             for (int j = 1; j <= str.Length; j++) {
                string candidate = str.Substring(0, j);
                if (!uniqueVersions.Values.Any(e => e.Shortened == candidate)) {
-                  uniqueVersions[str] = new StringEntry { Index = i, Original = str, Shortened = candidate };
+                  uniqueVersions[str] = new StringEntry { Original = str, Shortened = candidate };
                   break;
                }
             }
