@@ -462,7 +462,7 @@ namespace TransformalizeModule.Services {
             process.Connections[0].Browse = false;
             process.Connections.RemoveAt(1);
 
-            foreach(var field in process.Entities[0].Fields) {
+            foreach (var field in process.Entities[0].Fields) {
                field.Src = string.Empty;
             }
 
@@ -493,43 +493,91 @@ namespace TransformalizeModule.Services {
 
          var shortened = GetShortestUniqueVersions(process.Entities[0].Fields.Select(f => f.Name).ToArray());
          for (int i = 0; i < shortened.Length; i++) {
-            process.Entities[0].Fields[i].Src = shortened[i].Shortened;
+            process.Entities[0].Fields[i].Src = shortened[i];
          }
 
-         foreach (var src in req.Query["h"].ToString().Split('.', StringSplitOptions.RemoveEmptyEntries)) {
-            process.Entities[0].Fields.First(f=>f.Src == src).Output = false;
-         }
+         AddSearch(process, req);
+         AddSingleFacet(process, req);
+         AddMultipleFacet(process, req);
+         Hide(process, req);
+         AddTimeAgo(process, req);
 
-         foreach (var src in req.Query["s"].ToString().Split('.', StringSplitOptions.RemoveEmptyEntries)) {
-            process.Entities[0].Fields.First(f => f.Src == src).Parameter = "search";
-         }
-
-         foreach (var src in req.Query["f1"].ToString().Split('.', StringSplitOptions.RemoveEmptyEntries)) {
-            var field = process.Entities[0].Fields.First(f => f.Src == src);
-            field.Parameter = "facet";
-            if(field.Type == "bool") {
-               var input = process.Entities[0].Input;
-               if (process.Connections.First(c=>c.Name == input).Provider == "postgresql") {
-                  field.Map = "false:No,true:Yes";
-               } else {
-                  field.Map = "0:No,1:Yes";
-               }
-            }
-         }
-
-         foreach (var src in req.Query["f2"].ToString().Split('.', StringSplitOptions.RemoveEmptyEntries)) {
-            process.Entities[0].Fields.First(f => f.Src == src).Parameter = "facets";
-         }
-
-         var order = req.Query["o"].ToString().Split('.', StringSplitOptions.RemoveEmptyEntries);
-         process.Entities[0].Fields = process.Entities[0].Fields.OrderBy(f => Array.IndexOf(order, f.Src)).ToList();
-         process.Entities[0].Fields = process.Entities[0].Fields
-             .OrderBy(f => !f.Output) // sort output true first
-             .ThenBy(f => Array.IndexOf(order, f.Src)) // then by source
-             .ToList();
+         var order = req.Query["o"].ToString().Split('.');
+         process.Entities[0].Fields = process.Entities[0].Fields.OrderBy(f => Array.IndexOf(order, f.Src)).ToList(); // OrderBy(f => !f.Output)
 
          response.Part.Arrangement.Text = process.Serialize();
          response.ContentItem.Weld(response.Part);
+      }
+
+      private static void AddTimeAgo(Process process, HttpRequest req) {
+         foreach (var src in req.Query["ta"].ToString().Split('.')) {
+            var fieldIndex = process.Entities[0].Fields.FindIndex(f => f.Src == src);
+            if (fieldIndex > -1) {
+               var original = process.Entities[0].Fields[fieldIndex];
+               if (original.Type == "datetime") {
+                  original.Output = false;
+                  original.Export = "true";
+                  original.Parameter = string.Empty;
+                  var addition = new Field {
+                     Name = original.Name + "_",
+                     Input = false,
+                     Length = "128",
+                     Src = original.Src,
+                     T = $"copy({original.Name}).timeAgo().format(<span title=\"{{{original.Name}:yyyy-MM-dd}}\">{{{original.Name + "_"}}}</span>)",
+                     Raw = true,
+                     Export = "false",
+                     SortField = original.Name,
+                     Sortable = "true"
+                  };
+                  process.Entities[0].Fields.Insert(fieldIndex + 1, addition);
+               }
+            }
+         }
+      }
+
+      private static void Hide(Process process, HttpRequest req) {
+         foreach (var src in req.Query["h"].ToString().Split('.')) {
+            var field = process.Entities[0].Fields.FirstOrDefault(f => f.Src == src);
+            if (field != null) {
+               field.Output = false;
+               field.Parameter = string.Empty;
+            }
+         }
+      }
+
+      private static void AddMultipleFacet(Process process, HttpRequest req) {
+         foreach (var src in req.Query["f2"].ToString().Split('.')) {
+            var field = process.Entities[0].Fields.FirstOrDefault(f => f.Src == src);
+            if (field != null) {
+               field.Parameter = "facets";
+            }
+         }
+      }
+
+      private static void AddSingleFacet(Process process, HttpRequest req) {
+         foreach (var src in req.Query["f1"].ToString().Split('.')) {
+            var field = process.Entities[0].Fields.FirstOrDefault(f => f.Src == src);
+            if (field != null) {
+               field.Parameter = "facet";
+               if (field.Type == "bool") {
+                  var input = process.Entities[0].Input;
+                  if (process.Connections.First(c => c.Name == input).Provider == "postgresql") {
+                     field.Map = "false:No,true:Yes";
+                  } else {
+                     field.Map = "0:No,1:Yes";
+                  }
+               }
+            }
+         }
+      }
+
+      private static void AddSearch(Process process, HttpRequest req) {
+         foreach (var src in req.Query["s"].ToString().Split('.')) {
+            var field = process.Entities[0].Fields.FirstOrDefault(f => f.Src == src);
+            if (field != null) {
+               field.Parameter = "search";
+            }
+         }
       }
 
       public static string RemoveXmlProperty(string xml, string property) {
@@ -558,21 +606,20 @@ namespace TransformalizeModule.Services {
          public required string Shortened { get; set; }
       }
 
-      static StringEntry[] GetShortestUniqueVersions(string[] input) {
-         var uniqueVersions = new Dictionary<string, StringEntry>();
+      static string[] GetShortestUniqueVersions(string[] input) {
+         var uniqueVersions = new HashSet<string>();
 
          for (int i = 0; i < input.Length; i++) {
             string str = input[i];
             for (int j = 1; j <= str.Length; j++) {
                string candidate = str.Substring(0, j);
-               if (!uniqueVersions.Values.Any(e => e.Shortened == candidate)) {
-                  uniqueVersions[str] = new StringEntry { Original = str, Shortened = candidate };
+               if (uniqueVersions.Add(candidate)) {
                   break;
                }
             }
          }
 
-         return uniqueVersions.Values.ToArray();
+         return uniqueVersions.ToArray();
       }
 
 

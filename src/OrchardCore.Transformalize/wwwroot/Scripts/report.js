@@ -102,6 +102,7 @@ function edit(action) {
    let search = $('#id_s').val().split(".").filter(Boolean);
    let facet = $('#id_f1').val().split(".").filter(Boolean);
    let facets = $('#id_f2').val().split(".").filter(Boolean);
+   let timeAgo = $('#id_ta').val().split(".").filter(Boolean);
    let order = $('#id_o').val().split(".").filter(Boolean);
 
    if (action === 'hide') {
@@ -126,12 +127,11 @@ function edit(action) {
          }
       });
 
-      // remove hidden fields from search, facet, facets, and order
+      // remove hidden fields from search, facet, facets, and timeAgo
       search = _.difference(search, hide);
       facet = _.difference(facet, hide);
       facets = _.difference(facets, hide);
-      order = _.difference(order, hide);
-
+      timeAgo = _.difference(timeAgo, hide);
    } else if (action === 'search') {
       search = _.union(search, fields);
       facet = _.difference(facet, search);
@@ -149,6 +149,9 @@ function edit(action) {
       search = _.difference(search, fields);
       facet = _.difference(facet, fields);
       facets = _.difference(facets, fields);
+      timeAgo = _.difference(timeAgo, fields);
+   } else if (action === 'timeago') {
+      timeAgo = _.union(timeAgo, fields);
    } else if (action === 'order') {
       order = _.difference(order, hide);
       controls.setSort("");
@@ -159,6 +162,7 @@ function edit(action) {
    $('#id_s').val(search.join("."));
    $('#id_f1').val(facet.join("."));
    $('#id_f2').val(facets.join("."));
+   $('#id_ta').val(timeAgo.join("."));
    $('#id_o').val(order.join("."));
 
    console.log({
@@ -166,6 +170,7 @@ function edit(action) {
       search: search,
       facet: facet,
       facets: facets,
+      timeAgo: timeAgo,
       order: order
    });
 
