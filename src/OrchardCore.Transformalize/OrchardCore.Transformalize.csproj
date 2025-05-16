@@ -3,9 +3,9 @@
       <TargetFramework>net8.0</TargetFramework>
       <AddRazorSupportForMvc>true</AddRazorSupportForMvc>
       <RootNamespace>TransformalizeModule</RootNamespace>
-      <Version>0.13.13</Version>
-      <FileVersion>0.13.13</FileVersion>
-      <AssemblyVersion>0.13.13</AssemblyVersion>
+      <Version>0.13.14</Version>
+      <FileVersion>0.13.14</FileVersion>
+      <AssemblyVersion>0.13.14</AssemblyVersion>
       <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
       <Authors>Dale Newman</Authors>
       <Copyright>Copyright © 2013-2025</Copyright>
@@ -56,8 +56,8 @@
       <PackageReference Include="OrchardCoreContrib.ContentPermissions" Version="1.0.0" />
 
       <!-- transformalize updated -->
-      <PackageReference Include="Transformalize" Version="0.11.5-beta" />
-      <PackageReference Include="Transformalize.Container.Autofac" Version="0.11.4-beta" />
+      <PackageReference Include="Transformalize" Version="0.11.6-beta" />
+      <PackageReference Include="Transformalize.Container.Autofac" Version="0.11.6-beta" />
       <PackageReference Include="Transformalize.Provider.Ado.Autofac" Version="0.11.3-beta" />
       <PackageReference Include="Transformalize.Provider.Bogus.Autofac" Version="0.11.1-beta" />
       <PackageReference Include="Transformalize.Provider.CsvHelper.Autofac" Version="0.11.1-beta" />

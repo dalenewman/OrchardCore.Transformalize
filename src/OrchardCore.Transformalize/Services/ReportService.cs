@@ -455,8 +455,12 @@ namespace TransformalizeModule.Services {
             await _contentManager.CreateAsync(contentItem);
 
             process.Name = contentItem.ContentItemId;
+            // because connection is from common connections in transformalize settings, we can remove all the specifics
             process.Connections[0].ConnectionString = string.Empty;
+            process.Connections[0].Server = "localhost";
+            process.Connections[0].Port = 0;
             process.Connections[0].Database = string.Empty;
+            process.Connections[0].File = string.Empty;
             process.Connections[0].User = string.Empty;
             process.Connections[0].Password = string.Empty;
             process.Connections[0].Browse = false;
@@ -501,6 +505,7 @@ namespace TransformalizeModule.Services {
          AddMultipleFacet(process, req);
          Hide(process, req);
          AddTimeAgo(process, req);
+         AddEllipse(process, req);
 
          var order = req.Query["o"].ToString().Split('.');
          process.Entities[0].Fields = process.Entities[0].Fields.OrderBy(f => Array.IndexOf(order, f.Src)).ToList(); // OrderBy(f => !f.Output)
@@ -510,33 +515,77 @@ namespace TransformalizeModule.Services {
       }
 
       private static void AddTimeAgo(Process process, HttpRequest req) {
-         foreach (var src in req.Query["ta"].ToString().Split('.')) {
+         foreach (var src in req.Query["ta"].ToString().Split('.', StringSplitOptions.RemoveEmptyEntries)) {
             var fieldIndex = process.Entities[0].Fields.FindIndex(f => f.Src == src);
             if (fieldIndex > -1) {
                var original = process.Entities[0].Fields[fieldIndex];
                if (original.Type == "datetime") {
+
                   original.Output = false;
                   original.Export = "true";
                   original.Parameter = string.Empty;
-                  var addition = new Field {
-                     Name = original.Name + "_",
+                  original.Alias = original.Name + "Alias";
+
+                  var timeAgo = new Field {
+                     Name = original.Name,
                      Input = false,
                      Length = "128",
                      Src = original.Src,
-                     T = $"copy({original.Name}).timeAgo().format(<span title=\"{{{original.Name}:yyyy-MM-dd}}\">{{{original.Name + "_"}}}</span>)",
+                     T = $"copy({original.Alias}).timeAgo().format(<span title=\"{{{original.Alias}:yyyy-MM-dd}}\">{{{original.Name}}}</span>)",
                      Raw = true,
                      Export = "false",
                      SortField = original.Name,
                      Sortable = "true"
                   };
-                  process.Entities[0].Fields.Insert(fieldIndex + 1, addition);
+                  process.Entities[0].Fields.Insert(fieldIndex + 1, timeAgo);
+               }
+            }
+         }
+      }
+
+      private static void AddEllipse(Process process, HttpRequest req) {
+         foreach (var src in req.Query["e"].ToString().Split('.', StringSplitOptions.RemoveEmptyEntries)) {
+            var fieldIndex = process.Entities[0].Fields.FindIndex(f => f.Src == src);
+            if (fieldIndex > -1) {
+               var original = process.Entities[0].Fields[fieldIndex];
+               if (original.Type == "string") {
+                  original.Alias = original.Name + "Alias";
+                  original.Output = false;
+                  original.Export = "true";
+                  if(original.Parameter != "search") {
+                     original.Parameter = null;
+                  }
+
+                  var encoded = new Field {
+                     Name = original.Name + "Encoded",
+                     Input = false,
+                     Output = false,
+                     Length = "max",
+                     Src = original.Src,
+                     T = $"copy({original.Alias}).htmlEncode()"
+                  };
+                  process.Entities[0].Fields.Insert(fieldIndex + 1, encoded);
+
+                  var ellipsis = new Field {
+                     Name = original.Name,
+                     Input = false,
+                     Length = "max",
+                     Src = original.Src,
+                     T = $"copy({original.Alias}).ellipsis(20).format(<span title=\"{{{encoded.Name}}}\">{{{original.Name}}}</span>)",
+                     Raw = true,
+                     Export = "false",
+                     SortField = original.Name,
+                     Sortable = "true"
+                  };
+                  process.Entities[0].Fields.Insert(fieldIndex + 2, ellipsis);
+
                }
             }
          }
       }
 
       private static void Hide(Process process, HttpRequest req) {
-         foreach (var src in req.Query["h"].ToString().Split('.')) {
+         foreach (var src in req.Query["h"].ToString().Split('.', StringSplitOptions.RemoveEmptyEntries)) {
             var field = process.Entities[0].Fields.FirstOrDefault(f => f.Src == src);
             if (field != null) {
                field.Output = false;
@@ -546,7 +595,7 @@ namespace TransformalizeModule.Services {
       }
 
       private static void AddMultipleFacet(Process process, HttpRequest req) {
-         foreach (var src in req.Query["f2"].ToString().Split('.')) {
+         foreach (var src in req.Query["f2"].ToString().Split('.', StringSplitOptions.RemoveEmptyEntries)) {
             var field = process.Entities[0].Fields.FirstOrDefault(f => f.Src == src);
             if (field != null) {
                field.Parameter = "facets";
@@ -555,7 +604,7 @@ namespace TransformalizeModule.Services {
       }
 
       private static void AddSingleFacet(Process process, HttpRequest req) {
-         foreach (var src in req.Query["f1"].ToString().Split('.')) {
+         foreach (var src in req.Query["f1"].ToString().Split('.', StringSplitOptions.RemoveEmptyEntries)) {
             var field = process.Entities[0].Fields.FirstOrDefault(f => f.Src == src);
             if (field != null) {
                field.Parameter = "facet";
@@ -572,7 +621,7 @@ namespace TransformalizeModule.Services {
       }
 
       private static void AddSearch(Process process, HttpRequest req) {
-         foreach (var src in req.Query["s"].ToString().Split('.')) {
+         foreach (var src in req.Query["s"].ToString().Split('.', StringSplitOptions.RemoveEmptyEntries)) {
             var field = process.Entities[0].Fields.FirstOrDefault(f => f.Src == src);
             if (field != null) {
                field.Parameter = "search";

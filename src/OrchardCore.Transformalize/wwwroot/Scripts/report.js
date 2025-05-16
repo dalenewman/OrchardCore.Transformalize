@@ -103,6 +103,7 @@ function edit(action) {
    let facet = $('#id_f1').val().split(".").filter(Boolean);
    let facets = $('#id_f2').val().split(".").filter(Boolean);
    let timeAgo = $('#id_ta').val().split(".").filter(Boolean);
+   let ellipse = $('#id_e').val().split(".").filter(Boolean);
    let order = $('#id_o').val().split(".").filter(Boolean);
 
    if (action === 'hide') {
@@ -152,6 +153,8 @@ function edit(action) {
       timeAgo = _.difference(timeAgo, fields);
    } else if (action === 'timeago') {
       timeAgo = _.union(timeAgo, fields);
+   } else if (action === 'ellipsis') {
+      ellipse = _.union(ellipse, fields);
    } else if (action === 'order') {
       order = _.difference(order, hide);
       controls.setSort("");
@@ -163,6 +166,7 @@ function edit(action) {
    $('#id_f1').val(facet.join("."));
    $('#id_f2').val(facets.join("."));
    $('#id_ta').val(timeAgo.join("."));
+   $('#id_e').val(ellipse.join("."));
    $('#id_o').val(order.join("."));
 
    console.log({
@@ -171,6 +175,7 @@ function edit(action) {
       facet: facet,
       facets: facets,
       timeAgo: timeAgo,
+      ellipse: ellipse,
       order: order
    });
 

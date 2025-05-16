@@ -126,6 +126,7 @@
    <input id="id_f1" type="hidden" name="f1" alt="facet" value="@(Context.Request.Query["f1"].ToString() ?? string.Empty)" />
    <input id="id_f2" type="hidden" name="f2" alt="facets" value="@(Context.Request.Query["f2"].ToString() ?? string.Empty)" />
    <input id="id_ta" type="hidden" name="ta" alt="timeago" value="@(Context.Request.Query["ta"].ToString() ?? string.Empty)" />
+   <input id="id_e" type="hidden" name="e" alt="ellipsis" value="@(Context.Request.Query["e"].ToString() ?? string.Empty)" />
    <input id="id_o" type="hidden" name="o" alt="order" value="@(Context.Request.Query["o"].ToString() ?? string.Empty)" />
 
    @foreach (var parameter in Model.Process.Parameters.Where(p => !p.Prompt && Context.Request.Query[p.Name].ToString() != null).Select(p => p.Name)) {
