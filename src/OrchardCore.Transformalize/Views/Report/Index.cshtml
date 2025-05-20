@@ -112,22 +112,22 @@
 
 <form id="id_report" class="form-inline" role="form" method="GET">
 
-   <input id="id_sort" type="hidden" name="sort" value="@(Context.Request.Query["sort"].ToString() ?? string.Empty)" />
+   <input id="id_sort" type="hidden" name="sort" value="@(Model.QueryValue("sort"))" />
    <input id="id_page" type="hidden" name="page" value="@firstEntity.Page" />
    <input id="id_size" type="hidden" name="size" value="@(firstEntity.Size)" />
-   <input id="id_return_url" type="hidden" name="@Common.ReturnUrlName" value="@(Context.Request.Query[Common.ReturnUrlName].ToString() ?? string.Empty)" />
+   <input id="id_return_url" type="hidden" name="@Common.ReturnUrlName" value="@(Model.QueryValue(Common.ReturnUrlName))" />
    <input id="id_last" type="hidden" name="last" />
 
    @* browsing/editing related *@
-   <input id="id_c" type="hidden" name="c" alt="connection" value="@(Context.Request.Query["c"].ToString() ?? string.Empty)" />
-   <input id="id_t" type="hidden" name="t" alt="table" value="@(Context.Request.Query["t"].ToString() ?? string.Empty)" />
-   <input id="id_h" type="hidden" name="h" alt="hidden" value="@(Context.Request.Query["h"].ToString() ?? string.Empty)" />
-   <input id="id_s" type="hidden" name="s" alt="search" value="@(Context.Request.Query["s"].ToString() ?? string.Empty)" />
-   <input id="id_f1" type="hidden" name="f1" alt="facet" value="@(Context.Request.Query["f1"].ToString() ?? string.Empty)" />
-   <input id="id_f2" type="hidden" name="f2" alt="facets" value="@(Context.Request.Query["f2"].ToString() ?? string.Empty)" />
-   <input id="id_ta" type="hidden" name="ta" alt="timeago" value="@(Context.Request.Query["ta"].ToString() ?? string.Empty)" />
-   <input id="id_e" type="hidden" name="e" alt="ellipsis" value="@(Context.Request.Query["e"].ToString() ?? string.Empty)" />
-   <input id="id_o" type="hidden" name="o" alt="order" value="@(Context.Request.Query["o"].ToString() ?? string.Empty)" />
+   <input id="id_c" type="hidden" name="c" alt="connection" value="@(Model.QueryValue("c"))" />
+   <input id="id_t" type="hidden" name="t" alt="table" value="@(Model.QueryValue("t"))" />
+   <input id="id_h" type="hidden" name="h" alt="hidden" value="@(Model.QueryValue("h"))" />
+   <input id="id_s" type="hidden" name="s" alt="search" value="@(Model.QueryValue("s"))" />
+   <input id="id_f1" type="hidden" name="f1" alt="facet" value="@(Model.QueryValue("f1"))" />
+   <input id="id_f2" type="hidden" name="f2" alt="facets" value="@(Model.QueryValue("f2"))" />
+   <input id="id_ta" type="hidden" name="ta" alt="timeago" value="@(Model.QueryValue("ta"))" />
+   <input id="id_e" type="hidden" name="e" alt="ellipsis" value="@(Model.QueryValue("e"))" />
+   <input id="id_o" type="hidden" name="o" alt="order" value="@(Model.QueryValue("o"))" />
 
    @foreach (var parameter in Model.Process.Parameters.Where(p => !p.Prompt && Context.Request.Query[p.Name].ToString() != null).Select(p => p.Name)) {
       <input type="hidden" name="@parameter" value="@(Context.Request.Query[parameter].ToString())" />
@@ -181,7 +181,7 @@
                                        <a href="javascript:void()" title="Sort Ascending by @field.Label" class="btn btn-sm @(sortService.Sort(number, expression) == Direction.Asc ? "btn-primary" : "btn-sort") sortable">
                                           <span class="fas fa-chevron-up"></span>
                                        </a>
-                                       @if(Model.Browsing()){
+                                       @if(Model.Editable){
                                           <a href="javascript:void()" title="@field.Name @field.Type @field.Length" class="btn btn-sm btn-sort hidable" >
                                              <input type="checkbox" class="field-check shift-select" data-index="@field.Src" />
                                           </a>

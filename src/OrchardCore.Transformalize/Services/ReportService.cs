@@ -1,13 +1,15 @@
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.WebUtilities;
+using OrchardCore.Alias.Models;
+using OrchardCore.ContentManagement;
+using OrchardCore.Data;
+using OrchardCore.Title.Models;
+using System.Text.RegularExpressions;
+using System.Xml.Linq;
+using Transformalize.Configuration;
+using Transformalize.Extensions;
 using TransformalizeModule.Models;
 using TransformalizeModule.Services.Contracts;
-using OrchardCore.ContentManagement;
-using Transformalize.Configuration;
-using OrchardCore.Title.Models;
-using OrchardCore.Alias.Models;
-using Microsoft.AspNetCore.WebUtilities;
-using System.Xml.Linq;
-using OrchardCore.Data;
 using YesSql;
 
 namespace TransformalizeModule.Services {
@@ -99,6 +101,8 @@ namespace TransformalizeModule.Services {
             ContentItem = await GetByIdOrAliasAsync(request.ContentItemId)
          };
 
+         bool authorized = false;
+
          if (response.ContentItem == null) {
 
             if (_httpContextAccessor.HttpContext!.User.IsInRole("Administrator")) {
@@ -116,6 +120,7 @@ namespace TransformalizeModule.Services {
                         response.BreadCrumbs.Add(new BreadCrumb(connection.Name, QueryHelpers.AddQueryString(req.Path, "c", connection.Name)));
                      }
                      PrepareTable(response, connection, schema, table);
+                     response.Editable = true;
                   } else {
                      PrepareTables(response, connection, $"{req.Path}{req.QueryString}");
                   }
@@ -132,7 +137,7 @@ namespace TransformalizeModule.Services {
 
          } else {
 
-            var authorized = await CanAccess(response.ContentItem);
+            authorized = await CanAccess(response.ContentItem);
             if (request.Secure && !authorized) {
                SetupPermissionsResponse(request, response);
                return response;
@@ -144,6 +149,14 @@ namespace TransformalizeModule.Services {
                return response;
             }
 
+         }
+
+         // allow authorized users to mess with existing reports, but not save their edits (yet)
+         if (authorized && !response.BreadCrumbs.Any() && request.Mode.In("default", "stream")) {
+            response.Editable = true;
+            var process = new Process(response.Part.Arrangement.Text);
+            ModifyProcess(process);
+            response.Part.Arrangement.Text = process.Serialize();
          }
 
          switch (request.Mode) {
@@ -444,7 +457,7 @@ namespace TransformalizeModule.Services {
 
          process.Load();
 
-         if (_httpContextAccessor.HttpContext!.Request.Query.ContainsKey("save") && _httpContextAccessor.HttpContext.Request.Query["save"].ToString() == "true") {
+         if (Requested("save", "true")) {
 
             response.ContentItem = new ContentItem();
             ComposeArrangement(ref response, ref process, table);
@@ -455,22 +468,26 @@ namespace TransformalizeModule.Services {
             await _contentManager.CreateAsync(contentItem);
 
             process.Name = contentItem.ContentItemId;
-            // because connection is from common connections in transformalize settings, we can remove all the specifics
-            process.Connections[0].ConnectionString = string.Empty;
-            process.Connections[0].Server = "localhost";
-            process.Connections[0].Port = 0;
-            process.Connections[0].Database = string.Empty;
-            process.Connections[0].File = string.Empty;
-            process.Connections[0].User = string.Empty;
-            process.Connections[0].Password = string.Empty;
-            process.Connections[0].Browse = false;
+            ClearConnectionDetails(process);
             process.Connections.RemoveAt(1);
 
             foreach (var field in process.Entities[0].Fields) {
                field.Src = string.Empty;
             }
 
-            contentItem.Alter<TransformalizeReportPart>(part => { part.Arrangement.Text = RemoveXmlProperty(process.Serialize(), "provider"); });
+            string xml = RemoveXmlProperty(process.Serialize(), "provider");
+
+            // do some fancy replacements to make the transforms more readable
+            xml = Regex.Replace(xml, @" t=""(.*?)"" ", match => {
+               string attributeValue = match.Groups[1].Value;
+
+               // replace basic entities *only within the match*
+               attributeValue = attributeValue.Replace("&lt;", "<").Replace("&gt;", ">").Replace("&quot;", "\"");
+
+               return $" t='{attributeValue}' "; // wwitch to single quotes
+            });
+
+            contentItem.Alter<TransformalizeReportPart>(part => { part.Arrangement.Text = xml; });
             await _contentManager.UpdateAsync(contentItem);
 
             var editUrl = $"/Admin/Contents/ContentItems/{contentItem.ContentItemId}/Edit";
@@ -482,17 +499,31 @@ namespace TransformalizeModule.Services {
          }
       }
 
-      public void ComposeArrangement(ref TransformalizeResponse<TransformalizeReportPart> response, ref Process process, string table) {
+      /// <summary>
+      /// Clears the connection details for the specified process, resetting all connection-specific properties to their
+      /// default values.
+      /// </summary>
+      /// <remarks>This method resets the connection details of the first connection in the process's
+      /// connection list.  All properties, such as connection string, server, port, and credentials, are set to their
+      /// default or empty values.</remarks>
+      /// <param name="process">The process whose connection details will be cleared. This parameter cannot be null.</param>
+      private static void ClearConnectionDetails(Process process) {
+         var cn = process.Connections[0];
+         cn.ConnectionString = string.Empty;
+         cn.Server = "localhost";
+         cn.Port = 0;
+         cn.Database = string.Empty;
+         cn.File = string.Empty;
+         cn.User = string.Empty;
+         cn.Password = string.Empty;
+         cn.Browse = false;
+      }
 
-         response.ContentItem.Weld(new TitlePart { Title = table });
-         response.Part = new TransformalizeReportPart();
-         response.Part.Arrangement.Text = process.Serialize();
-         response.ContentItem.Weld(response.Part);
+      private bool Requested(string key, string value) {
+         return _httpContextAccessor.HttpContext!.Request.Query.ContainsKey(key) && _httpContextAccessor.HttpContext.Request.Query[key].ToString() == value;
+      }
 
-         process = _schemaService.LoadForSchema(response.ContentItem, "xml");
-         process.Load();
-         process = _schemaService.GetSchemaAsync(process).Result;
-
+      public void ModifyProcess(Process process) {
          var req = _httpContextAccessor.HttpContext!.Request;
 
          var shortened = GetShortestUniqueVersions(process.Entities[0].Fields.Select(f => f.Name).ToArray());
@@ -508,7 +539,22 @@ namespace TransformalizeModule.Services {
          AddEllipse(process, req);
 
          var order = req.Query["o"].ToString().Split('.');
-         process.Entities[0].Fields = process.Entities[0].Fields.OrderBy(f => Array.IndexOf(order, f.Src)).ToList(); // OrderBy(f => !f.Output)
+         process.Entities[0].Fields = process.Entities[0].Fields.OrderBy(f => Array.IndexOf(order, f.Src)).ToList();
+
+      }
+
+      public void ComposeArrangement(ref TransformalizeResponse<TransformalizeReportPart> response, ref Process process, string table) {
+
+         response.ContentItem.Weld(new TitlePart { Title = table });
+         response.Part = new TransformalizeReportPart();
+         response.Part.Arrangement.Text = process.Serialize();
+         response.ContentItem.Weld(response.Part);
+
+         process = _schemaService.LoadForSchema(response.ContentItem, "xml");
+         process.Load();
+         process = _schemaService.GetSchemaAsync(process).Result;
+
+         ModifyProcess(process);
 
          response.Part.Arrangement.Text = process.Serialize();
          response.ContentItem.Weld(response.Part);
@@ -523,7 +569,7 @@ namespace TransformalizeModule.Services {
 
                   original.Output = false;
                   original.Export = "true";
-                  original.Parameter = string.Empty;
+                  original.Parameter = null;
                   original.Alias = original.Name + "Alias";
 
                   var timeAgo = new Field {
@@ -552,7 +598,7 @@ namespace TransformalizeModule.Services {
                   original.Alias = original.Name + "Alias";
                   original.Output = false;
                   original.Export = "true";
-                  if(original.Parameter != "search") {
+                  if (original.Parameter != "search") {
                      original.Parameter = null;
                   }
 
@@ -589,7 +635,7 @@ namespace TransformalizeModule.Services {
             var field = process.Entities[0].Fields.FirstOrDefault(f => f.Src == src);
             if (field != null) {
                field.Output = false;
-               field.Parameter = string.Empty;
+               field.Parameter = null;
             }
          }
       }
@@ -650,11 +696,6 @@ namespace TransformalizeModule.Services {
          return false;
       }
 
-      private class StringEntry {
-         public required string Original { get; set; }
-         public required string Shortened { get; set; }
-      }
-
       static string[] GetShortestUniqueVersions(string[] input) {
          var uniqueVersions = new HashSet<string>();
 
@@ -670,7 +711,6 @@ namespace TransformalizeModule.Services {
 
          return uniqueVersions.ToArray();
       }
-
 
    }
 }

@@ -1,8 +1,8 @@
-using TransformalizeModule.Models;
-using OrchardCore.ContentManagement;
-using Transformalize.Configuration;
-using OrchardCore.Title.Models;
 using Microsoft.AspNetCore.Http;
+using OrchardCore.ContentManagement;
+using OrchardCore.Title.Models;
+using Transformalize.Configuration;
+using TransformalizeModule.Models;
 
 namespace TransformalizeModule.ViewModels {
    public class ReportViewModel {
@@ -17,6 +17,8 @@ namespace TransformalizeModule.ViewModels {
 
       // temps
       public bool EnableInlineParameters { get; set; } = true;
+
+      public bool Editable { get; set; } = false;
       public bool CalendarEnabled { get; set; }
       public string IdOrAlias { get; set; }
       public string Title { get; set; }
@@ -34,12 +36,12 @@ namespace TransformalizeModule.ViewModels {
       }
 
       public ContentItem Item { get; set; }
-      public TransformalizeReportPart Part { get; set;}
+      public TransformalizeReportPart Part { get; set; }
 
       public List<BreadCrumb> BreadCrumbs { get; set; } = new List<BreadCrumb>();
 
       public ReportViewModel(
-         Process process, 
+         Process process,
          ContentItem item,
          IQueryCollection queryCollection,
          string idOrAlias
@@ -119,8 +121,8 @@ namespace TransformalizeModule.ViewModels {
          }
       }
 
-      public bool Browsing() {
-         return BreadCrumbs.Any() && !string.IsNullOrEmpty(_queryCollection["t"].ToString());
+      public string QueryValue(string key) {
+            return _queryCollection[key].ToString() ?? string.Empty;
       }
 
    }

@@ -45,7 +45,10 @@ namespace TransformalizeModule.Controllers {
 
          return log ?
             View("Log", new LogViewModel(_logger.Log, report.Process, report.ContentItem)) : 
-            View(new ReportViewModel(report.Process, report.ContentItem, HttpContext.Request.Query, contentItemId) { BreadCrumbs = report.BreadCrumbs });
+            View(new ReportViewModel(report.Process, report.ContentItem, HttpContext.Request.Query, contentItemId) { 
+               BreadCrumbs = report.BreadCrumbs,
+               Editable = report.Editable
+            });
 
       }
 
