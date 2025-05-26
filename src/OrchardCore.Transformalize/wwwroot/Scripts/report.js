@@ -92,7 +92,7 @@ function edit(action) {
 
    // Collect selected fields and ensure they are integers
    $(".field-check:checked").each(function () {
-      fields.push($(this).data("index"));
+      fields.push($(this).data("src"));
    });
 
    console.log(action + " fields:", fields.join("."));
@@ -108,18 +108,15 @@ function edit(action) {
 
    if (action === 'hide') {
       hide = _.union(hide, fields);
-      if (fields.length > 0) {
-         controls.setSort("");
-      }
 
       // hide them on client first
       hide.forEach(function (index) {
          // find matching column
-         var columnPosition = $("th[data-index='" + index + "']").index() + 1;
+         var columnPosition = $("th[data-src='" + index + "']").index() + 1;
 
          if (columnPosition > 0) { // ensure it exists
             // hide the header
-            $("th[data-index='" + index + "']").hide();
+            $("th[data-src='" + index + "']").hide();
 
             // gide the corresponding cells using the actual position
             $("tr").each(function () {
@@ -129,10 +126,11 @@ function edit(action) {
       });
 
       // remove hidden fields from search, facet, facets, and timeAgo
-      search = _.difference(search, hide);
-      facet = _.difference(facet, hide);
-      facets = _.difference(facets, hide);
+      // search = _.difference(search, hide);
+      // facet = _.difference(facet, hide);
+      // facets = _.difference(facets, hide);
       timeAgo = _.difference(timeAgo, hide);
+      ellipse = _.difference(ellipse, hide);
    } else if (action === 'search') {
       search = _.union(search, fields);
       facet = _.difference(facet, search);
@@ -157,7 +155,6 @@ function edit(action) {
       ellipse = _.union(ellipse, fields);
    } else if (action === 'order') {
       order = _.difference(order, hide);
-      controls.setSort("");
    }
 
    // Update form fields with updated comma-delimited lists
@@ -185,8 +182,8 @@ function edit(action) {
 }
 
 function setColumnOrder() {
-   var indexString = $("th[data-index]").map(function () {
-      return $(this).attr("data-index");
+   var indexString = $("th[data-src]").map(function () {
+      return $(this).attr("data-src");
    }).get().join(".");
    $('#id_o').val(indexString);
    console.log("column order: " + indexString);
@@ -324,7 +321,7 @@ $(document).ready(function () {
 
       var sort = '';
       $('td.sorter').each(function (i) {
-         var field = $(this).attr('data-order-by');
+         var field = $(this).attr('data-src');
          if (field) {
             var index = 0;
             $('a.sortable', $(this)).each(function (j) {
@@ -366,6 +363,7 @@ $(document).ready(function () {
    });
 
    $("table:first").dragtable({
+      dragaccept: '.drag',
       persistState: function (table) {
          setColumnOrder();
          edit("order");

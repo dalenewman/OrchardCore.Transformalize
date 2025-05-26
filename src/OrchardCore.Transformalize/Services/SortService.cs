@@ -1,6 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using TransformalizeModule.Models;
 using TransformalizeModule.Services.Contracts;
 using Transformalize.Configuration;
@@ -9,27 +6,25 @@ namespace TransformalizeModule.Services {
 
     public class SortService : ISortService {
 
-        private readonly Dictionary<int, char> _cache = null;
+        private readonly Dictionary<string, char> _cache = null;
 
-        private static Dictionary<int, char> ProcessExpression(string expression) {
+        private static Dictionary<string, char> ProcessExpression(string expression) {
             var order = expression ?? string.Empty;
             var orderLookup = order.Split(new[] { "." }, StringSplitOptions.RemoveEmptyEntries);
-            var dict = new Dictionary<int, char>();
+            var dict = new Dictionary<string, char>();
             foreach (var item in orderLookup) {
                 var direction = item.EndsWith("d") ? 'd' : 'a';
-                var value = item.TrimEnd('a', 'd');
-            if (int.TryParse(value, out int number)) {
-               dict[number] = direction;
-            }
+                var value = item.Substring(0,item.Length-1);
+            dict[value] = direction;
          }
             return dict;
         }
 
-        public Direction Sort(int fieldNumber, string expression) {
+        public Direction Sort(string src, string expression) {
             var lookup = _cache ?? ProcessExpression(expression);
 
-            if (lookup.ContainsKey(fieldNumber)) {
-                return lookup[fieldNumber] == 'a' ? Direction.Asc : Direction.Desc;
+            if (lookup.ContainsKey(src)) {
+                return lookup[src] == 'a' ? Direction.Asc : Direction.Desc;
             }
 
             return Direction.None;
@@ -38,13 +33,11 @@ namespace TransformalizeModule.Services {
         public void AddSortToEntity(TransformalizeReportPart part, Entity entity, string expression) {
             string orderBy = null;
             var fields = entity.GetAllOutputFields().Where(f=>!f.System && f.Alias != part.BulkActionValueField.Text).ToArray();
-            for (var i = 0; i < fields.Length; i++) {
-                var field = fields[i];
+            foreach (var field in fields) {
                 if (field.Sortable == "false") {
                     continue;
                 }
-                var number = i + 1;
-                var sort = Sort(number, expression);
+                var sort = Sort(field.Src, expression);
                 if (sort != Direction.None) {
                     if (string.IsNullOrEmpty(entity.Query)) {
                         entity.Order.Add(new Order { Field = field.SortField, Sort = sort == Direction.Asc ? "asc" : "desc" });

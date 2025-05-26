@@ -1,12 +1,9 @@
 using Autofac;
 using TransformalizeModule.Services.Contracts;
-using System.Collections.Generic;
 using Transformalize.Configuration;
 using Transformalize.Contracts;
 using StackExchange.Profiling;
 using OrchardCore.ContentManagement;
-using System.Linq;
-using System;
 using Cfg.Net.Contracts;
 using TransformalizeModule.Models;
 using Cfg.Net.Serializers;
@@ -55,6 +52,8 @@ namespace TransformalizeModule.Services {
          process.Mode = "report";
          process.ReadOnly = true;
 
+         AddSrc(process);
+
          if (_parameters.ContainsKey("sort") && _parameters["sort"] != null) {
             _sortService.AddSortToEntity(part, process.Entities.First(), _parameters["sort"]);
          }
@@ -101,6 +100,8 @@ namespace TransformalizeModule.Services {
             }
          }
 
+         AddSrc(process);
+
          if (_parameters.ContainsKey("sort") && _parameters["sort"] != null) {
             _sortService.AddSortToEntity(part, process.Entities.First(), _parameters["sort"]);
          }
@@ -141,6 +142,8 @@ namespace TransformalizeModule.Services {
             EnforcePageSize(process, _parameters, pageSizes.Min(), _parameters.GetIntegerOrDefault("size", () => pageSizes.Min()), pageSizes.Max());
          }
 
+         AddSrc(process);
+
          if (_parameters.ContainsKey("sort") && _parameters["sort"] != null) {
             _sortService.AddSortToEntity(part, process.Entities.First(), _parameters["sort"]);
          }
@@ -180,6 +183,8 @@ namespace TransformalizeModule.Services {
 
             EnforcePageSize(process, _parameters, pageSizes.Min(), _parameters.GetIntegerOrDefault("size", () => pageSizes.Min()), pageSizes.Max());
          }
+
+         AddSrc(process);
 
          if (_parameters.ContainsKey("sort") && _parameters["sort"] != null) {
             _sortService.AddSortToEntity(part, process.Entities.First(), _parameters["sort"]);
@@ -321,6 +326,8 @@ namespace TransformalizeModule.Services {
 
             EnforcePageSize(process, _parameters, pageSizes.Min(), _parameters.GetIntegerOrDefault("size", () => pageSizes.Min()), pageSizes.Max());
          }
+
+         AddSrc(process);
 
          if (_parameters.ContainsKey("sort") && _parameters["sort"] != null) {
             _sortService.AddSortToEntity(part, process.Entities.First(), _parameters["sort"]);
@@ -520,7 +527,7 @@ namespace TransformalizeModule.Services {
       /// <param name="min">the minimum allowed page size</param>
       /// <param name="chosen">the page size selected by the user</param>
       /// <param name="max">the maximum allowed page size</param>
-      private void EnforcePageSize(Process process, IDictionary<string, string> parameters, int min, int chosen, int max) {
+      private static void EnforcePageSize(Process process, IDictionary<string, string> parameters, int min, int chosen, int max) {
 
          foreach (var entity in process.Entities) {
             // parse out a page number
@@ -554,7 +561,7 @@ namespace TransformalizeModule.Services {
       /// </summary>
       /// <param name="process"></param>
       /// <param name="required"></param>
-      private void ConfineData(Process process, IDictionary<string, string> required) {
+      private static void ConfineData(Process process, IDictionary<string, string> required) {
 
          foreach (var entity in process.Entities) {
             var all = entity.GetAllFields().ToArray();
@@ -585,19 +592,29 @@ namespace TransformalizeModule.Services {
          }
       }
 
-      private bool TryGetReportPart(ContentItem contentItem, out TransformalizeReportPart part) {
+      private static bool TryGetReportPart(ContentItem contentItem, out TransformalizeReportPart part) {
          part = contentItem?.As<TransformalizeReportPart>();
          return part != null;
       }
 
-      private bool TryGetTaskPart(ContentItem contentItem, out TransformalizeTaskPart part) {
+      private static bool TryGetTaskPart(ContentItem contentItem, out TransformalizeTaskPart part) {
          part = contentItem?.As<TransformalizeTaskPart>();
          return part != null;
       }
 
-      private bool TryGetFormPart(ContentItem contentItem, out TransformalizeFormPart part) {
+      private static bool TryGetFormPart(ContentItem contentItem, out TransformalizeFormPart part) {
          part = contentItem?.As<TransformalizeFormPart>();
          return part != null;
+      }
+
+      private static void AddSrc(Process process) {
+         if (string.IsNullOrEmpty(process.Entities[0].Fields[0].Src)) {
+            var fields = process.Entities[0].Fields.ToArray();
+            var shortened = Common.GetShortestUniqueVersions(fields.Select(f => f.Name).ToArray());
+            for (int i = 0; i < shortened.Length; i++) {
+               fields[i].Src = shortened[i];
+            }
+         }
       }
    }
 }

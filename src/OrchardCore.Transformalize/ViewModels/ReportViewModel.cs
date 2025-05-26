@@ -79,14 +79,14 @@ namespace TransformalizeModule.ViewModels {
                continue;
             }
 
-            if (field.Parameter != null && ParameterLookup.ContainsKey(field.Parameter) && ParameterLookup[field.Parameter].Prompt && !ParameterLookup[field.Parameter].Required) {
-               _inlines[field.Alias] = ParameterLookup[field.Parameter];
+            if (field.Parameter != null && ParameterLookup.TryGetValue(field.Parameter, out Parameter? v1) && v1.Prompt && !v1.Required) {
+               _inlines[field.Alias] = v1;
                _topParameters.Remove(field.Parameter);
-            } else if (ParameterLookup.ContainsKey(field.Alias) && ParameterLookup[field.Alias].Prompt && !ParameterLookup[field.Alias].Required) {
-               _inlines[field.Alias] = ParameterLookup[field.Alias];
+            } else if (ParameterLookup.TryGetValue(field.Alias, out Parameter? v2) && v2.Prompt && !v2.Required) {
+               _inlines[field.Alias] = v2;
                _topParameters.Remove(field.Alias);
-            } else if (ParameterLookup.ContainsKey(field.SortField) && ParameterLookup[field.SortField].Prompt && !ParameterLookup[field.SortField].Required) {
-               _inlines[field.Alias] = ParameterLookup[field.SortField];
+            } else if (ParameterLookup.TryGetValue(field.SortField, out Parameter? v3) && v3.Prompt && !v3.Required) {
+               _inlines[field.Alias] = v3;
                _topParameters.Remove(field.SortField);
             }
          }

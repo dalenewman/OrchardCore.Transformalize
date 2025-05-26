@@ -1,5 +1,4 @@
 using OrchardCore.ContentManagement;
-using System.Collections.Generic;
 using Transformalize.Configuration;
 
 namespace TransformalizeModule.Services.Contracts {

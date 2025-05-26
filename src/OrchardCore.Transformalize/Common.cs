@@ -36,6 +36,22 @@ namespace TransformalizeModule {
          return Path.Combine(path, string.Format("{0}-{1}{2}", user, part.ContentItem.ContentItemId, part.HasMimeType() ? part.Extension() : ".unknown"));
       }
 
+      public static string[] GetShortestUniqueVersions(string[] input) {
+         var uniqueVersions = new HashSet<string>();
+
+         for (int i = 0; i < input.Length; i++) {
+            string str = input[i];
+            for (int j = 1; j <= str.Length; j++) {
+               string candidate = str.Substring(0, j);
+               if (uniqueVersions.Add(candidate)) {
+                  break;
+               }
+            }
+         }
+
+         return uniqueVersions.ToArray();
+      }
+
       /// <summary>
       /// http://stackoverflow.com/questions/1029740/get-mime-type-from-filename-extension
       /// </summary>

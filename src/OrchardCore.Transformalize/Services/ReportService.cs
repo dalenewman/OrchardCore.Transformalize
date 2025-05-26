@@ -154,7 +154,7 @@ namespace TransformalizeModule.Services {
          // allow authorized users to mess with existing reports, but not save their edits (yet)
          if (authorized && !response.BreadCrumbs.Any() && request.Mode.In("default", "stream")) {
             response.Editable = true;
-            var process = new Process(response.Part.Arrangement.Text);
+            var process = new Transformalize.ConfigurationFacade.Process(response.Part.Arrangement.Text);
             ModifyProcess(process);
             response.Part.Arrangement.Text = process.Serialize();
          }
@@ -473,6 +473,17 @@ namespace TransformalizeModule.Services {
 
             foreach (var field in process.Entities[0].Fields) {
                field.Src = string.Empty;
+               if(field.Input) {
+                  field.Label = null;
+                  field.Sortable = null;
+                  field.SortField = null;
+                  if (field.Alias != null && !field.Alias.EndsWith("Alias")) {
+                     field.Alias = null;
+                  }
+               } else {
+                  field.Alias = null;
+                  field.Label = null;
+               }
             }
 
             string xml = RemoveXmlProperty(process.Serialize(), "provider");
@@ -484,7 +495,7 @@ namespace TransformalizeModule.Services {
                // replace basic entities *only within the match*
                attributeValue = attributeValue.Replace("&lt;", "<").Replace("&gt;", ">").Replace("&quot;", "\"");
 
-               return $" t='{attributeValue}' "; // wwitch to single quotes
+               return $" t='{attributeValue}' "; // switch to single quotes
             });
 
             contentItem.Alter<TransformalizeReportPart>(part => { part.Arrangement.Text = xml; });
@@ -523,10 +534,10 @@ namespace TransformalizeModule.Services {
          return _httpContextAccessor.HttpContext!.Request.Query.ContainsKey(key) && _httpContextAccessor.HttpContext.Request.Query[key].ToString() == value;
       }
 
-      public void ModifyProcess(Process process) {
+      public void ModifyProcess(Transformalize.ConfigurationFacade.Process process) {
          var req = _httpContextAccessor.HttpContext!.Request;
 
-         var shortened = GetShortestUniqueVersions(process.Entities[0].Fields.Select(f => f.Name).ToArray());
+         var shortened = Common.GetShortestUniqueVersions(process.Entities[0].Fields.Select(f => f.Name).ToArray());
          for (int i = 0; i < shortened.Length; i++) {
             process.Entities[0].Fields[i].Src = shortened[i];
          }
@@ -534,9 +545,9 @@ namespace TransformalizeModule.Services {
          AddSearch(process, req);
          AddSingleFacet(process, req);
          AddMultipleFacet(process, req);
-         Hide(process, req);
          AddTimeAgo(process, req);
          AddEllipse(process, req);
+         Hide(process, req);
 
          var order = req.Query["o"].ToString().Split('.');
          process.Entities[0].Fields = process.Entities[0].Fields.OrderBy(f => Array.IndexOf(order, f.Src)).ToList();
@@ -551,34 +562,36 @@ namespace TransformalizeModule.Services {
          response.ContentItem.Weld(response.Part);
 
          process = _schemaService.LoadForSchema(response.ContentItem, "xml");
-         process.Load();
          process = _schemaService.GetSchemaAsync(process).Result;
 
-         ModifyProcess(process);
+         var facade = new Transformalize.ConfigurationFacade.Process(process.Serialize());
+         ModifyProcess(facade);
 
-         response.Part.Arrangement.Text = process.Serialize();
+         var xml = facade.Serialize();
+         response.Part.Arrangement.Text = xml;
          response.ContentItem.Weld(response.Part);
+         process = new Process(xml);
       }
 
-      private static void AddTimeAgo(Process process, HttpRequest req) {
+      private static void AddTimeAgo(Transformalize.ConfigurationFacade.Process process, HttpRequest req) {
          foreach (var src in req.Query["ta"].ToString().Split('.', StringSplitOptions.RemoveEmptyEntries)) {
             var fieldIndex = process.Entities[0].Fields.FindIndex(f => f.Src == src);
             if (fieldIndex > -1) {
                var original = process.Entities[0].Fields[fieldIndex];
                if (original.Type == "datetime") {
 
-                  original.Output = false;
+                  original.Output = "false";
                   original.Export = "true";
                   original.Parameter = null;
                   original.Alias = original.Name + "Alias";
 
-                  var timeAgo = new Field {
+                  var timeAgo = new Transformalize.ConfigurationFacade.Field {
                      Name = original.Name,
-                     Input = false,
+                     Input = "false",
                      Length = "128",
                      Src = original.Src,
                      T = $"copy({original.Alias}).timeAgo().format(<span title=\"{{{original.Alias}:yyyy-MM-dd}}\">{{{original.Name}}}</span>)",
-                     Raw = true,
+                     Raw = "true",
                      Export = "false",
                      SortField = original.Name,
                      Sortable = "true"
@@ -589,36 +602,36 @@ namespace TransformalizeModule.Services {
          }
       }
 
-      private static void AddEllipse(Process process, HttpRequest req) {
+      private static void AddEllipse(Transformalize.ConfigurationFacade.Process process, HttpRequest req) {
          foreach (var src in req.Query["e"].ToString().Split('.', StringSplitOptions.RemoveEmptyEntries)) {
             var fieldIndex = process.Entities[0].Fields.FindIndex(f => f.Src == src);
             if (fieldIndex > -1) {
                var original = process.Entities[0].Fields[fieldIndex];
-               if (original.Type == "string") {
+               if (original.Type == "string" || original.Type == null) {
                   original.Alias = original.Name + "Alias";
-                  original.Output = false;
+                  original.Output = "false";
                   original.Export = "true";
                   if (original.Parameter != "search") {
                      original.Parameter = null;
                   }
 
-                  var encoded = new Field {
+                  var encoded = new Transformalize.ConfigurationFacade.Field {
                      Name = original.Name + "Encoded",
-                     Input = false,
-                     Output = false,
+                     Input = "false",
+                     Output = "false",
                      Length = "max",
                      Src = original.Src,
                      T = $"copy({original.Alias}).htmlEncode()"
                   };
                   process.Entities[0].Fields.Insert(fieldIndex + 1, encoded);
 
-                  var ellipsis = new Field {
+                  var ellipsis = new Transformalize.ConfigurationFacade.Field {
                      Name = original.Name,
-                     Input = false,
+                     Input = "false",
                      Length = "max",
                      Src = original.Src,
                      T = $"copy({original.Alias}).ellipsis(20).format(<span title=\"{{{encoded.Name}}}\">{{{original.Name}}}</span>)",
-                     Raw = true,
+                     Raw = "true",
                      Export = "false",
                      SortField = original.Name,
                      Sortable = "true"
@@ -630,17 +643,18 @@ namespace TransformalizeModule.Services {
          }
       }
 
-      private static void Hide(Process process, HttpRequest req) {
+      private static void Hide(Transformalize.ConfigurationFacade.Process process, HttpRequest req) {
          foreach (var src in req.Query["h"].ToString().Split('.', StringSplitOptions.RemoveEmptyEntries)) {
             var field = process.Entities[0].Fields.FirstOrDefault(f => f.Src == src);
             if (field != null) {
-               field.Output = false;
-               field.Parameter = null;
+               field.Output = "false";
+               field.Export = "false";
+               field.T = string.Empty;
             }
          }
       }
 
-      private static void AddMultipleFacet(Process process, HttpRequest req) {
+      private static void AddMultipleFacet(Transformalize.ConfigurationFacade.Process process, HttpRequest req) {
          foreach (var src in req.Query["f2"].ToString().Split('.', StringSplitOptions.RemoveEmptyEntries)) {
             var field = process.Entities[0].Fields.FirstOrDefault(f => f.Src == src);
             if (field != null) {
@@ -649,7 +663,7 @@ namespace TransformalizeModule.Services {
          }
       }
 
-      private static void AddSingleFacet(Process process, HttpRequest req) {
+      private static void AddSingleFacet(Transformalize.ConfigurationFacade.Process process, HttpRequest req) {
          foreach (var src in req.Query["f1"].ToString().Split('.', StringSplitOptions.RemoveEmptyEntries)) {
             var field = process.Entities[0].Fields.FirstOrDefault(f => f.Src == src);
             if (field != null) {
@@ -666,7 +680,7 @@ namespace TransformalizeModule.Services {
          }
       }
 
-      private static void AddSearch(Process process, HttpRequest req) {
+      private static void AddSearch(Transformalize.ConfigurationFacade.Process process, HttpRequest req) {
          foreach (var src in req.Query["s"].ToString().Split('.', StringSplitOptions.RemoveEmptyEntries)) {
             var field = process.Entities[0].Fields.FirstOrDefault(f => f.Src == src);
             if (field != null) {
@@ -694,22 +708,6 @@ namespace TransformalizeModule.Services {
             return true;
          }
          return false;
-      }
-
-      static string[] GetShortestUniqueVersions(string[] input) {
-         var uniqueVersions = new HashSet<string>();
-
-         for (int i = 0; i < input.Length; i++) {
-            string str = input[i];
-            for (int j = 1; j <= str.Length; j++) {
-               string candidate = str.Substring(0, j);
-               if (uniqueVersions.Add(candidate)) {
-                  break;
-               }
-            }
-         }
-
-         return uniqueVersions.ToArray();
       }
 
    }
