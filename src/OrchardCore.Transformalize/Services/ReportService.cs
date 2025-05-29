@@ -486,6 +486,8 @@ namespace TransformalizeModule.Services {
                }
             }
 
+            process.SearchTypes.Clear();
+
             string xml = RemoveXmlProperty(process.Serialize(), "provider");
 
             // do some fancy replacements to make the transforms more readable

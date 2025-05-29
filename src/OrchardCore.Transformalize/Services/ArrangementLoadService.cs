@@ -608,8 +608,8 @@ namespace TransformalizeModule.Services {
       }
 
       private static void AddSrc(Process process) {
-         if (string.IsNullOrEmpty(process.Entities[0].Fields[0].Src)) {
-            var fields = process.Entities[0].Fields.ToArray();
+         if (string.IsNullOrEmpty(process.Entities[0].Fields.Last().Src)) {
+            var fields = process.Entities[0].Fields.Where(f=>!f.System).ToArray();
             var shortened = Common.GetShortestUniqueVersions(fields.Select(f => f.Name).ToArray());
             for (int i = 0; i < shortened.Length; i++) {
                fields[i].Src = shortened[i];

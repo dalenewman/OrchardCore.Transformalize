@@ -11,6 +11,7 @@
 
    var firstEntity = Model.Process.Entities.First();
    var sortService = Context.RequestServices.GetService<ISortService>();
+   var edit = Model.QueryValue("edit") != string.Empty;
 }
 
 <script asp-name="jQuery" at="Head"></script>
@@ -110,6 +111,32 @@
      cursor: grabbing
    }
 
+   /* trying to make parameters with labels look better */
+   .input-group {
+       border: 1px solid #ccc; /* Visible border around the group */
+       border-radius: 4px; /* Ensures consistent rounding */
+       display: flex;
+       align-items: center;
+   }
+
+   .input-group .bootstrap-select {
+       flex-grow: 1;
+   }
+
+   .input-group-text {
+       border-right: none; /* Prevents a double border next to the dropdown */
+       border-radius: 4px 0 0 4px; /* Matches left-side rounding */
+   }
+
+   .input-group-text + .bootstrap-select > .btn {
+       border-radius: 0 4px 4px 0; /* Removes left-side rounding only when next to input-group-text */
+       border: 1px solid #ccc; /* Ensures consistent border appearance */
+   }
+
+   .bootstrap-select .dropdown-toggle {
+       border: inherit; /* Ensures dropdown inherits the input group border */
+   }
+
    @foreach (var script in Model.Process.Scripts.Where(s => s.Global && s.Language == "css" && string.IsNullOrEmpty(s.File))) {
       <text>/* @script.Name css script */</text>
       @Html.Raw(script.Content)
@@ -125,6 +152,7 @@
    <input id="id_size" type="hidden" name="size" value="@(firstEntity.Size)" />
    <input id="id_return_url" type="hidden" name="@Common.ReturnUrlName" value="@(Model.QueryValue(Common.ReturnUrlName))" />
    <input id="id_last" type="hidden" name="last" />
+   <input id="id_edit" type="hidden" name="edit" alt="editor" value="@(Model.QueryValue("edit"))" />
 
    @* browsing/editing related *@
    <input id="id_c" type="hidden" name="c" alt="connection" value="@(Model.QueryValue("c"))" />
@@ -187,8 +215,8 @@
                                        <a href="javascript:void()" title="Sort Ascending by @field.Label" class="btn btn-sm @(sortService.Sort(field.Src, expression) == Direction.Asc ? "btn-primary" : "btn-sort") sortable">
                                           <span class="fas fa-chevron-up"></span>
                                        </a>
-                                       @if(Model.Editable){
-                                          <a href="javascript:void()" title="@field.Name @field.Type @field.Length" class="btn btn-sm btn-sort hidable" >
+                                       @if(Model.Editable && edit){
+                                          <a href="javascript:void()" title="@field.Name @field.Type @field.Length" class="btn btn-sm btn-sort editor" >
                                              <input type="checkbox" class="field-check shift-select" data-src="@field.Src" />
                                           </a>
                                        }

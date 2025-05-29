@@ -17,30 +17,6 @@
    bulkActionLength: 0
 }
 
-// https://stackoverflow.com/questions/1634748/how-can-i-delete-a-query-string-parameter-in-javascript
-function removeUrlParameter(url, parameter) {
-   //prefer to use l.search if you have a location/link object
-   var urlparts = url.split('?');
-   if (urlparts.length >= 2) {
-
-      var prefix = encodeURIComponent(parameter) + '=';
-      var pars = urlparts[1].split(/[&;]/g);
-
-      //reverse iteration as may be destructive
-      for (var i = pars.length; i-- > 0;) {
-         //idiom for string.startsWith
-         if (pars[i].lastIndexOf(prefix, 0) !== -1) {
-            pars.splice(i, 1);
-         }
-      }
-
-      url = urlparts[0] + (pars.length > 0 ? '?' + pars.join('&') : "");
-      return url;
-   } else {
-      return url;
-   }
-}
-
 function getUrlParameter(name) {
    let regex = new RegExp('[?&]' + name + '=([^&#]*)');
    let results = regex.exec(window.location.search);
@@ -88,6 +64,12 @@ function updateBulkActions() {
 }
 
 function edit(action) {
+
+   if (action == "edit") {
+      $('#id_edit').val("1");
+      controls.submit(server.entity.page === 0 ? 0 : 1);
+   }
+
    const fields = [];
 
    // Collect selected fields and ensure they are integers

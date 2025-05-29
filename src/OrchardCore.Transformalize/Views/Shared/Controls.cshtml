@@ -39,6 +39,8 @@
    var views = new List<PipelineViewModel>();
 
    var auth = Context.RequestServices.GetService<IAuthorizationService>();
+   var edit =  Model.QueryValue("edit") != string.Empty;
+   var isSortable = allFields.Any(f => f.Sortable == "true");
 
 }
 
@@ -52,7 +54,8 @@
 
                <button id="id_clear" title="Clear the Parameters" type="button" class="btn btn-info btn-sm">Clear</button>
 
-               if (Model.Part!.BulkActions.Value || Model.Editable) {
+               if (Model.Part!.BulkActions.Value || (Model.Editable && isSortable)) {
+
                   <div class="btn-group btn-group-sm" role="group" aria-label="bulk actions drop down">
                      <button id="idActionDropdown" type="button" class="btn btn-sm btn-danger dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                         Action
@@ -64,13 +67,17 @@
                            }
                         }
                         @if(Model.Editable){
-                           <a class="dropdown-item" rel="hide" href="javascript:edit('hide');">Hide</a>
-                           <a class="dropdown-item" rel="search" href="javascript:edit('search');">Search</a>
-                           <a class="dropdown-item" rel="facet" href="javascript:edit('facet');">Facet</a>
-                           <a class="dropdown-item" rel="facets" href="javascript:edit('facets');">Facets</a>
-                           <a class="dropdown-item" rel="timeago" href="javascript:edit('timeago');">Time Ago</a>
-                           <a class="dropdown-item" rel="ellipsis" href="javascript:edit('ellipsis');">Ellipsis</a>
-                           <a class="dropdown-item" rel="clear" href="javascript:edit('clear');">Clear</a>
+                           if(edit){
+                              <a class="dropdown-item" rel="hide" href="javascript:edit('hide');">Hide</a>
+                              <a class="dropdown-item" rel="search" href="javascript:edit('search');">Search</a>
+                              <a class="dropdown-item" rel="facet" href="javascript:edit('facet');">Facet</a>
+                              <a class="dropdown-item" rel="facets" href="javascript:edit('facets');">Facets</a>
+                              <a class="dropdown-item" rel="timeago" href="javascript:edit('timeago');">Time Ago</a>
+                              <a class="dropdown-item" rel="ellipsis" href="javascript:edit('ellipsis');">Ellipsis</a>
+                              <a class="dropdown-item" rel="clear" href="javascript:edit('clear');">Clear</a>
+                           } else {
+                              <a class="dropdown-item" rel="edit" href="javascript:edit('edit');">Edit</a>
+                           }
                         }
                      </div>
                   </div>
