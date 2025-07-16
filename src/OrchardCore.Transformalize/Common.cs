@@ -13,6 +13,7 @@ namespace TransformalizeModule {
       public const string InvalidParametersMessage = "Parameter Validation Failed";
       public const string InvalidContentTypeMessage = "Invalid Content Type";
       public const string OrchardConnectionName = "orchard";
+      public const string Default = "[default]";
 
       public const string TaskReferrer = "TaskReferrer";
       public const string TaskContentItemId = "TaskContentItemId";

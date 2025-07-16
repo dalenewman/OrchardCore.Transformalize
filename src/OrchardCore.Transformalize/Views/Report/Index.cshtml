@@ -137,6 +137,10 @@
        border: inherit; /* Ensures dropdown inherits the input group border */
    }
 
+   .modal-content {
+       padding: 10px;
+   }
+
    @foreach (var script in Model.Process.Scripts.Where(s => s.Global && s.Language == "css" && string.IsNullOrEmpty(s.File))) {
       <text>/* @script.Name css script */</text>
       @Html.Raw(script.Content)

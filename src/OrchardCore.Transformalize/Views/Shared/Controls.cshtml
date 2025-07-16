@@ -44,6 +44,52 @@
 
 }
 
+   <!-- Modal container -->
+   <div class="modal fade" id="taskModal" tabindex="-1" role="dialog">
+     <div class="modal-dialog modal-xl modal-dialog-centered" role="document">
+       <div class="modal-content">
+         <div class="modal-body p-0">
+           <iframe id="taskModalIframe"
+                   src=""
+                   width="100%" height="700px"
+                   frameborder="0"
+                   style="border: none; display: block;"></iframe>
+         </div>
+       </div>
+     </div>
+   </div>
+
+   <script type="text/javascript">
+     function loadModal(button) {
+       const url = button.getAttribute('data-url');
+       const iframe = document.getElementById('taskModalIframe');
+       iframe.src = url;
+       $('#taskModal').modal({
+            backdrop: 'static',
+            keyboard: false
+       }).modal('show');
+     }
+
+      window.addEventListener("message", function(event) {
+          if (event.data.action === "closeModal") {
+              const modalElement = document.getElementById('taskModal');
+              const modalInstance = bootstrap.Modal.getInstance(modalElement);
+
+              if (modalInstance) {
+                  modalInstance.hide();
+              }
+
+               // refresh if not a cancel
+              if (event.data.reason === "confirmed") {
+                  setTimeout(() => {
+                      location.reload();
+                  }, 300); // let the modal finish its animation
+              }
+
+          }
+      });
+   </script>
+
    <div class="row">
       <div class="col-md-3">
          <div class="btn-group float-start" role="group">
@@ -89,9 +135,13 @@
             @foreach (var action in Model.Process.Actions.Where(a => a.Type == "open")) {
                var url = new Flurl.Url(action.Url);
                if (!url.QueryParams.Any(qp => qp.Name == Common.ReturnUrlName)) {
-                  url.SetQueryParam(Common.ReturnUrlName, Context.Request.GetEncodedUrl().Replace("http:", "https:"));
+                  url.SetQueryParam(Common.ReturnUrlName, Context.Request.GetEncodedUrl()); //.Replace("http:", "https:")
                }
-               <a href="@url" title="@action.Description" rel="nofollow" class="btn btn-sm @action.Class"><i class="fas fa-@action.Icon" aria-hidden="true">@action.Name</i></a>
+               if (url.QueryParams.Contains("modal", "1")){
+                  <a href="javascript:void()" title="@action.Description" data-url="@url" onclick="loadModal(this)" rel="nofollow" class="btn btn-sm @action.Class"><i class="fas fa-@action.Icon" aria-hidden="true">@action.Name</i></a>
+               } else {
+                  <a href="@url" title="@action.Description" rel="nofollow" class="btn btn-sm @action.Class"><i class="fas fa-@action.Icon" aria-hidden="true">@action.Name</i></a>
+               }
             }
          </div>
       </div>

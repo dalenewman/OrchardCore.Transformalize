@@ -13,12 +13,13 @@
    const string ORCHARD_SUBMIT = "Orchard.Submit";
    const string ORCHARD_FOCUS = "Orchard.Focus";
    const string ORCHARD_METHOD = "Orchard.Method";
-   const string RETURN_URL = "ReturnUrl";
+   const string RETURN_URL = TransformalizeModule.Common.ReturnUrlName;
 
    var fileService = Context.RequestServices.GetService<IFileService>();
    var focus = string.Empty;
    var submit = Model.Parameters.Any(p => p.VisiblePrompt());
    var antiForgery = Model.Mode == "form" && submit || Model.Mode != "form";
+   var isModal = Context.Request.Query["modal"] == "1";
 
    if (Context.Request.Method == "GET") {
       focus = Model.Parameters.FirstOrDefault(p => p.VisiblePrompt())?.Name ?? string.Empty;
@@ -48,6 +49,18 @@
    <p class="text-muted">No parameters are defined for this task.</p>
 }
 
+@if (isModal)
+{
+    <style>
+        nav {
+            display: none !important;
+        }
+        footer {
+           display: none !important;
+        }
+    </style>
+}
+
 <style>
    span.fas {
       padding-top: 10px;
@@ -58,6 +71,7 @@
 
    <input type="hidden" id="id_focus" name="@ORCHARD_FOCUS" value="@(focus)" />
    <input type="hidden" id="id_method" name="@ORCHARD_METHOD" value="@Context.Request.Method" />
+   <input type="hidden" id="id_modal" name="modal" value="@Context.Request.Query["modal"]" />
 
    @if (!Model.Parameters.Any(p => p.Name == RETURN_URL)) {
       if (Context.Request.HasFormContentType && Context.Request.Form[RETURN_URL] != StringValues.Empty) {
@@ -291,7 +305,9 @@
                         <div id="id_@(parameter.Name)" class="file-options">
                            <div class="has-file" style="@(file == null ? "display:none" : string.Empty)">
                               <div class="input-group">
-                                 <span class="input-group-text fas fa-times removeButton" style="cursor: pointer;"></span>
+                                 <span class="input-group-text removeButton" style="cursor: pointer;">
+                                   <i class="fas fa-times"></i>
+                                 </span>
                                  <input type="text"
                                         class="form-control @(parameter.Valid ? "is-valid" : "is-invalid")"
                                         name="@parameter.Name"
@@ -618,6 +634,10 @@
 
       if (submit) {
          <input name="@ORCHARD_SUBMIT" id="id_submit" type="submit" value="Submit" class="btn btn-success btn-block" style="margin-top: 5px;" />
+      }
+
+      if (isModal){
+         <button type="button" class="btn btn-secondary" style="margin-top: 5px;" onclick="formCancel()">Cancel</button>
       }
 
    } else {  // tasks

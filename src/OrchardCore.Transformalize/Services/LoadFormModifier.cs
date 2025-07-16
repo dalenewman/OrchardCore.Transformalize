@@ -80,7 +80,7 @@ namespace TransformalizeModule.Services {
          var fields = new List<Field>();
 
          // get all the fields that should be in the form's table and are not specific to insert or update scope
-         foreach (var pr in process.Parameters.Where(p=>p.Output && p.Scope == "[default]")) {
+         foreach (var pr in process.Parameters.Where(AdoFormCommandWriter.ShouldSelect)) {
 
             var field = new Field {
                Name = pr.Name,
@@ -97,7 +97,7 @@ namespace TransformalizeModule.Services {
             fields.Add(field);
          }
 
-         var connection = process.Connections.First(c => c.Table != "[default]");
+         var connection = process.Connections.First(c => c.Table != Common.Default);
 
          // create entity
          var entity = new Entity {

@@ -145,6 +145,11 @@
       }, "html");
    }
 
+   function shouldClose() {
+      const params = new URLSearchParams(window.location.search);
+      return params.get("close") === "1";
+   }
+
    function setFocus() {
 
       var name = $('#id_focus').val();
@@ -264,4 +269,20 @@
    }
 
    bind();
+
+   if (shouldClose()) {
+      window.parent.postMessage({ action: "closeModal", reason: "confirmed" }, "*");
+   }
 });
+function formCancel() {
+   var form = $("#id_form");
+   if (form.hasClass('dirty')) {
+      const leave = window.confirm("Lose unsaved changes?");
+      if (leave) {
+         form.removeClass('dirty');
+         window.parent.postMessage({ action: "closeModal", reason: "cancel" }, "*");
+      }
+   } else {
+      window.parent.postMessage({ action: "closeModal", reason: "cancel" }, "*");
+   }
+}

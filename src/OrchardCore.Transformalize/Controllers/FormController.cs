@@ -87,8 +87,11 @@ namespace TransformalizeModule.Controllers {
             try {
                _formService.Run(form.Process);
                await _notifier.InformationAsync(insert ? H["{0} inserted", form.Process.Name] : H["{0} updated", form.Process.Name]);
-               if (Request.Form["ReturnUrl"] != StringValues.Empty) {
-                  return Redirect(Request.Form["ReturnUrl"].ToString());
+               if (Request.Form["modal"] == "1") {
+                  var formUrl = Url.Action("Index", "Form", new { Area = Common.ModuleName, ContentItemId = contentItemId, modal = 1, close = 1 });
+                  return Redirect(formUrl);
+               } else if (Request.Form[Common.ReturnUrlName] != StringValues.Empty) {
+                  return Redirect(Request.Form[Common.ReturnUrlName].ToString());
                }
             } catch (Exception ex) {
                if (ex.Message.Contains("duplicate")) {

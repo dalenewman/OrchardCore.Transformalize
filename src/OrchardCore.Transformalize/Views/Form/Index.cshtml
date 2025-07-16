@@ -12,6 +12,7 @@
    var locationEnabled = Model.Process.Parameters.Any(p => p.InputType == "location");
    var editEnabled = Model.ContentItem != null && await auth.AuthorizeAsync(Context.User, OrchardCore.Contents.Permissions.EditContent, Model.ContentItem);
    var googlePlacesAutocomplete = Model.Process.Parameters.Any(p => p.InputType == "google-places-autocomplete");
+   var isModal = Context.Request.Query["modal"] == "1";
 }
 
 <script asp-name="jQuery" at="Head"></script>
@@ -41,7 +42,7 @@
    <script src="https://maps.googleapis.com/maps/api/js?key=@settings.GoogleApiKey&callback=initAutocomplete&libraries=places&v=weekly" async="async"></script>
 }
 
-<script asp-src="~/@Common.ModuleName/Scripts/form.js?v=7" at="Foot"></script>
+<script asp-src="~/@Common.ModuleName/Scripts/form.js?v=8" at="Foot"></script>
 <script asp-src="~/@Common.ModuleName/Scripts/file.handler.js?v=2" at="Foot"></script>
 
 <style asp-name="pickadate-themes-default" version="3.6.4"></style>
@@ -113,8 +114,8 @@
       },
       googlePlacesAutocomplete: @(googlePlacesAutocomplete.ToString().ToLower()),
       controller: "Form",
-      ajaxUrl: "@(Url.Action("Form", "Form", new { Area = Common.ModuleName, ContentItemId = Model.ContentItem.ContentItemId }))",
-      updateUrl: "@(Url.Action("Index", "Form", new { Area = Common.ModuleName, ContentItemId = Model.ContentItem.ContentItemId }))",
+      ajaxUrl: "@(Url.Action("Form", "Form", new { Area = Common.ModuleName, ContentItemId = Model.ContentItem.ContentItemId, modal = Context.Request.Query["modal"] }))",
+      updateUrl: "@(Url.Action("Index", "Form", new { Area = Common.ModuleName, ContentItemId = Model.ContentItem.ContentItemId, modal = Context.Request.Query["modal"] }))",
       uploadUrl: "@(Url.Action("Upload", "File", new { Area = Common.ModuleName }))",
       scanUrl: "@(Url.Action("Scan", "File", new { Area = Common.ModuleName }))"
    }
@@ -125,7 +126,7 @@
    <div class="row">
       <div class="col-md-12">
          @if (locationEnabled) {
-            <button id="id_location_button" title="query location" type="button" class="btn btn-success btn-sm float-end">
+            <button tabindex="-1" id="id_location_button" title="query location" type="button" class="btn btn-success btn-sm float-end">
                <span class="fas fa-location-arrow" style="padding-top:0px;"></span>
                <div class="spinner-border spinner-border-sm" role="status" style="display:none">
                   <span class="sr-only">Loading...</span>
@@ -133,8 +134,8 @@
                <span id="id_location_accuracy"></span>
             </button>
          }
-         @if (editEnabled) {
-            <button title="edit this task" type="button" class="btn btn-warning btn-sm float-end" onclick="window.open('@(Url.Content("~/Admin/Contents/ContentItems/" + Model.ContentItem.ContentItemId + "/Edit?" + Common.ReturnUrlName + "=" + System.Net.WebUtility.UrlEncode(Context.Request.Path + Context.Request.QueryString)))', '_self');">
+         @if (editEnabled && !isModal) {
+            <button tabindex="-1" title="edit this task" type="button" class="btn btn-warning btn-sm float-end" onclick="window.open('@(Url.Content("~/Admin/Contents/ContentItems/" + Model.ContentItem.ContentItemId + "/Edit?" + Common.ReturnUrlName + "=" + System.Net.WebUtility.UrlEncode(Context.Request.Path + Context.Request.QueryString)))', '_self');">
                <span class="fas fa-edit" style="padding-top:0px;"></span>
             </button>
          }
