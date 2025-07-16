@@ -1,0 +1,63 @@
+<cfg status="200" message="Ok" name="4571zavh97mbn6xbgr52be2xm0" readonly="true">
+  <actions>
+    <add type="humanize-labels" />
+    <add type="open" 
+         url="/t/form/got-up-form?modal=1" 
+         description="Add Got Up" 
+         class="btn-outline-primary waves-effect" 
+         icon="plus" />  
+  </actions>
+  
+  <connections>
+    <add name="junk-sqlserver" />
+  </connections>
+  <entities>
+    <add alias="GotUp" input="junk-sqlserver" name="GotUp" schema="dbo">
+      <fields>
+        
+        <add name="GotUpId" type="int" output="false" primary-key="true" />
+        <add name="Reason" parameter="facet" />
+        <add name="OtherReason" />
+        <add name="Teammate" parameter="facet" />
+        <add name="ScopeBucks" type="int" />
+        <add name="Evidence" raw="true" length="128" 
+             t='fluid(<a href="/t/file/{{ Evidence }}" target="_blank" rel="noopener noreferrer">{{ Evidence }}</a>)' />
+        <!--<add name="Scan" output="false" export="false" parameter="facet" />-->
+        <add name="HardShell" type="bool" map="0:No,1:Yes" parameter="facet" />
+        
+        <add name="CreatedBy" parameter="facet" />
+        <add name="Created" type="datetime" output="false" alias="CreatedAlias" export="true" />
+        <add name="Created" input="false" raw="true" length="128" t='copy(CreatedAlias).timeAgo().format(<span title="{CreatedAlias:yyyy-MM-dd}">{Created}</span>)' sortfield="Created" export="false" sortable="true" />
+        <add name="Updated" type="datetime" output="false" alias="UpdatedAlias" export="true" />
+        <add name="Updated" input="false" raw="true" length="128" t='copy(UpdatedAlias).timeAgo().format(<span title="{UpdatedAlias:yyyy-MM-dd}">{Updated}</span>)' sortfield="Updated" export="false" sortable="true" />
+        <add name="UpdatedBy" parameter="facet" />
+        <add name="Deleted" type="bool" map="0:No,1:Yes" parameter="facet" />
+        <add name="Longitude" type="double" />
+        <add name="Latitude" type="double" />
+        
+      </fields>
+      <calculated-fields>
+        <add name="ReturnUrl" output="false" length="1024" t="getencodedurl()" />
+        <!--<add name="Edit" length="128" raw="true"
+             t='copy(GotUpId).razor(
+                <a href="/t/form/got-up-form?GotUpId=@Model.GotUpId&ReturnUrl=@Model.ReturnUrl">Edit</a>
+                )' />-->
+        <add name="📝" length="128" raw="true"
+             t='copy(GotUpId).razor(
+                <a href="javascript:void()"
+                   onclick="loadModal(this)"
+                   data-url="/t/form/got-up-form?modal=1&GotUpId=@Model.GotUpId">📝</a>
+                )' />
+        
+        <add name="🚮" length="128" raw="true"
+             t='copy(GotUpId).razor(
+                <a href="javascript:void()"
+                   onclick="loadModal(this)"
+                   data-url="/t/form/got-up-delete?modal=1&GotUpId=@Model.GotUpId">🚮</a>
+                )' />        
+        
+      </calculated-fields>
+    </add>
+  </entities>
+
+</cfg>

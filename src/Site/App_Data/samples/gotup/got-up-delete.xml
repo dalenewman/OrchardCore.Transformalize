@@ -1,0 +1,23 @@
+<cfg name="FormGotUpDelete">
+
+  <connections>
+    <add name="junk-sqlserver" table="GotUp" />
+  </connections>
+
+  <parameters>
+    
+    <!-- if you want to audit who updated a record on update -->
+    <add name="Updated" input="false" type="datetime" t="now()" scope="update" format="o" />
+    <add name="UpdatedBy" input="false" type="string" t="username()" scope="update" label="Updated By" />
+    
+    <!-- your custom fields are defined here -->
+    <!-- hint: set prompt to true to prompt the user -->
+    <!-- hint: set label and hint as necessary -->
+    <!-- hint: use type and input-type to control user input -->
+    <!-- hint: use transforms and validation to control user input -->
+    <add name="GotUpId" type="int" primary-key="true" value="0" />
+    <add name="Deleted" prompt="true" type="bool" />
+    
+  </parameters>
+
+</cfg>

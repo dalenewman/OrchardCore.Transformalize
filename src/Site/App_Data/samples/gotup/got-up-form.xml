@@ -1,0 +1,123 @@
+<cfg name="FormGotUp">
+  <parameters>
+    
+    <!-- if you plan to mark things as deleted, add this field on insert with a default of false (not deleted) -->
+    <add name="Deleted" input="false" type="bool" value="false" scope="insert" />
+    
+    <!-- if you want to audit who created a record on insert -->
+    <add name="Created" input="false" type="datetime" t="now()" scope="insert" format="o" />
+    <add name="CreatedBy" input="false" type="string" t="username()" scope="insert" label="Created By"  />
+    
+    <!-- if you want to audit who updated a record on update -->
+    <add name="Updated" input="false" type="datetime" t="now()" scope="update" format="o" />
+    <add name="UpdatedBy" input="false" type="string" t="username()" scope="update" label="Updated By" />
+    
+    <!-- if you want to collect location -->
+    <add name="Latitude" input="false" type="double" input-type="location" input-capture="latitude" scope="insert" />
+    <add name="Longitude" input="false" type="double" input-type="location" input-capture="longitude" scope="insert" />
+    
+    <!-- your custom fields are defined here -->
+    <!-- hint: set prompt to true to prompt the user -->
+    <!-- hint: set label and hint as necessary -->
+    <!-- hint: use type and input-type to control user input -->
+    <!-- hint: use transforms and validation to control user input -->
+    <add name="GotUpId" type="int" primary-key="true" value="0" />
+    <add name="Reason" prompt="true" length="32" v="required()" map="Reasons" label="What was your reason for getting up?" class="bsh" />
+    <add name="OtherReason" prompt="true" label="Other Reason" length="64" class="bsh"
+         v="jint(
+              if(Reason==='Other' && OtherReason ===''){ 
+                OtherReasonMessage='Explain me why you got up.';    
+                false; 
+              }else{ 
+                true;
+              }
+            )"
+         visible="Reason==='Other'" />
+    <add name="Teammate" prompt="true" hint="If you spoke with someone, say who." map="Teammates" class="stuff"
+         v="jint(
+            if(Reason.substring(0,13) === 'Communication' && Teammate === 'N/A'){
+              TeammateMessage = 'Who did you speak with?';
+              false;
+            } else {
+              if(Teammate === 'Scott'){
+                TeammateMessage = 'You do not need to get up to speak with Scott.  Try again mother flower.';
+                false;
+              } else {
+                true;
+              }
+            }
+            )"
+         visible="Reason.substring(0,13) === 'Communication'" />
+    <add name="ScopeBucks" prompt="true" type="int" label="How many Scope Bucks cost you?" class="stuff"
+         v="jint(
+              if( (Reason === 'Bathroom' || Reason === 'Golf') && ScopeBucks == 0){
+                ScopeBucksMessage = 'Scope Bucks required for ' + reasons[Reason] + 's.';
+                false;
+              } else {
+                true;
+              }
+            ).min(0)" />
+    <add name="Evidence" prompt="true" label="Selfie" type="string" input-type="file" class="stuff" />
+    
+    <add name="Url" input="false" output="false" t="copy(Evidence).format(/t/file/{Evidence})" />
+    <add name="Image" input="false" raw="true" invalid-characters=""
+         t='razor(<img style="width:200px; padding: 5px 0px 0px 5px;" src="@Model.Url"/>)'
+         visible="Evidence !== ''" />
+    
+    <!-- style="background-color: lightblue; border-radius: 2px; padding: 5px;" -->
+    <!--<add name="Scan" prompt="true" label="Scan Something" type="string" input-type="scan" class="stuff" />-->       <!-- style="background-color: lightblue; border-radius: 2px; padding: 5px;" -->
+    <add name="HardShell" prompt="true" type="bool" label="I had hardshell Taco" hint="Sorry guyz, we can't remove this question." class="stuff" />
+    
+  </parameters>
+  
+  <connections>
+    <add name="junk-sqlserver" table="GotUp" />
+  </connections>
+  
+  <scripts>
+    <add name="colors" 
+         language="css" 
+         global="true"
+         content=".bsh {
+                    background-color: #d1f6e1;
+                    border-radius: 3px;
+                    padding: 3px;
+                  }
+                  .stuff {
+                    background-color: #ffe5e2;
+                    border-radius: 3px;
+                    padding: 3px;
+                  }
+                  
+                  " />
+  </scripts>
+
+  <maps>
+    <add name="Reasons">
+      <items>
+        <add from="Golf" to="Golf" />
+        <add from="Communication (Professional)" to="Communication (Professional)" />
+        <add from="Communication (Personal)" to="Communication (Personal)" />
+        <add from="Bathroom" to="Bathroom" />
+        <add from="Other" to="Other" />
+      </items>
+    </add>
+    <add name="Teammates">
+        <items>
+          <add from="N/A" to="N/A" />
+          <add from="Durl" to="Durl" />
+          <add from="Jeremy" to="Jeremy" />
+          <add from="Owen" to="Owen" />
+          <add from="Jacob" to="Jacob" />
+          <add from="Tobius" to="Tobius" />
+          <add from="John" to="John" />
+          <add from="Kelly" to="Kelly" />
+          <add from="Vlad" to="Vlad" />
+          <add from="Aaron" to="Aaron" />
+          <add from="Stephanie" to="Stephanie" />
+          <add from="Scott" to="Scott" />
+      </items>
+    </add>
+  </maps>
+
+</cfg>
