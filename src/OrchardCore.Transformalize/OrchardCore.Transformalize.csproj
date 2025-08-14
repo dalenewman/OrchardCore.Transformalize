@@ -3,9 +3,9 @@
       <TargetFramework>net8.0</TargetFramework>
       <AddRazorSupportForMvc>true</AddRazorSupportForMvc>
       <RootNamespace>TransformalizeModule</RootNamespace>
-      <Version>0.13.18</Version>
-      <FileVersion>0.13.18</FileVersion>
-      <AssemblyVersion>0.13.18</AssemblyVersion>
+      <Version>0.13.19</Version>
+      <FileVersion>0.13.19</FileVersion>
+      <AssemblyVersion>0.13.19</AssemblyVersion>
       <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
       <Authors>Dale Newman</Authors>
       <Copyright>Copyright © 2013-2025</Copyright>
@@ -74,9 +74,9 @@
       <PackageReference Include="Transformalize.Transform.Jint.Autofac" Version="0.11.2-beta" />
       <PackageReference Include="Transformalize.Transform.Xml" Version="0.11.4-beta" />
       <PackageReference Include="Transformalize.Validate.Jint.Autofac" Version="0.11.2-beta" />
-      <PackageReference Include="Transformalize.Provider.Json.Autofac" Version="0.11.1-beta" />
+      <PackageReference Include="Transformalize.Provider.Json.Autofac" Version="0.11.2-beta" />
       <PackageReference Include="Transformalize.Provider.Mail.Autofac" Version="0.11.1-beta" />
-      <PackageReference Include="Transformalize.Transform.Json.Autofac" Version="0.11.1-beta" />
+      <PackageReference Include="Transformalize.Transform.Json.Autofac" Version="0.11.2-beta" />
       <PackageReference Include="Transformalize.Transform.GoogleMaps" Version="0.11.1-beta" />
       <PackageReference Include="Transformalize.Transform.Razor.Autofac" Version="0.11.1-beta" />
       <PackageReference Include="Transformalize.Transform.Humanizer.Autofac" Version="0.11.1-beta" />
