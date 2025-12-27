@@ -1,4 +1,6 @@
-﻿var controls = {
+﻿$(window).on('unload', function () {}); // disable bfcache
+
+var controls = {
    setPage: function (page) {
       $('#id_page').val(page);
    },
@@ -369,3 +371,4 @@ $(document).ready(function () {
    }
 
 });
+

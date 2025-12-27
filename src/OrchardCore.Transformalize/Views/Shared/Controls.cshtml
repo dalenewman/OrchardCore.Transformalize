@@ -137,7 +137,11 @@
                if (!url.QueryParams.Any(qp => qp.Name == Common.ReturnUrlName)) {
                   url.SetQueryParam(Common.ReturnUrlName, Context.Request.GetEncodedUrl()); //.Replace("http:", "https:")
                }
-               if (url.QueryParams.Contains("modal", "1")){
+               var modalQueryParam = url.QueryParams.Contains("modal", "1");
+               if (action.Modal || modalQueryParam){
+                  if(!modalQueryParam){
+                     url.SetQueryParam("modal", "1");
+                  }
                   <a href="javascript:void()" title="@action.Description" data-url="@url" onclick="loadModal(this)" rel="nofollow" class="btn btn-sm @action.Class"><i class="fas fa-@action.Icon" aria-hidden="true">@action.Name</i></a>
                } else {
                   <a href="@url" title="@action.Description" rel="nofollow" class="btn btn-sm @action.Class"><i class="fas fa-@action.Icon" aria-hidden="true">@action.Name</i></a>
