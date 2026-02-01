@@ -48,7 +48,7 @@ namespace TransformalizeModule.Controllers {
 
          // some browsers do not send the "Referer" header anymore (e.g. Chrome) so we need to use ReturnUrl form var instead
          // var referrer = Request.Headers.ContainsKey("Referer") ? Request.Headers["Referer"].ToString() : Url.Action("Index", "Report", new { request.ContentItemId });
-         var referrer = Request.Form.ContainsKey("ReturnUrl") ? Request.Form["ReturnUrl"].ToString() : Url.Action("Index", "Report", new { request.ContentItemId });
+         var referrer = Request.Form.ContainsKey(Common.ReturnUrlName) ? Request.Form[Common.ReturnUrlName].ToString() : Url.Action("Index", "Report", new { request.ContentItemId });
 
          // confirm we have an action registered in the report
          if (report.Process.Actions.Any(a => a.Name == request.ActionName)) {
