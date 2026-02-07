@@ -38,6 +38,12 @@ namespace TransformalizeModule.Controllers {
          _logger = logger;
       }
 
+      /// <summary>
+      /// 1. a user viewing a report has requested a bulk action<br/>
+      /// 2. generate batch and record report, task, and user details using batch create task<br/>
+      /// 3. record selected or all report records using batch write task<br/>
+      /// 4. direct user to review action
+      /// </summary>
       [HttpPost]
       public async Task<ActionResult> Create(BulkActionRequest request) {
 
@@ -46,8 +52,6 @@ namespace TransformalizeModule.Controllers {
             return report.ActionResult;
          }
 
-         // some browsers do not send the "Referer" header anymore (e.g. Chrome) so we need to use ReturnUrl form var instead
-         // var referrer = Request.Headers.ContainsKey("Referer") ? Request.Headers["Referer"].ToString() : Url.Action("Index", "Report", new { request.ContentItemId });
          var referrer = Request.Form.ContainsKey(Common.ReturnUrlName) ? Request.Form[Common.ReturnUrlName].ToString() : Url.Action("Index", "Report", new { request.ContentItemId });
 
          // confirm we have an action registered in the report
@@ -167,25 +171,27 @@ namespace TransformalizeModule.Controllers {
 
       }
 
+      /// <summary>
+      /// 1. check the report definition to determine it's bulk action tasks<br/>
+      /// 2. get a batch summary with the batch summary task<br/>
+      /// 3. validate the task's parameters<br/>
+      /// 4. display review<br/>
+      /// </summary>
       public async Task<ActionResult> Review(BulkActionReviewRequest request) {
 
-         var userName = HttpContext.User.Identity.Name;
          var report = await _reportService.Validate(new TransformalizeRequest(request.ReportContentItemId));
          if (report.Fails()) {
             return report.ActionResult;
          }
-
          var taskNames = _settingsService.GetBulkActionTaskNames(report.Part);
-         var batchSummary = await _taskService.Validate(new TransformalizeRequest(taskNames.Summary) { Secure = false });
 
+         var batchSummary = await _taskService.Validate(new TransformalizeRequest(taskNames.Summary) { Secure = false });
          if (batchSummary.Fails()) {
             return batchSummary.ActionResult;
          }
-
          await _taskService.RunAsync(batchSummary.Process);
 
          var bulkAction = await _formService.ValidateParameters(new TransformalizeRequest(request.TaskContentItemId));
-
          if (bulkAction.Fails()) {
             return bulkAction.ActionResult;
          }
@@ -196,7 +202,6 @@ namespace TransformalizeModule.Controllers {
       public async Task<ActionResult> Form(BulkActionReviewRequest request) {
 
          var bulkAction = await _formService.ValidateParameters(new TransformalizeRequest(request.TaskContentItemId));
-
          if (bulkAction.Fails()) {
             return bulkAction.ActionResult;
          }
@@ -204,22 +209,25 @@ namespace TransformalizeModule.Controllers {
          return View("Form", TransferRequiredParameters(request, bulkAction).Process);
       }
 
-
+      /// <summary>
+      /// 1. check the report definition to determine it's bulk action tasks<br/>
+      /// 2. check and run the bulk action (aka task)<br/>
+      /// 3. if bulk action succeeds, run batch success task<br/>
+      /// 4. if bulk action fails, run batch fail task<br/>
+      /// 9. direct user to result action<br/>
+      /// </summary>
       public async Task<ActionResult> Run(BulkActionReviewRequest request) {
 
          var report = await _reportService.Validate(new TransformalizeRequest(request.ReportContentItemId));
          if (report.Fails()) {
             return report.ActionResult;
          }
-
          var taskNames = _settingsService.GetBulkActionTaskNames(report.Part);
 
          var bulkAction = await _taskService.Validate(new TransformalizeRequest(request.TaskContentItemId));
-
          if (bulkAction.Fails()) {
             return bulkAction.ActionResult;
          }
-
          await _taskService.RunAsync(bulkAction.Process);
 
          var recordsAffected = bulkAction.Process.Actions.Where(a => a.RowCount > 0).Sum(a => a.RowCount) + bulkAction.Process.Entities.Where(a => a.Hits > 0).Sum(e => e.Hits);
@@ -253,20 +261,23 @@ namespace TransformalizeModule.Controllers {
          return RedirectToAction("Result", ParametersToRouteValues(bulkAction.Process.Parameters.Where(p => p.Input)));
       }
 
+      /// <summary>
+      /// 1. check the report definition to determine it's bulk action tasks<br/>
+      /// 2. get a batch summary with the batch summary task<br/>
+      /// 3. display results
+      /// </summary>
       public async Task<ActionResult> Result(BulkActionReviewRequest request) {
 
          var report = await _reportService.Validate(new TransformalizeRequest(request.ReportContentItemId));
          if (report.Fails()) {
             return report.ActionResult;
          }
-
          var taskNames = _settingsService.GetBulkActionTaskNames(report.Part);
-         var batchSummary = await _taskService.Validate(new TransformalizeRequest(taskNames.Summary) { Secure = false });
 
+         var batchSummary = await _taskService.Validate(new TransformalizeRequest(taskNames.Summary) { Secure = false });
          if (batchSummary.Fails()) {
             return batchSummary.ActionResult;
          }
-
          await _taskService.RunAsync(batchSummary.Process);
 
          return View(TransferRequiredParameters(request, batchSummary).Process);

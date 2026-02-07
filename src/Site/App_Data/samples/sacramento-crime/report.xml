@@ -36,12 +36,12 @@
         
         <add name="FluidTest" label="Fluid Test" raw="true"
              t='fluid(
-                <span class="badge badge-danger">{{ latitude | round:4 }},{{ longitude | round:4 }}</span>
+                <span class="badge text-bg-danger">{{ latitude | round:4 }},{{ longitude | round:4 }}</span>
                 )' />
         
         <add name="RazorTest" label="Razor Test" raw="true"
              t='razor(
-                <span class="badge badge-warning">@(Math.Round(Model.latitude,4)),@(Math.Round(Model.longitude,4))</span>
+                <span class="badge text-bg-warning">@(Math.Round(Model.latitude,4)),@(Math.Round(Model.longitude,4))</span>
                 )' />
         
         <add name="JintTest" label="Jint Test" t="jint(latitude + longitude)" />

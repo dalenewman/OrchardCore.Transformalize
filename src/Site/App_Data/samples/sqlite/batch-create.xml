@@ -13,7 +13,7 @@
   </parameters>
   
   <connections>
-    <add name="db" provider="sqlite" file="App_Data\batches.db" />
+    <add name="db" provider="sqlite" file="App_Data/batches.db" />
   </connections>
   
   <entities>

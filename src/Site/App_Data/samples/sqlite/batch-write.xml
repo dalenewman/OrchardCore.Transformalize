@@ -1,5 +1,6 @@
-<!-- note this has to be run once in init mode to create the transformalize tables and views -->
 <cfg name="Batch" mode="@[Mode]">
+
+  <!-- note this has to be run once in init mode to create the transformalize tables and views -->
 
   <parameters>
     <add name="BatchId" type="int" value="0" />
@@ -8,7 +9,7 @@
 
   <connections>
     <add name="input" provider="internal" />
-    <add name="output" provider="sqlite" file="App_Data\batches.db" />
+    <add name="output" provider="sqlite" file="App_Data/batches.db" />
   </connections>
   
   <entities>
