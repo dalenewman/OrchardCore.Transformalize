@@ -230,8 +230,10 @@ namespace TransformalizeModule.Controllers {
          }
          await _taskService.RunAsync(bulkAction.Process);
 
-         var recordsAffected = bulkAction.Process.Actions.Where(a => a.RowCount > 0).Sum(a => a.RowCount) + bulkAction.Process.Entities.Where(a => a.Hits > 0).Sum(e => e.Hits);
-         var closeParameters = new Dictionary<string, string>() { { "RecordsAffected", recordsAffected.ToString() } };
+         var records = bulkAction.Process.Actions.Where(a => a.RowCount > 0).Sum(a => a.RowCount) 
+                     + bulkAction.Process.Entities.Where(a => a.Hits > 0).Sum(e => e.Hits)
+                     + bulkAction.Process.Entities.SelectMany(e=>e.Rows).Count();
+         var closeParameters = new Dictionary<string, string>() { { "RecordsAffected", records.ToString() } };
 
          if (bulkAction.Process.Status == 200) {
             var batchSuccess = await _taskService.Validate(new TransformalizeRequest(taskNames.Success) { InternalParameters = closeParameters });

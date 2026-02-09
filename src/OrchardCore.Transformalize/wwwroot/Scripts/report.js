@@ -25,32 +25,106 @@ function getUrlParameter(name) {
    return results ? decodeURIComponent(results[1]) : null;
 }
 
-function bulkAction(page, name) {
-   var length = $('.bulk-action:checked').length;
+function appendQueryParameter(url, name, value) {
+   var separator = url.indexOf('?') !== -1 ? "&" : "?";
+   return url + separator + name + "=" + value;
+}
+
+function loadModal(button) {
+   const url = button.getAttribute('data-url');
+   const iframe = document.getElementById('taskModalIframe');
+   iframe.src = url;
+   $('#taskModal').modal({
+      backdrop: 'static',
+      keyboard: false
+   }).modal('show');
+}
+
+window.addEventListener("message", function(event) {
+   if (event.data.action === "closeModal") {
+      const modalElement = document.getElementById('taskModal');
+      const modalInstance = bootstrap.Modal.getInstance(modalElement);
+
+      if (modalInstance) {
+         modalInstance.hide();
+      }
+
+      // refresh if not a cancel
+      if (event.data.reason === "confirmed") {
+         setTimeout(() => {
+            location.reload();
+         }, 300); // let the modal finish its animation
+      }
+   }
+});
+
+function bulkAction(page, name, modal) {
+   var $checked = $('.bulk-action:checked');
+   var length = $checked.length;
    if (length > 0) {
+      var actionUrl = server.bulkActionUrl;
 
-      $.blockUI({
-         message: null,
-         css: {
-            border: 'none',
-            padding: '15px',
-            backgroundColor: '#000',
-            '-webkit-border-radius': '10px',
-            '-moz-border-radius': '10px',
-            opacity: .5,
-            color: '#fff',
-            baseZ: 1021
+      if (modal) {
+         actionUrl = appendQueryParameter(actionUrl, 'modal', '1');
+
+         var $tempForm = $('<form method="POST" style="display:none;"></form>');
+         $tempForm.attr('action', actionUrl);
+         $tempForm.attr('target', "taskModalIframe");
+
+         var antiForgeContent = $(".AntiForge").html();
+         if (antiForgeContent) {
+            $tempForm.append(antiForgeContent);
          }
-      });
 
-      var $form = $('#id_report');
-      $form.attr('method', 'POST');
-      $form.attr('action', server.bulkActionUrl);
-      $form.append($(".AntiForge").html());
-      $form.append('<input type="hidden" name="ActionName" value="' + name + '" />');
-      $form.append('<input type="hidden" name="ActionCount" value="' + controls.bulkActionLength + '" />');
-      $form.append('<input type="hidden" name="ReturnUrl" value="' + window.location.href + '" />');
-      controls.submit(page);
+         $tempForm.append('<input type="hidden" name="ActionName" value="' + name + '" />');
+         $tempForm.append('<input type="hidden" name="ActionCount" value="' + controls.bulkActionLength + '" />');
+         $tempForm.append('<input type="hidden" name="ReturnUrl" value="' + window.location.href + '" />');
+
+         $checked.each(function () {
+            $tempForm.append($('<input type="hidden" name="' + this.name + '" />').val(this.value));
+         });
+
+         $('body').append($tempForm);
+
+         $('#taskModal').modal({
+            backdrop: 'static',
+            keyboard: false
+         }).modal('show');
+
+         $tempForm.submit();
+
+         setTimeout(function () {
+            $tempForm.remove();
+         }, 500);
+
+      } else {
+         $.blockUI({
+            message: null,
+            css: {
+               border: 'none',
+               padding: '15px',
+               backgroundColor: '#000',
+               '-webkit-border-radius': '10px',
+               '-moz-border-radius': '10px',
+               opacity: .5,
+               color: '#fff',
+               baseZ: 1021
+            }
+         });
+
+         var $form = $('#id_report');
+         $form.attr('method', 'POST');
+         $form.attr('action', actionUrl);
+
+         $form.find('input[name="ActionName"], input[name="ActionCount"], input[name="ReturnUrl"], input[name="__RequestVerificationToken"]').remove();
+
+         $form.append($(".AntiForge").html());
+         $form.append('<input type="hidden" name="ActionName" value="' + name + '" />');
+         $form.append('<input type="hidden" name="ActionCount" value="' + controls.bulkActionLength + '" />');
+         $form.append('<input type="hidden" name="ReturnUrl" value="' + window.location.href + '" />');
+
+         controls.submit(page);
+      }
    }
 }
 
@@ -205,7 +279,6 @@ $(document).ready(function () {
             $('#id_last').val($(this).attr('name'));
          }
          controls.submit(1);
-
       }
    });
 
@@ -371,4 +444,3 @@ $(document).ready(function () {
    }
 
 });
-

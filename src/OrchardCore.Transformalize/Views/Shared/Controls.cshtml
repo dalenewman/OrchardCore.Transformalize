@@ -50,6 +50,7 @@
        <div class="modal-content">
          <div class="modal-body p-0">
            <iframe id="taskModalIframe"
+                   name="taskModalIframe"
                    src=""
                    width="100%" height="700px"
                    frameborder="0"
@@ -58,37 +59,6 @@
        </div>
      </div>
    </div>
-
-   <script type="text/javascript">
-     function loadModal(button) {
-       const url = button.getAttribute('data-url');
-       const iframe = document.getElementById('taskModalIframe');
-       iframe.src = url;
-       $('#taskModal').modal({
-            backdrop: 'static',
-            keyboard: false
-       }).modal('show');
-     }
-
-      window.addEventListener("message", function(event) {
-          if (event.data.action === "closeModal") {
-              const modalElement = document.getElementById('taskModal');
-              const modalInstance = bootstrap.Modal.getInstance(modalElement);
-
-              if (modalInstance) {
-                  modalInstance.hide();
-              }
-
-               // refresh if not a cancel
-              if (event.data.reason === "confirmed") {
-                  setTimeout(() => {
-                      location.reload();
-                  }, 300); // let the modal finish its animation
-              }
-
-          }
-      });
-   </script>
 
    <div class="row">
       <div class="col-md-3">
@@ -109,7 +79,9 @@
                      <div class="dropdown-menu" aria-labelledby="idActionDropdown">
                         @if(Model.Part.BulkActions.Value){
                            foreach (var action in Model.Process.Actions.Where(a => a.Type != "open" && !string.IsNullOrEmpty(a.Name))) {
-                              <a class="bulk-action-link dropdown-item" rel="@action.Description" href="javascript:bulkAction(1, '@action.Name');">@action.Description</a>
+                              <a class="bulk-action-link dropdown-item" 
+                                 rel="@action.Description" 
+                                 href="javascript:bulkAction(1, '@action.Name', @(action.Modal.ToString().ToLower()));">@action.Description</a>
                            }
                         }
                         @if(Model.Editable){
@@ -357,6 +329,3 @@
       }
       // -->
    </script>
-
-
-

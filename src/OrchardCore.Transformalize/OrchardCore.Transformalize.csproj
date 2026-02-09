@@ -56,7 +56,7 @@
       <PackageReference Include="OrchardCoreContrib.ContentPermissions" Version="1.0.0" />
 
       <!-- transformalize updated -->
-      <PackageReference Include="Transformalize.Container.Autofac" Version="0.11.7-beta" />
+      <PackageReference Include="Transformalize.Container.Autofac" Version="0.11.8-beta" />
       <PackageReference Include="Transformalize.Provider.Ado.Autofac" Version="0.11.3-beta" />
       <PackageReference Include="Transformalize.Provider.Bogus.Autofac" Version="0.11.1-beta" />
       <PackageReference Include="Transformalize.Provider.CsvHelper.Autofac" Version="0.11.1-beta" />
