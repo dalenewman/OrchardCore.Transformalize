@@ -91,6 +91,52 @@ function bulkAction(page, name, modal) {
             keyboard: false
          }).modal('show');
 
+         var iframe = document.getElementById('taskModalIframe');
+         var doc = iframe.contentDocument || iframe.contentWindow.document;
+         
+         // 1. Get the resolved image URL from the parent page's #busy element
+         // (This avoids needing Razor syntax in your JS file)
+         var bgImage = $('#busy').css('background-image');
+         
+         // 2. Define the content to inject
+         // We use Flexbox here for perfect centering inside the modal
+         var loadingContent = `
+            <!DOCTYPE html>
+            <html>
+            <head>
+               <style>
+                  html, body { height: 100%; margin: 0; padding: 0; overflow: hidden; }
+                  #busy_holder {
+                     height: 100%;
+                     width: 100%;
+                     display: flex;
+                     align-items: center;
+                     justify-content: center;
+                     background: transparent;
+                  }
+                  #busy {
+                     display: block; 
+                     width: 150px;
+                     height: 150px;
+                     background: ${bgImage};
+                     background-size: 149px 149px;
+                     background-repeat: no-repeat;
+                  }
+               </style>
+            </head>
+            <body>
+               <div id="busy_holder">
+                  <div id="busy"></div>
+               </div>
+            </body>
+            </html>
+         `;
+
+         // 3. Write to the iframe immediately
+         doc.open();
+         doc.write(loadingContent);
+         doc.close();
+
          $tempForm.submit();
 
          setTimeout(function () {
