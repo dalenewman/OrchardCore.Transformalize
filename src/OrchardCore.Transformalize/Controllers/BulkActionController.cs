@@ -161,6 +161,9 @@ namespace TransformalizeModule.Controllers {
             await _taskService.RunAsync(write.Process);
             #endregion
 
+            if (Request.Query["modal"] == "1") {
+               writeParameters["modal"] = "1";
+            }
             return RedirectToAction("Review", ParametersToRouteValues(writeParameters));
 
          } else {
