@@ -58,7 +58,20 @@
    input:invalid {
       border-color: red;
    }
+
 </style>
+
+@if (isModal)
+{
+    <style>
+        nav {
+            display: none !important;
+        }
+        footer {
+           display: none !important;
+        }
+    </style>
+}
 
 <script type="text/javascript" language="javascript">
     //<!--

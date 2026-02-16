@@ -31,23 +31,36 @@
         <add name="longitude" type="double" output="false" />        
       </fields>
       <calculated-fields>
-        <add name="Color" raw="true" 
+
+        <!-- bug in geojson provider?  you have to use "marker-color" field to affect dots on map -->
+        <!-- also have to change map color field to marker-color -->
+        <add name="marker-color" t="copy(geojson-color)" output="false" />
+
+        <add name="Color" 
+             raw="true" 
              t='format(<span style="height: 15px; width: 15px; background-color: {geojson-color}; border-radius: 50%; display: inline-block; margin-bottom: -2px;"></span> {geojson-color})' />
         
-        <add name="FluidTest" label="Fluid Test" raw="true"
+        <add name="FluidTest" 
+             label="Fluid Test" 
+             raw="true"
              t='fluid(
                 <span class="badge text-bg-danger">{{ latitude | round:4 }},{{ longitude | round:4 }}</span>
                 )' />
         
-        <add name="RazorTest" label="Razor Test" raw="true"
+        <add name="RazorTest" 
+             label="Razor Test" 
+             raw="true"
              t='razor(
                 <span class="badge text-bg-warning">@(Math.Round(Model.latitude,4)),@(Math.Round(Model.longitude,4))</span>
                 )' />
         
         <add name="JintTest" label="Jint Test" t="jint(latitude + longitude)" />
         
-        <add name="geojson-description" raw="true" output="false"  
+        <add name="geojson-description" 
+             raw="true" 
+             output="false"
              t='razor(Copy that, we got a @Model.ucr_ncic_code in progress at @Model.address)' />
+
         <add name="BatchValue" t="copy(Id)" type="int" />
       </calculated-fields>
     </add>

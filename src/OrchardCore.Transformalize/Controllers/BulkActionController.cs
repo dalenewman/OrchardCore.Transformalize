@@ -161,9 +161,6 @@ namespace TransformalizeModule.Controllers {
             await _taskService.RunAsync(write.Process);
             #endregion
 
-            if (Request.Query["modal"] == "1") {
-               writeParameters["modal"] = "1";
-            }
             return RedirectToAction("Review", ParametersToRouteValues(writeParameters));
 
          } else {
@@ -307,21 +304,27 @@ namespace TransformalizeModule.Controllers {
          return response;
       }
 
-      private static dynamic ParametersToRouteValues(IDictionary<string, string> parameters) {
+      private dynamic ParametersToRouteValues(IDictionary<string, string> parameters) {
          var routeValues = new ExpandoObject();
-         var editable = (ICollection<KeyValuePair<string, object>>)routeValues;
+         var editable = (IDictionary<string, object?>)routeValues;
          foreach (var kvp in parameters) {
-            editable.Add(new KeyValuePair<string, object>(kvp.Key, kvp.Value));
+            editable[kvp.Key] = kvp.Value;
+         }
+         if (Request.Query["modal"] == "1" || Request.Form["modal"] == "1") {
+            editable["modal"] = "1";
          }
          dynamic d = routeValues;
          return d;
       }
 
-      private static dynamic ParametersToRouteValues(IEnumerable<Parameter> parameters) {
+      private dynamic ParametersToRouteValues(IEnumerable<Parameter> parameters) {
          var routeValues = new ExpandoObject();
-         var editable = (ICollection<KeyValuePair<string, object>>)routeValues;
+         var editable = (IDictionary<string, object?>)routeValues;
          foreach (var p in parameters) {
-            editable.Add(new KeyValuePair<string, object>(p.Name, p.Value));
+            editable[p.Name] = p.Value;
+         }
+         if (Request.Query["modal"] == "1" || Request.Form["modal"] == "1") {
+            editable["modal"] = "1";
          }
          dynamic d = routeValues;
          return d;
