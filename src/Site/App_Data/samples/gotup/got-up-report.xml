@@ -1,9 +1,10 @@
-<cfg status="200" message="Ok" name="4571zavh97mbn6xbgr52be2xm0" readonly="true">
+<cfg status="200" message="Ok" name="got-up-report" readonly="true">
   <actions>
     <add type="humanize-labels" />
     <add type="open" 
-         url="/t/form/got-up-form?modal=1" 
-         description="Add Got Up" 
+         url="/t/form/got-up-form" 
+         description="Add Got Up"
+         modal="true"
          class="btn-outline-primary waves-effect" 
          icon="plus" />  
   </actions>

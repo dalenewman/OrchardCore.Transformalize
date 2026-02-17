@@ -5,7 +5,7 @@
   </connections>
   
   <actions>
-    <add name="change-color" description="Change Color" />
+    <add name="change-color" description="Change Color" modal="true" />
   </actions>
   
   <entities>
