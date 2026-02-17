@@ -3,12 +3,12 @@
       <TargetFramework>net8.0</TargetFramework>
       <AddRazorSupportForMvc>true</AddRazorSupportForMvc>
       <RootNamespace>TransformalizeModule</RootNamespace>
-      <Version>0.13.20</Version>
-      <FileVersion>0.13.20</FileVersion>
-      <AssemblyVersion>0.13.20</AssemblyVersion>
+      <Version>0.14.0</Version>
+      <FileVersion>0.14.0</FileVersion>
+      <AssemblyVersion>0.14.0</AssemblyVersion>
       <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
       <Authors>Dale Newman</Authors>
-      <Copyright>Copyright © 2013-2025</Copyright>
+      <Copyright>Copyright © 2013-2026</Copyright>
       <Description />
       <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
       <PackageProjectUrl>https://github.com/dalenewman/OrchardCore.Transformalize</PackageProjectUrl>
@@ -16,7 +16,7 @@
       <RepositoryType>git</RepositoryType>
       <PackageTags>etl,data,forms,reports,transformalize</PackageTags>
       <NeutralLanguage>en-US</NeutralLanguage>
-      <PackageReleaseNotes>update for orchard core 2</PackageReleaseNotes>
+      <PackageReleaseNotes>add modal support for bulk actions</PackageReleaseNotes>
       <Nullable>enable</Nullable>
       <ImplicitUsings>enable</ImplicitUsings>
    </PropertyGroup>
@@ -56,7 +56,7 @@
       <PackageReference Include="OrchardCoreContrib.ContentPermissions" Version="1.0.0" />
 
       <!-- transformalize updated -->
-      <PackageReference Include="Transformalize.Container.Autofac" Version="0.11.7-beta" />
+      <PackageReference Include="Transformalize.Container.Autofac" Version="0.11.8-beta" />
       <PackageReference Include="Transformalize.Provider.Ado.Autofac" Version="0.11.3-beta" />
       <PackageReference Include="Transformalize.Provider.Bogus.Autofac" Version="0.11.1-beta" />
       <PackageReference Include="Transformalize.Provider.CsvHelper.Autofac" Version="0.11.1-beta" />

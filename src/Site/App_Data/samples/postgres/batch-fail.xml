@@ -3,7 +3,7 @@
   <parameters>
     <add name="BatchId" type="int" value="0" />
     <add name="RecordsAffected" type="int" value="0" />
-    <add name="Message" value="" />
+    <add name="Message" value="" invalid-characters="" />
   </parameters>
   
   <connections>

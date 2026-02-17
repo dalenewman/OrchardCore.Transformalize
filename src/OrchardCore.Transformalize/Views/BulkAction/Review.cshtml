@@ -6,10 +6,12 @@
 @{
    RenderTitleSegments(Model.Task.Title, "before");
    var auth = Context.RequestServices.GetService<IAuthorizationService>();
+   var editEnabled = Model.Task.ContentItem != null && await auth.AuthorizeAsync(Context.User, OrchardCore.Contents.Permissions.EditContent, Model.Task.ContentItem);
+   var isModal = Context.Request.Query["modal"] == "1";
 }
 
 <script asp-name="jQuery" at="Head"></script>
-<script asp-name="jQuery-ui" at="Foot"></script>
+<script asp-name="jQuery-ui" at="Head"></script>
 <script asp-name="block-ui" version="2.70.0" at="Foot"></script>
 <script asp-name="pickadate-picker-date" version="3.6.4" at="Foot"></script>
 <script asp-name="parsley" version="2.9.2" at="Foot"></script>
@@ -56,7 +58,20 @@
    input:invalid {
       border-color: red;
    }
+
 </style>
+
+@if (isModal)
+{
+    <style>
+        nav {
+            display: none !important;
+        }
+        footer {
+           display: none !important;
+        }
+    </style>
+}
 
 <script type="text/javascript" language="javascript">
     //<!--
@@ -65,9 +80,9 @@
             enabled: false
          },
          controller: "BulkAction",
-         ajaxUrl: "@(Url.Action("Form", "BulkAction", new { Area = Common.ModuleName }))",
-         updateUrl: "@(Url.Action("Review", "BulkAction", new { Area = Common.ModuleName }))",
-         runUrl: "@(Url.Action("Run", "BulkAction", new { Area = Common.ModuleName }))",
+         ajaxUrl: "@(Url.Action("Form", "BulkAction", new { Area = Common.ModuleName, modal = Context.Request.Query["modal"] }))",
+         updateUrl: "@(Url.Action("Review", "BulkAction", new { Area = Common.ModuleName, modal = Context.Request.Query["modal"] }))",
+         runUrl: "@(Url.Action("Run", "BulkAction", new { Area = Common.ModuleName, modal = Context.Request.Query["modal"] }))",
          uploadUrl: "@(Url.Action("Upload", "File", new { Area = Common.ModuleName }))",
          scanUrl: "@(Url.Action("Scan", "File", new { Area = Common.ModuleName }))"
       }
@@ -75,8 +90,8 @@
 </script>
 
 <div class="container">
-   @if (Model.Task.ContentItem != null && await auth.AuthorizeAsync(Context.User, OrchardCore.Contents.Permissions.EditContent, Model.Task.ContentItem)) {
-      <button title="edit this task" type="button" class="btn btn-warning btn-sm float-end" onclick="window.open('@(Url.Content("~/Admin/Contents/ContentItems/" + Model.Task.ContentItem.ContentItemId + "/Edit?" + Common.ReturnUrlName + "=" + System.Net.WebUtility.UrlEncode(Context.Request.Path + Context.Request.QueryString)))', '_self');">
+   @if (editEnabled && !isModal) {
+      <button tabindex="-1" title="edit this task" type="button" class="btn btn-warning btn-sm float-end" onclick="window.open('@(Url.Content("~/Admin/Contents/ContentItems/" + Model.Task.ContentItem.ContentItemId + "/Edit?" + Common.ReturnUrlName + "=" + System.Net.WebUtility.UrlEncode(Context.Request.Path + Context.Request.QueryString)))', '_self');">
          <span class="fas fa-edit"></span>
       </button>
    }

@@ -1,7 +1,7 @@
 <cfg name="Change Color">
 
   <parameters>
-    <add name="BatchId" type="long" value="0" prompt="true" />
+    <add name="BatchId" type="long" value="0" prompt="false" />
     <add name="Color" map="Colors" prompt="true" value="#FF0000" post-back="true" v="map(Colors)" />
     <add name="bsh" input="false" t='copy(Color).razor(<span style="height: 15px; width: 15px; background-color:@(Model.Color); border-radius: 50%; display: inline-block; margin-bottom: -2px;"></span>)' raw="true" invalid-characters="" />
   </parameters>
@@ -12,13 +12,14 @@
         <add from="Red" to="#FF0000" />
         <add from="Green" to="#00FF00" />
         <add from="Blue" to="#0000FF" />
+        <add from="Orange" to="##FFA500" />
         <add from="Default" to="#48C9B0" />
       </items>
     </add>
   </maps>
 
   <connections>
-    <add name="input" provider="sqlite" file="App_Data\batches.db" />
+    <add name="input" provider="sqlite" file="App_Data/batches.db" />
     <add name="target" provider="sqlserver" database="Junk" />
   </connections>
 

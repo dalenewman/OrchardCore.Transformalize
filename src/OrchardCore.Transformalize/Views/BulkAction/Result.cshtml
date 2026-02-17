@@ -1,9 +1,26 @@
 @model Transformalize.Configuration.Process
 
+@using TransformalizeModule
+@using Microsoft.AspNetCore.Http.Extensions
+
 @{ 
    RenderTitleSegments(Model.Name, "before");
    var referrer = Model.Parameters.FirstOrDefault(p => p.Name == "TaskReferrer");
+   var isModal = Context.Request.Query["modal"] == "1";
 }
+
+@if (isModal)
+{
+    <style>
+        nav {
+            display: none !important;
+        }
+        footer {
+           display: none !important;
+        }
+    </style>
+}
+
 <div class="container">
    <div class="row">
       <div class="col-md-4">
@@ -24,10 +41,12 @@
             </table>
          }
       </div>
-      <div class="8">
+      <div class="col-md-8">
          <h4> </h4>
 
-         @if (referrer != null) {
+         @if (isModal) {
+            <a href="javascript:void()" class="btn btn-primary active" role="button" aria-pressed="true" onClick="window.parent.postMessage({ action: 'closeModal', reason: 'confirmed' }, '*');" >Close</a>
+         } else if (referrer != null) {
             <a href="@Html.Raw(referrer.Value)" class="btn btn-primary active" role="button" aria-pressed="true">Back</a>
          }
       </div>

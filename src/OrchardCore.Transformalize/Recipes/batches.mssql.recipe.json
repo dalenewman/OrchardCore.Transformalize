@@ -51,7 +51,7 @@
                },
                "TransformalizeTaskPart": {
                   "Arrangement": {
-                     "Text": "<cfg name=\"Batch Fail\">\r\n  <parameters>\r\n    <add name=\"BatchId\" type=\"int\" value=\"0\" />\r\n    <add name=\"RecordsAffected\" type=\"int\" value=\"0\" />\r\n    <add name=\"Message\" value=\"\" />\r\n  </parameters>\r\n  <connections>\r\n    <add name=\"db\" />\r\n  </connections>\r\n  <actions>\r\n    <add name=\"Create\" type=\"run\" connection=\"db\" command=\"UPDATE [Batch] SET [BatchStatusId] = 4, [Message] = 'Failed' WHERE Id = @BatchId\" />\r\n  </actions>\r\n</cfg>"
+                     "Text": "<cfg name=\"Batch Fail\">\n  <parameters>\n    <add name=\"BatchId\" type=\"int\" value=\"0\" />\n    <add name=\"RecordsAffected\" type=\"int\" value=\"0\" />\n    <add name=\"Message\" value=\"\" invalid-characters=\"\" />\n  </parameters>\n  <connections>\n    <add name=\"db\" />\n  </connections>\n  <actions>\n    <add name=\"Create\" \n         type=\"run\" \n         connection=\"db\" \n         command=\"UPDATE [Batch] SET [BatchStatusId] = 4, [Message] = 'Failed' WHERE Id = @BatchId\" />\n  </actions>\n</cfg>\n"
                   }
                },
                "CommonPart": {}

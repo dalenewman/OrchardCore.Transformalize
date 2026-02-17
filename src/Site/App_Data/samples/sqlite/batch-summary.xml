@@ -5,7 +5,7 @@
   </parameters>
 
   <connections>
-    <add name="db" provider="sqlite" file="App_Data\batches.db" />
+    <add name="db" provider="sqlite" file="App_Data/batches.db" />
   </connections>
 
   <maps>
@@ -22,7 +22,7 @@
 
   <entities>
     <add name="Script" 
-         connection="db" 
+         input="db" 
          query="
                 SELECT
                   b.Description,
@@ -46,7 +46,7 @@
       <fields>
         <add name="Description" label="Bulk Action" t='format(<strong>{Description}</strong>)' raw="true" />
         <add name="BatchId" type="long" primary-key="true" />
-        <add name="Created" type="datetime" t="convert().timezone(UTC,Eastern Standard Time)" />
+        <add name="Created" type="datetime" t="convert().timezone(UTC,America/Detroit)" />
         <add name="ReportTitle" label="Report" />
         <add name="Status" output="false" />
         <add input="false" name="ContextualClass" t="copy(Status).map(ContextualClasses)" output="false" />
@@ -54,7 +54,7 @@
         <add name="Message" />
         <add name="Records" type="long" />
         
-        <!-- These two fields are not shown in the summary but are checked for incase you want to a review a batch later by id and you don't have these values -->
+        <!-- These two fields are not shown in the summary but are checked for in case you want to a review a batch later by id and you don't have these values -->
         <add name="ReportContentItemId" label="Report Id" />
         <add name="TaskContentItemId" label="Task Id" />        
       </fields>
