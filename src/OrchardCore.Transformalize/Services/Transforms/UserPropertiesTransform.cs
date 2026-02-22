@@ -30,7 +30,7 @@ namespace TransformalizeModule.Services.Transforms {
          } else {
             var username = httpContext.HttpContext.User?.Identity?.Name ?? "Anonymous";
             if(username != "Anonymous") {
-               if (userService.GetUserAsync(username).Result is User user) {
+               if (Task.Run(() => userService.GetUserAsync(username)).GetAwaiter().GetResult() is User user) {
                   _userProperties = user.Properties.ToString();
                   if(Context.Field.Length != "max") {
                      if (int.TryParse(Context.Field.Length, out int len)) { 
