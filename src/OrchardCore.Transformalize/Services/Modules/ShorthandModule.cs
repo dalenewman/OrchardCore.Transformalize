@@ -39,7 +39,7 @@ namespace TransformalizeModule.Services.Modules {
          builder.Register<IReader>(c => new DefaultReader(new FileReader(), new WebReader())).As<IReader>();
 
          // register short-hand for t attribute
-         var tm = new TransformModule(new Process { Name = "Transform Shorthand" }, _methods, _shortHand, _logger) { Plugins = false };
+         var tm = new TransformModule(new Process { Name = "Transform Shorthand" }, _methods, _shortHand, _logger);
          // adding additional transforms here
          tm.AddTransform(new TransformHolder((c) => new UsernameTransform(), new UsernameTransform().GetSignatures()));
          tm.AddTransform(new TransformHolder((c) => new UserIdTransform(), new UserIdTransform().GetSignatures()));
@@ -68,7 +68,7 @@ namespace TransformalizeModule.Services.Modules {
          builder.RegisterModule(tm);
 
          // register short-hand for v attribute
-         var vm = new ValidateModule(new Process { Name = "ValidateShorthand" }, _methods, _shortHand, _logger) { Plugins = false };
+         var vm = new ValidateModule(new Process { Name = "ValidateShorthand" }, _methods, _shortHand, _logger);
          // adding additional validators here
          builder.RegisterModule(vm);
 

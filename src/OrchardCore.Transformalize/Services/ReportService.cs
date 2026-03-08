@@ -91,10 +91,6 @@ namespace TransformalizeModule.Services {
          await _streamService.RunAsync(process, streamWriter);
       }
 
-      public void Run(Process process, StreamWriter streamWriter) {
-         _streamService.Run(process, streamWriter);
-      }
-
       public async Task<TransformalizeResponse<TransformalizeReportPart>> Validate(TransformalizeRequest request) {
 
          var response = new TransformalizeResponse<TransformalizeReportPart>(request.Format) {

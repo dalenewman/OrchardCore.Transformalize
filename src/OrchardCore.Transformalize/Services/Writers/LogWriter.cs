@@ -57,5 +57,11 @@ namespace TransformalizeModule.Services.Writers {
             }
          }
       }
-   }
+
+    public Task WriteAsync(IEnumerable<IRow> rows, CancellationToken token = default)
+    {
+      Write(rows);
+      return Task.CompletedTask;
+    }
+  }
 }

@@ -125,7 +125,7 @@ namespace TransformalizeModule.Services {
          builder.RegisterInstance(logger).As<IPipelineLogger>().SingleInstance();
 
          // register short-hand for t attribute, allowing for additional transforms
-         var tm = new TransformModule(process, _methods, _shortHand, logger) { Plugins = false };
+         var tm = new TransformModule(process, _methods, _shortHand, logger);
          // adding additional transforms here
          tm.AddTransform(new TransformHolder((c) => new UsernameTransform(_httpContext, c), new UsernameTransform().GetSignatures()));
          tm.AddTransform(new TransformHolder((c) => new UserIdTransform(_httpContext, _userService, c), new UserIdTransform().GetSignatures()));
@@ -156,7 +156,7 @@ namespace TransformalizeModule.Services {
          builder.RegisterModule(tm);
 
          // register short-hand for v attribute, allowing for additional validators
-         var vm = new ValidateModule(process, _methods, _shortHand, logger) { Plugins = false };
+         var vm = new ValidateModule(process, _methods, _shortHand, logger);
          // adding additional validators here
          builder.RegisterModule(vm);
 
@@ -192,8 +192,8 @@ namespace TransformalizeModule.Services {
          if (providers.Contains("excel")) { builder.RegisterModule(new OrchardExcelModule()); }
 
          // exporting
-         if (providers.Contains("json")) { builder.RegisterModule(new JsonProviderModule(streamWriter) { UseAsyncMethods = false }); }
-         if (providers.Contains("geojson")) { builder.RegisterModule(new GeoJsonProviderModule(streamWriter) { UseAsyncMethods = false }); }
+         if (providers.Contains("json")) { builder.RegisterModule(new JsonProviderModule(streamWriter)); }
+         if (providers.Contains("geojson")) { builder.RegisterModule(new GeoJsonProviderModule(streamWriter)); }
 
          // misc
          if (providers.Contains("bogus")) { builder.RegisterModule(new BogusModule()); }
@@ -312,7 +312,7 @@ namespace TransformalizeModule.Services {
                pipeline.Register(new SystemFieldsTransform(new PipelineContext(ctx.Resolve<IPipelineLogger>(), process, entity)));
                pipeline.Register(ValidateFactory.GetValidators(ctx, context, entity.GetAllFields().Where(f => f.Validators.Any())));
                if (!process.ReadOnly && !output.Provider.In("internal", "log")) {
-                  pipeline.Register(new StringTruncateTransfom(new PipelineContext(ctx.Resolve<IPipelineLogger>(), process, entity)));
+                  pipeline.Register(new StringTruncateTransform(new PipelineContext(ctx.Resolve<IPipelineLogger>(), process, entity)));
                }
                pipeline.Register(new LogTransform(context));
 
@@ -357,7 +357,7 @@ namespace TransformalizeModule.Services {
                pipeline.Register(new DefaultTransform(new PipelineContext(ctx.Resolve<IPipelineLogger>(), calc, entity), entity.CalculatedFields));
                pipeline.Register(TransformFactory.GetTransforms(ctx, context, entity.CalculatedFields));
                pipeline.Register(ValidateFactory.GetValidators(ctx, context, entity.GetAllFields().Where(f => f.Validators.Any())));
-               pipeline.Register(new StringTruncateTransfom(new PipelineContext(ctx.Resolve<IPipelineLogger>(), calc, entity)));
+               pipeline.Register(new StringTruncateTransform(new PipelineContext(ctx.Resolve<IPipelineLogger>(), calc, entity)));
 
                // register input and output
                pipeline.Register(ctx.IsRegistered<IRead>() ? ctx.Resolve<IRead>() : new NullReader(context));
