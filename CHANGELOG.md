@@ -1,3 +1,10 @@
+# 0.15.0 <small>2026-03-07</small>
+
+## 🐞 Bug Fixes
+- Replace synchronous `Run` with async methods to prevent deadlocks when a `SynchronizationContext` is present (Azure/IIS)
+
+<!-- CHANGELOG_BOUNDARY -->
+
 # 0.14.0 <small>2026-02-17</small>
 
 ## 🚀 Features

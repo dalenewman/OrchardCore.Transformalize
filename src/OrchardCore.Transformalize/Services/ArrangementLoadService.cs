@@ -256,6 +256,7 @@ namespace TransformalizeModule.Services {
          var o = process.GetOutputConnection();
          o.Stream = true;
          o.Provider = "geojson";
+         // o.Type = "role"; // use role attribute/property (e.g. latitude, longitude, altitude, property, id)
 
          // some hard-coded requirements for geojson provider...
          // geojson-color used as marker-color property

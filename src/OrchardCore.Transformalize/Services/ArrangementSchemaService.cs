@@ -41,7 +41,7 @@ namespace TransformalizeModule.Services {
          var schemas = new List<Schema>();
 
          foreach (var reader in entityReaders) {
-            schemas.Add(await Task.Run(() => reader.Value.Read(reader.Key)));
+            schemas.Add(await reader.Value.ReadAsync(reader.Key));
          }
          foreach (var schema in schemas) {
             foreach (var schemaEntity in schema.Entities) {
