@@ -32,20 +32,20 @@
    <ItemGroup>
 
       <!-- orchard -->
-      <PackageReference Include="OrchardCore.Alias" Version="2.1.6" />
-      <PackageReference Include="OrchardCore.ContentFields" Version="2.1.6" />
-      <PackageReference Include="OrchardCore.ContentManagement" Version="2.1.6" />
-      <PackageReference Include="OrchardCore.Contents" Version="2.1.6" />
-      <PackageReference Include="OrchardCore.ContentTypes.Abstractions" Version="2.1.6" />
-      <PackageReference Include="OrchardCore.DisplayManagement" Version="2.1.6" />
-      <PackageReference Include="OrchardCore.Features" Version="2.1.6" />
-      <PackageReference Include="OrchardCore.FileStorage.FileSystem" Version="2.1.6" />
-      <PackageReference Include="OrchardCore.MiniProfiler" Version="2.1.6" />
-      <PackageReference Include="OrchardCore.Module.Targets" Version="2.1.6" />
-      <PackageReference Include="OrchardCore.Navigation" Version="2.1.6" />
-      <PackageReference Include="OrchardCore.Title" Version="2.1.6" />
-      <PackageReference Include="OrchardCore.Users" Version="2.1.6" />
-      <PackageReference Include="OrchardCore.Workflows" Version="2.1.6" />
+      <PackageReference Include="OrchardCore.Alias" Version="2.2.1" />
+      <PackageReference Include="OrchardCore.ContentFields" Version="2.2.1" />
+      <PackageReference Include="OrchardCore.ContentManagement" Version="2.2.1" />
+      <PackageReference Include="OrchardCore.Contents" Version="2.2.1" />
+      <PackageReference Include="OrchardCore.ContentTypes.Abstractions" Version="2.2.1" />
+      <PackageReference Include="OrchardCore.DisplayManagement" Version="2.2.1" />
+      <PackageReference Include="OrchardCore.Features" Version="2.2.1" />
+      <PackageReference Include="OrchardCore.FileStorage.FileSystem" Version="2.2.1" />
+      <PackageReference Include="OrchardCore.MiniProfiler" Version="2.2.1" />
+      <PackageReference Include="OrchardCore.Module.Targets" Version="2.2.1" />
+      <PackageReference Include="OrchardCore.Navigation" Version="2.2.1" />
+      <PackageReference Include="OrchardCore.Title" Version="2.2.1" />
+      <PackageReference Include="OrchardCore.Users" Version="2.2.1" />
+      <PackageReference Include="OrchardCore.Workflows" Version="2.2.1" />
 
       <!-- third party modules -->
 
