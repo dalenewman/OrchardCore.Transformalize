@@ -4,12 +4,12 @@
       <TargetFramework>net8.0</TargetFramework>
       <AddRazorSupportForMvc>true</AddRazorSupportForMvc>
       <RootNamespace>ProxyModule</RootNamespace>
-      <Version>0.13.20</Version>
-      <FileVersion>0.13.20</FileVersion>
-      <AssemblyVersion>0.13.20</AssemblyVersion>
+      <Version>0.15.0</Version>
+      <FileVersion>0.15.0</FileVersion>
+      <AssemblyVersion>0.15.0</AssemblyVersion>
       <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
       <Authors>Dale Newman</Authors>
-      <Copyright>Copyright © 2023-2025</Copyright>
+      <Copyright>Copyright © 2023-2026</Copyright>
       <Description>for secured access to internal resources</Description>
       <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
       <PackageProjectUrl>https://github.com/dalenewman/OrchardCore.Proxy</PackageProjectUrl>
