@@ -38,8 +38,8 @@
    </ItemGroup>
 
    <ItemGroup>
-      <PackageReference Include="OrchardCore.Logging.Serilog" Version="2.1.6" />
-      <PackageReference Include="OrchardCore.Application.Cms.Targets" Version="2.1.6" />
+      <PackageReference Include="OrchardCore.Logging.Serilog" Version="2.2.1" />
+      <PackageReference Include="OrchardCore.Application.Cms.Targets" Version="2.2.1" />
       <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.18.1" />
       <PackageReference Include="Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation" Version="8.0.11" Condition="'$(RazorRuntimeCompilation)' == 'true'" />
       <PackageReference Include="OrchardCoreContrib.ContentPermissions" Version="1.0.0" />
