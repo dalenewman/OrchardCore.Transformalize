@@ -43,7 +43,7 @@ namespace TransformalizeModule.Services {
 
       }
 
-      private static Url RemoveNoiseFromUrl(Url url) {
+      internal static Url RemoveNoiseFromUrl(Url url) {
 
          var stars = (from param in url.QueryParams where param.Value.Equals("*") || param.Value.Equals("") select param.Name).ToList();
          foreach (var star in stars) {

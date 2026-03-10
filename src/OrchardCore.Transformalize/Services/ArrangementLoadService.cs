@@ -528,7 +528,7 @@ namespace TransformalizeModule.Services {
       /// <param name="min">the minimum allowed page size</param>
       /// <param name="chosen">the page size selected by the user</param>
       /// <param name="max">the maximum allowed page size</param>
-      private static void EnforcePageSize(Process process, IDictionary<string, string> parameters, int min, int chosen, int max) {
+      internal static void EnforcePageSize(Process process, IDictionary<string, string> parameters, int min, int chosen, int max) {
 
          foreach (var entity in process.Entities) {
             // parse out a page number
@@ -562,7 +562,7 @@ namespace TransformalizeModule.Services {
       /// </summary>
       /// <param name="process"></param>
       /// <param name="required"></param>
-      private static void ConfineData(Process process, IDictionary<string, string> required) {
+      internal static void ConfineData(Process process, IDictionary<string, string> required) {
 
          foreach (var entity in process.Entities) {
             var all = entity.GetAllFields().ToArray();
