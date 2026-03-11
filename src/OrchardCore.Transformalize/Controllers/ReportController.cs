@@ -124,19 +124,7 @@ namespace TransformalizeModule.Controllers {
          var suppress = new HashSet<string>() { stream.Part.BulkActionValueField.Text, stream.Part.MapColorField.Text, stream.Part.MapDescriptionField.Text };
          var coordinates = new HashSet<string>() { stream.Part.MapLatitudeField.Text, stream.Part.MapLongitudeField.Text };
 
-         foreach (var entity in stream.Process.Entities) {
-            foreach (var field in entity.GetAllFields()) {
-               if (suppress.Contains(field.Alias)) {
-                  field.Output = false;
-                  field.Property = false;
-                  field.Alias += "Suppressed";
-               } else if (coordinates.Contains(field.Alias)) {
-                  field.Property = field.Export == "true";
-               } else {
-                  field.Property = field.Property || field.Output && field.Export == "defer" || field.Export == "true";
-               }
-            }
-         }
+         ApplyGeoJsonFieldVisibility(stream.Process.Entities, suppress, coordinates);
 
          Response.ContentType = "application/vnd.geo+json";
          Response.Headers["content-disposition"] = "attachment; filename=" + o.File;
@@ -177,6 +165,22 @@ namespace TransformalizeModule.Controllers {
 
          return new EmptyResult();
 
+      }
+
+      internal static void ApplyGeoJsonFieldVisibility(IEnumerable<Transformalize.Configuration.Entity> entities, HashSet<string> suppress, HashSet<string> coordinates) {
+         foreach (var entity in entities) {
+            foreach (var field in entity.GetAllFields()) {
+               if (suppress.Contains(field.Alias)) {
+                  field.Output = false;
+                  field.Property = false;
+                  field.Alias += "Suppressed";
+               } else if (coordinates.Contains(field.Alias)) {
+                  field.Property = field.Export == "true";
+               } else {
+                  field.Property = field.Property || field.Output && field.Export == "defer" || field.Export == "true";
+               }
+            }
+         }
       }
 
    }

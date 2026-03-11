@@ -230,9 +230,7 @@ namespace TransformalizeModule.Controllers {
          }
          await _taskService.RunAsync(bulkAction.Process);
 
-         var records = bulkAction.Process.Actions.Where(a => a.RowCount > 0).Sum(a => a.RowCount) 
-                     + bulkAction.Process.Entities.Where(a => a.Hits > 0).Sum(e => e.Hits)
-                     + bulkAction.Process.Entities.SelectMany(e=>e.Rows).Count();
+         var records = CountAffectedRecords(bulkAction.Process);
          var closeParameters = new Dictionary<string, string>() { { "RecordsAffected", records.ToString() } };
 
          if (bulkAction.Process.Status == 200) {
@@ -285,7 +283,7 @@ namespace TransformalizeModule.Controllers {
          return View(TransferRequiredParameters(request, batchSummary).Process);
       }
 
-      private static TransformalizeResponse<TransformalizeTaskPart> TransferRequiredParameters(BulkActionReviewRequest request, TransformalizeResponse<TransformalizeTaskPart> response) {
+      internal static TransformalizeResponse<TransformalizeTaskPart> TransferRequiredParameters(BulkActionReviewRequest request, TransformalizeResponse<TransformalizeTaskPart> response) {
 
          var existing = new HashSet<string>(response.Process.Parameters.Select(p => p.Name));
 
@@ -304,33 +302,39 @@ namespace TransformalizeModule.Controllers {
          return response;
       }
 
-      private dynamic ParametersToRouteValues(IDictionary<string, string> parameters) {
+      private bool IsModalRequest() => Request.Query["modal"] == "1" || Request.Form["modal"] == "1";
+
+      private dynamic ParametersToRouteValues(IDictionary<string, string> parameters) =>
+         ParametersToRouteValues(parameters, IsModalRequest());
+
+      private dynamic ParametersToRouteValues(IEnumerable<Parameter> parameters) =>
+         ParametersToRouteValues(parameters, IsModalRequest());
+
+      internal static dynamic ParametersToRouteValues(IDictionary<string, string> parameters, bool modal) {
          var routeValues = new ExpandoObject();
          var editable = (IDictionary<string, object?>)routeValues;
          foreach (var kvp in parameters) {
             editable[kvp.Key] = kvp.Value;
          }
-         if (Request.Query["modal"] == "1" || Request.Form["modal"] == "1") {
+         if (modal) {
             editable["modal"] = "1";
          }
-         dynamic d = routeValues;
-         return d;
+         return (dynamic)routeValues;
       }
 
-      private dynamic ParametersToRouteValues(IEnumerable<Parameter> parameters) {
+      internal static dynamic ParametersToRouteValues(IEnumerable<Parameter> parameters, bool modal) {
          var routeValues = new ExpandoObject();
          var editable = (IDictionary<string, object?>)routeValues;
          foreach (var p in parameters) {
             editable[p.Name] = p.Value;
          }
-         if (Request.Query["modal"] == "1" || Request.Form["modal"] == "1") {
+         if (modal) {
             editable["modal"] = "1";
          }
-         dynamic d = routeValues;
-         return d;
+         return (dynamic)routeValues;
       }
 
-      private static string GetFieldFromSummary(Process process, string fieldName) {
+      internal static string GetFieldFromSummary(Process process, string fieldName) {
          if (process != null) {
             if (process.Entities.Any() && process.Entities[0].Rows.Any()) {
                var fields = process.Entities[0].GetAllOutputFields();
@@ -341,6 +345,12 @@ namespace TransformalizeModule.Controllers {
             }
          }
          return null;
+      }
+
+      internal static int CountAffectedRecords(Process process) {
+         return process.Actions.Where(a => a.RowCount > 0).Sum(a => a.RowCount)
+              + process.Entities.Where(e => e.Hits > 0).Sum(e => e.Hits)
+              + process.Entities.SelectMany(e => e.Rows).Count();
       }
 
    }

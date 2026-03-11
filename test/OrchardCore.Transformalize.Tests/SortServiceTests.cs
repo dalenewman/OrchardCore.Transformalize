@@ -25,5 +25,13 @@ namespace OrchardCore.Transformalize.Tests {
          Assert.AreEqual(Direction.Desc, service.Sort("Age", expression));
          Assert.AreEqual(Direction.None, service.Sort("Other", expression));
       }
+
+      [TestMethod]
+      public void ProcessExpression_DuplicateStrippedKey_LastWriteWins() {
+         // "Codea" and "Coded" both strip to "Code"; the second entry overwrites the first
+         var result = SortService.ProcessExpression("Codea.Coded");
+         Assert.AreEqual(1, result.Count, "duplicate stripped key should result in one entry");
+         Assert.AreEqual('d', result["Code"], "last entry 'Coded' should win with descending direction");
+      }
    }
 }

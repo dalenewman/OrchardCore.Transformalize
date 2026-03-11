@@ -8,7 +8,7 @@ namespace TransformalizeModule.Services {
 
         private readonly Dictionary<string, char> _cache = null;
 
-        private static Dictionary<string, char> ProcessExpression(string expression) {
+        internal static Dictionary<string, char> ProcessExpression(string expression) {
             var order = expression ?? string.Empty;
             var orderLookup = order.Split(new[] { "." }, StringSplitOptions.RemoveEmptyEntries);
             var dict = new Dictionary<string, char>();
