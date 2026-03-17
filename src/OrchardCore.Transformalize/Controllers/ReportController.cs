@@ -117,7 +117,7 @@ namespace TransformalizeModule.Controllers {
          var o = stream.Process.GetOutputConnection();
          o.Stream = true;
          o.Provider = "geojson";
-         // o.Type = "role"; // use role attribute/property (e.g. latitude, longitude, altitude, property, id)
+         // o.Use = "geo"; // use geo attribute (e.g. latitude, longitude, altitude, property, id)
          o.File = _slugService.Slugify(stream.ContentItem.As<TitlePart>().Title) + ".geo.json";
 
          // todo: these will have to be put in report part

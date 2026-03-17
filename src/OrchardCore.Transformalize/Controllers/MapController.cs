@@ -49,7 +49,7 @@ namespace TransformalizeModule.Controllers {
             return View("Log", new LogViewModel(_logger.Log, map.Process, map.ContentItem));
          }
 
-         return View(new ReportViewModel(map.Process, map.ContentItem, HttpContext.Request.Query, contentItemId) { Settings = _settings.Settings });
+         return View(new ReportViewModel(map.Process, map.ContentItem, HttpContext.Request.Query, contentItemId) { Settings = _settings.Settings, EnableInlineParameters = false });
 
       }
 

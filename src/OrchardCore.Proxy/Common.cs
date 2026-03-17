@@ -273,6 +273,7 @@ namespace ProxyModule {
                 {".jpg", "image/jpeg"},
                 {".js", "application/javascript"},
                 {".json", "application/json"},
+                {".jsonl", "application/x-ndjson"},
                 {".jsx", "text/jscript"},
                 {".jsxbin", "text/plain"},
                 {".key", "application/vnd.apple.keynote"},

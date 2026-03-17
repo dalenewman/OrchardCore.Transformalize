@@ -1,3 +1,13 @@
+# 0.15.1 <small>2026-03-17</small>
+
+## 🐞 Bug Fixes
+- All parameters are displayed on map, calendar pages so you don't lose filters when you press search
+
+## 🛠️ Maintenance
+- Update transformalize packages and dependencies
+
+<!-- CHANGELOG_BOUNDARY -->
+
 # 0.15.0 <small>2026-03-07</small>
 
 ## 🐞 Bug Fixes

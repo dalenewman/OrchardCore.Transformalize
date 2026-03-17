@@ -11,7 +11,7 @@
         <add name="cdatetime" type="datetime" />
         <add name="address" />
         <add name="district" length="2" />
-        <add name="beat" length="11" />
+        <add name="beat" length="11" t="trim()" default="None" default-empty="true" default-white-space="true" />
         <add name="grid" length="5" />
         <add name="crimedescr" length="31" />
         <add name="ucr_ncic_code" length="5" />
