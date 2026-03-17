@@ -56,33 +56,33 @@
       <PackageReference Include="OrchardCoreContrib.ContentPermissions" Version="1.0.0" />
 
       <!-- transformalize updated -->
-      <PackageReference Include="Transformalize.Container.Autofac" Version="0.12.0-beta" />
-      <PackageReference Include="Transformalize.Provider.Ado.Autofac" Version="0.12.0-beta" />
-      <PackageReference Include="Transformalize.Provider.Bogus.Autofac" Version="0.12.0-beta" />
-      <PackageReference Include="Transformalize.Provider.CsvHelper.Autofac" Version="0.12.1-beta" />
-      <PackageReference Include="Transformalize.Provider.Elasticsearch.Autofac" Version="0.12.0-beta" />
-      <PackageReference Include="Transformalize.Provider.Excel" Version="0.12.0-beta" />
-      <PackageReference Include="Transformalize.Provider.File.Autofac" Version="0.12.0-beta" />
-      <PackageReference Include="Transformalize.Provider.GeoJson.Autofac" Version="0.12.1-beta" />
-      <PackageReference Include="Transformalize.Provider.Json.Autofac" Version="0.12.1-beta" />
-      <PackageReference Include="Transformalize.Provider.Mail.Autofac" Version="0.12.0-beta" />
-      <PackageReference Include="Transformalize.Provider.MySql.Autofac" Version="0.12.0-beta" />
-      <PackageReference Include="Transformalize.Provider.PostgreSql.Autofac" Version="0.12.0-beta" />
-      <PackageReference Include="Transformalize.Provider.Sqlite.Autofac" Version="0.12.0-beta" />
-      <PackageReference Include="Transformalize.Provider.SqlServer.Autofac" Version="0.12.0-beta" />
-      <PackageReference Include="Transformalize.Transform.Ado.Autofac" Version="0.12.0-beta" />
-      <PackageReference Include="Transformalize.Transform.Compression" Version="0.12.0-beta" />
-      <PackageReference Include="Transformalize.Transform.Fluid.Autofac" Version="0.12.0-beta" />
-      <PackageReference Include="Transformalize.Transform.Geography" Version="0.12.0-beta" />
-      <PackageReference Include="Transformalize.Transform.Globalization" Version="0.12.0-beta" />
-      <PackageReference Include="Transformalize.Transform.GoogleMaps" Version="0.12.0-beta" />
-      <PackageReference Include="Transformalize.Transform.Humanizer.Autofac" Version="0.12.0-beta" />
-      <PackageReference Include="Transformalize.Transform.Jint.Autofac" Version="0.12.0-beta" />
-      <PackageReference Include="Transformalize.Transform.Json.Autofac" Version="0.12.0-beta" />
-      <PackageReference Include="Transformalize.Transform.LambdaParser.Autofac" Version="0.12.0-beta" />
-      <PackageReference Include="Transformalize.Transform.Razor.Autofac" Version="0.12.0-beta" />
-      <PackageReference Include="Transformalize.Transform.Xml" Version="0.12.0-beta" />
-      <PackageReference Include="Transformalize.Validate.Jint.Autofac" Version="0.12.0-beta" />
+      <PackageReference Include="Transformalize.Container.Autofac" Version="0.12.2-beta" />
+      <PackageReference Include="Transformalize.Provider.Ado.Autofac" Version="0.12.2-beta" />
+      <PackageReference Include="Transformalize.Provider.Bogus.Autofac" Version="0.12.2-beta" />
+      <PackageReference Include="Transformalize.Provider.CsvHelper.Autofac" Version="0.12.2-beta" />
+      <PackageReference Include="Transformalize.Provider.Elasticsearch.Autofac" Version="0.12.2-beta" />
+      <PackageReference Include="Transformalize.Provider.Excel" Version="0.12.2-beta" />
+      <PackageReference Include="Transformalize.Provider.File.Autofac" Version="0.12.2-beta" />
+      <PackageReference Include="Transformalize.Provider.GeoJson.Autofac" Version="0.12.2-beta" />
+      <PackageReference Include="Transformalize.Provider.Json.Autofac" Version="0.12.2-beta" />
+      <PackageReference Include="Transformalize.Provider.Mail.Autofac" Version="0.12.2-beta" />
+      <PackageReference Include="Transformalize.Provider.MySql.Autofac" Version="0.12.2-beta" />
+      <PackageReference Include="Transformalize.Provider.PostgreSql.Autofac" Version="0.12.2-beta" />
+      <PackageReference Include="Transformalize.Provider.Sqlite.Autofac" Version="0.12.2-beta" />
+      <PackageReference Include="Transformalize.Provider.SqlServer.Autofac" Version="0.12.2-beta" />
+      <PackageReference Include="Transformalize.Transform.Ado.Autofac" Version="0.12.2-beta" />
+      <PackageReference Include="Transformalize.Transform.Compression" Version="0.12.2-beta" />
+      <PackageReference Include="Transformalize.Transform.Fluid.Autofac" Version="0.12.2-beta" />
+      <PackageReference Include="Transformalize.Transform.Geography" Version="0.12.2-beta" />
+      <PackageReference Include="Transformalize.Transform.Globalization" Version="0.12.2-beta" />
+      <PackageReference Include="Transformalize.Transform.GoogleMaps" Version="0.12.2-beta" />
+      <PackageReference Include="Transformalize.Transform.Humanizer.Autofac" Version="0.12.2-beta" />
+      <PackageReference Include="Transformalize.Transform.Jint.Autofac" Version="0.12.2-beta" />
+      <PackageReference Include="Transformalize.Transform.Json.Autofac" Version="0.12.2-beta" />
+      <PackageReference Include="Transformalize.Transform.LambdaParser.Autofac" Version="0.12.2-beta" />
+      <PackageReference Include="Transformalize.Transform.Razor.Autofac" Version="0.12.2-beta" />
+      <PackageReference Include="Transformalize.Transform.Xml" Version="0.12.2-beta" />
+      <PackageReference Include="Transformalize.Validate.Jint.Autofac" Version="0.12.2-beta" />
 
    </ItemGroup>
 

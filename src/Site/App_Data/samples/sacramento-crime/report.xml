@@ -13,7 +13,7 @@
       <filter>
       </filter>
       <fields>
-        <add name="Id" type="int" primary-key="true" />
+        <add name="Id" type="int" primary-key="true" geo="id" />
         <add name="address" parameter="search" />
         <add name="district" length="2" parameter="facet" />
         <add name="beat" length="11" parameter="facet" />
@@ -27,14 +27,14 @@
         <add name="hour" length="2" output="false" parameter="facet" />
         <add name="cdatetime" type="datetime" label="Date" />
         <add name="geojson-color" output="false" parameter="facet" />
-        <add name="latitude" type="double" output="false" />
-        <add name="longitude" type="double" output="false" />        
+        <add name="latitude" type="double" output="false" geo="latitude" />
+        <add name="longitude" type="double" output="false" geo="longitude" />        
       </fields>
       <calculated-fields>
 
         <!-- bug in geojson provider?  you have to use "marker-color" field to affect dots on map -->
         <!-- also have to change map color field to marker-color -->
-        <add name="marker-color" t="copy(geojson-color)" output="false" />
+        <add name="marker-color" t="copy(geojson-color)" output="false" geo="property" />
 
         <add name="Color" 
              raw="true" 
@@ -43,22 +43,19 @@
         <add name="FluidTest" 
              label="Fluid Test" 
              raw="true"
-             t='fluid(
-                <span class="badge text-bg-danger">{{ latitude | round:4 }},{{ longitude | round:4 }}</span>
-                )' />
+             t='fluid(<span class="badge text-bg-danger">{{ latitude | round:4 }},{{ longitude | round:4 }}</span>).trim()' />
         
         <add name="RazorTest" 
              label="Razor Test" 
              raw="true"
-             t='razor(
-                <span class="badge text-bg-warning">@(Math.Round(Model.latitude,4)),@(Math.Round(Model.longitude,4))</span>
-                )' />
+             t='razor(<span class="badge text-bg-warning">@(Math.Round(Model.latitude,4)),@(Math.Round(Model.longitude,4))</span>).trim()' />
         
         <add name="JintTest" label="Jint Test" t="jint(latitude + longitude)" />
         
         <add name="geojson-description" 
              raw="true" 
              output="false"
+             geo="property"
              t='razor(Copy that, we got a @Model.ucr_ncic_code in progress at @Model.address)' />
 
         <add name="BatchValue" t="copy(Id)" type="int" />

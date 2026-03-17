@@ -219,6 +219,14 @@
 
 <script type="text/javascript">
    //<!--
+   var server = {
+      mode: "calendar",
+      entity: {
+         page: @entity.Page
+      },
+      bulkActionUrl: '@(Url.Action("Create", "BulkAction", new { ContentItemId = Model.Item.ContentItemId }))',
+      hasActions: @(hasActions.ToString().ToLower())
+   };
    @foreach (var script in Model.Process.Scripts.Where(s => s.Global && string.IsNullOrEmpty(s.File) && s.Language == "js")) {
       <text>/* @script.Name */</text>
       @Html.Raw(script.Content)

@@ -465,13 +465,15 @@ $(document).ready(function () {
       }
    });
 
-   $("table:first").dragtable({
-      dragaccept: '.drag',
-      persistState: function (table) {
-         setColumnOrder();
-         edit("order");
-      }
-   }); 
+   if (server.mode === "report") {
+      $("table:first").dragtable({
+         dragaccept: '.drag',
+         persistState: function (_table) {
+            setColumnOrder();
+            edit("order");
+         }
+      });
+   }
 
    // Get the 'last' parameter value from the URL
    let lastValue = getUrlParameter('last');
