@@ -292,13 +292,14 @@
                      <span class="caret"></span>
                   </button>
                   <ul class="dropdown-menu">
-                     <li><a class="dropdown-item" href="javascript:openRandomLink('@exportCsvLink');" title="save to csv file">CSV</a></li>
-                     <li><a class="dropdown-item" href="javascript:openRandomLink('@exportJsonLink');" title="save to json file">JSON</a></li>
+                     <li><a class="dropdown-item" href="javascript:openRandomLink('@exportCsvLink');" title="save to csv file"><span class="fas fa-download me-1"></span>CSV</a></li>
+                     <li><a class="dropdown-item" href="javascript:openRandomLink('@exportJsonLink');" title="save to json file"><span class="fas fa-download me-1"></span>JSON</a></li>
                      @{
                         if (hasCoordinates) {
-                           <li><a class="dropdown-item" href="javascript:openRandomLink('@exportGeoJsonLink');" title="save to geojson file">GEOJSON</a></li>
+                           <li><a class="dropdown-item" href="javascript:openRandomLink('@exportGeoJsonLink');" title="save to geojson file"><span class="fas fa-download me-1"></span>GEOJSON</a></li>
                         }
                      }
+                     <li><a class="dropdown-item" href="javascript:copyTableAsMarkdown('id_table_@entity.Sequence');" title="copy table as markdown"><span class="fas fa-copy me-1"></span>MD</a></li>
                   </ul>
                </div>
 
