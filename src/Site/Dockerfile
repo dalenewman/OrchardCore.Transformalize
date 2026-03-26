@@ -10,7 +10,6 @@ ENV ASPNETCORE_URLS="http://[::]:8080"
 
 FROM --platform=$BUILDPLATFORM ${BUILD_IMAGE} AS build
 WORKDIR /src
-COPY ["nuget.config", "."]
 COPY ["src/Site/Site.csproj", "src/Site/"]
 COPY ["src/OrchardCore.Transformalize/OrchardCore.Transformalize.csproj", "src/OrchardCore.Transformalize/"]
 COPY ["src/OrchardCore.Proxy/OrchardCore.Proxy.csproj", "src/OrchardCore.Proxy/"]
