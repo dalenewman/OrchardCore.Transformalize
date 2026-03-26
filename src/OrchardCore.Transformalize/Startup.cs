@@ -118,35 +118,35 @@ namespace TransformalizeModule {
       public void RouteBulkActions(IEndpointRouteBuilder routes) {
 
          routes.MapAreaControllerRoute(
-             name: null,
+             name: "BulkAction.Create",
              areaName: Common.ModuleName,
              pattern: "t/action/create",
              defaults: new { controller = "BulkAction", action = "Create" }
          );
 
          routes.MapAreaControllerRoute(
-             name: null,
+             name: "BulkAction.Review",
              areaName: Common.ModuleName,
              pattern: "t/action/review",
              defaults: new { controller = "BulkAction", action = "Review" }
          );
 
          routes.MapAreaControllerRoute(
-             name: null,
+             name: "BulkAction.Form",
              areaName: Common.ModuleName,
              pattern: "t/action/review/form",
              defaults: new { controller = "BulkAction", action = "Form" }
          );
 
          routes.MapAreaControllerRoute(
-             name: null,
+             name: "BulkAction.Run",
              areaName: Common.ModuleName,
              pattern: "t/action/run",
              defaults: new { controller = "BulkAction", action = "Run" }
          );
 
          routes.MapAreaControllerRoute(
-             name: null,
+             name: "BulkAction.Result",
              areaName: Common.ModuleName,
              pattern: "t/action/result",
              defaults: new { controller = "BulkAction", action = "Result" }

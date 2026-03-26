@@ -628,7 +628,7 @@ namespace TransformalizeModule {
             extension = extension.Substring(1);
          }
 
-         string mime;
+         string? mime;
 
          return _mappings.TryGetValue(extension, out mime) ? mime : "application/octet-stream";
       }

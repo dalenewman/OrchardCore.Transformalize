@@ -22,11 +22,11 @@ namespace TransformalizeModule.Services {
          return await _arrangementService.CanAccess(contentItem);
       }
 
-      public Task<ContentItem> GetByIdOrAliasAsync(string idOrAlias) {
+      public Task<ContentItem?> GetByIdOrAliasAsync(string idOrAlias) {
          return _arrangementService.GetByIdOrAliasAsync(idOrAlias);
       }
 
-      public Process LoadForSchema(ContentItem contentItem, string format) {
+      public Process LoadForSchema(ContentItem? contentItem, string? format) {
          return _loadService.LoadForSchema(contentItem, format);
       }
 

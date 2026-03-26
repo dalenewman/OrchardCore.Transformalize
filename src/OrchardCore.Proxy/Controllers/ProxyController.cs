@@ -71,7 +71,7 @@ namespace ProxyModule.Controllers {
 
          if (!_proxyTrimmers.TryGetValue(contentItemId, out var proxyTrimmer))
          {
-             proxyTrimmer = new Regex(string.Format(@"{0}/Proxy/{1}", Url.Content("~").TrimEnd('/'), contentItemId), RegexOptions.Compiled);
+             proxyTrimmer = new Regex(string.Format(@"{0}/Proxy/{1}", (Url?.Content("~") ?? string.Empty).TrimEnd('/'), contentItemId), RegexOptions.Compiled);
              _proxyTrimmers[contentItemId] = proxyTrimmer;
          }
 
@@ -131,16 +131,16 @@ namespace ProxyModule.Controllers {
          }
 
          //get and push output
-         HttpResponseMessage resourceResponse = null;
+         HttpResponseMessage? resourceResponse = null;
          try {
             using (resourceResponse = await client.SendAsync(message)) {
 
-               IEnumerable<string> responseTags;
+               IEnumerable<string>? responseTags;
                if (resourceResponse.Headers.TryGetValues("ETag", out responseTags)) {
                   response.Headers["Cache-Control"] = "private, must-revalidate";
                   response.Headers["ETag"] = responseTags.First();
 
-                  IEnumerable<string> requestTags;
+                  IEnumerable<string>? requestTags;
                   if(message.Headers.TryGetValues("If-None-Match", out requestTags) && requestTags.First() == response.Headers["ETag"]) {
                      response.StatusCode = 304;  // Not Modified
                      return new EmptyResult();
@@ -171,12 +171,12 @@ namespace ProxyModule.Controllers {
          return new EmptyResult();
       }
 
-      public async Task<ContentItem> GetByIdOrAliasAsync(string idOrAlias) {
+      public async Task<ContentItem?> GetByIdOrAliasAsync(string idOrAlias) {
          if (string.IsNullOrEmpty(idOrAlias)) {
             return null;
          }
 
-         ContentItem contentItem = null;
+         ContentItem? contentItem = null;
          if (idOrAlias.Length == Common.IdLength) {
             contentItem = await _contentManager.GetAsync(idOrAlias);
          }

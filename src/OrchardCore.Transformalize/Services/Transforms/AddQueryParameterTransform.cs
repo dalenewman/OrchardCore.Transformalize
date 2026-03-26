@@ -9,14 +9,14 @@ using System;
 namespace TransformalizeModule.Services.Transforms {
    public class AddQueryParameterTransform : StringTransform {
 
-      private readonly Field _input;
-      private readonly Field _field;
-      private readonly string _name;
-      private readonly string _value;
-      private readonly Func<Url, Field, IRow, string, string, string> _transform;
+      private Field? _input;
+      private Field? _field;
+      private string? _name;
+      private string? _value;
+      private Func<Url, Field?, IRow, string?, string?, string>? _transform;
 
       public AddQueryParameterTransform(
-         IContext context = null
+         IContext? context = null
       ) : base(context, "string") {
 
          if (IsMissingContext()) {
@@ -33,8 +33,9 @@ namespace TransformalizeModule.Services.Transforms {
          if (Context.Entity.TryGetField(Context.Operation.Value, out var f1)) {
             // a single field argument, use field alias and value
             _field = f1;
+            var capturedF1 = f1;
             _transform = (url, field, row, name, value) => {
-               url.QueryParams.Add(field.Alias, GetString(row, field), isEncoded: true);
+               url.QueryParams.Add(capturedF1.Alias, GetString(row, capturedF1), isEncoded: true);
                return url.ToString();
             };
          } else {
@@ -45,8 +46,9 @@ namespace TransformalizeModule.Services.Transforms {
                if (Context.Entity.TryGetField(_value, out var f2)) {
                   // second parameter is a field, use name and field
                   _field = f2;
+                  var capturedF2 = f2;
                   _transform = (url, field, row, name, value) => {
-                     url.QueryParams.Add(name, GetString(row, field), isEncoded: true);
+                     url.QueryParams.Add(name, GetString(row, capturedF2), isEncoded: true);
                      return url.ToString();
                   };
                } else {
@@ -64,6 +66,7 @@ namespace TransformalizeModule.Services.Transforms {
 
       }
       public override IRow Operate(IRow row) {
+         if (_input == null || _transform == null) return row;
          var value = GetString(row, _input);
          if (Url.IsValid(value)) {
             var url = new Url(value);

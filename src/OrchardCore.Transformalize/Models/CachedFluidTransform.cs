@@ -21,8 +21,8 @@ using Transformalize.Configuration;
 
 namespace TransformalizeModule.Models {
    public class CachedFluidTransform {
-      public Field[] Input;
-      public IFluidTemplate Template;
+      public Field[]? Input;
+      public IFluidTemplate? Template;
    }
 
 }

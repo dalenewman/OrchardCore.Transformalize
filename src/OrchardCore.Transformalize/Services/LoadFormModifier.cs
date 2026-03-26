@@ -37,7 +37,7 @@ namespace TransformalizeModule.Services {
       private readonly CombinedLogger<LoadFormModifier> _logger;
       private readonly IContainer _container;
 
-      public ISerializer Serializer { get; set; }
+      public ISerializer? Serializer { get; set; }
 
       public LoadFormModifier(
          CombinedLogger<LoadFormModifier> logger,
@@ -123,7 +123,7 @@ namespace TransformalizeModule.Services {
          if (!modified.Errors().Any()) {
 
             // run the process which should get a single row (the form submission) into output
-            CfgRow output;
+            CfgRow? output;
             using (var scope = _container.CreateScope(modified, _logger, null)) {
                scope.Resolve<IProcessController>().Execute();
                output = modified.Entities[0].Rows.FirstOrDefault();
@@ -134,7 +134,7 @@ namespace TransformalizeModule.Services {
                   var field = modified.Entities[0].Fields.FirstOrDefault(f => f.Name == parameter.Name);
                   // put the form submission value in the parameters
                   if(field != null) {
-                     parameters[parameter.Name] = output[field.Name].ToString();
+                     parameters[parameter.Name] = output[field.Name]?.ToString() ?? string.Empty;
                   }
                }
             }

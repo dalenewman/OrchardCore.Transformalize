@@ -77,7 +77,7 @@ namespace TransformalizeModule.Services {
          return process;
       }
 
-      public Process LoadForReport(ContentItem contentItem, string format = null) {
+      public Process LoadForReport(ContentItem contentItem, string? format = null) {
 
          if (!TryGetReportPart(contentItem, out var part)) {
             return new Process { Status = 500, Message = "Error", Log = new List<LogEntry>() { new LogEntry(LogLevel.Error, null, $"LoadForReport can't load {contentItem.ContentType}.") } };
@@ -363,7 +363,7 @@ namespace TransformalizeModule.Services {
          return process;
       }
 
-      public Process LoadForTask(ContentItem contentItem, IDictionary<string, string> parameters = null, string format = null) {
+      public Process LoadForTask(ContentItem contentItem, IDictionary<string, string>? parameters = null, string? format = null) {
 
          Process process;
 
@@ -376,7 +376,11 @@ namespace TransformalizeModule.Services {
          return process;
       }
 
-      public Process LoadForSchema(ContentItem contentItem, string format = null) {
+      public Process LoadForSchema(ContentItem? contentItem, string? format = null) {
+
+         if (contentItem == null) {
+            return new Process { Status = 404, Message = "Not Found" };
+         }
 
          Process process;
 
@@ -391,7 +395,7 @@ namespace TransformalizeModule.Services {
          return process;
       }
 
-      public Process LoadForParameters(ContentItem contentItem, IDictionary<string, string> parameters = null) {
+      public Process LoadForParameters(ContentItem contentItem, IDictionary<string, string>? parameters = null) {
 
          Process process;
 
@@ -428,7 +432,7 @@ namespace TransformalizeModule.Services {
          return process;
       }
 
-      public Process LoadForForm(ContentItem contentItem, IDictionary<string, string> parameters = null, string format = null) {
+      public Process LoadForForm(ContentItem contentItem, IDictionary<string, string>? parameters = null, string? format = null) {
 
          Process process;
 
@@ -467,19 +471,19 @@ namespace TransformalizeModule.Services {
          return process;
       }
 
-      private Process LoadInternal(TransformalizeTaskPart part, IDictionary<string, string> parameters = null, ISerializer serializer = null) {
+      private Process LoadInternal(TransformalizeTaskPart part, IDictionary<string, string>? parameters = null, ISerializer? serializer = null) {
          return LoadInternal(part.Arrangement.Text, part.ContentItem, parameters, serializer);
       }
 
-      private Process LoadInternal(TransformalizeReportPart part, IDictionary<string, string> parameters = null, ISerializer serializer = null) {
+      private Process LoadInternal(TransformalizeReportPart part, IDictionary<string, string>? parameters = null, ISerializer? serializer = null) {
          return LoadInternal(part.Arrangement.Text, part.ContentItem, parameters, serializer);
       }
 
-      private Process LoadInternal(TransformalizeFormPart part, IDictionary<string, string> parameters = null, ISerializer serializer = null) {
+      private Process LoadInternal(TransformalizeFormPart part, IDictionary<string, string>? parameters = null, ISerializer? serializer = null) {
          return LoadInternal(part.Arrangement.Text, part.ContentItem, parameters, serializer);
       }
 
-      private Process LoadInternal(string arrangement, ContentItem item, IDictionary<string, string> parameters = null, ISerializer serializer = null) {
+      private Process LoadInternal(string arrangement, ContentItem item, IDictionary<string, string>? parameters = null, ISerializer? serializer = null) {
 
          Process process;
 
@@ -593,17 +597,17 @@ namespace TransformalizeModule.Services {
          }
       }
 
-      private static bool TryGetReportPart(ContentItem contentItem, out TransformalizeReportPart part) {
+      private static bool TryGetReportPart(ContentItem contentItem, [System.Diagnostics.CodeAnalysis.NotNullWhen(true)] out TransformalizeReportPart? part) {
          part = contentItem?.As<TransformalizeReportPart>();
          return part != null;
       }
 
-      private static bool TryGetTaskPart(ContentItem contentItem, out TransformalizeTaskPart part) {
+      private static bool TryGetTaskPart(ContentItem contentItem, [System.Diagnostics.CodeAnalysis.NotNullWhen(true)] out TransformalizeTaskPart? part) {
          part = contentItem?.As<TransformalizeTaskPart>();
          return part != null;
       }
 
-      private static bool TryGetFormPart(ContentItem contentItem, out TransformalizeFormPart part) {
+      private static bool TryGetFormPart(ContentItem contentItem, [System.Diagnostics.CodeAnalysis.NotNullWhen(true)] out TransformalizeFormPart? part) {
          part = contentItem?.As<TransformalizeFormPart>();
          return part != null;
       }

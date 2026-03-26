@@ -11,9 +11,9 @@ namespace TransformalizeModule.Services.Transforms {
       private readonly string _userProperties = string.Empty;
 
       public UserPropertiesTransform(
-         IHttpContextAccessor httpContext = null,
-         IUserService userService = null,
-         IContext context = null
+         IHttpContextAccessor? httpContext = null,
+         IUserService? userService = null,
+         IContext? context = null
       ) : base(context, "string") {
 
          if (IsMissingContext()) {
@@ -28,9 +28,9 @@ namespace TransformalizeModule.Services.Transforms {
             Run = false;
             Context.Error($"{nameof(UserPropertiesTransform)} requires an instance of IHttpContextAccessor");
          } else {
-            var username = httpContext.HttpContext.User?.Identity?.Name ?? "Anonymous";
+            var username = httpContext.HttpContext?.User?.Identity?.Name ?? "Anonymous";
             if(username != "Anonymous") {
-               if (Task.Run(() => userService.GetUserAsync(username)).GetAwaiter().GetResult() is User user) {
+               if (Task.Run(() => userService?.GetUserAsync(username)).GetAwaiter().GetResult() is User user) {
                   _userProperties = user.Properties.ToString();
                   if(Context.Field.Length != "max") {
                      if (int.TryParse(Context.Field.Length, out int len)) { 

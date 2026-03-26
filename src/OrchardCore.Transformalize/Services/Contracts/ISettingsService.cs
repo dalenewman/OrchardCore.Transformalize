@@ -8,9 +8,9 @@ namespace TransformalizeModule.Services.Contracts {
       public Dictionary<string, Map> Maps { get; }
       public TransformalizeSettings Settings { get; }
       public Process Process { get; set; }
-      public IEnumerable<int> GetPageSizes(TransformalizeReportPart part);
-      public IEnumerable<int> GetPageSizesExtended(TransformalizeReportPart part);
-      public BulkActionTaskNames GetBulkActionTaskNames(TransformalizeReportPart part);
+      public IEnumerable<int> GetPageSizes(TransformalizeReportPart? part);
+      public IEnumerable<int> GetPageSizesExtended(TransformalizeReportPart? part);
+      public BulkActionTaskNames GetBulkActionTaskNames(TransformalizeReportPart? part);
       public void ApplyCommonSettings(Process process);
       public void ApplyCommonSettings(Transformalize.ConfigurationFacade.Process process);
    }

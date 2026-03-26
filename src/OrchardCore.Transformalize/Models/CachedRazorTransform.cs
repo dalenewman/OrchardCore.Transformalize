@@ -21,8 +21,8 @@ using Transformalize.Configuration;
 
 namespace TransformalizeModule.Models {
    public class CachedRazorTransform {
-      public Field[] Input;
-      public IRazorEngineCompiledTemplate Template;
+      public Field[]? Input;
+      public IRazorEngineCompiledTemplate? Template;
    }
 
 }

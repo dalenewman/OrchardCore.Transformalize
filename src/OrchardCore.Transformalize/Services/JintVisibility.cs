@@ -51,7 +51,7 @@ namespace TransformalizeModule.Services {
          try {
             var cv = _jint.Evaluate(request.Script);
             if (cv.IsBoolean()) {
-               result.Visible = (bool)cv.ToObject();
+               result.Visible = cv.ToObject() is bool boolVal && boolVal;
                return result;
             } else {
                result.Faulted = true;
@@ -82,8 +82,8 @@ namespace TransformalizeModule.Services {
    public class JvResult {
 
       public bool Visible { get; set; }
-      public ParseErrorException ParserException { get; set; }
-      public JavaScriptException JavaScriptException { get; set; }
+      public ParseErrorException? ParserException { get; set; }
+      public JavaScriptException? JavaScriptException { get; set; }
 
       public string Message { get; set; }
 

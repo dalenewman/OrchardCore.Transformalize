@@ -30,12 +30,12 @@ namespace TransformalizeModule.Services {
          _logger = logger;
          _httpContextAccessor = httpContextAccessor;
       }
-      public async Task<ContentItem> GetByIdOrAliasAsync(string idOrAlias) {
+      public async Task<ContentItem?> GetByIdOrAliasAsync(string idOrAlias) {
          if (string.IsNullOrEmpty(idOrAlias)) {
             return null;
          }
 
-         ContentItem contentItem = null;
+         ContentItem? contentItem = null;
          if (idOrAlias.Length == Common.IdLength) {
             contentItem = await _contentManager.GetAsync(idOrAlias);
          }
@@ -73,7 +73,7 @@ namespace TransformalizeModule.Services {
 
       public void SetupPermissionsResponse<T>(TransformalizeRequest request, TransformalizeResponse<T> response) {
         
-         _logger.Warn(() => $"User {_httpContextAccessor.HttpContext.User.Identity.Name} may not access {response.ContentItem.DisplayText}.");
+         _logger.Warn(() => $"User {_httpContextAccessor.HttpContext?.User.Identity?.Name} may not access {response.ContentItem?.DisplayText}.");
 
          response.Process = new Transformalize.Configuration.Process() { Name = "401", Status = 401, Message = "Unauthorized" };
 
@@ -86,7 +86,7 @@ namespace TransformalizeModule.Services {
 
       public void SetupNotFoundResponse<T>(TransformalizeRequest request, TransformalizeResponse<T> response) {
 
-         _logger.Warn(() => $"User {_httpContextAccessor.HttpContext.User.Identity.Name} requested missing content item {request.ContentItemId}.");
+         _logger.Warn(() => $"User {_httpContextAccessor.HttpContext?.User.Identity?.Name} requested missing content item {request.ContentItemId}.");
 
          response.Process.Status = 404;
          response.Process.Message = "Not Found";
@@ -102,8 +102,8 @@ namespace TransformalizeModule.Services {
 
          // process already has a non 200 status
 
-         _logger.Warn(() => $"User {_httpContextAccessor.HttpContext.User.Identity.Name} received error trying to load {response.ContentItem.DisplayText}.");
-         
+         _logger.Warn(() => $"User {_httpContextAccessor.HttpContext?.User.Identity?.Name} received error trying to load {response.ContentItem?.DisplayText}.");
+
          if (request.Format == null) {
             response.ActionResult = LogResult(response);
          } else {
@@ -118,7 +118,7 @@ namespace TransformalizeModule.Services {
          response.Process.Status = 500;
          response.Process.Message = error;
 
-         _logger.Warn(() => $"User {_httpContextAccessor.HttpContext.User.Identity.Name} received error trying to load {response.ContentItem.DisplayText}.");
+         _logger.Warn(() => $"User {_httpContextAccessor.HttpContext?.User.Identity?.Name} received error trying to load {response.ContentItem?.DisplayText}.");
 
          if (request.Format == null) {
             response.ActionResult = LogResult(response);
@@ -134,7 +134,7 @@ namespace TransformalizeModule.Services {
          response.Process.Status = 422;
          response.Process.Message = Common.InvalidContentTypeMessage;
 
-         _logger.Warn(() => $"User {_httpContextAccessor.HttpContext.User.Identity.Name} requested {response.ContentItem.ContentType} from the report service.");
+         _logger.Warn(() => $"User {_httpContextAccessor.HttpContext?.User.Identity?.Name} requested {response.ContentItem?.ContentType} from the report service.");
          
          if (request.Format == null) {
             response.ActionResult = LogResult(response);

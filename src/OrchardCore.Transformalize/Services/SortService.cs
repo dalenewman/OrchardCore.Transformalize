@@ -6,7 +6,7 @@ namespace TransformalizeModule.Services {
 
     public class SortService : ISortService {
 
-        private readonly Dictionary<string, char> _cache = null;
+        private readonly Dictionary<string, char>? _cache = null;
 
         private static Dictionary<string, char> ProcessExpression(string expression) {
             var order = expression ?? string.Empty;
@@ -31,7 +31,7 @@ namespace TransformalizeModule.Services {
         }
 
         public void AddSortToEntity(TransformalizeReportPart part, Entity entity, string expression) {
-            string orderBy = null;
+            string? orderBy = null;
             var fields = entity.GetAllOutputFields().Where(f=>!f.System && f.Alias != part.BulkActionValueField.Text).ToArray();
             foreach (var field in fields) {
                 if (field.Sortable == "false") {

@@ -31,7 +31,7 @@ namespace TransformalizeModule.Controllers {
          var calendar = await _reportService.Validate(request);
 
          if (calendar.Fails()) {
-            return calendar.ActionResult;
+            return calendar.ActionResult ?? BadRequest();
          }
 
          await _reportService.RunAsync(calendar.Process, null);
@@ -51,7 +51,7 @@ namespace TransformalizeModule.Controllers {
          var map = await _reportService.Validate(request);
 
          if (map.Fails()) {
-            return map.ActionResult;
+            return map.ActionResult ?? BadRequest();
          }
 
          Response.ContentType = "application/json";

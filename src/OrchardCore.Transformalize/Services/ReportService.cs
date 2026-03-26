@@ -55,7 +55,7 @@ namespace TransformalizeModule.Services {
          return await _arrangementService.CanAccess(contentItem);
       }
 
-      public async Task<ContentItem> GetByIdOrAliasAsync(string idOrAlias) {
+      public async Task<ContentItem?> GetByIdOrAliasAsync(string idOrAlias) {
          return await _arrangementService.GetByIdOrAliasAsync(idOrAlias);
       }
 
@@ -63,7 +63,7 @@ namespace TransformalizeModule.Services {
          return _loadService.LoadForStream(contentItem);
       }
 
-      public Process LoadForReport(ContentItem contentItem, string format = null) {
+      public Process LoadForReport(ContentItem contentItem, string? format = null) {
          return _loadService.LoadForReport(contentItem, format);
       }
 
@@ -87,7 +87,7 @@ namespace TransformalizeModule.Services {
          return _loadService.LoadForCalendarStream(contentItem);
       }
 
-      public async Task RunAsync(Process process, StreamWriter streamWriter) {
+      public async Task RunAsync(Process process, StreamWriter? streamWriter) {
          await _streamService.RunAsync(process, streamWriter);
       }
 
@@ -148,32 +148,34 @@ namespace TransformalizeModule.Services {
          }
 
          // allow authorized users to mess with existing reports, but not save their edits (yet)
-         if (authorized && !response.BreadCrumbs.Any() && request.Mode.In("default", "stream")) {
+         if (authorized && !response.BreadCrumbs.Any() && request.Mode.In("default", "stream") && response.Part != null) {
             response.Editable = true;
             var process = new Transformalize.ConfigurationFacade.Process(response.Part.Arrangement.Text);
             ModifyProcess(process);
             response.Part.Arrangement.Text = process.Serialize();
          }
 
-         switch (request.Mode) {
-            case "calendar":
-               response.Process = LoadForCalendar(response.ContentItem);
-               break;
-            case "stream-calendar":
-               response.Process = LoadForCalendarStream(response.ContentItem);
-               break;
-            case "map":
-               response.Process = LoadForMap(response.ContentItem);
-               break;
-            case "stream-map":
-               response.Process = LoadForMapStream(response.ContentItem);
-               break;
-            case "stream":
-               response.Process = LoadForStream(response.ContentItem);
-               break;
-            default:
-               response.Process = LoadForReport(response.ContentItem, request.Format);
-               break;
+         if (response.ContentItem != null) {
+            switch (request.Mode) {
+               case "calendar":
+                  response.Process = LoadForCalendar(response.ContentItem);
+                  break;
+               case "stream-calendar":
+                  response.Process = LoadForCalendarStream(response.ContentItem);
+                  break;
+               case "map":
+                  response.Process = LoadForMap(response.ContentItem);
+                  break;
+               case "stream-map":
+                  response.Process = LoadForMapStream(response.ContentItem);
+                  break;
+               case "stream":
+                  response.Process = LoadForStream(response.ContentItem);
+                  break;
+               default:
+                  response.Process = LoadForReport(response.ContentItem, request.Format);
+                  break;
+            }
          }
 
          if (response.Process.Status != 200) {
@@ -500,7 +502,7 @@ namespace TransformalizeModule.Services {
             await _contentManager.UpdateAsync(contentItem);
 
             var editUrl = $"/Admin/Contents/ContentItems/{contentItem.ContentItemId}/Edit";
-            _httpContextAccessor.HttpContext.Response.Redirect(editUrl);
+            _httpContextAccessor.HttpContext?.Response.Redirect(editUrl);
 
          } else {
             response.ContentItem = new ContentItem();
@@ -699,7 +701,8 @@ namespace TransformalizeModule.Services {
 
       private bool TryReturnUrl(out string returnUrl) {
          returnUrl = string.Empty;
-         var req = _httpContextAccessor.HttpContext.Request;
+         var req = _httpContextAccessor.HttpContext?.Request;
+         if (req == null) return false;
 
          if (req.Query.ContainsKey(Common.ReturnUrlName) && !string.IsNullOrWhiteSpace(req.Query[Common.ReturnUrlName].ToString())) {
             returnUrl = Uri.UnescapeDataString(req.Query[Common.ReturnUrlName].ToString());

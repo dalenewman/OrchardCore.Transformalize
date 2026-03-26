@@ -1,19 +1,19 @@
 namespace TransformalizeModule.Models {
    public class TransformalizeSettings {
 
-      private List<int> _pageSizes;
-      private List<int> _pageSizesExtended;
-      private string _defaultPageSizes;
-      private string _defaultPageSizesExtended;
-      private string _commonArrangement;
-      private string _mapBoxToken;
-      private string _googleApiKey;
-      private string _bulkActionCreateTask;
-      private string _bulkActionWriteTask;
-      private string _bulkActionSummaryTask;
-      private string _bulkActionRunTask;
-      private string _bulkActionSuccessTask;
-      private string _bulkActionFailTask;
+      private List<int>? _pageSizes;
+      private List<int>? _pageSizesExtended;
+      private string? _defaultPageSizes;
+      private string? _defaultPageSizesExtended;
+      private string? _commonArrangement;
+      private string? _mapBoxToken;
+      private string? _googleApiKey;
+      private string? _bulkActionCreateTask;
+      private string? _bulkActionWriteTask;
+      private string? _bulkActionSummaryTask;
+      private string? _bulkActionRunTask;
+      private string? _bulkActionSuccessTask;
+      private string? _bulkActionFailTask;
 
       public string CommonArrangement {
          get => string.IsNullOrWhiteSpace(_commonArrangement) ? string.Empty : _commonArrangement;

@@ -40,7 +40,7 @@ namespace TransformalizeModule.Services.Writers {
          foreach (var row in rows) {
 
             var message = (string) row[_message] ?? string.Empty;
-            switch (row[_level].ToString().ToLower()) {
+            switch (row[_level]?.ToString()?.ToLower()) {
                case "warn":
                case "warning":
                   _context.Warn(message);

@@ -2,9 +2,9 @@ using Transformalize.Configuration;
 
 namespace TransformalizeModule.ViewModels {
    public class ParameterViewModel {
-      public IEnumerable<Map> Maps { get; set; }
-      public Parameter Parameter { get; set; }
-      public Field Field { get; set; }
+      public IEnumerable<Map>? Maps { get; set; }
+      public Parameter? Parameter { get; set; }
+      public Field? Field { get; set; }
 
       /// <summary>
       /// The only use case I can think of for this is to make some modifications to the automatic facet(s)

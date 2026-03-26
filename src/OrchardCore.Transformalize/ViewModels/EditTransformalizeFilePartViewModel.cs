@@ -6,8 +6,8 @@ namespace TransformalizeModule.ViewModels {
    public class EditTransformalizeFilePartViewModel {
 
       [BindNever]
-      public TransformalizeFilePart TransformalizeFilePart { get; set; }
-      public TextField OriginalName { get; set; }
-      public TextField FullPath { get; set; }
+      public TransformalizeFilePart? TransformalizeFilePart { get; set; }
+      public TextField? OriginalName { get; set; }
+      public TextField? FullPath { get; set; }
    }
 }

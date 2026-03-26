@@ -31,11 +31,11 @@ namespace TransformalizeModule.Controllers {
          var map = await _reportService.Validate(request);
 
          if (map.Fails()) {
-            return map.ActionResult;
+            return map.ActionResult ?? BadRequest();
          }
 
          if (string.IsNullOrEmpty(_settings.Settings.MapBoxToken)) {
-            _logger.Warn(() => $"User {HttpContext.User.Identity.Name} requested map without mapbox token {request.ContentItemId}.");
+            _logger.Warn(() => $"User {HttpContext.User.Identity?.Name} requested map without mapbox token {request.ContentItemId}.");
 
             map.Process.Status = 404;
             map.Process.Message = "MapBox Token Not Found";
@@ -60,7 +60,7 @@ namespace TransformalizeModule.Controllers {
          var map = await _reportService.Validate(request);
 
          if (map.Fails()) {
-            return map.ActionResult;
+            return map.ActionResult ?? BadRequest();
          }
 
          Response.ContentType = "application/vnd.geo+json";

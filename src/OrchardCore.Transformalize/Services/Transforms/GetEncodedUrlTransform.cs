@@ -8,11 +8,11 @@ using Transformalize.Transforms;
 namespace TransformalizeModule.Services.Transforms {
    public class GetEncodedUrlTransform : BaseTransform {
 
-      private readonly string _url;
+      private readonly string _url = string.Empty;
 
       public GetEncodedUrlTransform(
-         IHttpContextAccessor httpContext = null,
-         IContext context = null
+         IHttpContextAccessor? httpContext = null,
+         IContext? context = null
       ) : base(context, "string") {
 
          if (IsMissingContext()) {
@@ -23,7 +23,7 @@ namespace TransformalizeModule.Services.Transforms {
             Run = false;
             Context.Error($"{nameof(GetEncodedUrlTransform)} requires an instance of IHttpContextAccessor");
          } else {
-            _url = httpContext.HttpContext.Request.GetEncodedUrl();
+            _url = httpContext.HttpContext?.Request.GetEncodedUrl() ?? string.Empty;
          }
 
       }

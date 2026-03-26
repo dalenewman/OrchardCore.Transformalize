@@ -1,12 +1,12 @@
-﻿namespace TransformalizeModule.Models {
+namespace TransformalizeModule.Models {
 
    public class BulkActionTaskNames {
-      public string Create { get; set; }
-      public string Write { get; set; }
-      public string Summary { get; set; }
-      public string Run { get; set; }
-      public string Success { get; set; }
-      public string Fail { get; set; }
+      public string Create { get; set; } = string.Empty;
+      public string Write { get; set; } = string.Empty;
+      public string Summary { get; set; } = string.Empty;
+      public string Run { get; set; } = string.Empty;
+      public string Success { get; set; } = string.Empty;
+      public string Fail { get; set; } = string.Empty;
    }
 
 }

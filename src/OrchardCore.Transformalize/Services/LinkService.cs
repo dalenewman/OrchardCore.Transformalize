@@ -13,22 +13,22 @@ namespace TransformalizeModule.Services {
          _contextAccessor = contextAccessor;
       }
 
-      public HtmlString Create(string contentItemId, string actionUrl, bool everything) {
+      public HtmlString Create(string? contentItemId, string? actionUrl, bool everything) {
 
-         var url = RemoveNoiseFromUrl(_contextAccessor.HttpContext.Request.GetDisplayUrl());
-         url.Path = actionUrl;
+         var url = RemoveNoiseFromUrl(_contextAccessor.HttpContext?.Request.GetDisplayUrl() ?? string.Empty);
+         url.Path = actionUrl ?? string.Empty;
 
          if (everything) {
             url.SetQueryParam("page", 0);
          } else {
-            if (_contextAccessor.HttpContext.Request.Query.ContainsKey("size")) {
-               var qSize = _contextAccessor.HttpContext.Request.Query["size"].ToString() ?? string.Empty;
+            if (_contextAccessor.HttpContext?.Request.Query.ContainsKey("size") == true) {
+               var qSize = _contextAccessor.HttpContext?.Request.Query["size"].ToString() ?? string.Empty;
                if (!int.TryParse(qSize, out _)) {
                   url.SetQueryParam("size", 20);
                }
             }
-            if (_contextAccessor.HttpContext.Request.Query.ContainsKey("page")) {
-               var qPage = _contextAccessor.HttpContext.Request.Query["page"].ToString() ?? string.Empty;
+            if (_contextAccessor.HttpContext?.Request.Query.ContainsKey("page") == true) {
+               var qPage = _contextAccessor.HttpContext?.Request.Query["page"].ToString() ?? string.Empty;
                if (int.TryParse(qPage, out int page)) {
                   if(page == 0) {
                      url.RemoveQueryParam("page");

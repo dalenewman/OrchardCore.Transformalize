@@ -7,7 +7,7 @@
 @{
    RenderTitleSegments(Model.Title, "before");
    var auth = Context.RequestServices.GetService<IAuthorizationService>();
-   var editEnabled = Model.ContentItem != null && await auth.AuthorizeAsync(Context.User, OrchardCore.Contents.Permissions.EditContent, Model.ContentItem);
+   var editEnabled = Model.ContentItem != null && await auth.AuthorizeAsync(Context.User, OrchardCore.Contents.CommonPermissions.EditContent, Model.ContentItem);
    var isModal = Context.Request.Query["modal"] == "1";
 }
 
@@ -85,9 +85,9 @@
          enabled: false
       },
       controller: "Task",
-      ajaxUrl: "@(Url.Action("Form", "Task", new { Area = Common.ModuleName, ContentItemId = Model.ContentItem.ContentItemId, modal = Context.Request.Query["modal"] }))",
-      updateUrl: "@(Url.Action("Review", "Task", new { Area = Common.ModuleName, ContentItemId = Model.ContentItem.ContentItemId, modal = Context.Request.Query["modal"] }))",
-      runUrl: "@(Url.Action("Run", "Task", new { Area = Common.ModuleName, ContentItemId = Model.ContentItem.ContentItemId, modal = Context.Request.Query["modal"] }))",
+      ajaxUrl: "@(Url.Action("Form", "Task", new { Area = Common.ModuleName, ContentItemId = Model.ContentItem?.ContentItemId, modal = Context.Request.Query["modal"] }))",
+      updateUrl: "@(Url.Action("Review", "Task", new { Area = Common.ModuleName, ContentItemId = Model.ContentItem?.ContentItemId, modal = Context.Request.Query["modal"] }))",
+      runUrl: "@(Url.Action("Run", "Task", new { Area = Common.ModuleName, ContentItemId = Model.ContentItem?.ContentItemId, modal = Context.Request.Query["modal"] }))",
       uploadUrl: "@(Url.Action("Upload", "File", new { Area = Common.ModuleName }))",
       scanUrl: "@(Url.Action("Scan", "File", new { Area = Common.ModuleName }))"
    }
@@ -96,7 +96,7 @@
 
 <div class="container">
    @if (editEnabled && !isModal) {
-      <button tabindex="-1" title="edit this task" type="button" class="btn btn-warning btn-sm float-end" onclick="window.open('@(Url.Content("~/Admin/Contents/ContentItems/" + Model.ContentItem.ContentItemId + "/Edit?" + Common.ReturnUrlName + "=" + System.Net.WebUtility.UrlEncode(Context.Request.Path + Context.Request.QueryString)))', '_self');">
+      <button tabindex="-1" title="edit this task" type="button" class="btn btn-warning btn-sm float-end" onclick="window.open('@(Url.Content("~/Admin/Contents/ContentItems/" + Model.ContentItem?.ContentItemId + "/Edit?" + Common.ReturnUrlName + "=" + System.Net.WebUtility.UrlEncode(Context.Request.Path + Context.Request.QueryString)))', '_self');">
          <span class="fas fa-edit"></span>
       </button>
    }
@@ -108,7 +108,7 @@
             <tbody>
                <tr>
                   <td>Title</td>
-                  <td>@Model.ContentItem.DisplayText</td>
+                  <td>@Model.ContentItem?.DisplayText</td>
                </tr>
                <tr>
                   <td>Parameters</td>

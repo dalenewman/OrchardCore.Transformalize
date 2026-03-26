@@ -763,7 +763,7 @@ namespace ProxyModule {
         /// <param name="mimeType">The variable to store the MIME type.</param>
         /// <returns>The MIME type.</returns>
         /// <exception cref="ArgumentNullException" />
-        public static bool TryGetMimeType(string str, out string mimeType) {
+        public static bool TryGetMimeType(string str, out string? mimeType) {
             if (str == null) {
                 throw new ArgumentNullException(nameof(str));
             }
@@ -793,7 +793,7 @@ namespace ProxyModule {
         /// <returns>The MIME type.</returns>
         /// <exception cref="ArgumentNullException" />
         public static string GetMimeType(string str) {
-            return MimeTypeMap.TryGetMimeType(str, out var result) ? result : DefaultMimeType;
+            return MimeTypeMap.TryGetMimeType(str, out var result) ? (result ?? DefaultMimeType) : DefaultMimeType;
         }
 
         /// <summary>
@@ -813,7 +813,7 @@ namespace ProxyModule {
                 throw new ArgumentException("Requested mime type is not valid: " + mimeType);
             }
 
-            if (_mappings.Value.TryGetValue(mimeType, out string extension)) {
+            if (_mappings.Value.TryGetValue(mimeType, out string? extension)) {
                 return extension;
             }
 

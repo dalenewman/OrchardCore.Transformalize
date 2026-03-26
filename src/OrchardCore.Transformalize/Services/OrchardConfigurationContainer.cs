@@ -45,7 +45,7 @@ namespace TransformalizeModule.Services {
       private readonly ILoadFormModifier _loadFormModifier;
       private readonly IHttpContextAccessor _httpContext;
 
-      public ISerializer Serializer { get; set; }
+      public ISerializer? Serializer { get; set; }
 
       public OrchardConfigurationContainer(
          CombinedLogger<OrchardConfigurationContainer> logger,
@@ -87,7 +87,7 @@ namespace TransformalizeModule.Services {
             dependancies.Add(ctx.ResolveNamed<IDependency>(ValidateModule.ParametersName));
 
             string modified = arrangement;
-            if (_httpContext.HttpContext.Request.Method == "GET" && item.ContentItem.Has("TransformalizeFormPart")) {
+            if (_httpContext.HttpContext?.Request.Method == "GET" && item.ContentItem.Has("TransformalizeFormPart")) {
                modified = _loadFormModifier.Modify(arrangement, item.Id, combinedParameters);               
             }
 

@@ -21,7 +21,7 @@ using Cfg.Net.Contracts;
 namespace TransformalizeModule.Services.Contracts {
 
    public interface IArrangementModifier {
-      ISerializer Serializer { get; set; }
+      ISerializer? Serializer { get; set; }
       string Modify(string cfg, long id, IDictionary<string, string> parameters);
    }
 

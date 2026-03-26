@@ -12,11 +12,11 @@ namespace TransformalizeModule.Services.Transforms {
    /// </summary>
    public class OrchardTimeZoneTransform : BaseTransform {
 
-      private readonly Transformalize.Configuration.Field _input;
-      private readonly Func<DateTime, DateTime> _transform;
+      private readonly Transformalize.Configuration.Field? _input;
+      private readonly Func<DateTime, DateTime>? _transform;
 
       public OrchardTimeZoneTransform(
-         IContext context = null
+         IContext? context = null
       ) : base(context, "datetime") {
 
          if (IsMissingContext()) {
@@ -51,14 +51,17 @@ namespace TransformalizeModule.Services.Transforms {
             Context.Error($"The to time zone id {Context.Operation.ToTimeZone} is invalid. See IANA time zones.");
          }
 
-         _transform = (dt) => {
-            dt = DateTime.SpecifyKind(dt, DateTimeKind.Unspecified);
-            return ConvertDateTimeToDifferentTimeZone(dt, fromTimeZone, toTimeZone);
-         };
+         if (fromTimeZone != null && toTimeZone != null) {
+            _transform = (dt) => {
+               dt = DateTime.SpecifyKind(dt, DateTimeKind.Unspecified);
+               return ConvertDateTimeToDifferentTimeZone(dt, fromTimeZone, toTimeZone);
+            };
+         }
 
       }
 
       public override IRow Operate(IRow row) {
+         if (_input == null || _transform == null) return row;
          var date = (DateTime)row[_input];
          row[Context.Field] = _transform(date);
          return row;

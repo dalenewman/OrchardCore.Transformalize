@@ -4,7 +4,7 @@
 
 @{
    var Area = Common.ModuleName;
-   var ContentItemId = Model.TransformalizeReportPart.ContentItem.ContentItemId;
+   var ContentItemId = Model.TransformalizeReportPart?.ContentItem?.ContentItemId;
    var viewLink = Url.Action("Index", "Report", new { Area , ContentItemId });
    var xmlLink = Url.Action("Run", "Report", new { Format = "xml", Area, ContentItemId });
    var jsonLink = Url.Action("Run", "Report", new { Format = "json", Area, ContentItemId });

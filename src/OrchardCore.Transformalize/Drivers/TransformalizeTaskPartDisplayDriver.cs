@@ -51,12 +51,12 @@ namespace TransformalizeModule.Drivers {
          };
 
          if (await context.Updater.TryUpdateModelAsync(model, Prefix)) {
-            part.Arrangement.Text = model.Arrangement.Text;
+            part.Arrangement.Text = model.Arrangement?.Text ?? string.Empty;
          }
 
          try {
             var logger = new MemoryLogger(LogLevel.Error);
-            var process = _container.CreateScope(model.Arrangement.Text, part.ContentItem, new Dictionary<string, string>(), false).Resolve<Process>();
+            var process = _container.CreateScope(model.Arrangement?.Text ?? string.Empty, part.ContentItem, new Dictionary<string, string>(), false).Resolve<Process>();
             if (process.Errors().Any()) {
                foreach (var error in process.Errors()) {
                   context.Updater.ModelState.AddModelError(Prefix, S[error]);

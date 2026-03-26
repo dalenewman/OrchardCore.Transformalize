@@ -12,12 +12,12 @@ using TransformalizeModule.Models;
 namespace TransformalizeModule.Services.Transforms {
    public class OrchardFluidTransform : BaseTransform {
 
-      private readonly Func<string, object> _convert;
-      private readonly IMemoryCache _memoryCache;
-      private readonly ISignal _signal;
-      private readonly FluidParser _parser;
+      private Func<string, object>? _convert;
+      private readonly IMemoryCache? _memoryCache;
+      private readonly ISignal? _signal;
+      private FluidParser? _parser;
 
-      public OrchardFluidTransform(IContext context = null, IMemoryCache memoryCache = null, ISignal signal = null) : base(context, null) {
+      public OrchardFluidTransform(IContext? context = null, IMemoryCache? memoryCache = null, ISignal? signal = null) : base(context, null) {
          if (IsMissingContext()) {
             return;
          }
@@ -56,7 +56,7 @@ namespace TransformalizeModule.Services.Transforms {
 
          var key = string.Join(':', Context.Process.Id, Context.Entity.Alias, Context.Field.Alias, Context.Operation.Method, Context.Operation.Index);
 
-         if (!_memoryCache.TryGetValue(key, out CachedFluidTransform transform)) {
+         if (_memoryCache == null || !_memoryCache.TryGetValue(key, out CachedFluidTransform? transform)) {
 
             transform = new CachedFluidTransform();
 
@@ -73,7 +73,9 @@ namespace TransformalizeModule.Services.Transforms {
             if (_parser.TryParse(Context.Operation.Template, out transform.Template)) {
 
                // any changes to content item will invalidate cache
-               _memoryCache.Set(key, transform, _signal.GetToken(Common.GetCacheKey(Context.Process.Id)));
+               if (_signal != null) {
+                  _memoryCache?.Set(key, transform, _signal.GetToken(Common.GetCacheKey(Context.Process.Id)));
+               }
 
             } else {
                Context.Error("Failed to parse fluid template.");
@@ -81,6 +83,9 @@ namespace TransformalizeModule.Services.Transforms {
                yield break;
             }
          }
+
+         if (transform?.Input == null || transform.Template == null || _convert == null)
+            yield break;
 
          var context = new TemplateContext();
          foreach (var row in rows) {

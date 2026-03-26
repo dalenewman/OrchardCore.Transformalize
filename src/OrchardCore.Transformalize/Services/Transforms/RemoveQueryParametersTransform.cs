@@ -8,10 +8,10 @@ using Transformalize.Configuration;
 namespace TransformalizeModule.Services.Transforms {
    public class RemoveQueryParametersTransform : StringTransform {
 
-      private readonly Field _input;
+      private Field? _input;
 
       public RemoveQueryParametersTransform(
-         IContext context = null
+         IContext? context = null
       ) : base(context, "string") {
 
          if (IsMissingContext()) {
@@ -27,6 +27,7 @@ namespace TransformalizeModule.Services.Transforms {
       }
 
       public override IRow Operate(IRow row) {
+         if (_input == null) return row;
          var value = GetString(row, _input);
          if (Url.IsValid(value)) {
             var url = new Url(value);

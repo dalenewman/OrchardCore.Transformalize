@@ -119,8 +119,8 @@ namespace TransformalizeModule.Services {
       /// </summary>
       /// <param name="part">the report part being displayed</param>
       /// <returns>a list of available page sizes</returns>
-      public IEnumerable<int> GetPageSizes(TransformalizeReportPart part) {
-         if (part.PageSizes.Enabled()) {
+      public IEnumerable<int> GetPageSizes(TransformalizeReportPart? part) {
+         if (part != null && part.PageSizes.Enabled()) {
             if (part.PageSizes.OverrideDefaults()) {
                return part.PageSizes.SplitIntegers(',');
             } else {
@@ -136,8 +136,8 @@ namespace TransformalizeModule.Services {
       /// </summary>
       /// <param name="part">the report part being displayed</param>
       /// <returns>a list of available page sizes</returns>
-      public IEnumerable<int> GetPageSizesExtended(TransformalizeReportPart part) {
-         if (part.PageSizesExtended.Enabled()) {
+      public IEnumerable<int> GetPageSizesExtended(TransformalizeReportPart? part) {
+         if (part != null && part.PageSizesExtended.Enabled()) {
             if (part.PageSizesExtended.OverrideDefaults()) {
                return part.PageSizesExtended.SplitIntegers(',');
             } else {
@@ -153,26 +153,26 @@ namespace TransformalizeModule.Services {
       /// </summary>
       /// <param name="part">the report part being displayed</param>
       /// <returns>bulk action tasks</returns>
-      public BulkActionTaskNames GetBulkActionTaskNames(TransformalizeReportPart part) {
+      public BulkActionTaskNames GetBulkActionTaskNames(TransformalizeReportPart? part) {
 
          var names = new BulkActionTaskNames();
 
-         if (string.IsNullOrWhiteSpace(part.BulkActionCreateTask.Text)) {
+         if (part == null || string.IsNullOrWhiteSpace(part.BulkActionCreateTask.Text)) {
             names.Create = Settings.BulkActionCreateTask;
          }
-         if (string.IsNullOrWhiteSpace(part.BulkActionWriteTask.Text)) {
+         if (part == null || string.IsNullOrWhiteSpace(part.BulkActionWriteTask.Text)) {
             names.Write = Settings.BulkActionWriteTask;
          }
-         if (string.IsNullOrWhiteSpace(part.BulkActionSummaryTask.Text)) {
+         if (part == null || string.IsNullOrWhiteSpace(part.BulkActionSummaryTask.Text)) {
             names.Summary = Settings.BulkActionSummaryTask;
          }
-         if (string.IsNullOrWhiteSpace(part.BulkActionRunTask.Text)) {
+         if (part == null || string.IsNullOrWhiteSpace(part.BulkActionRunTask.Text)) {
             names.Run = Settings.BulkActionRunTask;
          }
-         if (string.IsNullOrWhiteSpace(part.BulkActionSuccessTask.Text)) {
+         if (part == null || string.IsNullOrWhiteSpace(part.BulkActionSuccessTask.Text)) {
             names.Success = Settings.BulkActionSuccessTask;
          }
-         if (string.IsNullOrWhiteSpace(part.BulkActionFailTask.Text)) {
+         if (part == null || string.IsNullOrWhiteSpace(part.BulkActionFailTask.Text)) {
             names.Fail = Settings.BulkActionFailTask;
          }
          return names;

@@ -4,8 +4,8 @@ using TransformalizeModule.Models;
 
 namespace TransformalizeModule.Services.Contracts {
    public interface IFileService {
-      Task<ContentItem> GetFileItem(string id);
-      Task<TransformalizeFilePart> GetFilePart(string id);
+      Task<ContentItem?> GetFileItem(string id);
+      Task<TransformalizeFilePart?> GetFilePart(string id);
    }
 
 }

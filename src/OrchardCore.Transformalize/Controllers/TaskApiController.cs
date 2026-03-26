@@ -50,7 +50,7 @@ namespace TransformalizeModule.Controllers {
          var task = await _taskService.Validate(request);
 
          if (task.Fails()) {
-            return task.ActionResult;
+            return task.ActionResult ?? BadRequest();
          }
 
          await _taskService.RunAsync(task.Process);

@@ -24,7 +24,7 @@ using System.Collections.Generic;
 namespace TransformalizeModule.Services.Contracts {
 
    public interface IConfigurationContainer {
-      ISerializer Serializer { get; set; }
+      ISerializer? Serializer { get; set; }
       ILifetimeScope CreateScope(string arrangement, ContentItem item, IDictionary<string, string> parameters, bool transformalizeParameters = true);
    }
 

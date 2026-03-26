@@ -4,7 +4,7 @@
 
 @{
    var Area = Common.ModuleName;
-   var ContentItemId = Model.TransformalizeFormPart.ContentItem.ContentItemId;
+   var ContentItemId = Model.TransformalizeFormPart?.ContentItem?.ContentItemId;
    var xmlLink = Url.Action("Run", "Form", new { Format = "xml", Area, ContentItemId });
    var jsonLink = Url.Action("Run", "Form", new { Format = "json", Area, ContentItemId });
    var viewLink = Url.Action("Index", "Form", new { Area, ContentItemId });

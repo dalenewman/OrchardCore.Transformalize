@@ -93,39 +93,39 @@ namespace TransformalizeModule.Drivers {
             //_notifier.Information(H["Model - Bulk Actions:{0}", model.BulkActions.Value]);
             //_notifier.Information(H["Model - Bulk Action Field:{0}", model.BulkActionValueField.Text]);
 
-            part.Arrangement.Text = model.Arrangement.Text;
-            part.PageSizes.Text = model.PageSizes.Text;
-            part.PageSizesExtended.Text = model.PageSizesExtended.Text;
+            part.Arrangement.Text = model.Arrangement?.Text ?? string.Empty;
+            part.PageSizes.Text = model.PageSizes?.Text ?? string.Empty;
+            part.PageSizesExtended.Text = model.PageSizesExtended?.Text ?? string.Empty;
 
-            part.BulkActions.Value = model.BulkActions.Value;
-            part.BulkActionValueField.Text = model.BulkActionValueField.Text;
-            part.BulkActionCreateTask.Text = model.BulkActionCreateTask.Text;
-            part.BulkActionWriteTask.Text = model.BulkActionWriteTask.Text;
-            part.BulkActionSummaryTask.Text = model.BulkActionSummaryTask.Text;
-            part.BulkActionRunTask.Text = model.BulkActionRunTask.Text;
-            part.BulkActionSuccessTask.Text = model.BulkActionSuccessTask.Text;
-            part.BulkActionFailTask.Text = model.BulkActionFailTask.Text;
+            if (model.BulkActions != null) part.BulkActions.Value = model.BulkActions.Value;
+            part.BulkActionValueField.Text = model.BulkActionValueField?.Text ?? string.Empty;
+            part.BulkActionCreateTask.Text = model.BulkActionCreateTask?.Text ?? string.Empty;
+            part.BulkActionWriteTask.Text = model.BulkActionWriteTask?.Text ?? string.Empty;
+            part.BulkActionSummaryTask.Text = model.BulkActionSummaryTask?.Text ?? string.Empty;
+            part.BulkActionRunTask.Text = model.BulkActionRunTask?.Text ?? string.Empty;
+            part.BulkActionSuccessTask.Text = model.BulkActionSuccessTask?.Text ?? string.Empty;
+            part.BulkActionFailTask.Text = model.BulkActionFailTask?.Text ?? string.Empty;
 
-            part.Map.Value = model.Map.Value;
-            part.MapColorField.Text = model.MapColorField.Text;
-            part.MapDescriptionField.Text = model.MapDescriptionField.Text;
-            part.MapLatitudeField.Text = model.MapLatitudeField.Text;
-            part.MapLongitudeField.Text = model.MapLongitudeField.Text;
-            part.MapRadiusField.Text = model.MapRadiusField.Text;
-            part.MapOpacityField.Text = model.MapOpacityField.Text;
+            if (model.Map != null) part.Map.Value = model.Map.Value;
+            part.MapColorField.Text = model.MapColorField?.Text ?? string.Empty;
+            part.MapDescriptionField.Text = model.MapDescriptionField?.Text ?? string.Empty;
+            part.MapLatitudeField.Text = model.MapLatitudeField?.Text ?? string.Empty;
+            part.MapLongitudeField.Text = model.MapLongitudeField?.Text ?? string.Empty;
+            part.MapRadiusField.Text = model.MapRadiusField?.Text ?? string.Empty;
+            part.MapOpacityField.Text = model.MapOpacityField?.Text ?? string.Empty;
 
-            part.Calendar.Value = model.Calendar.Value;
-            part.CalendarClassField.Text = model.CalendarClassField.Text;
-            part.CalendarIdField.Text = model.CalendarIdField.Text;
-            part.CalendarTitleField.Text = model.CalendarTitleField.Text;
-            part.CalendarUrlField.Text = model.CalendarUrlField.Text;
-            part.CalendarStartField.Text = model.CalendarStartField.Text;
-            part.CalendarEndField.Text = model.CalendarEndField.Text;
+            if (model.Calendar != null) part.Calendar.Value = model.Calendar.Value;
+            part.CalendarClassField.Text = model.CalendarClassField?.Text ?? string.Empty;
+            part.CalendarIdField.Text = model.CalendarIdField?.Text ?? string.Empty;
+            part.CalendarTitleField.Text = model.CalendarTitleField?.Text ?? string.Empty;
+            part.CalendarUrlField.Text = model.CalendarUrlField?.Text ?? string.Empty;
+            part.CalendarStartField.Text = model.CalendarStartField?.Text ?? string.Empty;
+            part.CalendarEndField.Text = model.CalendarEndField?.Text ?? string.Empty;
 
          }
 
-         if (model.BulkActions.Value) {
-            if (string.IsNullOrEmpty(model.BulkActionValueField.Text)) {
+         if (model.BulkActions?.Value == true) {
+            if (string.IsNullOrEmpty(model.BulkActionValueField?.Text)) {
                context.Updater.ModelState.AddModelError(Prefix, S["Please set the bulk action value field for bulk actions."]);
             }
          }
@@ -135,7 +135,7 @@ namespace TransformalizeModule.Drivers {
 
          try {
             var logger = new MemoryLogger(LogLevel.Error);
-            var process = _container.CreateScope(model.Arrangement.Text, part.ContentItem, new Dictionary<string, string>(), false).Resolve<Process>();
+            var process = _container.CreateScope(model.Arrangement?.Text ?? string.Empty, part.ContentItem, new Dictionary<string, string>(), false).Resolve<Process>();
             if (process.Errors().Any()) {
                foreach (var error in process.Errors()) {
                   context.Updater.ModelState.AddModelError(Prefix, S[error]);
@@ -243,9 +243,9 @@ namespace TransformalizeModule.Drivers {
 
       }
 
-      public void CheckPageSizes(TextField field, IUpdateModel updater) {
-         if (string.IsNullOrWhiteSpace(field.Text)) {
-            field.Text = string.Empty;
+      public void CheckPageSizes(TextField? field, IUpdateModel updater) {
+         if (field == null || string.IsNullOrWhiteSpace(field.Text)) {
+            if (field != null) field.Text = string.Empty;
          } else {
             foreach (var size in field.Text.Split(',', StringSplitOptions.RemoveEmptyEntries)) {
                if (!int.TryParse(size, out _)) {

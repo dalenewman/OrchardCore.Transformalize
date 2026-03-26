@@ -38,7 +38,7 @@ namespace TransformalizeModule.Services.Modifiers {
             return;
 
          foreach (var attribute in node.Attributes) {
-            attribute.Value = _placeHolderReplacer.Replace(attribute.Value.ToString(), parameters, logger);
+            attribute.Value = _placeHolderReplacer.Replace(attribute.Value?.ToString() ?? string.Empty, parameters, logger);
          }
       }
 
@@ -62,11 +62,11 @@ namespace TransformalizeModule.Services.Modifiers {
 
       private void MergeParameters(IEnumerable<INode> nodes, IDictionary<string, string> parameters) {
          foreach (var parameter in nodes) {
-            string name = null;
-            object value = null;
+            string? name = null;
+            object? value = null;
             foreach (var attribute in parameter.Attributes) {
                if (attribute.Name == ParameterNameAttribute) {
-                  name = attribute.Value.ToString();
+                  name = attribute.Value?.ToString();
                } else if (attribute.Name == ParameterValueAttribute) {
                   value = attribute.Value;
                }
@@ -91,7 +91,7 @@ namespace TransformalizeModule.Services.Modifiers {
                   }
 
                } else { // attribute value is going to set the parameter
-                  parameters[name] = value.ToString();
+                  parameters[name] = value?.ToString() ?? string.Empty;
                }
             }
          }

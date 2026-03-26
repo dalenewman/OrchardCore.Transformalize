@@ -4,7 +4,7 @@ using Cfg.Net.Contracts;
 namespace TransformalizeModule.Services.Modifiers {
    public class Node : INode {
 
-      private Dictionary<string, IAttribute> _attributes;
+      private Dictionary<string, IAttribute>? _attributes;
 
       public Node(string name) {
          Name = name;
@@ -27,7 +27,7 @@ namespace TransformalizeModule.Services.Modifiers {
             attr = _attributes[name];
             return true;
          }
-         attr = null;
+         attr = null!;
          return false;
       }
    }

@@ -35,17 +35,17 @@ namespace TransformalizeModule.Controllers {
          var item = await _commonService.Validate(request);
 
          string arrangement;
-         if (item.ContentItem.Has("TransformalizeTaskPart")) {
+         if (item.ContentItem?.Has("TransformalizeTaskPart") == true) {
             arrangement = item.ContentItem.Content.TransformalizeTaskPart.Arrangement.Arrangement.Value;
          } else {
-            arrangement = item.ContentItem.Content.TransformalizeReportPart.Arrangement.Arrangement.Value;
+            arrangement = item.ContentItem?.Content.TransformalizeReportPart.Arrangement.Arrangement.Value ?? string.Empty;
          }
 
-         var process = new Process(_modifier.Modify(arrangement, item.ContentItem.Id, _parameterService.GetParameters()));
+         var process = new Process(_modifier.Modify(arrangement, item.ContentItem?.Id ?? 0, _parameterService.GetParameters()));
          process.Connections.Clear();
 
          if (item.Fails()) {
-            return item.ActionResult;
+            return item.ActionResult ?? BadRequest();
          }
 
          return new ContentResult() { Content = process.Serialize(), ContentType = request.ContentType };

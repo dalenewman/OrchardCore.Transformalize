@@ -7,14 +7,14 @@ using Transformalize.Logging;
 namespace TransformalizeModule.ViewModels {
    public class LogViewModel {
 
-      private Dictionary<string, Parameter> _parameterLookup;
+      private Dictionary<string, Parameter>? _parameterLookup;
 
       public Process Process { get; set; }
-      public ContentItem Item { get; set; }
-      public TransformalizeTaskPart Part { get; set;}
+      public ContentItem? Item { get; set; }
+      public TransformalizeTaskPart? Part { get; set;}
       public List<LogEntry> Log { get; }
 
-      public LogViewModel(List<LogEntry> log, Process process, ContentItem item) {
+      public LogViewModel(List<LogEntry> log, Process process, ContentItem? item) {
          Log = log;
          Process = process;
          Item = item;

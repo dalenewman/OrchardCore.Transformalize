@@ -9,13 +9,13 @@ using TransformalizeModule.Services.Contracts;
 namespace TransformalizeModule.Services.Transforms {
    public class FilePartTransform : StringTransform {
 
-      private readonly IFileService _fileService;
-      private readonly Transformalize.Configuration.Field _input;
-      private readonly Func<string, IFileService, string> _transform;
+      private IFileService? _fileService;
+      private Transformalize.Configuration.Field? _input;
+      private Func<string, IFileService, string>? _transform;
 
       public FilePartTransform(
-         IContext context = null,
-         IFileService fileService = null
+         IContext? context = null,
+         IFileService? fileService = null
       ) : base(context, "string") {
 
          if (IsMissingContext()) {
@@ -52,7 +52,7 @@ namespace TransformalizeModule.Services.Transforms {
                      return string.Empty;
                   }
                   var file = svc.GetFilePart(val).Result;
-                  return file.FullPath.Text;
+                  return file?.FullPath.Text ?? string.Empty;
                };
                break;
             case "originalname":
@@ -66,7 +66,7 @@ namespace TransformalizeModule.Services.Transforms {
                      return string.Empty;
                   }
                   var file = svc.GetFilePart(val).Result;
-                  return file.OriginalName.Text;
+                  return file?.OriginalName.Text ?? string.Empty;
                };
                break;
             default:
@@ -77,6 +77,7 @@ namespace TransformalizeModule.Services.Transforms {
       }
 
       public override IRow Operate(IRow row) {
+         if (_input == null || _transform == null || _fileService == null) return row;
          var val = GetString(row, _input);
          row[Context.Field] = _transform(val, _fileService);
          return row;

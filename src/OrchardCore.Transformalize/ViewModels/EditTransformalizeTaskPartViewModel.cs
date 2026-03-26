@@ -6,7 +6,7 @@ namespace TransformalizeModule.ViewModels {
    public class EditTransformalizeTaskPartViewModel {
 
       [BindNever]
-      public TransformalizeTaskPart TransformalizeTaskPart { get; set; }
-      public TextField Arrangement { get; set; }
+      public TransformalizeTaskPart? TransformalizeTaskPart { get; set; }
+      public TextField? Arrangement { get; set; }
    }
 }

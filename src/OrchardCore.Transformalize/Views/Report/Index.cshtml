@@ -10,7 +10,7 @@
    RenderTitleSegments(Model.Title, "before");
 
    var firstEntity = Model.Process.Entities.First();
-   var sortService = Context.RequestServices.GetService<ISortService>();
+   var sortService = Context.RequestServices.GetRequiredService<ISortService>();
    var edit = Model.QueryValue("edit") != string.Empty;
 }
 
@@ -182,8 +182,8 @@
       @foreach (var entity in Model.Process.Entities) {
 
          Field[] fields;
-         Field bulkActionValueField = null;
-         if (Model.Part.BulkActions.Value && entity.TryGetField(Model.Part.BulkActionValueField.Text, out bulkActionValueField)) {
+         Field? bulkActionValueField = null;
+         if (Model.Part?.BulkActions.Value == true && entity.TryGetField(Model.Part.BulkActionValueField.Text, out bulkActionValueField)) {
             fields = firstEntity.GetAllOutputFields().Where(f => !f.System && f.Alias != bulkActionValueField.Alias).ToArray();
          } else {
             fields = firstEntity.GetAllOutputFields().Where(f => !f.System).ToArray();
@@ -195,7 +195,7 @@
                <table id="id_table_@entity.Sequence" class="table table-sm table-hover table-striped tablesorter">
                   <thead>
                      <tr class="action-row">
-                        @if (Model.Part.BulkActions.Value) {
+                        @if (Model.Part?.BulkActions.Value == true) {
                            <th>
                               <div class="checkbox form-check">
                                  <input title="Select the entire search result" id="select-all" type="checkbox" class="bulk-action form-check-input" name="select-all" placeholder="Select the entire search result">
@@ -209,7 +209,7 @@
                      @if (isSortable) {
                         var expression = Context.Request.Query["sort"].ToString() ?? string.Empty;
                         <tr class="tablesorter-ignoreRow">
-                           @if (Model.Part.BulkActions.Value) {
+                           @if (Model.Part?.BulkActions.Value == true) {
                               <td class="sorter">&nbsp;</td>
                            }
                            @foreach (var field in fields) {
@@ -235,9 +235,9 @@
                            }
                         </tr>
                      }
-                     @if (Model.InlineParameters.Any()) {
+                     @if (Model.InlineParameters?.Any() == true) {
                         <tr class="tablesorter-ignoreRow">
-                           @if (Model.Part.BulkActions.Value) {
+                           @if (Model.Part?.BulkActions.Value == true) {
                               <td class="sorter">&nbsp;</td>
                            }
                            @foreach (var field in fields) {
@@ -254,7 +254,7 @@
                   <tbody>
                      @foreach (var row in entity.Rows) {
                         <tr>
-                           @if (Model.Part.BulkActions.Value) {
+                           @if (Model.Part?.BulkActions.Value == true) {
                               if (bulkActionValueField != null) {
                                  <td>
                                     <div class="checkbox form-check">
@@ -385,7 +385,7 @@
       entity: {
          page: @firstEntity.Page
       },
-      bulkActionUrl: '@(Url.Action("Create", "BulkAction", new { ContentItemId = Model.Item.ContentItemId }))'
+      bulkActionUrl: '@(Url.Action("Create", "BulkAction", new { ContentItemId = Model.Item?.ContentItemId }))'
    };
 
    @foreach (var script in Model.Process.Scripts.Where(s => s.Global && string.IsNullOrEmpty(s.File) && s.Language == "js")) {

@@ -47,10 +47,10 @@ namespace TransformalizeModule.Controllers {
          );
 
          if (form.Fails()) {
-            return form.ActionResult;
+            return form.ActionResult ?? BadRequest();
          }
 
-         if (Request.Method == "POST" && _httpContext.HttpContext.Request.HasFormContentType) {
+         if (Request.Method == "POST" && _httpContext.HttpContext?.Request.HasFormContentType == true) {
 
             if (!form.Process.Parameters.All(p => p.Valid)) {
                await _notifier.ErrorAsync(H["The form did not pass validation.  Please correct it and re-submit."]);
@@ -88,7 +88,7 @@ namespace TransformalizeModule.Controllers {
                await _formService.RunAsync(form.Process);
                await _notifier.InformationAsync(insert ? H["{0} inserted", form.Process.Name] : H["{0} updated", form.Process.Name]);
                if (Request.Form["modal"] == "1") {
-                  var formUrl = Url.Action("Index", "Form", new { Area = Common.ModuleName, ContentItemId = contentItemId, modal = 1, close = 1 });
+                  var formUrl = Url.Action("Index", "Form", new { Area = Common.ModuleName, ContentItemId = contentItemId, modal = 1, close = 1 }) ?? string.Empty;
                   return Redirect(formUrl);
                } else if (Request.Form[Common.ReturnUrlName] != StringValues.Empty) {
                   return Redirect(Request.Form[Common.ReturnUrlName].ToString());
@@ -116,7 +116,7 @@ namespace TransformalizeModule.Controllers {
          );
 
          if (form.Fails()) {
-            return form.ActionResult;
+            return form.ActionResult ?? BadRequest();
          }
 
          return View("Form", form.Process);
@@ -132,7 +132,7 @@ namespace TransformalizeModule.Controllers {
          var report = await _formService.ValidateForm(request);
 
          if (report.Fails()) {
-            return report.ActionResult;
+            return report.ActionResult ?? BadRequest();
          }
 
          await _formService.RunAsync(report.Process);

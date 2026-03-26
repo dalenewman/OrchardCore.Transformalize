@@ -25,8 +25,8 @@ namespace TransformalizeModule.Drivers {
          };
 
          if (await context.Updater.TryUpdateModelAsync(model, Prefix)) {
-            part.OriginalName.Text = model.OriginalName.Text;
-            part.FullPath.Text = model.FullPath.Text;
+            part.OriginalName.Text = model.OriginalName?.Text ?? string.Empty;
+            part.FullPath.Text = model.FullPath?.Text ?? string.Empty;
          }
 
          return Edit(part, context);

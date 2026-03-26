@@ -4,7 +4,7 @@
 
 @{
    var Area = Common.ModuleName;
-   var ContentItemId = Model.TransformalizeFilePart.ContentItem.ContentItemId;
+   var ContentItemId = Model.TransformalizeFilePart?.ContentItem?.ContentItemId;
    var viewLink = Url.Action("Index", "File", new { Area, ContentItemId });
 }
 

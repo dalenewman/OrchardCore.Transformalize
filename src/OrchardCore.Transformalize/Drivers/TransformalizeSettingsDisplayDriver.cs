@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Localization;
 using OrchardCore.DisplayManagement.Entities;
 using OrchardCore.DisplayManagement.Handlers;
@@ -65,19 +66,19 @@ namespace TransformalizeModule.Drivers {
 
             await context.Updater.TryUpdateModelAsync(viewModel, Prefix);
 
-            settings.MapBoxToken = viewModel.MapBoxToken;
-            settings.GoogleApiKey = viewModel.GoogleApiKey;
+            settings.MapBoxToken = viewModel.MapBoxToken ?? string.Empty;
+            settings.GoogleApiKey = viewModel.GoogleApiKey ?? string.Empty;
 
-            settings.BulkActionCreateTask = viewModel.BulkActionCreateTask;
-            settings.BulkActionWriteTask = viewModel.BulkActionWriteTask;
-            settings.BulkActionSummaryTask = viewModel.BulkActionSummaryTask;
-            settings.BulkActionRunTask = viewModel.BulkActionRunTask;
-            settings.BulkActionSuccessTask = viewModel.BulkActionSuccessTask;
-            settings.BulkActionFailTask = viewModel.BulkActionFailTask;
+            settings.BulkActionCreateTask = viewModel.BulkActionCreateTask ?? string.Empty;
+            settings.BulkActionWriteTask = viewModel.BulkActionWriteTask ?? string.Empty;
+            settings.BulkActionSummaryTask = viewModel.BulkActionSummaryTask ?? string.Empty;
+            settings.BulkActionRunTask = viewModel.BulkActionRunTask ?? string.Empty;
+            settings.BulkActionSuccessTask = viewModel.BulkActionSuccessTask ?? string.Empty;
+            settings.BulkActionFailTask = viewModel.BulkActionFailTask ?? string.Empty;
 
             // common arrangement
             if (string.IsNullOrWhiteSpace(viewModel.CommonArrangement)) {
-               settings.CommonArrangement = viewModel.CommonArrangement;
+               settings.CommonArrangement = viewModel.CommonArrangement ?? string.Empty;
             } else {
                try {
                   var process = new Process(viewModel.CommonArrangement);
@@ -94,11 +95,11 @@ namespace TransformalizeModule.Drivers {
             }
 
             if (PageSizesOkay(context, "Default Page Sizes", viewModel.DefaultPageSizes)) {
-               settings.DefaultPageSizes = viewModel.DefaultPageSizes;
+               settings.DefaultPageSizes = viewModel.DefaultPageSizes ?? string.Empty;
             }
 
             if (PageSizesOkay(context, "Default Page Sizes Extended", viewModel.DefaultPageSizesExtended)) {
-               settings.DefaultPageSizesExtended = viewModel.DefaultPageSizesExtended;
+               settings.DefaultPageSizesExtended = viewModel.DefaultPageSizesExtended ?? string.Empty;
             }
 
          }
@@ -112,7 +113,7 @@ namespace TransformalizeModule.Drivers {
          return user != null && await _authorizationService.AuthorizeAsync(user, Permissions.ManageTransformalizeSettings);
       }
 
-      private bool PageSizesOkay(BuildEditorContext context, string name, string value) {
+      private bool PageSizesOkay(BuildEditorContext context, string name, string? value) {
          if (string.IsNullOrWhiteSpace(value)) {
             context.Updater.ModelState.AddModelError(Prefix, S["{0} must be a comma delimited list of integers.", name]);
             return false;

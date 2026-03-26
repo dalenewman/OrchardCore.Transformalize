@@ -32,7 +32,7 @@ namespace TransformalizeModule.Services.Modifiers {
 
                      var multiple = parameter.Value.Equals("facets");
 
-                     if (!parameterSet.Keys.Contains(name.Value.ToString())) {
+                     if (!parameterSet.Keys.Contains(name.Value?.ToString() ?? string.Empty)) {
                        
                         var p = new Node("add");
                         p.Attributes.Add(new NodeAttribute("name", name.Value));
@@ -49,7 +49,7 @@ namespace TransformalizeModule.Services.Modifiers {
                         parameterSet.Collection.SubNodes.Add(p);
                      }
 
-                     if (!filterSet.Keys.Contains(name.Value.ToString())) {
+                     if (!filterSet.Keys.Contains(name.Value?.ToString() ?? string.Empty)) {
 
                         var f = new Node("add");
                         f.Attributes.Add(new NodeAttribute("field", name.Value));

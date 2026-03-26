@@ -1,8 +1,8 @@
 @model ParameterViewModel
 @{ 
-   var input = Context.Request.Query[Model.Parameter.Name].ToString();
+   var input = Context.Request.Query[Model.Parameter?.Name ?? string.Empty].ToString();
 }
-@switch (Model.Parameter.Type) {
+@switch (Model.Parameter?.Type) {
    case "date":
    case "datetime":
       string requestedDate;
@@ -41,16 +41,16 @@
              @(Html.Raw(Model.Parameter.Width > 0 ? "style=\"width:" + Model.Parameter.Width + "px\"" : string.Empty)) />
       break;
    default:
-      var requestedValue = input == string.Empty ? Model.Parameter.Value : input;
-      if (string.IsNullOrEmpty(Model.Parameter.Map)) {
+      var requestedValue = input == string.Empty ? Model.Parameter?.Value : input;
+      if (string.IsNullOrEmpty(Model.Parameter?.Map)) {
          <input class="form-control form-control-sm field-search"
-                name="@Model.Parameter.Name"
+                name="@Model.Parameter?.Name"
                 type="text"
-                required="@Model.Parameter.Required"
+                required="@Model.Parameter?.Required"
                 value="@requestedValue"
-                placeholder="@Model.Parameter.Label"
+                placeholder="@Model.Parameter?.Label"
                 autocomplete="off"
-                @(Html.Raw(Model.Parameter.Width > 0 ? "style=\"width:" + Model.Parameter.Width + "px\"" : string.Empty)) />
+                @(Html.Raw(Model.Parameter?.Width > 0 ? "style=\"width:" + Model.Parameter?.Width + "px\"" : string.Empty)) />
       } else {
          <select size="1"
                  title="All"
@@ -69,7 +69,7 @@
                   foreach (var item in items) {
                      if (item.To != null && item.From != null) {
                         Model.ModifyMapItem(displayMap, item);
-                        <option value="@item.To" selected="@(values.Contains(item.To.ToString()))">@item.From</option>
+                        <option value="@item.To" selected="@(values.Contains(item.To?.ToString() ?? string.Empty))">@item.From</option>
                      }
                   }
                } else {

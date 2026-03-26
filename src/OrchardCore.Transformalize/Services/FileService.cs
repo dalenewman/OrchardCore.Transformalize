@@ -10,14 +10,14 @@ namespace TransformalizeModule.Services {
       public FileService(IContentManager contentManager) {
          _contentManager = contentManager;
       }
-      public async Task<ContentItem> GetFileItem(string id) {
+      public async Task<ContentItem?> GetFileItem(string id) {
          if (!string.IsNullOrEmpty(id)) {
             return await _contentManager.GetAsync(id);
          }
          return null;
       }
 
-      public async Task<TransformalizeFilePart> GetFilePart(string id) {
+      public async Task<TransformalizeFilePart?> GetFilePart(string id) {
          var contentItem = await GetFileItem(id);
          if (contentItem != null) {
             return contentItem.As<TransformalizeFilePart>();

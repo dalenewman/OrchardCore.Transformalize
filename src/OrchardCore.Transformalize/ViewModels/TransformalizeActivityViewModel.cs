@@ -3,6 +3,6 @@
 namespace TransformalizeModule.ViewModels {
    public class TransformalizeActivityViewModel {
       [Required]
-      public string AliasExpression { get; set; }
+      public string? AliasExpression { get; set; }
    }
 }

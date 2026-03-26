@@ -35,7 +35,7 @@ namespace TransformalizeModule.Controllers {
          var report = await _reportService.Validate(new TransformalizeRequest(contentItemId));
 
          if (report.Fails()) {
-            return report.ActionResult;
+            return report.ActionResult ?? BadRequest();
          }
 
          await _reportService.RunAsync(report.Process, null);
@@ -64,7 +64,7 @@ namespace TransformalizeModule.Controllers {
          var report = await _reportService.Validate(request);
 
          if (report.Fails()) {
-            return report.ActionResult;
+            return report.ActionResult ?? BadRequest();
          }
 
          await _reportService.RunAsync(report.Process, null);
@@ -84,7 +84,7 @@ namespace TransformalizeModule.Controllers {
          var stream = await _reportService.Validate(request).ConfigureAwait(false);
 
          if (stream.Fails()) {
-            return stream.ActionResult;
+            return stream.ActionResult ?? BadRequest();
          }
 
          var o = stream.Process.GetOutputConnection();
@@ -111,7 +111,7 @@ namespace TransformalizeModule.Controllers {
          var stream = await _reportService.Validate(request).ConfigureAwait(false);
 
          if (stream.Fails()) {
-            return stream.ActionResult;
+            return stream.ActionResult ?? BadRequest();
          }
 
          var o = stream.Process.GetOutputConnection();
@@ -121,8 +121,8 @@ namespace TransformalizeModule.Controllers {
          o.File = _slugService.Slugify(stream.ContentItem.As<TitlePart>().Title) + ".geo.json";
 
          // todo: these will have to be put in report part
-         var suppress = new HashSet<string>() { stream.Part.BulkActionValueField.Text, stream.Part.MapColorField.Text, stream.Part.MapDescriptionField.Text };
-         var coordinates = new HashSet<string>() { stream.Part.MapLatitudeField.Text, stream.Part.MapLongitudeField.Text };
+         var suppress = new HashSet<string>() { stream.Part?.BulkActionValueField.Text ?? string.Empty, stream.Part?.MapColorField.Text ?? string.Empty, stream.Part?.MapDescriptionField.Text ?? string.Empty };
+         var coordinates = new HashSet<string>() { stream.Part?.MapLatitudeField.Text ?? string.Empty, stream.Part?.MapLongitudeField.Text ?? string.Empty };
 
          foreach (var entity in stream.Process.Entities) {
             foreach (var field in entity.GetAllFields()) {
@@ -157,7 +157,7 @@ namespace TransformalizeModule.Controllers {
          var stream = await _reportService.Validate(request).ConfigureAwait(false);
 
          if (stream.Fails()) {
-            return stream.ActionResult;
+            return stream.ActionResult ?? BadRequest();
          }
 
          var o = stream.Process.GetOutputConnection();

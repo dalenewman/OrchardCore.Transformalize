@@ -33,13 +33,13 @@ namespace TransformalizeModule.Services.Transforms {
 
       private readonly Engine _jint = new Engine();
       private readonly ParameterMatcher _parameterMatcher = new ParameterMatcher();
-      private readonly IMemoryCache _memoryCache;
-      private readonly ISignal _signal;
-      private readonly IReader _reader;
+      private readonly IMemoryCache? _memoryCache;
+      private readonly ISignal? _signal;
+      private readonly IReader? _reader;
 
       public bool TryFirst { get; set; } = true;
 
-      public OrchardJintTransform(IContext context = null, IReader reader = null, IMemoryCache memoryCache = null, ISignal signal = null) : base(context, null) {
+      public OrchardJintTransform(IContext? context = null, IReader? reader = null, IMemoryCache? memoryCache = null, ISignal? signal = null) : base(context, null) {
 
          if (IsMissingContext()) {
             return;
@@ -73,7 +73,7 @@ namespace TransformalizeModule.Services.Transforms {
 
          var key = string.Join(':', Context.Process.Id, Context.Entity.Alias, Context.Field.Alias, Context.Operation.Method, Context.Operation.Index);
 
-         if (!_memoryCache.TryGetValue(key, out CachedJintTransform transform)) {
+         if (_memoryCache == null || !_memoryCache.TryGetValue(key, out CachedJintTransform? transform)) {
 
             transform = new CachedJintTransform();
             var scriptBuilder = new StringBuilder();
@@ -143,11 +143,16 @@ namespace TransformalizeModule.Services.Transforms {
             }
 
             // any changes to content item will invalidate cache
-            _memoryCache.Set(key, transform, _signal.GetToken(Common.GetCacheKey(Context.Process.Id)));
+            if (_signal != null) {
+               _memoryCache?.Set(key, transform, _signal.GetToken(Common.GetCacheKey(Context.Process.Id)));
+            }
 
          }
 
          if (!Run)
+            yield break;
+
+         if (transform?.Input == null)
             yield break;
 
          foreach (var row in rows) {

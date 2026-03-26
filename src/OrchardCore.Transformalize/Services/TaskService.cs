@@ -27,11 +27,11 @@ namespace TransformalizeModule.Services {
          return _arrangementService.CanAccess(contentItem);
       }
 
-      public Task<ContentItem> GetByIdOrAliasAsync(string idOrAlias) {
+      public Task<ContentItem?> GetByIdOrAliasAsync(string idOrAlias) {
          return _arrangementService.GetByIdOrAliasAsync(idOrAlias);
       }
 
-      public Process LoadForTask(ContentItem contentItem, IDictionary<string,string> parameters = null, string format = null) {
+      public Process LoadForTask(ContentItem contentItem, IDictionary<string,string>? parameters = null, string? format = null) {
          return _loadService.LoadForTask(contentItem, parameters, format);
       }
 

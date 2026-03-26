@@ -37,11 +37,12 @@ namespace TransformalizeModule.Services {
          return _original.Enclose(name);
       }
 
-      public IDbConnection GetConnection(string appName = null) {
-         return new StackExchange.Profiling.Data.ProfiledDbConnection(_original.GetConnection(appName) as DbConnection, StackExchange.Profiling.MiniProfiler.Current);
+      public IDbConnection GetConnection(string? appName = null) {
+         var dbConnection = _original.GetConnection(appName) as DbConnection ?? throw new InvalidOperationException("Connection is not a DbConnection.");
+         return new StackExchange.Profiling.Data.ProfiledDbConnection(dbConnection, StackExchange.Profiling.MiniProfiler.Current);
       }
 
-      public string GetConnectionString(string appName = null) {
+      public string GetConnectionString(string? appName = null) {
          return _original.GetConnectionString(appName);
       }
 

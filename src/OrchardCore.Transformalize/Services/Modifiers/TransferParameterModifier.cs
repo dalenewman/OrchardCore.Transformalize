@@ -50,8 +50,8 @@ namespace TransformalizeModule.Services.Modifiers {
 
                if (nameAttribute.Value != null) {
 
-                  var name = nameAttribute.Value.ToString();
-                  if (parameters.ContainsKey(name)) {
+                  var name = nameAttribute.Value?.ToString();
+                  if (name != null && parameters.ContainsKey(name)) {
 
                      // respect the input attribute, if input is false, don't let it come in
                      if (parameterNode.TryAttribute(ParameterInputAttribute, out var inputAttr) && inputAttr.Value.Equals("false")) {

@@ -81,15 +81,15 @@ namespace TransformalizeModule.Drivers {
          };
 
          if (await context.Updater.TryUpdateModelAsync(model, Prefix)) {
-            part.Arrangement.Text = model.Arrangement.Text;
-            part.LocationEnableHighAccuracy.Value = model.LocationEnableHighAccuracy.Value;
-            part.LocationMaximumAge.Value = model.LocationMaximumAge.Value;
-            part.LocationTimeout.Value = model.LocationTimeout.Value;
+            part.Arrangement.Text = model.Arrangement?.Text ?? string.Empty;
+            if (model.LocationEnableHighAccuracy != null) part.LocationEnableHighAccuracy.Value = model.LocationEnableHighAccuracy.Value;
+            if (model.LocationMaximumAge != null) part.LocationMaximumAge.Value = model.LocationMaximumAge.Value;
+            if (model.LocationTimeout != null) part.LocationTimeout.Value = model.LocationTimeout.Value;
          }
 
          try {
             var logger = new MemoryLogger(LogLevel.Error);
-            var process = _configurationContainer.CreateScope(model.Arrangement.Text, part.ContentItem, new Dictionary<string, string>(), false).Resolve<Process>();
+            var process = _configurationContainer.CreateScope(model.Arrangement?.Text ?? string.Empty, part.ContentItem, new Dictionary<string, string>(), false).Resolve<Process>();
             if (process.Errors().Any()) {
                foreach (var error in process.Errors()) {
                   context.Updater.ModelState.AddModelError(Prefix, S[error]);

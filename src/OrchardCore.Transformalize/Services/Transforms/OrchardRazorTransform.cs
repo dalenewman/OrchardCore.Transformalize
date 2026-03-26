@@ -31,11 +31,11 @@ namespace TransformalizeModule.Services.Transforms {
 
    public class OrchardRazorTransform : BaseTransform {
 
-      private readonly Func<string, object> _convert;
-      private readonly IMemoryCache _memoryCache;
-      private readonly ISignal _signal;
+      private Func<string, object>? _convert;
+      private readonly IMemoryCache? _memoryCache;
+      private readonly ISignal? _signal;
 
-      public OrchardRazorTransform(IContext context = null, IMemoryCache memoryCache = null, ISignal signal = null) : base(context, null) {
+      public OrchardRazorTransform(IContext? context = null, IMemoryCache? memoryCache = null, ISignal? signal = null) : base(context, null) {
 
          if (IsMissingContext()) {
             return;
@@ -72,7 +72,7 @@ namespace TransformalizeModule.Services.Transforms {
 
          var key = string.Join(':', Context.Process.Id, Context.Entity.Alias, Context.Field.Alias, Context.Operation.Method, Context.Operation.Index);
 
-         if (!_memoryCache.TryGetValue(key, out CachedRazorTransform transform)) {
+         if (_memoryCache == null || !_memoryCache.TryGetValue(key, out CachedRazorTransform? transform)) {
 
             transform = new CachedRazorTransform();
 
@@ -94,7 +94,9 @@ namespace TransformalizeModule.Services.Transforms {
                });
 
                // any changes to content item will invalidate cache
-               _memoryCache.Set(key, transform, _signal.GetToken(Common.GetCacheKey(Context.Process.Id)));
+               if (_signal != null) {
+                  _memoryCache?.Set(key, transform, _signal.GetToken(Common.GetCacheKey(Context.Process.Id)));
+               }
 
             } catch (RazorEngineCompilationException ex) {
                
@@ -109,6 +111,9 @@ namespace TransformalizeModule.Services.Transforms {
             }
 
          }
+
+         if (transform?.Template == null || transform.Input == null || _convert == null)
+            yield break;
 
          foreach (var row in rows) {
             var output = transform.Template.Run(row.ToFriendlyExpandoObject(transform.Input));

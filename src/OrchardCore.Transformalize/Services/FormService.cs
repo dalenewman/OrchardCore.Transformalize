@@ -27,15 +27,15 @@ namespace TransformalizeModule.Services {
          return await _arrangementService.CanAccess(contentItem);
       }
 
-      public Task<ContentItem> GetByIdOrAliasAsync(string idOrAlias) {
+      public Task<ContentItem?> GetByIdOrAliasAsync(string idOrAlias) {
          return _arrangementService.GetByIdOrAliasAsync(idOrAlias);
       }
 
-      public Process LoadForParameters(ContentItem contentItem, IDictionary<string,string> parameters = null) {
+      public Process LoadForParameters(ContentItem contentItem, IDictionary<string,string>? parameters = null) {
          return _loadService.LoadForParameters(contentItem, parameters);
       }
 
-      public Process LoadForForm(ContentItem contentItem, IDictionary<string, string> parameters = null, string format = null) {
+      public Process LoadForForm(ContentItem contentItem, IDictionary<string, string>? parameters = null, string? format = null) {
          return _loadService.LoadForForm(contentItem, parameters, format);
       }
 

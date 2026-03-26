@@ -15,7 +15,7 @@
    var entity = Model.Process.Entities.FirstOrDefault() ?? new Entity { Name = "Missing Entity" };
    var entityTitle = entity.Label == string.Empty ? entity.Alias : entity.Label;
 
-   var settings = Context.RequestServices.GetService<ISettingsService>();
+   var settings = Context.RequestServices.GetRequiredService<ISettingsService>();
    var pageSizes = new List<int>();
    if (Model.Part != null) {
       pageSizes.AddRange(settings.GetPageSizes(Model.Part));
@@ -31,10 +31,10 @@
    var allFields = entity.GetAllFields().Where(f => !f.System).ToArray();
    var hasCoordinates = allFields.Any(f => f.Alias.StartsWith("lat", StringComparison.OrdinalIgnoreCase)) && allFields.Any(f => f.Alias.StartsWith("lon", StringComparison.OrdinalIgnoreCase));
 
-   var linkService = Context.RequestServices.GetService<ILinkService>();
-   var exportCsvLink = linkService.Create(Model.Item.ContentItemId, Url.Action("StreamCsv", new { ContentItemId = Model.IdOrAlias }), true);
-   var exportJsonLink = linkService.Create(Model.Item.ContentItemId, Url.Action("StreamJson", new { ContentItemId = Model.IdOrAlias }), true);
-   var exportGeoJsonLink = linkService.Create(Model.Item.ContentItemId, Url.Action("StreamGeoJson", new { ContentItemId = Model.IdOrAlias }), true);
+   var linkService = Context.RequestServices.GetRequiredService<ILinkService>();
+   var exportCsvLink = linkService.Create(Model.Item?.ContentItemId, Url.Action("StreamCsv", new { ContentItemId = Model.IdOrAlias }), true);
+   var exportJsonLink = linkService.Create(Model.Item?.ContentItemId, Url.Action("StreamJson", new { ContentItemId = Model.IdOrAlias }), true);
+   var exportGeoJsonLink = linkService.Create(Model.Item?.ContentItemId, Url.Action("StreamGeoJson", new { ContentItemId = Model.IdOrAlias }), true);
 
    var views = new List<PipelineViewModel>();
 
@@ -123,7 +123,7 @@
       </div>
 
     <div class="col-md-6">
-    @if (entity.Page == 0 || Model.Process.Mode == "map" && !Model.Part.PageSizesExtended.Enabled() || Model.Process.Mode == "calendar" && !Model.Part.PageSizesExtended.Enabled()) {
+    @if (entity.Page == 0 || Model.Process.Mode == "map" && Model.Part?.PageSizesExtended.Enabled() != true || Model.Process.Mode == "calendar" && Model.Part?.PageSizesExtended.Enabled() != true) {
         <h3 class="text-primary" style="margin: 2px 0px 0px 0px;">@(entity.Label == string.Empty ? entity.Alias : entity.Label)</h3>
     } else {
          <nav aria-label="breadcrumb-and-pagination" style="--bs-breadcrumb-divider: url(&#34;data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='8' height='8'%3E%3Cpath d='M2.5 0L1 1.5 3.5 4 1 6.5 2.5 8l4-4-4-4z' fill='currentColor'/%3E%3C/svg%3E&#34;);">
@@ -185,7 +185,7 @@
 
             @if (entity.Name != "Missing Entity") {
 
-               if (Model.Item != null && await auth.AuthorizeAsync(Context.User, OrchardCore.Contents.Permissions.EditContent, Model.Item)) {
+               if (Model.Item != null && await auth.AuthorizeAsync(Context.User, OrchardCore.Contents.CommonPermissions.EditContent, Model.Item)) {
                   if (Model.BreadCrumbs.Any()){
                      if (!string.IsNullOrEmpty(Context.Request.Query["t"].ToString())){
                         var currentUrl = Context.Request.GetEncodedUrl();
@@ -223,7 +223,7 @@
                }*@
 
                // for now, if map is not enabled, you don't need this because there is only map and report views so far (no calendar)
-               if (Model.Part.Map.Value && hasCoordinates || Model.Part.Calendar.Value) {
+               if (Model.Part?.Map.Value == true && hasCoordinates || Model.Part?.Calendar.Value == true) {
 
                   var headless = Context.Request.GetDisplayUrl().Contains("Headless");
 
@@ -236,32 +236,32 @@
                   views.Add(new PipelineViewModel("report") {
                      Active = Model.Process.Mode == "report",
                      Glyphicon = "list",
-                     Link = linkService.Create(Model.IdOrAlias, reportUrl, !Model.Part.PageSizes.Enabled())
+                     Link = linkService.Create(Model.IdOrAlias, reportUrl, Model.Part?.PageSizes.Enabled() != true)
                   });
 
-                  if (Model.Part.Map.Value && hasCoordinates) {
+                  if (Model.Part?.Map.Value == true && hasCoordinates) {
 
                      var mapUrl = Url.Action("Index", "Map", new { ContentItemId = Model.IdOrAlias });
                      if (headless) {
-                        mapUrl = mapUrl.Replace("/t/report/map/", "/t/headless/report/map/");
+                        mapUrl = mapUrl?.Replace("/t/report/map/", "/t/headless/report/map/");
                      }
                      views.Add(new PipelineViewModel("map") {
                         Active = Model.Process.Mode == "map",
                         Glyphicon = "map-marker",
-                        Link = linkService.Create(Model.IdOrAlias, mapUrl, !Model.Part.PageSizesExtended.Enabled())
+                        Link = linkService.Create(Model.IdOrAlias, mapUrl, Model.Part?.PageSizesExtended.Enabled() != true)
                      });
                   }
 
-                  if (Model.Part.Calendar.Value) {
+                  if (Model.Part?.Calendar.Value == true) {
 
                      var calendarUrl = Url.Action("Index", "Calendar", new { ContentItemId = Model.IdOrAlias });
                      if (headless) {
-                        calendarUrl = calendarUrl.Replace("/t/report/calendar/", "/t/headless/report/calendar/");
+                        calendarUrl = calendarUrl?.Replace("/t/report/calendar/", "/t/headless/report/calendar/");
                      }
                      views.Add(new PipelineViewModel("calendar") {
                         Active = Model.Process.Mode == "calendar",
                         Glyphicon = "calendar",
-                        Link = linkService.Create(Model.IdOrAlias, calendarUrl, !Model.Part.PageSizesExtended.Enabled())
+                        Link = linkService.Create(Model.IdOrAlias, calendarUrl, Model.Part?.PageSizesExtended.Enabled() != true)
                      });
                   }
 

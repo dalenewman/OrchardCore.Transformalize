@@ -19,7 +19,7 @@ namespace TransformalizeModule.Services.Modules {
             return;
          }
 
-         var p = (Process)builder.Properties["Process"];
+         if (builder.Properties["Process"] is not Process p) return;
 
          var schemaReaders = new HashSet<string>();
 

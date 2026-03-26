@@ -43,7 +43,7 @@ namespace TransformalizeModule.Controllers {
       [RequestSizeLimit(209_715_200)]
       public async Task<ContentResult> Upload() {
 
-         if (!User.Identity.IsAuthenticated) {
+         if (User.Identity?.IsAuthenticated != true) {
             return GetResult(string.Empty, "Unauthorized");
          }
 
@@ -56,7 +56,7 @@ namespace TransformalizeModule.Controllers {
                var part = contentItem.As<TransformalizeFilePart>();
                part.OriginalName.Text = file.FileName;
 
-               var filePath = Path.Combine(Common.GetSafeFilePath(part, HttpContext.User.Identity.Name));
+               var filePath = Path.Combine(Common.GetSafeFilePath(part, HttpContext.User.Identity?.Name ?? string.Empty));
 
                using (var stream = file.OpenReadStream()) {
                   await _formFileStore.CreateFileFromStreamAsync(filePath, stream, true);

@@ -49,10 +49,10 @@ namespace TransformalizeModule.Controllers {
 
          var report = await _reportService.Validate(new TransformalizeRequest(request.ContentItemId));
          if (report.Fails()) {
-            return report.ActionResult;
+            return report.ActionResult ?? BadRequest();
          }
 
-         var referrer = Request.Form.ContainsKey(Common.ReturnUrlName) ? Request.Form[Common.ReturnUrlName].ToString() : Url.Action("Index", "Report", new { request.ContentItemId });
+         var referrer = Request.Form.ContainsKey(Common.ReturnUrlName) ? Request.Form[Common.ReturnUrlName].ToString() : Url.Action("Index", "Report", new { request.ContentItemId }) ?? string.Empty;
 
          // confirm we have an action registered in the report
          if (report.Process.Actions.Any(a => a.Name == request.ActionName)) {
@@ -60,31 +60,31 @@ namespace TransformalizeModule.Controllers {
             var bulkAction = await _taskService.Validate(new TransformalizeRequest(request.ActionName) { Secure = false });
 
             if (bulkAction.Fails() && bulkAction.Process.Message != Common.InvalidParametersMessage) {
-               return bulkAction.ActionResult;
+               return bulkAction.ActionResult ?? BadRequest();
             }
 
             var taskNames = _settingsService.GetBulkActionTaskNames(report.Part);
 
             #region batch creation
-            var user = await _userService.GetUserAsync(HttpContext.User.Identity.Name) as User;
+            var user = await _userService.GetUserAsync(HttpContext.User.Identity?.Name) as User;
 
             var createParameters = new Dictionary<string, string> {
 
                { Common.TaskReferrer, referrer },
-               { Common.TaskContentItemId, bulkAction.ContentItem.ContentItemId },
-               { Common.ReportContentItemId, report.ContentItem.ContentItemId },
+               { Common.TaskContentItemId, bulkAction.ContentItem?.ContentItemId ?? string.Empty },
+               { Common.ReportContentItemId, report.ContentItem?.ContentItemId ?? string.Empty },
 
-               { "UserId", user.Id.ToString() },
-               { "UserName", user.UserName },
-               { "UserEmail", user.Email },
+               { "UserId", user?.Id.ToString() ?? string.Empty },
+               { "UserName", user?.UserName ?? string.Empty },
+               { "UserEmail", user?.Email ?? string.Empty },
 
-               { "ReportId", report.ContentItem.Id.ToString() },
-               { "ReportContentItemVersionId", report.ContentItem.ContentItemVersionId },
-               { "ReportTitle", report.ContentItem.DisplayText },
+               { "ReportId", report.ContentItem?.Id.ToString() ?? string.Empty },
+               { "ReportContentItemVersionId", report.ContentItem?.ContentItemVersionId ?? string.Empty },
+               { "ReportTitle", report.ContentItem?.DisplayText ?? string.Empty },
 
-               { "TaskId", bulkAction.ContentItem.ContentItemId },
-               { "TaskContentItemVersionId", bulkAction.ContentItem.ContentItemVersionId },
-               { "TaskTitle", bulkAction.ContentItem.DisplayText },
+               { "TaskId", bulkAction.ContentItem?.ContentItemId ?? string.Empty },
+               { "TaskContentItemVersionId", bulkAction.ContentItem?.ContentItemVersionId ?? string.Empty },
+               { "TaskTitle", bulkAction.ContentItem?.DisplayText ?? string.Empty },
 
 
                { "Description", report.Process.Actions.First(a=>a.Name == request.ActionName).Description }
@@ -93,12 +93,12 @@ namespace TransformalizeModule.Controllers {
             var create = await _taskService.Validate(new TransformalizeRequest(taskNames.Create) { Secure = false, InternalParameters = createParameters });
 
             if (create.Fails()) {
-               return create.ActionResult;
+               return create.ActionResult ?? BadRequest();
             }
 
             await _taskService.RunAsync(create.Process);
             if (create.Process.Status != 200) {
-               _logger.Warn(() => $"User {user.UserName} received error running action {taskNames.Create}.");
+               _logger.Warn(() => $"User {user?.UserName} received error running action {taskNames.Create}.");
                return View("Log", new LogViewModel(_logger.Log, create.Process, create.ContentItem));
             }
 
@@ -118,18 +118,18 @@ namespace TransformalizeModule.Controllers {
             #region batch writing
             var writeParameters = new Dictionary<string, string> {
                { Common.TaskReferrer, referrer },
-               { Common.TaskContentItemId, bulkAction.ContentItem.ContentItemId },
-               { Common.ReportContentItemId, report.ContentItem.ContentItemId } 
+               { Common.TaskContentItemId, bulkAction.ContentItem?.ContentItemId ?? string.Empty },
+               { Common.ReportContentItemId, report.ContentItem?.ContentItemId ?? string.Empty }
             };
 
             foreach (var field in entity.GetAllOutputFields()) {
-               writeParameters[field.Alias] = entity.Rows[0][field.Alias].ToString();
+               writeParameters[field.Alias] = entity.Rows[0][field.Alias]?.ToString() ?? string.Empty;
             }
 
             var write = await _taskService.Validate(new TransformalizeRequest(taskNames.Write) { Secure = false, InternalParameters = writeParameters });
 
             if (write.Fails()) {
-               return write.ActionResult;
+               return write.ActionResult ?? BadRequest();
             }
 
             // potential memory problem (could be solved by merging report and batch write into one process)
@@ -142,12 +142,12 @@ namespace TransformalizeModule.Controllers {
             }
 
             if (request.ActionCount == 0) {
-               var batchProcess = _reportService.LoadForBatch(report.ContentItem);
+               var batchProcess = _reportService.LoadForBatch(report.ContentItem ?? new OrchardCore.ContentManagement.ContentItem());
 
                await _taskService.RunAsync(batchProcess);
                foreach (var batchRow in batchProcess.Entities.First().Rows) {
                   var row = new Transformalize.Impl.CfgRow(new[] { batchValueField.Alias });
-                  row[batchValueField.Alias] = batchRow[report.Part.BulkActionValueField.Text];
+                  row[batchValueField.Alias] = batchRow[report.Part?.BulkActionValueField.Text ?? string.Empty];
                   writeEntity.Rows.Add(row);
                }
             } else {
@@ -164,7 +164,7 @@ namespace TransformalizeModule.Controllers {
             return RedirectToAction("Review", ParametersToRouteValues(writeParameters));
 
          } else {
-            _logger.Warn(() => $"User {HttpContext.User.Identity.Name} called missing action {request.ActionName} in {report.ContentItem.DisplayText}.");
+            _logger.Warn(() => $"User {HttpContext.User.Identity?.Name} called missing action {request.ActionName} in {report.ContentItem?.DisplayText}.");
          }
 
          return View("Log", new LogViewModel(_logger.Log, report.Process, report.ContentItem));
@@ -181,19 +181,19 @@ namespace TransformalizeModule.Controllers {
 
          var report = await _reportService.Validate(new TransformalizeRequest(request.ReportContentItemId));
          if (report.Fails()) {
-            return report.ActionResult;
+            return report.ActionResult ?? BadRequest();
          }
          var taskNames = _settingsService.GetBulkActionTaskNames(report.Part);
 
          var batchSummary = await _taskService.Validate(new TransformalizeRequest(taskNames.Summary) { Secure = false });
          if (batchSummary.Fails()) {
-            return batchSummary.ActionResult;
+            return batchSummary.ActionResult ?? BadRequest();
          }
          await _taskService.RunAsync(batchSummary.Process);
 
          var bulkAction = await _formService.ValidateParameters(new TransformalizeRequest(request.TaskContentItemId));
          if (bulkAction.Fails()) {
-            return bulkAction.ActionResult;
+            return bulkAction.ActionResult ?? BadRequest();
          }
 
          return View(new BulkActionViewModel(TransferRequiredParameters(request, bulkAction), batchSummary.Process));
@@ -203,7 +203,7 @@ namespace TransformalizeModule.Controllers {
 
          var bulkAction = await _formService.ValidateParameters(new TransformalizeRequest(request.TaskContentItemId));
          if (bulkAction.Fails()) {
-            return bulkAction.ActionResult;
+            return bulkAction.ActionResult ?? BadRequest();
          }
 
          return View("Form", TransferRequiredParameters(request, bulkAction).Process);
@@ -220,13 +220,13 @@ namespace TransformalizeModule.Controllers {
 
          var report = await _reportService.Validate(new TransformalizeRequest(request.ReportContentItemId));
          if (report.Fails()) {
-            return report.ActionResult;
+            return report.ActionResult ?? BadRequest();
          }
          var taskNames = _settingsService.GetBulkActionTaskNames(report.Part);
 
          var bulkAction = await _taskService.Validate(new TransformalizeRequest(request.TaskContentItemId));
          if (bulkAction.Fails()) {
-            return bulkAction.ActionResult;
+            return bulkAction.ActionResult ?? BadRequest();
          }
          await _taskService.RunAsync(bulkAction.Process);
 
@@ -239,7 +239,7 @@ namespace TransformalizeModule.Controllers {
             var batchSuccess = await _taskService.Validate(new TransformalizeRequest(taskNames.Success) { InternalParameters = closeParameters });
 
             if (batchSuccess.Fails()) {
-               _logger.Warn(() => $"{bulkAction.ContentItem.DisplayText} succeeded but {taskNames.Success} failed to load.");
+               _logger.Warn(() => $"{bulkAction.ContentItem?.DisplayText} succeeded but {taskNames.Success} failed to load.");
             } else {
                await _taskService.RunAsync(batchSuccess.Process);
             }
@@ -252,7 +252,7 @@ namespace TransformalizeModule.Controllers {
             var batchFail = await _taskService.Validate(new TransformalizeRequest(taskNames.Fail) { InternalParameters = closeParameters });
 
             if (batchFail.Fails()) {
-               _logger.Warn(() => $"{bulkAction.ContentItem.DisplayText} failed and {taskNames.Fail} failed to load.");
+               _logger.Warn(() => $"{bulkAction.ContentItem?.DisplayText} failed and {taskNames.Fail} failed to load.");
             } else {
                await _taskService.RunAsync(batchFail.Process);
             }
@@ -272,13 +272,13 @@ namespace TransformalizeModule.Controllers {
 
          var report = await _reportService.Validate(new TransformalizeRequest(request.ReportContentItemId));
          if (report.Fails()) {
-            return report.ActionResult;
+            return report.ActionResult ?? BadRequest();
          }
          var taskNames = _settingsService.GetBulkActionTaskNames(report.Part);
 
          var batchSummary = await _taskService.Validate(new TransformalizeRequest(taskNames.Summary) { Secure = false });
          if (batchSummary.Fails()) {
-            return batchSummary.ActionResult;
+            return batchSummary.ActionResult ?? BadRequest();
          }
          await _taskService.RunAsync(batchSummary.Process);
 
@@ -330,7 +330,7 @@ namespace TransformalizeModule.Controllers {
          return d;
       }
 
-      private static string GetFieldFromSummary(Process process, string fieldName) {
+      private static string? GetFieldFromSummary(Process process, string fieldName) {
          if (process != null) {
             if (process.Entities.Any() && process.Entities[0].Rows.Any()) {
                var fields = process.Entities[0].GetAllOutputFields();

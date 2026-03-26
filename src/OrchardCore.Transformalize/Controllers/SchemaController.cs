@@ -27,7 +27,7 @@ namespace TransformalizeModule.Controllers {
          var task = await _schemaService.Validate(request);
 
          if (task.Fails()) {
-            return task.ActionResult;
+            return task.ActionResult ?? BadRequest();
          }
 
          var process = await _schemaService.GetSchemaAsync(task.Process);

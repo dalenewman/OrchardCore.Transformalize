@@ -24,7 +24,7 @@ namespace TransformalizeModule.Services.Modifiers {
 
             foreach (var node in parameterCollection.SubNodes) {
                if (node.TryAttribute("name", out var name)) {
-                  parameterNames.Add(name.Value.ToString());
+                  parameterNames.Add(name.Value?.ToString() ?? string.Empty);
                }
             }
 
@@ -38,7 +38,7 @@ namespace TransformalizeModule.Services.Modifiers {
 
                            var add = false;
                            if (field.TryAttribute("input", out var input)) {
-                              if (input.Value.ToString().ToLower() == "true") {
+                              if (input.Value?.ToString()?.ToLower() == "true") {
                                  add = true;
                               }
                            } else {
@@ -51,7 +51,7 @@ namespace TransformalizeModule.Services.Modifiers {
                               node.Attributes.Add(new NodeAttribute("name", name.Value));
                               if (field.TryAttribute("default", out var def)) {
                                  NodeAttribute n = new NodeAttribute("value", null);
-                                 if (def.Value.ToString() == Transformalize.Constants.DefaultSetting) {
+                                 if (def.Value?.ToString() == Transformalize.Constants.DefaultSetting) {
                                     n.Value = string.Empty;
                                  } else {
                                     n.Value = def.Value;
@@ -65,7 +65,7 @@ namespace TransformalizeModule.Services.Modifiers {
                               node.Attributes.Add(new NodeAttribute("invalid-characters", string.Empty));
 
                               if (field.TryAttribute("type", out var type)) {
-                                 if (type != null && type.Value != null && type.Value.ToString().ToLower().StartsWith("bool")) {
+                                 if (type != null && type.Value != null && (type.Value.ToString()?.ToLower()?.StartsWith("bool") == true)) {
                                     node.Attributes.Add(new NodeAttribute("type", "bool"));
                                  }
                               }

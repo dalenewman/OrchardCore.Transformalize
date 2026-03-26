@@ -7,21 +7,21 @@ using TransformalizeModule.Models;
 namespace TransformalizeModule.ViewModels {
    public class ReportViewModel {
 
-      private Dictionary<string, Parameter> _parameterLookup;
-      private Dictionary<string, Parameter> _inlines;
+      private Dictionary<string, Parameter>? _parameterLookup;
+      private Dictionary<string, Parameter>? _inlines;
       private Process _process;
-      private HashSet<string> _topParameters;
+      private HashSet<string>? _topParameters;
       private readonly IQueryCollection _queryCollection;
 
-      public TransformalizeSettings Settings { get; set; }
+      public TransformalizeSettings? Settings { get; set; }
 
       // temps
       public bool EnableInlineParameters { get; set; } = true;
 
       public bool Editable { get; set; } = false;
       public bool CalendarEnabled { get; set; }
-      public string IdOrAlias { get; set; }
-      public string Title { get; set; }
+      public string? IdOrAlias { get; set; }
+      public string? Title { get; set; }
 
       public Process Process {
          get {
@@ -35,26 +35,27 @@ namespace TransformalizeModule.ViewModels {
          }
       }
 
-      public ContentItem Item { get; set; }
-      public TransformalizeReportPart Part { get; set; }
+      public ContentItem? Item { get; set; }
+      public TransformalizeReportPart? Part { get; set; }
 
       public List<BreadCrumb> BreadCrumbs { get; set; } = new List<BreadCrumb>();
 
       public ReportViewModel(
          Process process,
-         ContentItem item,
+         ContentItem? item,
          IQueryCollection queryCollection,
          string idOrAlias
       ) {
+         _process = process;
          Process = process;
          Item = item;
-         Part = item.As<TransformalizeReportPart>();
+         Part = item?.As<TransformalizeReportPart>();
          IdOrAlias = idOrAlias;
-         Title = item.As<TitlePart>().Title;
+         Title = item?.As<TitlePart>()?.Title;
          _queryCollection = queryCollection;
       }
 
-      public Dictionary<string, Parameter> InlineParameters {
+      public Dictionary<string, Parameter>? InlineParameters {
          get {
             if (_inlines != null) {
                return _inlines;
@@ -69,7 +70,7 @@ namespace TransformalizeModule.ViewModels {
          _inlines = new Dictionary<string, Parameter>();
          _topParameters = new HashSet<string>();
          foreach (var parameter in Process.Parameters.Where(p => p.Prompt)) {
-            TopParameters.Add(parameter.Name);
+            _topParameters.Add(parameter.Name);
          }
 
          foreach (var field in Process.Entities.First().GetAllFields().Where(f => !f.System && f.Output)) {
@@ -92,7 +93,7 @@ namespace TransformalizeModule.ViewModels {
          }
       }
 
-      public HashSet<string> TopParameters {
+      public HashSet<string>? TopParameters {
          get {
             if (_topParameters != null) {
                return _topParameters;

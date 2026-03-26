@@ -51,7 +51,7 @@ namespace TransformalizeModule.Services {
       private readonly INotifier _notifier;
       private readonly IHtmlLocalizer<TransferParameterModifier> H;
 
-      public ISerializer Serializer { get; set; }
+      public ISerializer? Serializer { get; set; }
 
       public TransformalizeParametersModifier(
          CombinedLogger<TransferParameterModifier> logger,
@@ -208,7 +208,7 @@ namespace TransformalizeModule.Services {
             fields = entity.Fields;
             validatorFields = entity.CalculatedFields;
 
-            CfgRow output;
+            CfgRow? output;
             _container.GetReaderAlternate = (input, rowFactory) => new ParameterRowReader(input, new DefaultRowReader(input, rowFactory));
             using (var scope = _container.CreateScope(process, _logger, null)) {
                scope.Resolve<IProcessController>().Execute();
@@ -233,13 +233,13 @@ namespace TransformalizeModule.Services {
 
             if (output != null) {
 
-               JintVisibility jintVisibility = null;
+               JintVisibility? jintVisibility = null;
 
                foreach (var parameter in facade.Parameters) {
                   var field = fields.First(f => f.Name == parameter.Name);
 
                   // set the transformed value
-                  parameter.Value = output[field.Name].ToString();
+                  parameter.Value = output[field.Name]?.ToString() ?? string.Empty;
                   parameter.PostBack = field.PostBack;  // auto is changed to true|false in transformalize
 
                   // set the validation results

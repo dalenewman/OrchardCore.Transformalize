@@ -15,7 +15,7 @@
    const string ORCHARD_METHOD = "Orchard.Method";
    const string RETURN_URL = TransformalizeModule.Common.ReturnUrlName;
 
-   var fileService = Context.RequestServices.GetService<IFileService>();
+   var fileService = Context.RequestServices.GetRequiredService<IFileService>();
    var focus = string.Empty;
    var submit = Model.Parameters.Any(p => p.VisiblePrompt());
    var antiForgery = Model.Mode == "form" && submit || Model.Mode != "form";
@@ -279,7 +279,7 @@
                      break;
                   case "file":
 
-                     TransformalizeFilePart file = null;
+                     TransformalizeFilePart? file = null;
                      string oldFileId = string.Empty;
 
                      if (Context.Request.HasFormContentType) {
@@ -587,7 +587,7 @@
                                      placeholder="@parameter.Label"
                                      maxlength="@length"
                                      data-tfl-post-back="@(parameter.PostBack)"
-                                     @Html.Raw(parameter.ToParsley())>@value.ToString().Trim()</textarea>
+                                     @Html.Raw(parameter.ToParsley())>@(value?.ToString()?.Trim())</textarea>
                         } else {
                            @switch (type) {
                               case "number":

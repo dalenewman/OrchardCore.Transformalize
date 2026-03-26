@@ -4,6 +4,6 @@ using System.IO;
 
 namespace TransformalizeModule.Services.Contracts {
    public interface IArrangementStreamService {
-      Task RunAsync(Process process, StreamWriter streamWriter);
+      Task RunAsync(Process process, StreamWriter? streamWriter);
    }
 }

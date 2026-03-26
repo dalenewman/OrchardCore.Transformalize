@@ -25,7 +25,7 @@ namespace TransformalizeModule.Controllers {
          _formService = formService;
       }
 
-      public async Task<ActionResult> Run(string contentItemId, string format = null) {
+      public async Task<ActionResult> Run(string contentItemId, string? format = null) {
 
          var request = new TransformalizeRequest(contentItemId) { 
             Format = format, 
@@ -34,7 +34,7 @@ namespace TransformalizeModule.Controllers {
          var task = await _taskService.Validate(request);
 
          if (task.Fails()) {
-            return task.ActionResult;
+            return task.ActionResult ?? BadRequest();
          }
 
          await _taskService.RunAsync(task.Process);
@@ -53,7 +53,7 @@ namespace TransformalizeModule.Controllers {
          var bulkAction = await _formService.ValidateParameters(new TransformalizeRequest(contentItemId));
 
          if (bulkAction.Fails()) {
-            return bulkAction.ActionResult;
+            return bulkAction.ActionResult ?? BadRequest();
          }
 
          return View("Form", bulkAction.Process);
@@ -64,7 +64,7 @@ namespace TransformalizeModule.Controllers {
          var task = await _formService.ValidateParameters(new TransformalizeRequest(contentItemId));
 
          if (task.Fails()) {
-            return task.ActionResult;
+            return task.ActionResult ?? BadRequest();
          }
 
          return View(task);

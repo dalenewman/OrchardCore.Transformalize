@@ -4,7 +4,7 @@
 
 @{
    var Area = Common.ModuleName;
-   var ContentItemId = Model.TransformalizeTaskPart.ContentItem.ContentItemId;
+   var ContentItemId = Model.TransformalizeTaskPart?.ContentItem?.ContentItemId;
    var viewLink = Url.Action("Review", "Task", new { Area, ContentItemId });
    var runLink = Url.Action("Run", "Task", new { Area, ContentItemId });
    var xmlLink = Url.Action("Run", "Task", new { Format = "xml", Area, ContentItemId });

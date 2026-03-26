@@ -9,7 +9,7 @@ namespace TransformalizeModule.Services.Transforms {
 
       private readonly string _username = string.Empty;
 
-      public UsernameTransform(IHttpContextAccessor httpContext = null, IContext context = null) : base(context, "string") {
+      public UsernameTransform(IHttpContextAccessor? httpContext = null, IContext? context = null) : base(context, "string") {
          if (IsMissingContext()) {
             return;
          }
@@ -22,7 +22,7 @@ namespace TransformalizeModule.Services.Transforms {
             Run = false;
             Context.Error($"{nameof(UsernameTransform)} requires an instance of IHttpContextAccessor");
          } else {
-            _username = httpContext.HttpContext.User?.Identity?.Name ?? "Anonymous";
+            _username = httpContext.HttpContext?.User?.Identity?.Name ?? "Anonymous";
          }
       }
 

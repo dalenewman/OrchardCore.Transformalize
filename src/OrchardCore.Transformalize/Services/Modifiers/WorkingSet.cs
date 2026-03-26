@@ -13,17 +13,19 @@ namespace TransformalizeModule.Services.Modifiers {
 
       public WorkingSet(INode container, string collectionName, string keyName) {
          Keys = new HashSet<string>();
-         Collection =  container.SubNodes.FirstOrDefault(n => n.Name.Equals(collectionName, StringComparison.OrdinalIgnoreCase));
+         var existing = container.SubNodes.FirstOrDefault(n => n.Name.Equals(collectionName, StringComparison.OrdinalIgnoreCase));
 
-         if(Collection == null) {
+         if(existing == null) {
             var c = new Node(collectionName);
             container.SubNodes.Add(c);
             Collection = c;
+         } else {
+            Collection = existing;
          }
 
          foreach (var node in Collection.SubNodes) {
             if (node.TryAttribute(keyName, out var field)) {
-               Keys.Add(field.Value.ToString());
+               Keys.Add(field.Value?.ToString() ?? string.Empty);
             }
          }
       }

@@ -89,8 +89,8 @@ namespace TransformalizeModule.Services {
       private readonly ILocalClock _localClock;
       private readonly IFileService _fileService;
 
-      public Func<InputContext, IRowFactory, IRead> GetReaderAlternate { get; set; }
-      public Func<IRead, InputContext, IRowFactory, IRead> GetReaderDecorator { get; set; }
+      public Func<InputContext, IRowFactory, IRead>? GetReaderAlternate { get; set; }
+      public Func<IRead, InputContext, IRowFactory, IRead>? GetReaderDecorator { get; set; }
 
       public OrchardContainer(
          IHttpContextAccessor httpContext,
@@ -114,7 +114,7 @@ namespace TransformalizeModule.Services {
          _fileService = fileService;
       }
 
-      public ILifetimeScope CreateScope(Process process, IPipelineLogger logger, StreamWriter streamWriter) {
+      public ILifetimeScope CreateScope(Process process, IPipelineLogger logger, StreamWriter? streamWriter) {
 
          var builder = new ContainerBuilder();
 

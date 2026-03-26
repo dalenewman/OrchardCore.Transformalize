@@ -47,7 +47,7 @@ namespace TransformalizeModule.Controllers {
                var part = contentItem.As<TransformalizeFilePart>();
                part.OriginalName.Text = file.FileName;
 
-               var filePath = Path.Combine(Common.GetSafeFilePath(part, HttpContext.User.Identity.Name));
+               var filePath = Path.Combine(Common.GetSafeFilePath(part, HttpContext.User.Identity?.Name ?? string.Empty));
 
                using (var stream = file.OpenReadStream()) {
                   await _formFileStore.CreateFileFromStreamAsync(filePath, stream, true);

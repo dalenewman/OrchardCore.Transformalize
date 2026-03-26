@@ -6,10 +6,10 @@ using System.Collections.Generic;
 namespace TransformalizeModule.Services {
    public class ParameterService : IParameterService {
 
-      private readonly HttpRequest _request;
+      private readonly HttpRequest? _request;
 
       public ParameterService(IHttpContextAccessor context) {
-         _request = context.HttpContext.Request;
+         _request = context.HttpContext?.Request;
       }
       public IDictionary<string, string> GetParameters() {
 

@@ -23,7 +23,7 @@ namespace TransformalizeModule.Services {
          _logger = logger;
       }
 
-      public async Task RunAsync(Process process, StreamWriter streamWriter) {
+      public async Task RunAsync(Process process, StreamWriter? streamWriter) {
 
          IProcessController controller;
 
