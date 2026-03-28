@@ -25,10 +25,6 @@ jobs:
         run: pip install semgrep
 
       - name: Run Semgrep scan
-        run: semgrep scan --config auto --json -o semgrep-results.json
-
-      - name: Run Semgrep SARIF scan
-        if: always()
         run: semgrep scan --config auto --sarif -o semgrep-results.sarif
 
       - name: Upload results as artifact
@@ -36,7 +32,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: semgrep-results
-          path: semgrep-results.json
+          path: semgrep-results.sarif
           retention-days: 30
 
       - name: Upload SARIF to GitHub
