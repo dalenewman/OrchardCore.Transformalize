@@ -11,13 +11,11 @@ namespace OrchardCore.BootswatchTheme.Settings.Navigation {
 
       protected override ValueTask BuildAsync(NavigationBuilder builder) {
 
-         builder.Add(T["Configuration"], cfg => cfg
-            .Add(T["Settings"], settings => settings
-               .Add(T["Bootswatch"], bootswatch => bootswatch
-                  .Action("Index", "Admin", new { area = "OrchardCore.Settings", groupId = Constants.SettingsGroupId })
-                  .Permission(Permissions.ManageBootswatchSettings)
-                  .LocalNav()
-               )
+         builder.Add(T["Design"], design => design
+            .Add(T["Bootswatch"], bootswatch => bootswatch
+               .Action("Index", "Admin", new { area = "OrchardCore.Settings", groupId = Constants.SettingsGroupId })
+               .Permission(Permissions.ManageBootswatchSettings)
+               .LocalNav()
             )
          );
 
