@@ -13,6 +13,8 @@ WORKDIR /src
 COPY ["src/Site/Site.csproj", "src/Site/"]
 COPY ["src/OrchardCore.Transformalize/OrchardCore.Transformalize.csproj", "src/OrchardCore.Transformalize/"]
 COPY ["src/OrchardCore.Proxy/OrchardCore.Proxy.csproj", "src/OrchardCore.Proxy/"]
+COPY ["src/OrchardCore.BootswatchTheme/OrchardCore.BootswatchTheme.csproj", "src/OrchardCore.BootswatchTheme/"]
+COPY ["src/OrchardCore.BootswatchTheme.Settings/OrchardCore.BootswatchTheme.Settings.csproj", "src/OrchardCore.BootswatchTheme.Settings/"]
 RUN dotnet restore "src/Site/Site.csproj"
 COPY . .
 WORKDIR "/src/src/Site"

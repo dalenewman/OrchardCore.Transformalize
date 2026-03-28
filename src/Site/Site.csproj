@@ -43,8 +43,9 @@
       <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.18.1" />
       <PackageReference Include="Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation" Version="8.0.11" Condition="'$(RazorRuntimeCompilation)' == 'true'" />
       <PackageReference Include="OrchardCoreContrib.ContentPermissions" Version="1.1.0" />
-	  <!-- override vulnerable transitive dependencies -->
+	  <!-- temporary - override vulnerable transitive dependencies -->
 	  <PackageReference Include="HtmlSanitizer" Version="9.0.892" />
+	  <PackageReference Include="AngleSharp" Version="1.1.2" />
    </ItemGroup>
 
    <ItemGroup>
@@ -53,8 +54,6 @@
       <ProjectReference Include="..\OrchardCore.Proxy\OrchardCore.Proxy.csproj" />
       <ProjectReference Include="..\OrchardCore.Transformalize\OrchardCore.Transformalize.csproj" />
    </ItemGroup>
-
-
 
    <!-- Watcher include and excludes -->
    <ItemGroup>
