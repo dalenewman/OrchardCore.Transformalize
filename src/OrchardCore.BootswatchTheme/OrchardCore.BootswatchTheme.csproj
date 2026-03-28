@@ -21,6 +21,7 @@
       <PackageReference Include="OrchardCore.DisplayManagement" Version="2.2.1" />
       <PackageReference Include="OrchardCore.Settings" Version="2.2.1" />
       <PackageReference Include="OrchardCore.Menu" Version="2.2.1" />
+      <PackageReference Include="OrchardCore.ResourceManagement" Version="2.2.1" />
    </ItemGroup>
 
    <ItemGroup>

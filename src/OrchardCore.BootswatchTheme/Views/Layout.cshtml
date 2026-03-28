@@ -50,7 +50,7 @@
 
     @if (useBootswatch)
     {
-        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootswatch@5/dist/@bsTheme/bootstrap.min.css" />
+        <style asp-name="bootswatch-@bsTheme" at="Head"></style>
         <style>
             /* Restore layout rules that TheTheme's theme.css normally provides.
                These are intentionally kept in sync with TheTheme/Assets/scss/main/_layout.scss. */
@@ -82,17 +82,18 @@
         <style asp-name="TheTheme" depends-on="bootstrap" asp-src="~/TheTheme/styles/theme.min.css" debug-src="~/TheTheme/styles/theme.css" at="Foot"></style>
     }
 
-    <style>
-        /* BootswatchTheme: compact navbar — removes Bootstrap's default vertical
-           padding so the header takes less vertical space on every page. */
-        .navbar { padding-top: 0; padding-bottom: 0; }
-    </style>
-
     <script asp-name="bootstrap" version="5" at="Foot"></script>
     <script asp-name="theme-manager" at="Foot"></script>
 
     <script asp-name="font-awesome" at="Foot" version="6"></script>
     <resources type="Header" />
+    <style>
+        /* BootswatchTheme: compact navbar — removes Bootstrap's default vertical
+           padding so the header takes less vertical space on every page.
+           Must come after <resources type="Header" /> so it wins over
+           Bootstrap/Bootswatch navbar padding rules flushed at that point. */
+        .navbar { padding-top: 0; padding-bottom: 0; }
+    </style>
     @await RenderSectionAsync("HeadMeta", required: false)
 </head>
 <body>

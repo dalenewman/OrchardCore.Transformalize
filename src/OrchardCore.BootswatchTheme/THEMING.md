@@ -139,6 +139,33 @@ git -C /path/to/orchardcore diff <old-tag> <new-tag> \
 
 ---
 
+## CDN vs local fallback
+
+The Bootswatch stylesheet is registered in `ResourceManifest.cs` with both a CDN
+URL (jsDelivr) and a local path under `wwwroot/styles/<theme>/`.  OrchardCore's
+**Use CDN** toggle (Configuration → Settings → General) controls which one is served:
+
+| CDN toggle | Source |
+|------------|--------|
+| On (default) | `https://cdn.jsdelivr.net/npm/bootswatch@5/dist/<theme>/bootstrap.min.css` |
+| Off | `~/BootswatchTheme/styles/<theme>/bootstrap.min.css` |
+
+**To populate the local files**, run the download script from the project directory:
+
+```bash
+chmod +x download-bootswatch.sh
+./download-bootswatch.sh
+```
+
+This downloads both the minified and debug CSS for every theme into `wwwroot/styles/`.
+Commit the resulting files so they're available in production without network access.
+
+When Bootswatch releases a new minor version, re-run the script and commit the
+updated CSS. The CDN URL uses `bootswatch@5` (latest 5.x), so local and CDN will
+stay in sync as long as you refresh after each Bootswatch release.
+
+---
+
 ## Adding a new Bootswatch theme
 
 Bootswatch publishes new themes occasionally.  To add one:
