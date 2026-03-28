@@ -1,3 +1,11 @@
+# 0.17.0 <small>2026-03-28</small>
+
+## 🚀 Features
+- Added Bootswatch Theme
+- Added Markdown copy option on report page
+
+<!-- CHANGELOG_BOUNDARY -->
+
 # 0.15.1 <small>2026-03-17</small>
 
 ## 🐞 Bug Fixes
