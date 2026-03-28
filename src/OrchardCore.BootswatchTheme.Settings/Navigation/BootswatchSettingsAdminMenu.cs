@@ -1,15 +1,27 @@
 using Microsoft.Extensions.Localization;
 using OrchardCore.Navigation;
+using OrchardCore.Themes.Services;
 
 namespace OrchardCore.BootswatchTheme.Settings.Navigation {
    public class BootswatchSettingsAdminMenu : AdminNavigationProvider {
-      private readonly IStringLocalizer T;
+      private const string ThemeId = "BootswatchTheme";
 
-      public BootswatchSettingsAdminMenu(IStringLocalizer<BootswatchSettingsAdminMenu> localizer) {
+      private readonly IStringLocalizer T;
+      private readonly ISiteThemeService _siteThemeService;
+
+      public BootswatchSettingsAdminMenu(
+            IStringLocalizer<BootswatchSettingsAdminMenu> localizer,
+            ISiteThemeService siteThemeService) {
          T = localizer;
+         _siteThemeService = siteThemeService;
       }
 
-      protected override ValueTask BuildAsync(NavigationBuilder builder) {
+      protected override async ValueTask BuildAsync(NavigationBuilder builder) {
+
+         var siteTheme = await _siteThemeService.GetSiteThemeAsync();
+         if (siteTheme?.Id != ThemeId) {
+            return;
+         }
 
          builder.Add(T["Design"], design => design
             .Add(T["Bootswatch"], bootswatch => bootswatch
@@ -18,8 +30,6 @@ namespace OrchardCore.BootswatchTheme.Settings.Navigation {
                .LocalNav()
             )
          );
-
-         return ValueTask.CompletedTask;
       }
    }
 }

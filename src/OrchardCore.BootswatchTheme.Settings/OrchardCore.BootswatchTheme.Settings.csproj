@@ -17,6 +17,7 @@
       <PackageReference Include="OrchardCore.Settings" Version="2.2.1" />
       <PackageReference Include="OrchardCore.Navigation" Version="2.2.1" />
       <PackageReference Include="OrchardCore.DisplayManagement" Version="2.2.1" />
+      <PackageReference Include="OrchardCore.Themes" Version="2.2.1" />
    </ItemGroup>
 
 </Project>
