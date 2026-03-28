@@ -1,0 +1,43 @@
+<Project Sdk="Microsoft.NET.Sdk.Razor">
+
+   <PropertyGroup>
+      <TargetFramework>net8.0</TargetFramework>
+      <AddRazorSupportForMvc>true</AddRazorSupportForMvc>
+      <Nullable>enable</Nullable>
+      <ImplicitUsings>enable</ImplicitUsings>
+      <Version>0.16.0</Version>
+      <AssemblyName>BootswatchTheme</AssemblyName>
+   </PropertyGroup>
+
+   <ItemGroup>
+      <FrameworkReference Include="Microsoft.AspNetCore.App" />
+   </ItemGroup>
+
+   <ItemGroup>
+      <PackageReference Include="OrchardCore.Theme.Targets" Version="2.2.1" />
+      <PackageReference Include="OrchardCore.Themes" Version="2.2.1" />
+      <PackageReference Include="OrchardCore.Admin.Abstractions" Version="2.2.1" />
+      <PackageReference Include="OrchardCore.Users.Abstractions" Version="2.2.1" />
+      <PackageReference Include="OrchardCore.DisplayManagement" Version="2.2.1" />
+      <PackageReference Include="OrchardCore.Settings" Version="2.2.1" />
+      <PackageReference Include="OrchardCore.Menu" Version="2.2.1" />
+   </ItemGroup>
+
+   <ItemGroup>
+      <ProjectReference Include="..\OrchardCore.BootswatchTheme.Settings\OrchardCore.BootswatchTheme.Settings.csproj" />
+   </ItemGroup>
+
+   <ItemGroup>
+      <OrchardCoreThemes Include="BootswatchTheme"
+         Name="Bootswatch Theme"
+         Base="TheTheme"
+         Description="Bootstrap-based theme with selectable Bootswatch styles"
+         Author="Dale Newman"
+         Version="0.16.0"
+         Dependencies="OrchardCore.BootswatchTheme.Settings"
+         DefaultTenant="false"
+         AlwaysEnabled="false"
+         EnabledByDependencyOnly="false" />
+   </ItemGroup>
+
+</Project>
