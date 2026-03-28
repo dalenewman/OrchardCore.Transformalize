@@ -5,7 +5,7 @@
       <AddRazorSupportForMvc>true</AddRazorSupportForMvc>
       <Nullable>enable</Nullable>
       <ImplicitUsings>enable</ImplicitUsings>
-      <Version>0.16.0</Version>
+      <Version>0.17.0</Version>
       <AssemblyName>BootswatchTheme</AssemblyName>
    </PropertyGroup>
 
@@ -34,7 +34,7 @@
          Base="TheTheme"
          Description="Bootstrap-based theme with selectable Bootswatch styles"
          Author="Dale Newman"
-         Version="0.16.0"
+         Version="0.17.0"
          Dependencies="OrchardCore.BootswatchTheme.Settings"
          DefaultTenant="false"
          AlwaysEnabled="false"
