@@ -43,7 +43,4 @@ jobs:
           tags: orchardcore-transformalize:ci-${{ github.sha }}
 
       - name: Smoke test image
-        run: docker run --rm orchardcore-transformalize:ci-${{ github.sha }} dotnet --info
-
-      - name: Verify .NET runtime inside image
         run: docker run --rm --entrypoint dotnet orchardcore-transformalize:ci-${{ github.sha }} --info
