@@ -1,0 +1,7 @@
+@model OrchardCore.BootswatchTheme.Settings.ViewModels.BootswatchSettingsViewModel
+
+<div class="mb-3">
+   <label asp-for="Theme" class="form-label">@T["Bootswatch Theme"]</label>
+   <select asp-for="Theme" asp-items="Model.AvailableThemes" class="form-select"></select>
+   <span class="hint">@T["Select a Bootswatch theme or 'Default' for standard Bootstrap styling. See previews at bootswatch.com."]</span>
+</div>

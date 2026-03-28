@@ -1,0 +1,23 @@
+<Project Sdk="Microsoft.NET.Sdk.Razor">
+
+   <PropertyGroup>
+      <TargetFramework>net8.0</TargetFramework>
+      <AddRazorSupportForMvc>true</AddRazorSupportForMvc>
+      <Nullable>enable</Nullable>
+      <ImplicitUsings>enable</ImplicitUsings>
+      <Version>0.16.0</Version>
+   </PropertyGroup>
+
+   <ItemGroup>
+      <FrameworkReference Include="Microsoft.AspNetCore.App" />
+   </ItemGroup>
+
+   <ItemGroup>
+      <PackageReference Include="OrchardCore.Module.Targets" Version="2.2.1" />
+      <PackageReference Include="OrchardCore.Settings" Version="2.2.1" />
+      <PackageReference Include="OrchardCore.Navigation" Version="2.2.1" />
+      <PackageReference Include="OrchardCore.DisplayManagement" Version="2.2.1" />
+      <PackageReference Include="OrchardCore.Themes" Version="2.2.1" />
+   </ItemGroup>
+
+</Project>
