@@ -6,13 +6,15 @@ on:
     branches-ignore:
       - main
   pull_request:
-    # Run for PRs that target the default branch (`main`) and when a PR is updated
+    # Run for PRs that target the default branch (`main`) when the PR is created or reopened.
+    # We intentionally omit `synchronize` to avoid duplicate builds when you push commits to a branch
+    # that already triggers a `push` build. The push build will validate the branch; the PR events
+    # still run for the initial PR lifecycle events.
     branches:
       - main
     types:
       - opened
       - reopened
-      - synchronize
 
 jobs:
   build:
