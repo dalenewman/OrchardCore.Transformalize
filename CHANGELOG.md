@@ -1,3 +1,11 @@
+# 0.17.1 <small>2026-03-28</small>
+
+## 🛠️ Maintenance
+- Update content permissions to 1.1.0
+- Override vulnerable HtmlSanitizer package
+
+<!-- CHANGELOG_BOUNDARY -->
+
 # 0.17.0 <small>2026-03-28</small>
 
 ## 🚀 Features
