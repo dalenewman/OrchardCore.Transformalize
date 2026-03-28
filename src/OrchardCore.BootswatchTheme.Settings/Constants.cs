@@ -1,6 +1,7 @@
 namespace OrchardCore.BootswatchTheme.Settings {
    public static class Constants {
       public const string SettingsGroupId = "BootswatchTheme";
+      public const string CacheKey = "BootswatchTheme:ActiveStyle";
 
       public static readonly string[] BootswatchThemes = [
          "cerulean", "cosmo", "cyborg", "darkly", "flatly", "journal",

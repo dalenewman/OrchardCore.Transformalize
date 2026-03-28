@@ -5,6 +5,7 @@
 @using OrchardCore.ResourceManagement
 @using OrchardCore.Themes.Services
 @using OrchardCore.Users.Models
+@using OrchardCore.BootswatchTheme.Settings
 @using OrchardCore.BootswatchTheme.Settings.Models
 @using OrchardCore.Settings
 
@@ -13,14 +14,19 @@
 @inject ThemeTogglerService ThemeTogglerService
 @inject ISiteService SiteService
 @inject IResourceManager ResourceManager
+@using Microsoft.Extensions.Caching.Memory
+@inject IMemoryCache MemoryCache
+@inject OrchardCore.Environment.Cache.ISignal Signal
 @{
     // Navbar is pre-rendered to allow resource injection.
     var navbar = await DisplayAsync(await DisplayManager.BuildDisplayAsync(UpdateModelAccessor.ModelUpdater));
 
-    var site = await SiteService.GetSiteSettingsAsync();
-    var bsSettings = site.As<BootswatchSettings>();
-    var bsTheme = bsSettings?.Theme ?? "default";
-    var useBootswatch = !string.IsNullOrEmpty(bsTheme) && bsTheme != "default";
+    var bsTheme = await MemoryCache.GetOrCreateAsync(Constants.CacheKey, async entry => {
+        entry.AddExpirationToken(Signal.GetToken(Constants.CacheKey));
+        var site = await SiteService.GetSiteSettingsAsync();
+        return site.As<BootswatchSettings>()?.Theme ?? "default";
+    }) ?? "default";
+    var useBootswatch = bsTheme != "default";
 
     if (useBootswatch)
     {
@@ -60,9 +66,9 @@
             }
             html[data-bs-theme="light"] body > footer { background-color: #f5f5f5; }
             html[data-bs-theme="dark"]  body > footer { background-color: #343a40; }
-            /* Use slightly more top-clearance than TheTheme's 60 px because some
-               Bootswatch themes render a taller navbar (up to ~72 px). */
-            body > .container { padding: 80px 15px 0; }
+            /* With the compact navbar (padding: 0) the navbar is ~32 px tall; 50 px
+               gives comfortable clearance without the large gap of the default theme. */
+            body > .container { padding: 50px 15px 0; }
         </style>
     }
     else if (Orchard.IsRightToLeft())
@@ -75,6 +81,12 @@
         <style asp-name="bootstrap" version="5" at="Head"></style>
         <style asp-name="TheTheme" depends-on="bootstrap" asp-src="~/TheTheme/styles/theme.min.css" debug-src="~/TheTheme/styles/theme.css" at="Foot"></style>
     }
+
+    <style>
+        /* BootswatchTheme: compact navbar — removes Bootstrap's default vertical
+           padding so the header takes less vertical space on every page. */
+        .navbar { padding-top: 0; padding-bottom: 0; }
+    </style>
 
     <script asp-name="bootstrap" version="5" at="Foot"></script>
     <script asp-name="theme-manager" at="Foot"></script>

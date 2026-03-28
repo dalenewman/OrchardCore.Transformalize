@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using OrchardCore.DisplayManagement.Entities;
 using OrchardCore.DisplayManagement.Handlers;
 using OrchardCore.DisplayManagement.Views;
+using OrchardCore.Environment.Cache;
 using OrchardCore.Settings;
 using OrchardCore.BootswatchTheme.Settings.Models;
 using OrchardCore.BootswatchTheme.Settings.ViewModels;
@@ -13,12 +14,15 @@ namespace OrchardCore.BootswatchTheme.Settings.Drivers {
 
       private readonly IAuthorizationService _authorizationService;
       private readonly IHttpContextAccessor _hca;
+      private readonly ISignal _signal;
 
       public BootswatchSettingsDisplayDriver(
             IAuthorizationService authorizationService,
-            IHttpContextAccessor hca) {
+            IHttpContextAccessor hca,
+            ISignal signal) {
          _authorizationService = authorizationService;
          _hca = hca;
+         _signal = signal;
       }
 
       public override async Task<IDisplayResult?> EditAsync(ISite model, BootswatchSettings settings, BuildEditorContext context) {
@@ -45,7 +49,11 @@ namespace OrchardCore.BootswatchTheme.Settings.Drivers {
 
             var vm = new BootswatchSettingsViewModel();
             await context.Updater.TryUpdateModelAsync(vm, Prefix);
-            settings.Theme = vm.Theme;
+
+            if (settings.Theme != vm.Theme) {
+               settings.Theme = vm.Theme;
+               await _signal.SignalTokenAsync(Constants.CacheKey);
+            }
          }
 
          return await EditAsync(model, settings, context);
