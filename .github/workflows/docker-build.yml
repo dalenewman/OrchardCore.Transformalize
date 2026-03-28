@@ -1,0 +1,44 @@
+name: CI - Build Docker image (feature branches)
+
+on:
+  push:
+    # Run on every branch except the default branch `main`
+    branches-ignore:
+      - main
+  pull_request:
+    # Run for PRs that target the default branch (`main`) and when a PR is updated
+    branches:
+      - main
+    types:
+      - opened
+      - reopened
+      - synchronize
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v2
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+
+      - name: Build Docker image
+        uses: docker/build-push-action@v4
+        with:
+          context: .
+          file: src/Site/Dockerfile
+          platforms: linux/amd64
+          push: false
+          load: true
+          tags: orchardcore-transformalize:ci-${{ github.sha }}
+
+      - name: Smoke test image
+        run: docker run --rm orchardcore-transformalize:ci-${{ github.sha }} dotnet --info
