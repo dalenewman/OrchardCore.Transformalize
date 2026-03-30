@@ -399,6 +399,17 @@ $(document).ready(function () {
       }
    });
 
+   $('#id_report select[multiple]').each(function () {
+      var $select = $(this);
+      var $btn = $('<div style="padding:4px 8px"><button type="button" class="btn btn-sm btn-primary w-100"><span class="fas fa-search"></span> Search</button></div>');
+      $btn.find('button').on('click', function () {
+         $select.selectpicker('toggle');
+         controls.setPage(1);
+         controls.submit(1);
+      });
+      $select.data('selectpicker').$menu.append($btn);
+   });
+
    $("#id_report select").css("visibility", "visible");
 
    $(".form-control.date").datepicker({ dateFormat: "yy-mm-dd" });
