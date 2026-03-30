@@ -1,4 +1,11 @@
-# 0.17.1 <small>2026-03-28</small>
+# 0.17.3 <small>2026-03-30</small>
+
+## 🚀 Features
+- Add a search button inside the facets multi-select
+
+<!-- CHANGELOG_BOUNDARY -->
+
+# 0.17.2 <small>2026-03-28</small>
 
 ## 🛠️ Maintenance
 - Update content permissions to 1.1.0
