@@ -1,4 +1,4 @@
-# 0.17.3 <small>2026-03-30</small>
+# 0.17.2 <small>2026-03-30</small>
 
 ## 🚀 Features
 - Add a search button inside the facets multi-select
