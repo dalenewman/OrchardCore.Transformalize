@@ -134,6 +134,21 @@ function bulkAction(page, name, modal) {
             $tempForm.append($('<input type="hidden" name="' + this.name + '" />').val(this.value));
          });
 
+         /* preserve filter for bulk action in modal when "select all" is checked */
+         if ($('#select-all').is(':checked')) {
+            $('#id_report').find('input[type="hidden"], input[type="text"]').each(function () {
+               if (this.name) {
+                  $tempForm.append($('<input type="hidden" />').attr('name', this.name).val(this.value));
+               }
+            });
+            $('#id_report select').each(function () {
+               var name = this.name;
+               $(this).find('option:selected').each(function () {
+                  $tempForm.append($('<input type="hidden" />').attr('name', name).val(this.value));
+               });
+            });
+         }
+
          $('body').append($tempForm);
 
          $('#taskModal').modal({
@@ -526,7 +541,7 @@ $(document).ready(function () {
       }
    });
 
-   if (server.mode === "report") {
+   if (server.mode === "report" && server.edit) {
       $("table:first").dragtable({
          dragaccept: '.drag',
          persistState: function (_table) {
