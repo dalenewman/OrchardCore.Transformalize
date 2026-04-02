@@ -203,7 +203,7 @@
                            </th>
                         }
                         @foreach (var field in fields) {
-                           <th title="@field.Name" class="@(field.IsCalculated ? string.Empty : "drag")" data-src="@field.Src">@field.Label</th>
+                           <th title="@field.Name" class="@(edit && !field.IsCalculated ? "drag" : string.Empty)" data-src="@field.Src">@field.Label</th>
                         }
                      </tr>
                      @if (isSortable) {
@@ -382,6 +382,7 @@
 
    var server = {
       mode: "report",
+      edit: @(edit ? "true" : "false"),
       entity: {
          page: @firstEntity.Page
       },

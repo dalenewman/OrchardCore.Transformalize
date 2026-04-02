@@ -3,9 +3,9 @@
       <TargetFramework>net8.0</TargetFramework>
       <AddRazorSupportForMvc>true</AddRazorSupportForMvc>
       <RootNamespace>TransformalizeModule</RootNamespace>
-      <Version>0.17.2</Version>
-      <FileVersion>0.17.2</FileVersion>
-      <AssemblyVersion>0.17.2</AssemblyVersion>
+      <Version>0.17.3</Version>
+      <FileVersion>0.17.3</FileVersion>
+      <AssemblyVersion>0.17.3</AssemblyVersion>
       <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
       <Authors>Dale Newman</Authors>
       <Copyright>Copyright © 2013-2026</Copyright>

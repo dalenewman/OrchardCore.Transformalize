@@ -1,3 +1,12 @@
+# 0.17.3 <small>2026-04-02</small>
+
+## 🐞 Bug Fixes
+- Respect report filter when selecting all records and using modal bulk actions
+- Don't add dragging to report headers unless edit mode is enabled
+
+<!-- CHANGELOG_BOUNDARY -->
+
+
 # 0.17.2 <small>2026-03-30</small>
 
 ## 🚀 Features
