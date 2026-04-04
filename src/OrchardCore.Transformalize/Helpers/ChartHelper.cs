@@ -4,10 +4,12 @@ using Transformalize.Configuration;
 
 namespace TransformalizeModule.Helpers;
 
-public record FacetChart(string Title, List<string> Labels, List<double> Values);
+public record FacetChart(string Title, List<string> Labels, List<double> Values, string ParameterName);
 
 public static class ChartHelper
 {
+    private static readonly Regex CountPattern = new(@"\((\d+)\)", RegexOptions.Compiled);
+
     public static List<FacetChart> GetFacetCharts(Process process)
     {
         var charts = new List<FacetChart>();
@@ -27,10 +29,11 @@ public static class ChartHelper
                       : !string.IsNullOrEmpty(field?.Alias) ? field.Alias
                       : fieldName;
 
-            var labels = map.Items.Select(i => i.To.ToInvariantString()).ToList();
+            var labels = map.Items.Select(i => i.To.ToInvariantString().Replace("''", "'")).ToList();
             var values = map.Items.Select(i => NumberFromMapItem(i.From.ToInvariantString())).ToList();
+            var parameterName = field?.Name ?? fieldName;
 
-            charts.Add(new FacetChart(title, labels, values));
+            charts.Add(new FacetChart(title, labels, values, parameterName));
         }
 
         return charts;
@@ -38,7 +41,7 @@ public static class ChartHelper
 
     private static double NumberFromMapItem(string input)
     {
-        var match = Regex.Match(input, @"\((\d+)\)");
+        var match = CountPattern.Match(input);
         return match.Success ? double.Parse(match.Groups[1].Value) : 0;
     }
 }
