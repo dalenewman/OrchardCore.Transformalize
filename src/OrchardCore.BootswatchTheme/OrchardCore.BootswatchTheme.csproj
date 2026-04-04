@@ -5,10 +5,10 @@
       <AddRazorSupportForMvc>true</AddRazorSupportForMvc>
       <Nullable>enable</Nullable>
       <ImplicitUsings>enable</ImplicitUsings>
-      <Version>0.17.3</Version>
+      <Version>1.17.4</Version>
       <AssemblyName>BootswatchTheme</AssemblyName>
-      <FileVersion>0.17.3</FileVersion>
-      <AssemblyVersion>0.17.3</AssemblyVersion>
+      <FileVersion>1.17.4</FileVersion>
+      <AssemblyVersion>1.17.4</AssemblyVersion>
    </PropertyGroup>
 
    <ItemGroup>
