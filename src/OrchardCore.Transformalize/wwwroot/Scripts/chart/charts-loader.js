@@ -21,7 +21,12 @@ function toggleChartPct() {
         const elementDataset = ctx.dataset;
         const labels = JSON.parse(elementDataset.labels);
         const values = JSON.parse(elementDataset.values);
-        const colors = labels.map((_, i) => `hsl(${Math.round(i * 137.508) % 360}, 65%, 55%)`);
+        const labelToHue = s => {
+            let h = 0;
+            for (const c of s) h = (Math.imul(h, 31) + c.charCodeAt(0)) | 0;
+            return Math.round(((h >>> 0) * 137.508) % 360);
+        };
+        const colors = labels.map(label => `hsl(${labelToHue(label)}, 65%, 55%)`);
         const chartTitle = elementDataset.chartTitle;
         const rawType = elementDataset.chartType || 'doughnut';
         const isHorizontal = rawType === 'hbar';
@@ -29,10 +34,22 @@ function toggleChartPct() {
         const isPie = chartType === 'doughnut' || chartType === 'pie';
         const displayLegend = JSON.parse(elementDataset.displayLegend ?? 'true');
         const showPercentage = JSON.parse(elementDataset.showPercentage ?? 'false');
+        const parameterName = elementDataset.parameterName;
+        const isFilterable = parameterName && labels.length > 1;
+        chartElement.style.cursor = isFilterable ? 'pointer' : 'default';
 
         const options = {
             responsive: true,
             maintainAspectRatio: false,
+            onClick: (event, elements) => {
+                if (!isFilterable || !elements.length) return;
+                const clickedLabel = labels[elements[0].index];
+                if (!clickedLabel) return;
+                const url = new URL(window.location.href);
+                url.searchParams.set(parameterName, clickedLabel);
+                url.searchParams.delete('page');
+                window.location.href = url.toString();
+            },
             plugins: {
                 title: {
                     display: false,

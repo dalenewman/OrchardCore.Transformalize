@@ -1,3 +1,13 @@
+# 0.17.5 <small>2026-04-04</small>
+
+## 🚀 Features
+- Charts are now interactive; click a slice or bar to filter the report by that value.
+
+## 🐞 Bug Fixes
+- Fix single-quoted values appearing doubled in chart labels and legends.
+
+<!-- CHANGELOG_BOUNDARY -->
+
 # 0.17.4 <small>2026-04-04</small>
 
 ## 🚀 Features
