@@ -404,11 +404,6 @@ namespace TransformalizeModule {
             .SetVersion("1.0.0")
             .SetDependencies("chart-js");
 
-         _manifest
-            .DefineScript("chart-editor")
-            .SetUrl($"~/{Common.ModuleName}/Scripts/chart/chart-editor.js")
-            .SetVersion("1.0.0");
-
       }
 
       public void Configure(ResourceManagementOptions options) {

@@ -30,15 +30,12 @@ public class ChartService : IChartService {
       var request = new TransformalizeRequest(contentItemId) { Mode = "chart" };
       var chart = await _reportService.Validate(request);
 
-      var part = chart.ContentItem.As<TransformalizeReportPart>();
       var aliasPart = chart.ContentItem.As<AliasPart>();
-      var chartIsEnabled = part?.Chart.Value ?? false;
 
       if (chart.Fails()) {
          return new ChartViewModel {
             Failed = true,
             ActionResult = chart.ActionResult,
-            ChartIsEnabled = chartIsEnabled,
          };
       }
 
@@ -48,7 +45,6 @@ public class ChartService : IChartService {
          return new ChartViewModel {
             ShowLog = true,
             LogViewModel = new LogViewModel(_logger.Log, chart.Process, chart.ContentItem),
-            ChartIsEnabled = chartIsEnabled,
          };
       }
 
@@ -60,7 +56,6 @@ public class ChartService : IChartService {
             IdOrAlias = idOrAlias,
             EnableInlineParameters = false,
          },
-         ChartIsEnabled = chartIsEnabled,
       };
    }
 }

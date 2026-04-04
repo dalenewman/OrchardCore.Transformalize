@@ -46,18 +46,6 @@ namespace TransformalizeModule.Models {
          CalendarStartField = new TextField { Text = "start" };
          CalendarEndField = new TextField { Text = "end" };
 
-         Chart = new BooleanField();
-         ChartField1 = new TextField();
-         ChartField2 = new TextField();
-         ChartField3 = new TextField();
-         ChartType = new TextField { Text = "doughnut" };
-         ChartTitle = new TextField();
-         ChartDisplayLegend = new BooleanField { Value = true };
-         ChartShowPercentage = new BooleanField();
-         ChartColorPaletteMap = new TextField();
-         ChartTitleLink = new LinkField();
-         ChartUseRawData = new BooleanField();
-         ChartRawDataLabelField = new TextField();
 
       }
       public TextField Arrangement { get; set; }
@@ -88,19 +76,6 @@ namespace TransformalizeModule.Models {
       public TextField CalendarClassField { get; set; }
       public TextField CalendarStartField { get; set; }
       public TextField CalendarEndField { get; set; }
-
-      public BooleanField Chart { get; set; }
-      public TextField ChartField1 { get; set; }
-      public TextField ChartField2 { get; set; }
-      public TextField ChartField3 { get; set; }
-      public TextField ChartType { get; set; }
-      public TextField ChartTitle { get; set; }
-      public BooleanField ChartDisplayLegend { get; set; }
-      public BooleanField ChartShowPercentage { get; set; }
-      public TextField ChartColorPaletteMap { get; set; }
-      public LinkField ChartTitleLink { get; set; }
-      public BooleanField ChartUseRawData { get; set; }
-      public TextField ChartRawDataLabelField { get; set; }
 
    }
 }

@@ -174,6 +174,12 @@ namespace TransformalizeModule.Services {
          process.Mode = "chart";
          process.ReadOnly = true;
 
+         // maps (facets) are populated during parameter processing, not from entity rows
+         foreach (var entity in process.Entities) {
+            entity.Page = 1;
+            entity.Size = 1;
+         }
+
          AddSrc(process);
 
          // disable internal actions

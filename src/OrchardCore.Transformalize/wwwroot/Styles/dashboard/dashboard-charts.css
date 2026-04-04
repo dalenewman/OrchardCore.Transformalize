@@ -1,43 +1,33 @@
-.dashboard {
-    background: #EEF0F2;
-}
-
-.dashboard__pageTitle {
-    color: #141A1F;
-    padding-top: 29px;
-    padding-bottom: 29px;
-    padding-left: 24px;
-    margin: 0;
-    font-family: 'Nunito', sans-serif;
-    font-size: 25px;
-    font-weight: 600;
-}
-
-.dashboard__charts {
+.chart-grid {
     display: grid;
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: repeat(3, 1fr);
     column-gap: 16px;
     row-gap: 16px;
-    padding-left: 24px;
-    padding-right: 24px;
-    padding-bottom: 24px;
-    margin: 0 auto;
+    padding: 24px 24px 48px;
     box-sizing: border-box;
 }
 
 @media (max-width: 1020px) {
-    .dashboard__charts {
+    .chart-grid {
         grid-template-columns: 1fr;
         column-gap: 0;
     }
 }
 
-.dashboard__chart {
+.chart-card {
     background: #ffffff;
     border-radius: 16px;
     padding: 16px;
     display: flex;
     flex-direction: column;
+}
+
+.chartTitle {
+    color: #141A1F;
+    font-family: 'Nunito', sans-serif;
+    font-size: 18px;
+    font-weight: 600;
+    margin-bottom: 12px;
 }
 
 .chart {

@@ -74,18 +74,6 @@ namespace TransformalizeModule.Drivers {
             model.CalendarStartField = part.CalendarStartField;
             model.CalendarEndField = part.CalendarEndField;
 
-            model.Chart = part.Chart;
-            model.ChartField1 = part.ChartField1;
-            model.ChartField2 = part.ChartField2;
-            model.ChartField3 = part.ChartField3;
-            model.ChartType = part.ChartType;
-            model.ChartTitle = part.ChartTitle;
-            model.ChartDisplayLegend = part.ChartDisplayLegend;
-            model.ChartShowPercentage = part.ChartShowPercentage;
-            model.ChartColorPaletteMap = part.ChartColorPaletteMap;
-            model.ChartTitleLink = part.ChartTitleLink;
-            model.ChartUseRawData = part.ChartUseRawData;
-            model.ChartRawDataLabelField = part.ChartRawDataLabelField;
 
          }).Location("Content:1");
       }
@@ -134,20 +122,6 @@ namespace TransformalizeModule.Drivers {
             part.CalendarUrlField.Text = model.CalendarUrlField.Text;
             part.CalendarStartField.Text = model.CalendarStartField.Text;
             part.CalendarEndField.Text = model.CalendarEndField.Text;
-
-            part.Chart.Value = model.Chart.Value;
-            part.ChartField1.Text = model.ChartField1.Text;
-            part.ChartField2.Text = model.ChartField2.Text;
-            part.ChartField3.Text = model.ChartField3.Text;
-            part.ChartType.Text = model.ChartType.Text;
-            part.ChartTitle.Text = model.ChartTitle.Text;
-            part.ChartDisplayLegend.Value = model.ChartDisplayLegend.Value;
-            part.ChartShowPercentage.Value = model.ChartShowPercentage.Value;
-            part.ChartColorPaletteMap.Text = model.ChartColorPaletteMap.Text;
-            part.ChartTitleLink.Url = model.ChartTitleLink.Url;
-            part.ChartTitleLink.Target = model.ChartTitleLink.Target;
-            part.ChartUseRawData.Value = model.ChartUseRawData.Value;
-            part.ChartRawDataLabelField.Text = model.ChartRawDataLabelField.Text;
 
          }
 
@@ -250,59 +224,6 @@ namespace TransformalizeModule.Drivers {
                         if (fields.All(f => f.Alias != part.MapRadiusField.Text)) {
                            context.Updater.ModelState.AddModelError(Prefix, S["The field {0} used for map radius does not exist.", part.MapRadiusField.Text]);
                         }
-                     }
-                  }
-               }
-
-               if (part.Chart.Value) {
-
-                  if (fields.All(field => field.Alias != part.ChartField1.Text)) {
-                     context.Updater.ModelState.AddModelError(Prefix, S["The field {0} used for chart does not exist.", part.ChartField1.Text]);
-                  }
-
-                  if (!string.IsNullOrEmpty(part.ChartField2.Text) && fields.All(field => field.Alias != part.ChartField2.Text)) {
-                     context.Updater.ModelState.AddModelError(Prefix, S["The field {0} used for chart does not exist.", part.ChartField2.Text]);
-                  }
-
-                  if (!string.IsNullOrEmpty(part.ChartField3.Text) && fields.All(field => field.Alias != part.ChartField3.Text)) {
-                     context.Updater.ModelState.AddModelError(Prefix, S["The field {0} used for chart does not exist.", part.ChartField3.Text]);
-                  }
-
-                  if (!string.IsNullOrEmpty(part.ChartRawDataLabelField.Text) && fields.All(field => field.Alias != part.ChartRawDataLabelField.Text)) {
-                     context.Updater.ModelState.AddModelError(Prefix, S["The field {0} used for chart does not exist.", part.ChartRawDataLabelField.Text]);
-                  }
-
-                  if (part.ChartUseRawData.Value) {
-                     if (!string.IsNullOrEmpty(part.ChartField2.Text) || !string.IsNullOrEmpty(part.ChartField3.Text)) {
-                        context.Updater.ModelState.AddModelError(Prefix, S["Raw data charts support only one field."]);
-                     }
-                  }
-
-                  if (fields.Any(field => field.Alias == part.ChartField1.Text)) {
-                     if (!fields.First(field => field.Alias == part.ChartField1.Text).Output &&
-                         !process.Maps.Any(map => map.Name.StartsWith($"map-{part.ChartField1.Text}"))) {
-                        context.Updater.ModelState.AddModelError(Prefix, S["If the field {0} output is set to false, a corresponding parameter and filter is required for the chart.", part.ChartField1.Text]);
-                     }
-                  }
-
-                  if (!string.IsNullOrEmpty(part.ChartField2.Text) && fields.Any(field => field.Alias == part.ChartField2.Text)) {
-                     if (!fields.First(field => field.Alias == part.ChartField2.Text).Output &&
-                         !process.Maps.Any(map => map.Name.StartsWith($"map-{part.ChartField2.Text}"))) {
-                        context.Updater.ModelState.AddModelError(Prefix, S["If the field {0} output is set to false, a corresponding parameter and filter is required for the chart.", part.ChartField2.Text]);
-                     }
-                  }
-
-                  if (!string.IsNullOrEmpty(part.ChartField3.Text) && fields.Any(field => field.Alias == part.ChartField3.Text)) {
-                     if (!fields.First(field => field.Alias == part.ChartField3.Text).Output &&
-                         !process.Maps.Any(map => map.Name.StartsWith($"map-{part.ChartField3.Text}"))) {
-                        context.Updater.ModelState.AddModelError(Prefix, S["If the field {0} output is set to false, a corresponding parameter and filter is required for the chart.", part.ChartField3.Text]);
-                     }
-                  }
-
-                  if (!string.IsNullOrEmpty(part.ChartRawDataLabelField.Text) && fields.Any(field => field.Alias == part.ChartRawDataLabelField.Text)) {
-                     if (!fields.First(field => field.Alias == part.ChartRawDataLabelField.Text).Output &&
-                         !process.Maps.Any(map => map.Name.StartsWith($"map-{part.ChartRawDataLabelField.Text}"))) {
-                        context.Updater.ModelState.AddModelError(Prefix, S["If the field {0} output is set to false, a corresponding parameter and filter is required for the chart.", part.ChartRawDataLabelField.Text]);
                      }
                   }
                }
