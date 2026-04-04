@@ -6,6 +6,7 @@ namespace TransformalizeModule.Services.Contracts {
       Process LoadForReport(ContentItem contentItem, string format = null);
       Process LoadForMap(ContentItem contentItem);
       Process LoadForCalendar(ContentItem contentItem);
+      Process LoadForChart(ContentItem contentItem);
       Process LoadForStream(ContentItem contentItem);
       Process LoadForTask(ContentItem contentItem, IDictionary<string,string> parameters = null, string format = null);
       Process LoadForBatch(ContentItem contentItem);

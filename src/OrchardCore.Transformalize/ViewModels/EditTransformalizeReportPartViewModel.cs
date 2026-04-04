@@ -36,5 +36,18 @@ namespace TransformalizeModule.ViewModels {
       public TextField CalendarClassField { get; set; }
       public TextField CalendarStartField { get; set; }
       public TextField CalendarEndField { get; set; }
+
+      public BooleanField Chart { get; set; }
+      public TextField ChartField1 { get; set; }
+      public TextField ChartField2 { get; set; }
+      public TextField ChartField3 { get; set; }
+      public TextField ChartType { get; set; }
+      public TextField ChartTitle { get; set; }
+      public BooleanField ChartDisplayLegend { get; set; }
+      public BooleanField ChartShowPercentage { get; set; }
+      public TextField ChartColorPaletteMap { get; set; }
+      public LinkField ChartTitleLink { get; set; }
+      public BooleanField ChartUseRawData { get; set; }
+      public TextField ChartRawDataLabelField { get; set; }
    }
 }

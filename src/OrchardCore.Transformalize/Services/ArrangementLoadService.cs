@@ -163,6 +163,28 @@ namespace TransformalizeModule.Services {
          return process;
       }
 
+      public Process LoadForChart(ContentItem contentItem) {
+
+         if (!TryGetReportPart(contentItem, out var part)) {
+            return new Process { Status = 500, Message = "Error", Log = new List<LogEntry>() { new LogEntry(LogLevel.Error, null, $"LoadForChart can't load {contentItem.ContentType}.") } };
+         }
+
+         var process = LoadInternal(part, null);
+
+         process.Mode = "chart";
+         process.ReadOnly = true;
+
+         AddSrc(process);
+
+         // disable internal actions
+         foreach (var action in process.Actions.Where(a => a.Type == "internal")) {
+            action.Before = false;
+            action.After = false;
+         }
+
+         return process;
+      }
+
       public Process LoadForCalendar(ContentItem contentItem) {
 
          if (!TryGetReportPart(contentItem, out var part)) {

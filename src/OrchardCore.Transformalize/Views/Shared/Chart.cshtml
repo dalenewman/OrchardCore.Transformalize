@@ -1,0 +1,95 @@
+@using Transformalize.Configuration
+@using Newtonsoft.Json
+@using OrchardCore
+@using TransformalizeModule.Helpers
+
+@model ReportViewModel
+
+@{
+    var firstEntity = Model.Process.Entities.FirstOrDefault() ?? new Entity { Name = "Missing Entity" };
+
+    if (!Model.Part.Chart.Value)
+    {
+        return;
+    }
+
+    var chartField1 = Model.Part.ChartField1.Text;
+    var chartField2 = Model.Part.ChartField2.Text;
+    var chartField3 = Model.Part.ChartField3.Text;
+    var chartUseRawData = Model.Part.ChartUseRawData.Value;
+    var chartRawDataLabelField = Model.Part.ChartRawDataLabelField.Text;
+    var fullChartType = Model.Part.ChartType.Text;
+    var chartType = ChartTypeHelper.GetChartType(fullChartType);
+    var isStacked = ChartTypeHelper.IsChartStacked(fullChartType);
+    var isCombined = ChartTypeHelper.IsChartCombined(fullChartType);
+    var isHorizontal = ChartTypeHelper.IsChartHorizontal(fullChartType);
+    var chartTitle = Model.Part.ChartTitle.Text ?? $"Chart of {chartField1}";
+    var displayLegend = Model.Part.ChartDisplayLegend.Value;
+
+    var titleLink = string.IsNullOrEmpty(Model.Part.ChartTitleLink.Url) ? "/t/report/" + Model.IdOrAlias : Model.Part.ChartTitleLink.Url;
+    var titleTarget = string.IsNullOrEmpty(Model.Part.ChartTitleLink.Target) ? "_self" : Model.Part.ChartTitleLink.Target;
+
+    var inputDatasets = new List<List<double>>();
+    var labelList = new List<string>();
+    var indexAxeLabels = new List<string>();
+    var rawDataErrorMessage = string.Empty;
+
+    if (chartUseRawData)
+    {
+        if (!string.IsNullOrEmpty(chartField1))
+        {
+            var (rawDatasets, axisLabels, hasNonNumeric) =
+                ChartHelper.GetRawDataSeries(firstEntity, chartField1, chartRawDataLabelField);
+            inputDatasets = rawDatasets;
+            labelList = axisLabels;
+            indexAxeLabels = axisLabels;
+
+            if (hasNonNumeric)
+            {
+                rawDataErrorMessage = $"Raw chart data contains non-numeric values in '{chartField1}'.";
+            }
+        }
+    }
+    else
+    {
+        var (groupedData, groupedLabels) = ChartHelper.GetDataSets(
+            firstEntity,
+            Model.Process,
+            fullChartType,
+            [chartField1, chartField2, chartField3]);
+        inputDatasets = groupedData.Select(item => item.Values.ToList()).ToList();
+        labelList = groupedLabels;
+        indexAxeLabels = groupedData.Count > 0 ? groupedData.First().Keys.ToList() : new List<string>();
+    }
+
+    var backgroundColors = ChartHelper.GetColors(labelList, Model.Part, Model.Process);
+}
+
+<style asp-name="dashboard-charts"></style>
+<div>
+    <a href="@titleLink" class="chartTitle" target="@titleTarget">
+        @chartTitle
+    </a>
+    @if (!string.IsNullOrEmpty(rawDataErrorMessage))
+    {
+        <div class="alert alert-danger" role="alert">@rawDataErrorMessage</div>
+        return;
+    }
+
+    <div class="chart">
+        <canvas id="chart_@Model.Item.ContentItemId"
+                data-chart-title="@chartTitle"
+                data-input-datasets="@JsonConvert.SerializeObject(inputDatasets)"
+                data-label-list="@JsonConvert.SerializeObject(labelList)"
+                data-index-axe-labels="@JsonConvert.SerializeObject(indexAxeLabels)"
+                data-display-legend="@JsonConvert.SerializeObject(displayLegend)"
+                data-background-colors="@JsonConvert.SerializeObject(backgroundColors)"
+                data-show-percentage="@JsonConvert.SerializeObject(Model.Part.ChartShowPercentage.Value)"
+                data-stacked="@JsonConvert.SerializeObject(isStacked)"
+                data-combined="@JsonConvert.SerializeObject(isCombined)"
+                data-horizontal="@JsonConvert.SerializeObject(isHorizontal)"
+                data-full-chart-type="@fullChartType"
+                data-chart-type="@chartType">
+        </canvas>
+    </div>
+</div>

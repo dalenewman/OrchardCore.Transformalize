@@ -79,6 +79,10 @@ namespace TransformalizeModule.Services {
          return _loadService.LoadForMapStream(contentItem);
       }
 
+      public Process LoadForChart(ContentItem contentItem) {
+         return _loadService.LoadForChart(contentItem);
+      }
+
       public Process LoadForCalendar(ContentItem contentItem) {
          return _loadService.LoadForCalendar(contentItem);
       }
@@ -156,6 +160,9 @@ namespace TransformalizeModule.Services {
          }
 
          switch (request.Mode) {
+            case "chart":
+               response.Process = LoadForChart(response.ContentItem);
+               break;
             case "calendar":
                response.Process = LoadForCalendar(response.ContentItem);
                break;
