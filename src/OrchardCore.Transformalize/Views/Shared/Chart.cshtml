@@ -1,0 +1,43 @@
+@using Newtonsoft.Json
+@using TransformalizeModule.Helpers
+
+@model ReportViewModel
+
+@{
+    var facetCharts = ChartHelper.GetFacetCharts(Model.Process);
+
+    if (!facetCharts.Any())
+    {
+        <div class="alert alert-info" role="alert">No facet parameters found. Add <code>parameter="facet"</code> or <code>parameter="facets"</code> to fields in the arrangement to generate charts.</div>
+        return;
+    }
+
+    var chartType = Context.Request.Query["chart-type"].FirstOrDefault() ?? "doughnut";
+    var displayLegend = (Context.Request.Query["chart-legend"].FirstOrDefault() ?? "true") != "false";
+    var showPercentage = (Context.Request.Query["chart-pct"].FirstOrDefault() ?? "false") == "true";
+}
+
+<style asp-name="dashboard-charts"></style>
+<div class="chart-grid">
+    @foreach (var (chart, i) in facetCharts.Select((c, i) => (c, i)))
+    {
+        <div class="chart-card">
+            <div class="chartTitle">
+                @chart.Title
+                @if (chart.Labels.Count == 100) {
+                    <small class="text-muted ms-2" title="Results may be limited.">&#x26A0; top 100</small>
+                }
+            </div>
+            <div class="chart">
+                <canvas id="chart_@(Model.Item.ContentItemId)_@i"
+                        data-chart-title="@chart.Title"
+                        data-labels="@JsonConvert.SerializeObject(chart.Labels)"
+                        data-values="@JsonConvert.SerializeObject(chart.Values)"
+                        data-chart-type="@chartType"
+                        data-display-legend="@JsonConvert.SerializeObject(displayLegend)"
+                        data-show-percentage="@JsonConvert.SerializeObject(showPercentage)">
+                </canvas>
+            </div>
+        </div>
+    }
+</div>

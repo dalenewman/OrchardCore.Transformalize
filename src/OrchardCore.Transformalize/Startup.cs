@@ -57,6 +57,7 @@ namespace TransformalizeModule {
          services.AddScoped<ITransformalizeParametersModifier, TransformalizeParametersModifier>();
          services.AddScoped<ILoadFormModifier, LoadFormModifier>();
          services.AddScoped<IFileService, FileService>();
+         services.AddScoped<IChartService, ChartService>();
 
          services.AddTransient<IConfigurationContainer, OrchardConfigurationContainer>();
          services.AddTransient<IContainer, OrchardContainer>();
@@ -285,6 +286,13 @@ namespace TransformalizeModule {
              areaName: Common.ModuleName,
              pattern: "t/report/calendar/{ContentItemId}",
              defaults: new { controller = "Calendar", action = "Index" }
+         );
+
+         routes.MapAreaControllerRoute(
+             name: "Report Chart",
+             areaName: Common.ModuleName,
+             pattern: "t/report/chart/{ContentItemId}",
+             defaults: new { controller = "Chart", action = "Index" }
          );
 
          routes.MapAreaControllerRoute(

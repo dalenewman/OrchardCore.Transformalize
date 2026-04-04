@@ -384,6 +384,26 @@ namespace TransformalizeModule {
             .SetUrl($"~/{Common.ModuleName}/Styles/dragtable.css", $"~/{Common.ModuleName}/Styles/dragtable.min.css")
             .SetVersion("2.0.15");
 
+         /* Chart.js */
+         _manifest
+            .DefineScript("chart-js")
+            .SetUrl($"~/{Common.ModuleName}/Scripts/chart.umd.js", $"~/{Common.ModuleName}/Scripts/chart.umd.min.js")
+            .SetCdn("https://cdn.jsdelivr.net/npm/chart.js@4.5.1/dist/chart.umd.js", "https://cdn.jsdelivr.net/npm/chart.js@4.5.1/dist/chart.umd.min.js")
+            .SetCdnIntegrity("sha384-hfkuqrKeWFmnTMWN31VWyoe8xgdTADD11kgxmdpx2uyE6j5Az5uZq6u6AKYYmAOw", "sha384-jb8JQMbMoBUzgWatfe6COACi2ljcDdZQ2OxczGA3bGNeWe+6DChMTBJemed7ZnvJ")
+            .SetVersion("4.5.1");
+
+         _manifest
+            .DefineScript("charts-loader")
+            .SetUrl($"~/{Common.ModuleName}/Scripts/chart/charts-loader.js")
+            .SetVersion("1.0.0")
+            .SetDependencies("chart-js");
+
+         _manifest
+            .DefineStyle("dashboard-charts")
+            .SetUrl($"~/{Common.ModuleName}/Styles/dashboard/dashboard-charts.css")
+            .SetVersion("1.0.0")
+            .SetDependencies("chart-js");
+
       }
 
       public void Configure(ResourceManagementOptions options) {

@@ -1,3 +1,10 @@
+# 0.17.4 <small>2026-04-04</small>
+
+## 🚀 Features
+- Incorporate Vlad's chart feature with modifications.
+
+<!-- CHANGELOG_BOUNDARY -->
+
 # 0.17.3 <small>2026-04-02</small>
 
 ## 🐞 Bug Fixes
@@ -5,7 +12,6 @@
 - Don't add dragging to report headers unless edit mode is enabled
 
 <!-- CHANGELOG_BOUNDARY -->
-
 
 # 0.17.2 <small>2026-03-30</small>
 

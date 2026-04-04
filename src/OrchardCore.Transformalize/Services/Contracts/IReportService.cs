@@ -12,5 +12,6 @@ namespace TransformalizeModule.Services.Contracts {
       Process LoadForBatch(ContentItem contentItem);
       Process LoadForMap(ContentItem contentItem);
       Process LoadForMapStream(ContentItem contentItem);
+      Process LoadForChart(ContentItem contentItem);
    }
 }

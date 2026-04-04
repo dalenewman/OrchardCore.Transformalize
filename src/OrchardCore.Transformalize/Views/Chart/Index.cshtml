@@ -1,0 +1,61 @@
+@using Transformalize.Configuration
+@using TransformalizeModule
+
+@model ReportViewModel
+
+@{
+    RenderTitleSegments(Model.Title, "before");
+
+}
+
+<script asp-name="jQuery" at="Head"></script>
+<script asp-name="jQuery-ui" at="Foot"></script>
+<style asp-name="jQuery-ui"></style>
+<script asp-name="bootstrap-select-beta3" version="1.14.0" at="Foot"></script>
+<style asp-name="bootstrap-select-beta3" version="1.14.0"></style>
+<script asp-name="block-ui" version="2.70.0" at="Foot"></script>
+
+<style>
+    main.container {
+        max-width: 98%;
+    }
+</style>
+
+@foreach (var script in Model.Process.Scripts.Where(s => s.Global && !string.IsNullOrEmpty(s.File) && (s.Language == "js" || s.Language == Transformalize.Constants.DefaultSetting && s.File.EndsWith(".js", StringComparison.OrdinalIgnoreCase)))) {
+   <script at="Foot" src="@script.File"></script>
+}
+
+@foreach (var script in Model.Process.Scripts.Where(s => s.Global && !string.IsNullOrEmpty(s.File) && (s.Language == "css" || s.Language == Transformalize.Constants.DefaultSetting && s.File.EndsWith(".css", StringComparison.OrdinalIgnoreCase)))) {
+   <style src="@script.File"></style>
+}
+
+<form id="id_report" class="form-inline" role="form" method="GET">
+
+    <input id="id_sort" class="bsh" type="hidden" name="sort" value="@(Context.Request.Query["sort"].ToString() ?? string.Empty)" />
+    <input type="hidden" id="id_chart_type" name="chart-type" value="@(Context.Request.Query["chart-type"].FirstOrDefault() ?? "doughnut")" />
+    <input type="hidden" id="id_chart_legend" name="chart-legend" value="@(Context.Request.Query["chart-legend"].FirstOrDefault() ?? "true")" />
+    <input type="hidden" id="id_chart_pct" name="chart-pct" value="@(Context.Request.Query["chart-pct"].FirstOrDefault() ?? "false")" />
+
+    @foreach (var parameter in Model.Process.Parameters.Where(p => !p.Prompt && Context.Request.Query[p.Name].ToString() != null).Select(p => p.Name)) {
+        <input type="hidden" name="@parameter" value="@(Context.Request.Query[parameter].ToString())" />
+    }
+
+    <div class="container-fluid">
+        @Html.Partial("Parameters", Model)
+        @Html.Partial("Controls", Model)
+        @await Html.PartialAsync("Chart", Model)
+    </div>
+</form>
+
+<script asp-name="charts-loader" at="Foot"></script>
+
+<script type="text/javascript">
+   //<!--
+   var server = {
+      mode: "chart",
+      edit: false
+   };
+    //-->
+</script>
+
+<script asp-src="~/@Common.ModuleName/Scripts/report.js?v=2"></script>

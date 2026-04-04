@@ -19,7 +19,7 @@
    var pageSizes = new List<int>();
    if (Model.Part != null) {
       pageSizes.AddRange(settings.GetPageSizes(Model.Part));
-      if(Model.Process.Mode == "map" || Model.Process.Mode == "calendar") {
+      if(Model.Process.Mode == "map" || Model.Process.Mode == "calendar" || Model.Process.Mode == "chart") {
          if (Model.Part.PageSizesExtended.Enabled()) {
             pageSizes.AddRange(settings.GetPageSizesExtended(Model.Part));
          } else {
@@ -70,7 +70,7 @@
 
                <button id="id_clear" title="Clear the Parameters" type="button" class="btn btn-info btn-sm">Clear</button>
 
-               if (Model.Part!.BulkActions.Value || (Model.Editable && isSortable)) {
+               if (Model.Process.Mode != "chart" && (Model.Part!.BulkActions.Value || (Model.Editable && isSortable))) {
 
                   <div class="btn-group btn-group-sm" role="group" aria-label="bulk actions drop down">
                      <button id="idActionDropdown" type="button" class="btn btn-sm btn-danger dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -123,7 +123,37 @@
       </div>
 
     <div class="col-md-6">
-    @if (entity.Page == 0 || Model.Process.Mode == "map" && !Model.Part.PageSizesExtended.Enabled() || Model.Process.Mode == "calendar" && !Model.Part.PageSizesExtended.Enabled()) {
+    @if (Model.Process.Mode == "chart") {
+      var chartType = Context.Request.Query["chart-type"].FirstOrDefault() ?? "doughnut";
+      var chartLegend = (Context.Request.Query["chart-legend"].FirstOrDefault() ?? "true") != "false";
+      var chartPct = (Context.Request.Query["chart-pct"].FirstOrDefault() ?? "false") == "true";
+      var isPieLike = chartType == "doughnut" || chartType == "pie";
+      var chartTypeLabels = new Dictionary<string, string> {
+         { "doughnut", "Doughnut" }, { "pie", "Pie" }, { "bar", "Bar" },
+         { "hbar", "Horiz. Bar" }, { "line", "Line" }
+      };
+      var currentLabel = chartTypeLabels.GetValueOrDefault(chartType, "Doughnut");
+      <div class="d-flex justify-content-center gap-2 align-items-center flex-wrap">
+         <div class="btn-group btn-group-sm" role="group">
+            <button class="btn btn-sm btn-outline-secondary" disabled style="min-width:80px;">@currentLabel</button>
+            <button class="btn dropdown-toggle btn-sm btn-outline-secondary" data-bs-toggle="dropdown" aria-expanded="false" title="chart style">
+               <span class="caret"></span>
+            </button>
+            <div class="dropdown-menu">
+               @foreach (var kv in chartTypeLabels) {
+                  <a class="dropdown-item @(kv.Key == chartType ? "active" : string.Empty)"
+                     href="javascript:setChartType('@kv.Key');">@kv.Value</a>
+               }
+            </div>
+         </div>
+         <button class="btn btn-sm @(chartLegend ? "btn-secondary" : "btn-outline-secondary")"
+                 onclick="toggleChartLegend();" title="Toggle legend">Legend</button>
+         @if (isPieLike) {
+            <button class="btn btn-sm @(chartPct ? "btn-secondary" : "btn-outline-secondary")"
+                    onclick="toggleChartPct();" title="Show percentages">%</button>
+         }
+      </div>
+   } else if (entity.Page == 0 || Model.Process.Mode == "map" && !Model.Part.PageSizesExtended.Enabled() || Model.Process.Mode == "calendar" && !Model.Part.PageSizesExtended.Enabled()) {
         <h3 class="text-primary" style="margin: 2px 0px 0px 0px;">@(entity.Label == string.Empty ? entity.Alias : entity.Label)</h3>
     } else {
          <nav aria-label="breadcrumb-and-pagination" style="--bs-breadcrumb-divider: url(&#34;data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='8' height='8'%3E%3Cpath d='M2.5 0L1 1.5 3.5 4 1 6.5 2.5 8l4-4-4-4z' fill='currentColor'/%3E%3C/svg%3E&#34;);">
@@ -223,7 +253,8 @@
                }*@
 
                // for now, if map is not enabled, you don't need this because there is only map and report views so far (no calendar)
-               if (Model.Part.Map.Value && hasCoordinates || Model.Part.Calendar.Value) {
+               var hasFacetMaps = Model.Process.Maps.Any(m => m.Name.StartsWith("map-", StringComparison.OrdinalIgnoreCase));
+               if (Model.Part.Map.Value && hasCoordinates || Model.Part.Calendar.Value || hasFacetMaps) {
 
                   var headless = Context.Request.GetDisplayUrl().Contains("Headless");
 
@@ -262,6 +293,16 @@
                         Active = Model.Process.Mode == "calendar",
                         Glyphicon = "calendar",
                         Link = linkService.Create(Model.IdOrAlias, calendarUrl, !Model.Part.PageSizesExtended.Enabled())
+                     });
+                  }
+
+                  if (hasFacetMaps) {
+
+                     var chartUrl = Url.Action("Index", "Chart", new { ContentItemId = Model.IdOrAlias });
+                     views.Add(new PipelineViewModel("chart") {
+                        Active = Model.Process.Mode == "chart",
+                        Glyphicon = "poll",
+                        Link = linkService.Create(Model.IdOrAlias, chartUrl, true)
                      });
                   }
 

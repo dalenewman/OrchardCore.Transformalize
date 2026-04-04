@@ -1,0 +1,45 @@
+.chart-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    column-gap: 16px;
+    row-gap: 16px;
+    padding: 24px 24px 48px;
+    box-sizing: border-box;
+}
+
+@media (max-width: 1020px) {
+    .chart-grid {
+        grid-template-columns: 1fr;
+        column-gap: 0;
+    }
+}
+
+.chart-card {
+    background: #ffffff;
+    border-radius: 16px;
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+}
+
+.chartTitle {
+    color: #141A1F;
+    font-family: 'Nunito', sans-serif;
+    font-size: 18px;
+    font-weight: 600;
+    margin-bottom: 12px;
+}
+
+.chart {
+    position: relative;
+    width: 100%;
+    max-width: 700px;
+    margin: 0 auto;
+    height: clamp(300px, calc(70vh - 120px), 800px);
+}
+
+.chart canvas {
+    width: 100% !important;
+    height: 100% !important;
+    display: block;
+}

@@ -36,5 +36,6 @@ namespace TransformalizeModule.ViewModels {
       public TextField CalendarClassField { get; set; }
       public TextField CalendarStartField { get; set; }
       public TextField CalendarEndField { get; set; }
+
    }
 }
