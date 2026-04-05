@@ -1,3 +1,11 @@
+# 0.17.7 <small>2026-04-05</small>
+
+## 🐞 Bug Fixes
+- Remove chart flash before animation
+- Add content item permissions part to Transformalize types
+
+<!-- CHANGELOG_BOUNDARY -->
+
 # 0.17.6 <small>2026-04-05</small>
 
 ## 🚀 Features
@@ -5,6 +13,8 @@
 
 ## 🐞 Bug Fixes
 - Fix chart animations
+
+<!-- CHANGELOG_BOUNDARY -->
 
 # 0.17.5 <small>2026-04-04</small>
 
