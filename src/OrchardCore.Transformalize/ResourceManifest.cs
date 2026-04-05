@@ -395,7 +395,7 @@ namespace TransformalizeModule {
          _manifest
             .DefineScript("charts-loader")
             .SetUrl($"~/{Common.ModuleName}/Scripts/chart/charts-loader.js")
-            .SetVersion("1.0.0")
+            .SetVersion("1.0.3")
             .SetDependencies("chart-js");
 
          _manifest

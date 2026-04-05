@@ -41,6 +41,7 @@ function toggleChartPct() {
         const options = {
             responsive: true,
             maintainAspectRatio: false,
+            animation: false,
             onClick: (event, elements) => {
                 if (!isFilterable || !elements.length) return;
                 const clickedLabel = labels[elements[0].index];
@@ -163,6 +164,15 @@ function toggleChartPct() {
         });
 
         chart.config._originalData = [...chart.data.datasets[0].data];
+
+        // Let the ResizeObserver settle, then trigger the entry animation
+        requestAnimationFrame(() => {
+            requestAnimationFrame(() => {
+                chart.options.animation = { duration: 800, easing: 'easeInOutQuart' };
+                chart.reset();
+                chart.update();
+            });
+        });
     };
 
     charts.forEach(chart => createChart(chart));
