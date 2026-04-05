@@ -1,3 +1,11 @@
+# 0.17.6 <small>2026-04-05</small>
+
+## 🚀 Features
+- Add report title and record count to chart view
+
+## 🐞 Bug Fixes
+- Fix chart animations
+
 # 0.17.5 <small>2026-04-04</small>
 
 ## 🚀 Features

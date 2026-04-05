@@ -134,6 +134,12 @@
       };
       var currentLabel = chartTypeLabels.GetValueOrDefault(chartType, "Doughnut");
       <div class="d-flex justify-content-center gap-2 align-items-center flex-wrap">
+         <small class="text-muted fw-semibold" style="white-space:nowrap;">
+            @Model.Title
+            @if (entity.Hits > 0) {
+               <span class="fw-normal">&middot; @entity.Hits.ToString("#,##0")</span>
+            }
+         </small>
          <div class="btn-group btn-group-sm" role="group">
             <button class="btn btn-sm btn-outline-secondary" disabled style="min-width:80px;">@currentLabel</button>
             <button class="btn dropdown-toggle btn-sm btn-outline-secondary" data-bs-toggle="dropdown" aria-expanded="false" title="chart style">
