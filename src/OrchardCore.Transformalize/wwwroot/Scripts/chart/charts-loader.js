@@ -17,6 +17,7 @@ function toggleChartPct() {
     const charts = document.querySelectorAll("[id^='chart_']");
 
     const createChart = (chartElement) => {
+        chartElement.style.opacity = '0';
         const ctx = chartElement;
         const elementDataset = ctx.dataset;
         const labels = JSON.parse(elementDataset.labels);
@@ -145,7 +146,7 @@ function toggleChartPct() {
             options.indexAxis = 'y';
         }
 
-        let chart = new Chart(ctx, {
+        const chart = new Chart(ctx, {
             type: chartType,
             data: {
                 labels: labels,
@@ -165,10 +166,23 @@ function toggleChartPct() {
 
         chart.config._originalData = [...chart.data.datasets[0].data];
 
-        // Let the ResizeObserver settle, then trigger the entry animation
+        // Let the ResizeObserver settle, then trigger the entry animation.
+        // Delay revealing the canvas until onProgress fires on the first animation
+        // frame — by then Chart.js has drawn the from-zero state, so there is no
+        // flash of the fully-rendered chart before the animation begins.
         requestAnimationFrame(() => {
             requestAnimationFrame(() => {
-                chart.options.animation = { duration: 800, easing: 'easeInOutQuart' };
+                let revealed = false;
+                chart.options.animation = {
+                    duration: 800,
+                    easing: 'easeInOutQuart',
+                    onProgress: () => {
+                        if (!revealed) {
+                            revealed = true;
+                            chartElement.style.opacity = '1';
+                        }
+                    }
+                };
                 chart.reset();
                 chart.update();
             });
