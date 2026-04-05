@@ -6,6 +6,7 @@ using OrchardCore.ContentManagement.Metadata;
 using OrchardCore.ContentManagement.Metadata.Settings;
 using OrchardCore.Data.Migration;
 using OrchardCore.Features.Services;
+using OrchardCoreContrib.ContentPermissions.Models;
 
 namespace TransformalizeModule {
    public class Migrations : DataMigration {
@@ -251,7 +252,7 @@ namespace TransformalizeModule {
                  .WithPosition("5")
                  .WithSettings(new TextFieldSettings {
                     Required = false,
-                    Hint = "To overide default extended page sizes, specify a comma delimited list of page sizes (integers). To use the common extended page sizes defined in settings, leave it blank. To disable pagination for calendar or map, set this to 0."
+                    Hint = "To override default extended page sizes, specify a comma delimited list of page sizes (integers). To use the common extended page sizes defined in settings, leave it blank. To disable pagination for calendar or map, set this to 0."
                  }
                 )
              )
@@ -456,6 +457,22 @@ namespace TransformalizeModule {
          );
 
          return 9;
+      }
+
+      public int UpdateFrom9() {
+
+         var settings = new ContentPermissionsPartSettings {
+            EnableRoles = true,
+            EnableUsers = false
+         };
+
+         foreach (var contentType in new[] { "TransformalizeReport", "TransformalizeTask", "TransformalizeForm", "TransformalizeFile" }) {
+            _contentDefinitionManager.AlterTypeDefinitionAsync(contentType, builder => builder
+               .WithPart("ContentPermissionsPart", part => part.WithPosition("5").WithSettings(settings))
+            );
+         }
+
+         return 10;
       }
 
       private async Task EnableFeature(string id) {
