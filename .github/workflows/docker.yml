@@ -135,6 +135,8 @@ jobs:
 
       - name: Extract metadata (regular)
         uses: docker/metadata-action@v5
+        env:
+          DOCKER_METADATA_SET_OUTPUT_ENV: true
         with:
           images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
           tags: |
@@ -153,6 +155,8 @@ jobs:
 
       - name: Extract metadata (alpine)
         uses: docker/metadata-action@v5
+        env:
+          DOCKER_METADATA_SET_OUTPUT_ENV: true
         with:
           images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
           flavor: |
