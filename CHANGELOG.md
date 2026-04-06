@@ -1,3 +1,11 @@
+# 0.17.8 <small>2026-04-06</small>
+
+## 🐞 Bug Fixes
+- Check for content item permission before adding them to Transformalize types
+- Also get back to 0.* versions (accidently went to 1.*)
+
+<!-- CHANGELOG_BOUNDARY -->
+
 # 0.17.7 <small>2026-04-05</small>
 
 ## 🐞 Bug Fixes

@@ -25,9 +25,9 @@ namespace TransformalizeModule {
          _logger = logger;
       }
 
-      public int Create() {
+      public async Task<int> CreateAsync() {
 
-         _contentDefinitionManager.AlterPartDefinitionAsync("TransformalizeReportPart", part => part
+         await _contentDefinitionManager.AlterPartDefinitionAsync("TransformalizeReportPart", part => part
              .WithDisplayName("Transformalize Report Part")
              .WithDescription("Fields for Transformalize Report content type")
              .WithField("Arrangement", field => field
@@ -119,7 +119,7 @@ namespace TransformalizeModule {
               )
          );
 
-         _contentDefinitionManager.AlterTypeDefinitionAsync("TransformalizeReport", builder => builder
+         await _contentDefinitionManager.AlterTypeDefinitionAsync("TransformalizeReport", builder => builder
              .Creatable()
              .Listable()
              .WithPart("TitlePart", part => part.WithPosition("1"))
@@ -133,7 +133,7 @@ namespace TransformalizeModule {
              .WithPart("CommonPart", part => part.WithPosition("4"))
          );
 
-         _contentDefinitionManager.AlterPartDefinitionAsync("TransformalizeTaskPart", part => part
+         await _contentDefinitionManager.AlterPartDefinitionAsync("TransformalizeTaskPart", part => part
              .WithDisplayName("Transformalize Task Part")
              .WithDescription("Provides fields for Transformalize Task content type")
              .WithField("Arrangement", field => field
@@ -149,7 +149,7 @@ namespace TransformalizeModule {
             )
          );
 
-         _contentDefinitionManager.AlterTypeDefinitionAsync("TransformalizeTask", builder => builder
+         await _contentDefinitionManager.AlterTypeDefinitionAsync("TransformalizeTask", builder => builder
              .Creatable()
              .Listable()
              .WithPart("TitlePart", part => part.WithPosition("1"))
@@ -166,8 +166,8 @@ namespace TransformalizeModule {
          return 1;
       }
 
-      public int UpdateFrom1() {
-         _contentDefinitionManager.AlterPartDefinitionAsync("TransformalizeReportPart", part => part
+      public async Task<int> UpdateFrom1Async() {
+         await _contentDefinitionManager.AlterPartDefinitionAsync("TransformalizeReportPart", part => part
           .WithField("Map", field => field
              .OfType(nameof(BooleanField))
              .WithDisplayName("Map")
@@ -218,8 +218,8 @@ namespace TransformalizeModule {
          return 2;
       }
 
-      public int UpdateFrom2() {
-         _contentDefinitionManager.AlterPartDefinitionAsync("TransformalizeReportPart", part => part
+      public async Task<int> UpdateFrom2Async() {
+         await _contentDefinitionManager.AlterPartDefinitionAsync("TransformalizeReportPart", part => part
           .WithField("MapRadiusField", field => field
              .OfType(nameof(TextField))
              .WithDisplayName("Map Radius Field")
@@ -244,8 +244,8 @@ namespace TransformalizeModule {
          return 3;
       }
 
-      public int UpdateFrom3() {
-         _contentDefinitionManager.AlterPartDefinitionAsync("TransformalizeReportPart", part => part
+      public async Task<int> UpdateFrom3Async() {
+         await _contentDefinitionManager.AlterPartDefinitionAsync("TransformalizeReportPart", part => part
           .WithField("PageSizesExtended", field => field
                  .OfType(nameof(TextField))
                  .WithDisplayName("Page Sizes Extended")
@@ -261,8 +261,8 @@ namespace TransformalizeModule {
          return 4;
       }
 
-      public int UpdateFrom4() {
-         _contentDefinitionManager.AlterPartDefinitionAsync("TransformalizeReportPart", part => part
+      public async Task<int> UpdateFrom4Async() {
+         await _contentDefinitionManager.AlterPartDefinitionAsync("TransformalizeReportPart", part => part
          .WithField("Calendar", field => field
                 .OfType(nameof(BooleanField))
                 .WithDisplayName("Calendar")
@@ -334,9 +334,9 @@ namespace TransformalizeModule {
          return 5;
       }
 
-      public int UpdateFrom5() {
+      public async Task<int> UpdateFrom5Async() {
 
-         _contentDefinitionManager.AlterPartDefinitionAsync("TransformalizeFormPart", part => part
+         await _contentDefinitionManager.AlterPartDefinitionAsync("TransformalizeFormPart", part => part
              .WithDisplayName("Transformalize Form Part")
              .WithDescription("Provides fields for Transformalize Form content type")
              .WithField("Arrangement", field => field
@@ -352,7 +352,7 @@ namespace TransformalizeModule {
             )
          );
 
-         _contentDefinitionManager.AlterTypeDefinitionAsync("TransformalizeForm", builder => builder
+         await _contentDefinitionManager.AlterTypeDefinitionAsync("TransformalizeForm", builder => builder
              .Creatable()
              .Listable()
              .WithPart("TitlePart", part => part.WithPosition("1"))
@@ -370,9 +370,9 @@ namespace TransformalizeModule {
 
       }
 
-      public int UpdateFrom6() {
+      public async Task<int> UpdateFrom6Async() {
 
-         _contentDefinitionManager.AlterPartDefinitionAsync("TransformalizeFilePart", part => part
+         await _contentDefinitionManager.AlterPartDefinitionAsync("TransformalizeFilePart", part => part
              .WithDisplayName("Transformalize File Part")
              .WithDescription("Provides fields for Transformalize File content type")
              .WithField("OriginalName", field => field
@@ -396,7 +396,7 @@ namespace TransformalizeModule {
             )
          );
 
-         _contentDefinitionManager.AlterTypeDefinitionAsync("TransformalizeFile", builder => builder
+         await _contentDefinitionManager.AlterTypeDefinitionAsync("TransformalizeFile", builder => builder
              .WithPart("AliasPart", part => part
                  .WithPosition("1")
                  .WithSettings(new AliasPartSettings {
@@ -411,13 +411,13 @@ namespace TransformalizeModule {
 
       }
 
-      public int UpdateFrom7() {
+      public async Task<int> UpdateFrom7Async() {
          return 8;
       }
 
-      public int UpdateFrom8() {
+      public async Task<int> UpdateFrom8Async() {
 
-         _contentDefinitionManager.AlterPartDefinitionAsync("TransformalizeFormPart", part => part
+         await _contentDefinitionManager.AlterPartDefinitionAsync("TransformalizeFormPart", part => part
          .WithField("LocationEnableHighAccuracy", field => field
                 .OfType(nameof(BooleanField))
                 .WithDisplayName("Enable High Accuracy")
@@ -459,7 +459,7 @@ namespace TransformalizeModule {
          return 9;
       }
 
-      public int UpdateFrom9() {
+      public async Task<int> UpdateFrom9Async() {
 
          var settings = new ContentPermissionsPartSettings {
             EnableRoles = true,
@@ -467,27 +467,15 @@ namespace TransformalizeModule {
          };
 
          foreach (var contentType in new[] { "TransformalizeReport", "TransformalizeTask", "TransformalizeForm", "TransformalizeFile" }) {
-            _contentDefinitionManager.AlterTypeDefinitionAsync(contentType, builder => builder
-               .WithPart("ContentPermissionsPart", part => part.WithPosition("5").WithSettings(settings))
-            );
+            var typeDefinition = await _contentDefinitionManager.GetTypeDefinitionAsync(contentType);
+            if (typeDefinition != null && typeDefinition.Parts.All(p => p.Name != "ContentPermissionsPart")) {
+               await _contentDefinitionManager.AlterTypeDefinitionAsync(contentType, builder => builder
+                  .WithPart("ContentPermissionsPart", part => part.WithPosition("5").WithSettings(settings))
+               );
+            }
          }
 
          return 10;
-      }
-
-      private async Task EnableFeature(string id) {
-
-         var availableFeatures = await _moduleService.GetAvailableFeaturesAsync();
-
-         var contentFields = availableFeatures.FirstOrDefault(f => f.Descriptor.Id == id);
-         if (contentFields != null) {
-            if (!contentFields.IsEnabled) {
-               _logger.LogInformation($"Enabling {id}");
-               await _moduleService.EnableFeaturesAsync(new[] { id });
-            }
-         } else {
-            _logger.LogError($"Unable to find {id} features required for Transformalize.");
-         }
       }
    }
 }
