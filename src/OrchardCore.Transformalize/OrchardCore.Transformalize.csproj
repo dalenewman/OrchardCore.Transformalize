@@ -3,9 +3,9 @@
       <TargetFramework>net8.0</TargetFramework>
       <AddRazorSupportForMvc>true</AddRazorSupportForMvc>
       <RootNamespace>TransformalizeModule</RootNamespace>
-      <Version>0.17.8</Version>
-      <FileVersion>0.17.8</FileVersion>
-      <AssemblyVersion>0.17.8</AssemblyVersion>
+      <Version>0.18.0</Version>
+      <FileVersion>0.18.0</FileVersion>
+      <AssemblyVersion>0.18.0</AssemblyVersion>
       <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
       <Authors>Dale Newman</Authors>
       <Copyright>Copyright © 2013-2026</Copyright>
@@ -51,9 +51,8 @@
 
       <!-- misc -->
       <PackageReference Include="Flurl" Version="3.0.7" />
-      <PackageReference Include="Nito.AsyncEx" Version="5.1.2" />
       <PackageReference Include="NodaTime" Version="3.2.0" />
-      <PackageReference Include="OrchardCoreContrib.ContentPermissions" Version="1.0.0" />
+      <PackageReference Include="OrchardCoreContrib.ContentPermissions" Version="1.1.0" />
 
       <!-- transformalize updated -->
       <PackageReference Include="Transformalize.Container.Autofac" Version="1.0.0" />

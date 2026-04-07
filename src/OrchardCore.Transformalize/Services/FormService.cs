@@ -1,10 +1,7 @@
 ﻿using TransformalizeModule.Models;
 using TransformalizeModule.Services.Contracts;
 using OrchardCore.ContentManagement;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 using Transformalize.Configuration;
-using System.Linq;
 
 namespace TransformalizeModule.Services {
    public class FormService : IFormService {
@@ -31,12 +28,12 @@ namespace TransformalizeModule.Services {
          return _arrangementService.GetByIdOrAliasAsync(idOrAlias);
       }
 
-      public Process LoadForParameters(ContentItem contentItem, IDictionary<string,string> parameters = null) {
-         return _loadService.LoadForParameters(contentItem, parameters);
+      public async Task<Process> LoadForParametersAsync(ContentItem contentItem, IDictionary<string,string> parameters = null) {
+         return await _loadService.LoadForParametersAsync(contentItem, parameters);
       }
 
-      public Process LoadForForm(ContentItem contentItem, IDictionary<string, string> parameters = null, string format = null) {
-         return _loadService.LoadForForm(contentItem, parameters, format);
+      public async Task<Process> LoadForFormAsync(ContentItem contentItem, IDictionary<string, string> parameters = null, string format = null) {
+         return await _loadService.LoadForFormAsync(contentItem, parameters, format);
       }
 
       public async Task RunAsync(Process process) {
@@ -60,7 +57,7 @@ namespace TransformalizeModule.Services {
             return response;
          }
 
-         response.Process = LoadForParameters(response.ContentItem, request.InternalParameters);
+         response.Process = await LoadForParametersAsync(response.ContentItem, request.InternalParameters);
          if (response.Process.Status != 200) {
             SetupLoadErrorResponse(request, response);
             return response;
@@ -93,7 +90,7 @@ namespace TransformalizeModule.Services {
             return response;
          }
 
-         response.Process = LoadForForm(response.ContentItem, request.InternalParameters, request.Format);
+         response.Process = await LoadForFormAsync(response.ContentItem, request.InternalParameters, request.Format);
 
          if(response.Process.Connections.Where(c=>c.Table != "[default]").Count() != 1) {
             SetupCustomErrorResponse(request, response, "Missing form table in connection.");

@@ -21,8 +21,6 @@ using Cfg.Net.Contracts;
 using TransformalizeModule.Services.Contracts;
 using TransformalizeModule.Services.Modifiers;
 using TransformalizeModule.Services.Modules;
-using System.Collections.Generic;
-using System.Linq;
 using Transformalize.Configuration;
 using Transformalize.Containers.Autofac.Modules;
 using Transformalize.Contracts;
@@ -32,8 +30,6 @@ using IContainer = TransformalizeModule.Services.Contracts.IContainer;
 using StackExchange.Profiling;
 using OrchardCore.DisplayManagement.Notify;
 using Microsoft.AspNetCore.Mvc.Localization;
-using System.Threading.Tasks;
-using Nito.AsyncEx;
 
 namespace TransformalizeModule.Services {
 
@@ -65,10 +61,6 @@ namespace TransformalizeModule.Services {
          _container = container;
          _notifier = notifier;
          H = htmlLocalizer;
-      }
-
-      public string Modify(string cfg, long id, IDictionary<string, string> parameters) {
-         return AsyncContext.Run(() => ModifyAsync(cfg, id, parameters));
       }
 
       public async Task<string> ModifyAsync(string cfg, long id, IDictionary<string, string> parameters) {
@@ -210,8 +202,8 @@ namespace TransformalizeModule.Services {
 
             CfgRow output;
             _container.GetReaderAlternate = (input, rowFactory) => new ParameterRowReader(input, new DefaultRowReader(input, rowFactory));
-            using (var scope = _container.CreateScope(process, _logger, null)) {
-               scope.Resolve<IProcessController>().Execute();
+            await using (var scope = await _container.CreateScopeAsync(process, _logger, null)) {
+               await scope.Resolve<IProcessController>().ExecuteAsync();
                output = process.Entities[0].Rows.FirstOrDefault();
             }
 

@@ -29,8 +29,8 @@ public static class ChartHelper
                       : !string.IsNullOrEmpty(field?.Alias) ? field.Alias
                       : fieldName;
 
-            var labels = map.Items.Select(i => i.To.ToInvariantString().Replace("''", "'")).ToList();
-            var values = map.Items.Select(i => NumberFromMapItem(i.From.ToInvariantString())).ToList();
+            var labels = map.Items.Select(i => (i.To?.ToInvariantString() ?? string.Empty).Replace("''", "'")).ToList();
+            var values = map.Items.Select(i => NumberFromMapItem(i.From?.ToInvariantString())).ToList();
             var parameterName = field?.Name ?? fieldName;
 
             charts.Add(new FacetChart(title, labels, values, parameterName));
@@ -39,8 +39,9 @@ public static class ChartHelper
         return charts;
     }
 
-    private static double NumberFromMapItem(string input)
+    private static double NumberFromMapItem(string? input)
     {
+        if (input == null) return 0;
         var match = CountPattern.Match(input);
         return match.Success ? double.Parse(match.Groups[1].Value) : 0;
     }

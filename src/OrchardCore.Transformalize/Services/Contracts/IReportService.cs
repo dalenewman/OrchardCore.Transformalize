@@ -1,5 +1,4 @@
 using TransformalizeModule.Models;
-using System.Threading.Tasks;
 using OrchardCore.ContentManagement;
 using Transformalize.Configuration;
 
@@ -7,11 +6,11 @@ namespace TransformalizeModule.Services.Contracts {
    public interface IReportService : IArrangementService, IArrangementStreamService {
       Task<TransformalizeResponse<TransformalizeReportPart>> Validate(TransformalizeRequest request);
 
-      Process LoadForReport(ContentItem contentItem, string format = null);
-      Process LoadForStream(ContentItem contentItem);
-      Process LoadForBatch(ContentItem contentItem);
-      Process LoadForMap(ContentItem contentItem);
-      Process LoadForMapStream(ContentItem contentItem);
-      Process LoadForChart(ContentItem contentItem);
+      Task<Process> LoadForReportAsync(ContentItem contentItem, string format = null);
+      Task<Process> LoadForStreamAsync(ContentItem contentItem);
+      Task<Process> LoadForBatchAsync(ContentItem contentItem);
+      Task<Process> LoadForMapAsync(ContentItem contentItem);
+      Task<Process> LoadForMapStreamAsync(ContentItem contentItem);
+      Task<Process> LoadForChartAsync(ContentItem contentItem);
    }
 }

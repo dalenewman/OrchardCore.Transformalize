@@ -22,7 +22,8 @@ namespace TransformalizeModule.Services.Contracts {
 
    public interface IArrangementModifier {
       ISerializer Serializer { get; set; }
-      string Modify(string cfg, long id, IDictionary<string, string> parameters);
+
+      Task<string> ModifyAsync(string cfg, long id, IDictionary<string, string> parameters);
    }
 
    // for dependency injection

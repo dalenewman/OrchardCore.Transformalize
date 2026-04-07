@@ -1,6 +1,5 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using TransformalizeModule.Services.Contracts;
-using System;
 using Transformalize;
 using Transformalize.Contracts;
 using Action = Transformalize.Configuration.Action;
@@ -20,6 +19,10 @@ namespace TransformalizeModule.Services {
       }
 
       public ActionResponse Execute() {
+         throw new NotImplementedException("Please use the async version of this method.");
+      }
+
+      public async Task<ActionResponse> ExecuteAsync() {
          var response = new ActionResponse() { Action = _action };
 
          var taskService = _serviceProvider.GetRequiredService<ITaskService>();
@@ -27,8 +30,8 @@ namespace TransformalizeModule.Services {
          if (!string.IsNullOrEmpty(_action.Name)) {
             var contentItem = taskService.GetByIdOrAliasAsync(_action.Name);
             if (contentItem.Result != null) {
-               var process = taskService.LoadForTask(contentItem.Result);
-               taskService.RunAsync(process);
+               var process = await taskService.LoadForTaskAsync(contentItem.Result);
+               await taskService.RunAsync(process);
                response.Code = process.Status;
                response.Message = process.Message;
             } else {
@@ -51,7 +54,7 @@ namespace TransformalizeModule.Services {
          if (!string.IsNullOrEmpty(_action.Name)) {
             var contentItem = taskService.GetByIdOrAliasAsync(_action.Name);
             if (contentItem.Result != null) {
-               var process = taskService.LoadForTask(contentItem.Result);
+               var process = await taskService.LoadForTaskAsync(contentItem.Result);
                await taskService.RunAsync(process);
                response.Code = process.Status;
                response.Message = process.Message;

@@ -68,19 +68,6 @@ namespace ProxyModule {
          return 1;
       }
 
-      private async Task EnableFeature(string id) {
 
-         var availableFeatures = await _moduleService.GetAvailableFeaturesAsync();
-
-         var contentFields = availableFeatures.FirstOrDefault(f => f.Descriptor.Id == id);
-         if (contentFields != null) {
-            if (!contentFields.IsEnabled) {
-               _logger.LogInformation($"Enabling {id}");
-               await _moduleService.EnableFeaturesAsync(new[] { id });
-            }
-         } else {
-            _logger.LogError($"Unable to find {id} features required for Proxy.");
-         }
-      }
    }
 }

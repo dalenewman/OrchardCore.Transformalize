@@ -142,7 +142,7 @@ namespace TransformalizeModule.Controllers {
             }
 
             if (request.ActionCount == 0) {
-               var batchProcess = _reportService.LoadForBatch(report.ContentItem);
+               var batchProcess = await _reportService.LoadForBatchAsync(report.ContentItem);
 
                await _taskService.RunAsync(batchProcess);
                foreach (var batchRow in batchProcess.Entities.First().Rows) {

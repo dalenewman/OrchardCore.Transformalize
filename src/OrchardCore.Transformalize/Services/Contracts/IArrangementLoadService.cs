@@ -3,17 +3,17 @@ using Transformalize.Configuration;
 
 namespace TransformalizeModule.Services.Contracts {
    public interface IArrangementLoadService {
-      Process LoadForReport(ContentItem contentItem, string format = null);
-      Process LoadForMap(ContentItem contentItem);
-      Process LoadForCalendar(ContentItem contentItem);
-      Process LoadForChart(ContentItem contentItem);
-      Process LoadForStream(ContentItem contentItem);
-      Process LoadForTask(ContentItem contentItem, IDictionary<string,string> parameters = null, string format = null);
-      Process LoadForBatch(ContentItem contentItem);
-      Process LoadForMapStream(ContentItem contentItem);
-      Process LoadForCalendarStream(ContentItem contentItem);
-      Process LoadForParameters(ContentItem contentItem, IDictionary<string,string> parameters = null);
-      Process LoadForForm(ContentItem contentItem, IDictionary<string, string> parameters = null, string format = null);
-      Process LoadForSchema(ContentItem contentItem, string format = "xml");
+      Task<Process> LoadForReportAsync(ContentItem contentItem, string format = null);
+      Task<Process> LoadForMapAsync(ContentItem contentItem);
+      Task<Process> LoadForCalendarAsync(ContentItem contentItem);
+      Task<Process> LoadForChartAsync(ContentItem contentItem);
+      Task<Process> LoadForStreamAsync(ContentItem contentItem);
+      Task<Process> LoadForTaskAsync(ContentItem contentItem, IDictionary<string,string> parameters = null, string format = null);
+      Task<Process> LoadForBatchAsync(ContentItem contentItem);
+      Task<Process> LoadForMapStreamAsync(ContentItem contentItem);
+      Task<Process> LoadForCalendarStreamAsync(ContentItem contentItem);
+      Task<Process> LoadForParametersAsync(ContentItem contentItem, IDictionary<string,string> parameters = null);
+      Task<Process> LoadForFormAsync(ContentItem contentItem, IDictionary<string, string> parameters = null, string format = null);
+      Task<Process> LoadForSchemaAsync(ContentItem contentItem, string format = "xml");
    }
 }

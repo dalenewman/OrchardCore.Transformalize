@@ -11,32 +11,31 @@
 
 @{
 
-   var hasParameters = Model.Process.Parameters.Any(p => p.Prompt);
-   var entity = Model.Process.Entities.FirstOrDefault() ?? new Entity { Name = "Missing Entity" };
-   var entityTitle = entity.Label == string.Empty ? entity.Alias : entity.Label;
+    var hasParameters = Model.Process.Parameters.Any(p => p.Prompt);
+    var entity = Model.Process.Entities.FirstOrDefault() ?? new Entity { Name = "Missing Entity" };
+    var entityTitle = entity.Label == string.Empty ? entity.Alias : entity.Label;
+    var settings = Context.RequestServices.GetService<ISettingsService>();
+    var pageSizes = new List<int>();
+    if (Model.Part != null) {
+        pageSizes.AddRange(settings.GetPageSizes(Model.Part));
+        if(Model.Process.Mode == "map" || Model.Process.Mode == "calendar" || Model.Process.Mode == "chart") {
+            if (Model.Part.PageSizesExtended.Enabled()) {
+                pageSizes.AddRange(settings.GetPageSizesExtended(Model.Part));
+            } else {
+                pageSizes.Clear();
+            }
+        }
+    }
+    var pagingDisabled = pageSizes.Count < 2 || Model.Process.Mode != "report";
+    var allFields = entity.GetAllFields().Where(f => !f.System).ToArray();
+    var hasCoordinates = allFields.Any(f => f.Alias.StartsWith("lat", StringComparison.OrdinalIgnoreCase)) && allFields.Any(f => f.Alias.StartsWith("lon", StringComparison.OrdinalIgnoreCase));
 
-   var settings = Context.RequestServices.GetService<ISettingsService>();
-   var pageSizes = new List<int>();
-   if (Model.Part != null) {
-      pageSizes.AddRange(settings.GetPageSizes(Model.Part));
-      if(Model.Process.Mode == "map" || Model.Process.Mode == "calendar" || Model.Process.Mode == "chart") {
-         if (Model.Part.PageSizesExtended.Enabled()) {
-            pageSizes.AddRange(settings.GetPageSizesExtended(Model.Part));
-         } else {
-            pageSizes.Clear();
-         }
-      }
-   }
-
-   var allFields = entity.GetAllFields().Where(f => !f.System).ToArray();
-   var hasCoordinates = allFields.Any(f => f.Alias.StartsWith("lat", StringComparison.OrdinalIgnoreCase)) && allFields.Any(f => f.Alias.StartsWith("lon", StringComparison.OrdinalIgnoreCase));
-
-   var linkService = Context.RequestServices.GetService<ILinkService>();
-   var exportCsvLink = linkService.Create(Model.Item.ContentItemId, Url.Action("StreamCsv", new { ContentItemId = Model.IdOrAlias }), true);
-   var exportJsonLink = linkService.Create(Model.Item.ContentItemId, Url.Action("StreamJson", new { ContentItemId = Model.IdOrAlias }), true);
-   var exportGeoJsonLink = linkService.Create(Model.Item.ContentItemId, Url.Action("StreamGeoJson", new { ContentItemId = Model.IdOrAlias }), true);
-
-   var views = new List<PipelineViewModel>();
+    var linkService = Context.RequestServices.GetService<ILinkService>();
+    var exportCsvLink = linkService.Create(Model.Item.ContentItemId, Url.Action("StreamCsv", new { ContentItemId = Model.IdOrAlias }), true);
+    var exportJsonLink = linkService.Create(Model.Item.ContentItemId, Url.Action("StreamJson", new { ContentItemId = Model.IdOrAlias }), true);
+    var exportGeoJsonLink = linkService.Create(Model.Item.ContentItemId, Url.Action("StreamGeoJson", new { ContentItemId = Model.IdOrAlias }), true);
+    var downloadingDisabled = Model.Process.Mode != "report";
+    var views = new List<PipelineViewModel>();
 
    var auth = Context.RequestServices.GetService<IAuthorizationService>();
    var edit =  Model.QueryValue("edit") != string.Empty;
@@ -260,7 +259,7 @@
 
                // for now, if map is not enabled, you don't need this because there is only map and report views so far (no calendar)
                var hasFacetMaps = Model.Process.Maps.Any(m => m.Name.StartsWith("map-", StringComparison.OrdinalIgnoreCase));
-               if (Model.Part.Map.Value && hasCoordinates || Model.Part.Calendar.Value || hasFacetMaps) {
+               if (Model.Part.Map.Value && hasCoordinates || Model.Part.Calendar.Value ||  (hasFacetMaps && !Model.BreadCrumbs.Any())) {
 
                   var headless = Context.Request.GetDisplayUrl().Contains("Headless");
 
@@ -302,7 +301,7 @@
                      });
                   }
 
-                  if (hasFacetMaps) {
+                  if (hasFacetMaps && !Model.BreadCrumbs.Any()) {
 
                      var chartUrl = Url.Action("Index", "Chart", new { ContentItemId = Model.IdOrAlias });
                      views.Add(new PipelineViewModel("chart") {
@@ -332,13 +331,13 @@
                }
 
                <div class="btn-group btn-group-sm">
-                  <button type="button" class="btn btn-sm btn-info" title="save to csv file" onclick="openRandomLink('@exportCsvLink');">
+                  <button type="button" class="btn btn-sm btn-info" title="save to csv file" onclick="openRandomLink('@exportCsvLink');" disabled="@downloadingDisabled">
                      <span class="fas fa-save"></span>
                   </button>
-                  <button class="btn dropdown-toggle btn-sm btn-info" title="other formats" data-bs-toggle="dropdown">
+                  <button class="btn dropdown-toggle btn-sm btn-info" title="other formats" data-bs-toggle="dropdown" disabled="@downloadingDisabled">
                      <span class="caret"></span>
                   </button>
-                  <ul class="dropdown-menu">
+                  <ul class="dropdown-menu" disabled="@downloadingDisabled">
                      <li><a class="dropdown-item" href="javascript:openRandomLink('@exportCsvLink');" title="save to csv file"><span class="fas fa-download me-1"></span>CSV</a></li>
                      <li><a class="dropdown-item" href="javascript:openRandomLink('@exportJsonLink');" title="save to json file"><span class="fas fa-download me-1"></span>JSON</a></li>
                      @{
@@ -350,21 +349,18 @@
                   </ul>
                </div>
 
-               if (pageSizes.Count < 2) {
-                  <!-- paging is disabled -->
-               } else {
                   <div class="btn-group btn-group-sm">
                      <button class="btn btn-sm btn-outline-info" disabled="disabled">Size</button>
-                     <button class="btn dropdown-toggle btn-sm btn-outline-info" data-bs-toggle="dropdown" title="set page size" style="padding-left:4px;">
+                     <button class="btn dropdown-toggle btn-sm btn-outline-info" data-bs-toggle="dropdown" title="set page size" style="padding-left:4px;" disabled="@pagingDisabled">
                         <span class="caret"></span>
                      </button>
-                     <div class="dropdown-menu">
+                     <div class="dropdown-menu" disabled="@pagingDisabled">
                         @foreach (var size in pageSizes) {
-                           <a class="dropdown-item @(entity.Size.Equals(size) ? "active" : string.Empty)" href="javascript:controls.setSize(@size);">@size</a>
+                           <a class="dropdown-item @(entity.Size.Equals(size) ? "active" : string.Empty)" href="javascript:controls.setSize(@size);" disabled="@pagingDisabled">@size</a>
                         }
                      </div>
                   </div>
-               }
+
             }
          </div>
       </div>

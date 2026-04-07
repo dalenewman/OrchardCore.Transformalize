@@ -26,8 +26,8 @@ namespace TransformalizeModule.Services {
          return _arrangementService.GetByIdOrAliasAsync(idOrAlias);
       }
 
-      public Process LoadForSchema(ContentItem contentItem, string format) {
-         return _loadService.LoadForSchema(contentItem, format);
+      public async Task<Process> LoadForSchemaAsync(ContentItem contentItem, string format) {
+         return await _loadService.LoadForSchemaAsync(contentItem, format);
       }
 
       public async Task<TransformalizeResponse<ContentPart>> Validate(TransformalizeRequest request) {
