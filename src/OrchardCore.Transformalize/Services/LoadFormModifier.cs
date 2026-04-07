@@ -49,13 +49,13 @@ namespace TransformalizeModule.Services {
          _container = container;
       }
 
-      public string Modify(string cfg, long id, IDictionary<string, string> parameters) {
+      public async Task<string> ModifyAsync(string cfg, long id, IDictionary<string, string> parameters) {
          using (MiniProfiler.Current.Step("Load Form")) {
-            return ModifyInternal(cfg, id, parameters);
+            return await ModifyInternalAsync(cfg, id, parameters);
          }
       }
 
-      private string ModifyInternal(string cfg, long id, IDictionary<string,string> parameters) {
+      private async Task<string> ModifyInternalAsync(string cfg, long id, IDictionary<string,string> parameters) {
 
          var process = new Process(cfg) { Id = id };
 
@@ -124,8 +124,8 @@ namespace TransformalizeModule.Services {
 
             // run the process which should get a single row (the form submission) into output
             CfgRow output;
-            using (var scope = _container.CreateScope(modified, _logger, null)) {
-               scope.Resolve<IProcessController>().Execute();
+            await using (var scope = await _container.CreateScopeAsync(modified, _logger, null)) {
+               await scope.Resolve<IProcessController>().ExecuteAsync();
                output = modified.Entities[0].Rows.FirstOrDefault();
             }
 

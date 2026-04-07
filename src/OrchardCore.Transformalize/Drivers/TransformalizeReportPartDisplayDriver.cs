@@ -136,7 +136,8 @@ namespace TransformalizeModule.Drivers {
 
          try {
             var logger = new MemoryLogger(LogLevel.Error);
-            var process = _container.CreateScope(model.Arrangement.Text, part.ContentItem, new Dictionary<string, string>(), false).Resolve<Process>();
+            var scope = await _container.CreateScopeAsync(model.Arrangement.Text, part.ContentItem, new Dictionary<string, string>(), false);
+            var process = scope.Resolve<Process>();
             if (process.Errors().Any()) {
                foreach (var error in process.Errors()) {
                   context.Updater.ModelState.AddModelError(Prefix, S[error]);

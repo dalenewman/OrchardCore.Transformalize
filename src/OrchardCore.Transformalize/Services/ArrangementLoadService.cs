@@ -41,13 +41,13 @@ namespace TransformalizeModule.Services {
          _configurationContainer = configurationContainer;
       }
 
-      public Process LoadForStream(ContentItem contentItem) {
+      public async Task<Process> LoadForStreamAsync(ContentItem contentItem) {
 
          if (!TryGetReportPart(contentItem, out var part)) {
             return new Process { Status = 500, Message = "Error", Log = new List<LogEntry>() { new LogEntry(LogLevel.Error, null, $"LoadForStream can't load {contentItem.ContentType}.") } };
          }
 
-         var process = LoadInternal(part);
+         var process = await LoadInternalAsync(part);
 
          process.Mode = "report";
          process.ReadOnly = true;
@@ -77,13 +77,13 @@ namespace TransformalizeModule.Services {
          return process;
       }
 
-      public Process LoadForReport(ContentItem contentItem, string format = null) {
+      public async Task<Process> LoadForReportAsync(ContentItem contentItem, string format = null) {
 
          if (!TryGetReportPart(contentItem, out var part)) {
             return new Process { Status = 500, Message = "Error", Log = new List<LogEntry>() { new LogEntry(LogLevel.Error, null, $"LoadForReport can't load {contentItem.ContentType}.") } };
          }
 
-         var process = LoadInternal(part, null, format == "json" ? new JsonSerializer() : null);
+         var process = await LoadInternalAsync(part, null, format == "json" ? new JsonSerializer() : null);
 
          process.Mode = "report";
          process.ReadOnly = true;
@@ -121,13 +121,13 @@ namespace TransformalizeModule.Services {
          return process;
       }
 
-      public Process LoadForMap(ContentItem contentItem) {
+      public async Task<Process> LoadForMapAsync(ContentItem contentItem) {
 
          if (!TryGetReportPart(contentItem, out var part)) {
             return new Process { Status = 500, Message = "Error", Log = new List<LogEntry>() { new LogEntry(LogLevel.Error, null, $"LoadForMap can't load {contentItem.ContentType}.") } };
          }
 
-         var process = LoadInternal(part, null);
+         var process = await LoadInternalAsync(part, null);
 
          process.Mode = "map";
          process.ReadOnly = true;
@@ -163,13 +163,13 @@ namespace TransformalizeModule.Services {
          return process;
       }
 
-      public Process LoadForChart(ContentItem contentItem) {
+      public async Task<Process> LoadForChartAsync(ContentItem contentItem) {
 
          if (!TryGetReportPart(contentItem, out var part)) {
             return new Process { Status = 500, Message = "Error", Log = new List<LogEntry>() { new LogEntry(LogLevel.Error, null, $"LoadForChart can't load {contentItem.ContentType}.") } };
          }
 
-         var process = LoadInternal(part, null);
+         var process = await LoadInternalAsync(part, null);
 
          process.Mode = "chart";
          process.ReadOnly = true;
@@ -191,13 +191,13 @@ namespace TransformalizeModule.Services {
          return process;
       }
 
-      public Process LoadForCalendar(ContentItem contentItem) {
+      public async Task<Process> LoadForCalendarAsync(ContentItem contentItem) {
 
          if (!TryGetReportPart(contentItem, out var part)) {
             return new Process { Status = 500, Message = "Error", Log = new List<LogEntry>() { new LogEntry(LogLevel.Error, null, $"LoadForCalendar can't load {contentItem.ContentType}.") } };
          }
 
-         var process = LoadInternal(part, null);
+         var process = await LoadInternalAsync(part, null);
 
          process.Mode = "calendar";
          process.ReadOnly = true;
@@ -234,13 +234,13 @@ namespace TransformalizeModule.Services {
       }
 
 
-      public Process LoadForBatch(ContentItem contentItem) {
+      public async Task<Process> LoadForBatchAsync(ContentItem contentItem) {
 
          if (!TryGetReportPart(contentItem, out var part)) {
             return new Process { Status = 500, Message = "Error", Log = new List<LogEntry>() { new LogEntry(LogLevel.Error, null, $"LoadForBatch can't load {contentItem.ContentType}.") } };
          }
 
-         var process = LoadInternal(part);
+         var process = await LoadInternalAsync(part);
 
          process.Mode = "report";
          process.ReadOnly = true;
@@ -260,13 +260,13 @@ namespace TransformalizeModule.Services {
          return process;
       }
 
-      public Process LoadForMapStream(ContentItem contentItem) {
+      public async Task<Process> LoadForMapStreamAsync(ContentItem contentItem) {
 
          if (!TryGetReportPart(contentItem, out var part)) {
             return new Process { Status = 500, Message = "Error", Log = new List<LogEntry>() { new LogEntry(LogLevel.Error, null, $"LoadForBatch can't load {contentItem.ContentType}.") } };
          }
 
-         var process = LoadInternal(part);
+         var process = await LoadInternalAsync(part);
 
          process.Mode = "stream-map";
          process.ReadOnly = true;
@@ -335,13 +335,13 @@ namespace TransformalizeModule.Services {
          return process;
       }
 
-      public Process LoadForCalendarStream(ContentItem contentItem) {
+      public async Task<Process> LoadForCalendarStreamAsync(ContentItem contentItem) {
 
          if (!TryGetReportPart(contentItem, out var part)) {
             return new Process { Status = 500, Message = "Error", Log = new List<LogEntry>() { new LogEntry(LogLevel.Error, null, $"LoadForBatch can't load {contentItem.ContentType}.") } };
          }
 
-         var process = LoadInternal(part);
+         var process = await LoadInternalAsync(part);
 
          process.Mode = "stream-calendar";
          process.ReadOnly = true;
@@ -391,7 +391,7 @@ namespace TransformalizeModule.Services {
          return process;
       }
 
-      public Process LoadForTask(ContentItem contentItem, IDictionary<string, string> parameters = null, string format = null) {
+      public async Task<Process> LoadForTaskAsync(ContentItem contentItem, IDictionary<string, string> parameters = null, string format = null) {
 
          Process process;
 
@@ -399,19 +399,19 @@ namespace TransformalizeModule.Services {
             return new Process { Status = 500, Message = "Error", Log = new List<LogEntry>() { new LogEntry(LogLevel.Error, null, $"LoadForTask can't load {contentItem.ContentType}.") } };
          }
 
-         process = LoadInternal(part, parameters, format == "json" ? new JsonSerializer() : null);
+         process = await LoadInternalAsync(part, parameters, format == "json" ? new JsonSerializer() : null);
 
          return process;
       }
 
-      public Process LoadForSchema(ContentItem contentItem, string format = null) {
+      public async Task<Process> LoadForSchemaAsync(ContentItem contentItem, string format = null) {
 
          Process process;
 
          if (TryGetTaskPart(contentItem, out var taskPart)) {
-            process = LoadInternal(taskPart, null, format == "json" ? new JsonSerializer() : null);
+            process = await LoadInternalAsync(taskPart, null, format == "json" ? new JsonSerializer() : null);
          } else if (TryGetReportPart(contentItem, out var reportPart)) {
-            process = LoadInternal(reportPart, null, format == "json" ? new JsonSerializer() : null);
+            process = await LoadInternalAsync(reportPart, null, format == "json" ? new JsonSerializer() : null);
          } else {
             return new Process { Status = 500, Message = "Error", Log = new List<LogEntry>() { new LogEntry(LogLevel.Error, null, $"LoadForSchema can't load {contentItem.DisplayText}.") } };
          }
@@ -419,7 +419,7 @@ namespace TransformalizeModule.Services {
          return process;
       }
 
-      public Process LoadForParameters(ContentItem contentItem, IDictionary<string, string> parameters = null) {
+      public async Task<Process> LoadForParametersAsync(ContentItem contentItem, IDictionary<string, string> parameters = null) {
 
          Process process;
 
@@ -427,7 +427,7 @@ namespace TransformalizeModule.Services {
             return new Process { Status = 500, Message = "Error", Log = new List<LogEntry>() { new LogEntry(LogLevel.Error, null, $"LoadForTask can't load {contentItem.ContentType}.") } };
          }
 
-         process = LoadInternal(part, parameters);
+         process = await LoadInternalAsync(part, parameters);
 
          // switch postback auto to true or false
          foreach (var parameter in process.Parameters.Where(p => p.Prompt && p.PostBack == "auto")) {
@@ -456,7 +456,7 @@ namespace TransformalizeModule.Services {
          return process;
       }
 
-      public Process LoadForForm(ContentItem contentItem, IDictionary<string, string> parameters = null, string format = null) {
+      public async Task<Process> LoadForFormAsync(ContentItem contentItem, IDictionary<string, string> parameters = null, string format = null) {
 
          Process process;
 
@@ -464,7 +464,7 @@ namespace TransformalizeModule.Services {
             return new Process { Status = 500, Message = "Error", Log = new List<LogEntry>() { new LogEntry(LogLevel.Error, null, $"LoadForForm can't load {contentItem.ContentType}.") } };
          }
 
-         process = LoadInternal(part, parameters, format == "json" ? new JsonSerializer() : null);
+         process = await LoadInternalAsync(part, parameters, format == "json" ? new JsonSerializer() : null);
          process.Mode = "form";
          process.ReadOnly = true;
 
@@ -495,19 +495,19 @@ namespace TransformalizeModule.Services {
          return process;
       }
 
-      private Process LoadInternal(TransformalizeTaskPart part, IDictionary<string, string> parameters = null, ISerializer serializer = null) {
-         return LoadInternal(part.Arrangement.Text, part.ContentItem, parameters, serializer);
+      private async Task<Process> LoadInternalAsync(TransformalizeTaskPart part, IDictionary<string, string> parameters = null, ISerializer serializer = null) {
+         return await LoadInternalAsync(part.Arrangement.Text, part.ContentItem, parameters, serializer);
       }
 
-      private Process LoadInternal(TransformalizeReportPart part, IDictionary<string, string> parameters = null, ISerializer serializer = null) {
-         return LoadInternal(part.Arrangement.Text, part.ContentItem, parameters, serializer);
+      private async Task<Process> LoadInternalAsync(TransformalizeReportPart part, IDictionary<string, string> parameters = null, ISerializer serializer = null) {
+         return await LoadInternalAsync(part.Arrangement.Text, part.ContentItem, parameters, serializer);
       }
 
-      private Process LoadInternal(TransformalizeFormPart part, IDictionary<string, string> parameters = null, ISerializer serializer = null) {
-         return LoadInternal(part.Arrangement.Text, part.ContentItem, parameters, serializer);
+      private async Task<Process> LoadInternalAsync(TransformalizeFormPart part, IDictionary<string, string> parameters = null, ISerializer serializer = null) {
+         return await LoadInternalAsync(part.Arrangement.Text, part.ContentItem, parameters, serializer);
       }
 
-      private Process LoadInternal(string arrangement, ContentItem item, IDictionary<string, string> parameters = null, ISerializer serializer = null) {
+      private async Task<Process> LoadInternalAsync(string arrangement, ContentItem item, IDictionary<string, string> parameters = null, ISerializer serializer = null) {
 
          Process process;
 
@@ -519,7 +519,8 @@ namespace TransformalizeModule.Services {
 
          using (MiniProfiler.Current.Step("Load")) {
             _configurationContainer.Serializer = serializer;
-            process = _configurationContainer.CreateScope(arrangement, item, _parameters).Resolve<Process>();
+            var scope = await _configurationContainer.CreateScopeAsync(arrangement, item, _parameters);
+            process = scope.Resolve<Process>();
          }
 
          // in case common settings were not applied when transforming / validating parameters
@@ -637,7 +638,7 @@ namespace TransformalizeModule.Services {
       }
 
       private static void AddSrc(Process process) {
-         if (string.IsNullOrEmpty(process.Entities[0].Fields.Last().Src)) {
+         if (process.Entities.Any() && process.Entities[0].Fields.Any() && string.IsNullOrEmpty(process.Entities[0].Fields.Last().Src)) {
             var fields = process.Entities[0].Fields.Where(f=>!f.System).ToArray();
             var shortened = Common.GetShortestUniqueVersions(fields.Select(f => f.Name).ToArray());
             for (int i = 0; i < shortened.Length; i++) {

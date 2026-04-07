@@ -59,36 +59,36 @@ namespace TransformalizeModule.Services {
          return await _arrangementService.GetByIdOrAliasAsync(idOrAlias);
       }
 
-      public Process LoadForStream(ContentItem contentItem) {
-         return _loadService.LoadForStream(contentItem);
+      public async Task<Process> LoadForStreamAsync(ContentItem contentItem) {
+         return await _loadService.LoadForStreamAsync(contentItem);
       }
 
-      public Process LoadForReport(ContentItem contentItem, string format = null) {
-         return _loadService.LoadForReport(contentItem, format);
+      public async Task<Process> LoadForReportAsync(ContentItem contentItem, string format = null) {
+         return await _loadService.LoadForReportAsync(contentItem, format);
       }
 
-      public Process LoadForBatch(ContentItem contentItem) {
-         return _loadService.LoadForBatch(contentItem);
+      public async Task<Process> LoadForBatchAsync(ContentItem contentItem) {
+         return await _loadService.LoadForBatchAsync(contentItem);
       }
 
-      public Process LoadForMap(ContentItem contentItem) {
-         return _loadService.LoadForMap(contentItem);
+      public async Task<Process> LoadForMapAsync(ContentItem contentItem) {
+         return await _loadService.LoadForMapAsync(contentItem);
       }
 
-      public Process LoadForMapStream(ContentItem contentItem) {
-         return _loadService.LoadForMapStream(contentItem);
+      public async Task<Process> LoadForMapStreamAsync(ContentItem contentItem) {
+         return await _loadService.LoadForMapStreamAsync(contentItem);
       }
 
-      public Process LoadForChart(ContentItem contentItem) {
-         return _loadService.LoadForChart(contentItem);
+      public async Task<Process> LoadForChartAsync(ContentItem contentItem) {
+         return await _loadService.LoadForChartAsync(contentItem);
       }
 
-      public Process LoadForCalendar(ContentItem contentItem) {
-         return _loadService.LoadForCalendar(contentItem);
+      public async Task<Process> LoadForCalendarAsync(ContentItem contentItem) {
+         return await _loadService.LoadForCalendarAsync(contentItem);
       }
 
-      public Process LoadForCalendarStream(ContentItem contentItem) {
-         return _loadService.LoadForCalendarStream(contentItem);
+      public async Task<Process> LoadForCalendarStreamAsync(ContentItem contentItem) {
+         return await _loadService.LoadForCalendarStreamAsync(contentItem);
       }
 
       public async Task RunAsync(Process process, StreamWriter streamWriter) {
@@ -119,7 +119,7 @@ namespace TransformalizeModule.Services {
                      } else {
                         response.BreadCrumbs.Add(new BreadCrumb(connection.Name, QueryHelpers.AddQueryString(req.Path, "c", connection.Name)));
                      }
-                     PrepareTable(response, connection, schema, table);
+                     await PrepareTableAsync(response, connection, schema, table);
                      response.Editable = true;
                   } else {
                      PrepareTables(response, connection, $"{req.Path}{req.QueryString}");
@@ -161,25 +161,25 @@ namespace TransformalizeModule.Services {
 
          switch (request.Mode) {
             case "chart":
-               response.Process = LoadForChart(response.ContentItem);
+               response.Process = await LoadForChartAsync(response.ContentItem);
                break;
             case "calendar":
-               response.Process = LoadForCalendar(response.ContentItem);
+               response.Process = await LoadForCalendarAsync(response.ContentItem);
                break;
             case "stream-calendar":
-               response.Process = LoadForCalendarStream(response.ContentItem);
+               response.Process = await LoadForCalendarStreamAsync(response.ContentItem);
                break;
             case "map":
-               response.Process = LoadForMap(response.ContentItem);
+               response.Process = await LoadForMapAsync(response.ContentItem);
                break;
             case "stream-map":
-               response.Process = LoadForMapStream(response.ContentItem);
+               response.Process = await LoadForMapStreamAsync(response.ContentItem);
                break;
             case "stream":
-               response.Process = LoadForStream(response.ContentItem);
+               response.Process = await LoadForStreamAsync(response.ContentItem);
                break;
             default:
-               response.Process = LoadForReport(response.ContentItem, request.Format);
+               response.Process = await LoadForReportAsync(response.ContentItem, request.Format);
                break;
          }
 
@@ -442,7 +442,7 @@ namespace TransformalizeModule.Services {
          response.ContentItem.Weld(new TitlePart { Title = "Tables or Views" });
       }
 
-      private async void PrepareTable(TransformalizeResponse<TransformalizeReportPart> response, Connection connection, string schema, string table) {
+      private async Task PrepareTableAsync(TransformalizeResponse<TransformalizeReportPart> response, Connection connection, string schema, string table) {
 
          // Create a views arrangement for connection
          var process = new Process { Name = table, ReadOnly = true };
@@ -463,7 +463,7 @@ namespace TransformalizeModule.Services {
          if (Requested("save", "true")) {
 
             response.ContentItem = new ContentItem();
-            ComposeArrangement(ref response, ref process, table);
+            process = await ComposeArrangementAsync(response, process, table);
 
             var contentItem = await _contentManager.NewAsync("TransformalizeReport");
             contentItem.Apply(new TitlePart { Title = table });
@@ -511,7 +511,7 @@ namespace TransformalizeModule.Services {
 
          } else {
             response.ContentItem = new ContentItem();
-            ComposeArrangement(ref response, ref process, table);
+            process = await ComposeArrangementAsync(response, process, table);
          }
       }
 
@@ -540,11 +540,18 @@ namespace TransformalizeModule.Services {
       }
 
       public void ModifyProcess(Transformalize.ConfigurationFacade.Process process) {
+
+         if (!process.Entities.Any()) {
+            return;
+         }
+
          var req = _httpContextAccessor.HttpContext!.Request;
 
-         var shortened = Common.GetShortestUniqueVersions(process.Entities[0].Fields.Select(f => f.Name).ToArray());
-         for (int i = 0; i < shortened.Length; i++) {
-            process.Entities[0].Fields[i].Src = shortened[i];
+         if (process.Entities[0].Fields.Any()) {
+            var shortened = Common.GetShortestUniqueVersions(process.Entities[0].Fields.Select(f => f.Name).ToArray());
+            for (int i = 0; i < shortened.Length; i++) {
+               process.Entities[0].Fields[i].Src = shortened[i];
+            }
          }
 
          AddSearch(process, req);
@@ -554,20 +561,22 @@ namespace TransformalizeModule.Services {
          AddEllipse(process, req);
          Hide(process, req);
 
-         var order = req.Query["o"].ToString().Split('.');
-         process.Entities[0].Fields = process.Entities[0].Fields.OrderBy(f => Array.IndexOf(order, f.Src)).ToList();
+         if (process.Entities[0].Fields.Any()) {
+            var order = req.Query["o"].ToString().Split('.');
+            process.Entities[0].Fields = process.Entities[0].Fields.OrderBy(f => Array.IndexOf(order, f.Src)).ToList();
+         }
 
       }
 
-      public void ComposeArrangement(ref TransformalizeResponse<TransformalizeReportPart> response, ref Process process, string table) {
+      public async Task<Process> ComposeArrangementAsync(TransformalizeResponse<TransformalizeReportPart> response, Process process, string table) {
 
          response.ContentItem.Weld(new TitlePart { Title = table });
          response.Part = new TransformalizeReportPart();
          response.Part.Arrangement.Text = process.Serialize();
          response.ContentItem.Weld(response.Part);
 
-         process = _schemaService.LoadForSchema(response.ContentItem, "xml");
-         process = _schemaService.GetSchemaAsync(process).Result;
+         process = await _schemaService.LoadForSchemaAsync(response.ContentItem, "xml");
+         process = await _schemaService.GetSchemaAsync(process);
 
          var facade = new Transformalize.ConfigurationFacade.Process(process.Serialize());
          ModifyProcess(facade);
@@ -576,6 +585,8 @@ namespace TransformalizeModule.Services {
          response.Part.Arrangement.Text = xml;
          response.ContentItem.Weld(response.Part);
          process = new Process(xml);
+
+         return process;
       }
 
       private static void AddTimeAgo(Transformalize.ConfigurationFacade.Process process, HttpRequest req) {

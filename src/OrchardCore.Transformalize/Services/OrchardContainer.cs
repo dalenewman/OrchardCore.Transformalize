@@ -67,7 +67,6 @@ using OrchardCore.Modules;
 using Transformalize.Transform.GoogleMaps;
 using TransformalizeModule.Services.Contracts;
 using Transformalize.Providers.Mail.Autofac;
-using System.IO;
 using Transformalize.Transforms.Geography;
 using Transformalize.Transforms.Compression;
 using Transformalize.Transforms.Xml;
@@ -114,7 +113,14 @@ namespace TransformalizeModule.Services {
          _fileService = fileService;
       }
 
-      public ILifetimeScope CreateScope(Process process, IPipelineLogger logger, StreamWriter streamWriter) {
+      public async Task<ILifetimeScope> CreateScopeAsync(Process process, IPipelineLogger logger, StreamWriter streamWriter) {
+
+         if (_httpContext.HttpContext != null && !_httpContext.HttpContext.Items.ContainsKey("TransformalizeUser")) {
+            var username = _httpContext.HttpContext.User?.Identity?.Name ?? "Anonymous";
+            if (username != "Anonymous") {
+               _httpContext.HttpContext.Items["TransformalizeUser"] = await _userService.GetUserAsync(username);
+            }
+         }
 
          var builder = new ContainerBuilder();
 

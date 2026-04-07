@@ -41,7 +41,7 @@ namespace TransformalizeModule.Controllers {
             arrangement = item.ContentItem.Content.TransformalizeReportPart.Arrangement.Arrangement.Value;
          }
 
-         var process = new Process(_modifier.Modify(arrangement, item.ContentItem.Id, _parameterService.GetParameters()));
+         var process = new Process(await _modifier.ModifyAsync(arrangement, item.ContentItem.Id, _parameterService.GetParameters()));
          process.Connections.Clear();
 
          if (item.Fails()) {

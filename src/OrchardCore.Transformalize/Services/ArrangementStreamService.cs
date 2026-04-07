@@ -28,7 +28,8 @@ namespace TransformalizeModule.Services {
          IProcessController controller;
 
          using (MiniProfiler.Current.Step("Run.Prepare")) {
-            controller = _container.CreateScope(process, _logger, streamWriter).Resolve<IProcessController>();
+            var scope = await _container.CreateScopeAsync(process, _logger, streamWriter);
+            controller = scope.Resolve<IProcessController>();
          }
 
          using (MiniProfiler.Current.Step("Run.Execute")) {

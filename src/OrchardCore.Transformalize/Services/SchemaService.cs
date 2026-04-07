@@ -2,7 +2,6 @@
 using TransformalizeModule.Models;
 using TransformalizeModule.Services.Contracts;
 using OrchardCore.ContentManagement;
-using System.Threading.Tasks;
 using Transformalize.Configuration;
 
 namespace TransformalizeModule.Services {
@@ -30,8 +29,8 @@ namespace TransformalizeModule.Services {
          return _arrangementService.GetByIdOrAliasAsync(idOrAlias);
       }
 
-      public Process LoadForSchema(ContentItem contentItem, string format) {
-         return _loadService.LoadForSchema(contentItem, format);
+      public async Task<Process> LoadForSchemaAsync(ContentItem contentItem, string format) {
+         return await _loadService.LoadForSchemaAsync(contentItem, format);
       }
 
       public async Task<Process> GetSchemaAsync(Process process) {
@@ -55,7 +54,7 @@ namespace TransformalizeModule.Services {
             return response;
          }
 
-         response.Process = LoadForSchema(response.ContentItem, request.Format);
+         response.Process = await LoadForSchemaAsync(response.ContentItem, request.Format);
          if (response.Process.Status != 200) {
             SetupLoadErrorResponse(request, response);
             return response;

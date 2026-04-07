@@ -28,18 +28,30 @@ namespace TransformalizeModule.Services.Transforms {
             Run = false;
             Context.Error($"{nameof(UserPropertiesTransform)} requires an instance of IHttpContextAccessor");
          } else {
-            var username = httpContext.HttpContext.User?.Identity?.Name ?? "Anonymous";
-            if(username != "Anonymous") {
-               if (Task.Run(() => userService.GetUserAsync(username)).GetAwaiter().GetResult() is User user) {
-                  _userProperties = user.Properties.ToString();
-                  if(Context.Field.Length != "max") {
-                     if (int.TryParse(Context.Field.Length, out int len)) { 
-                        if (len < _userProperties.Length) {
-                           Context.Warn($"{nameof(UserPropertiesTransform)} properties length {_userProperties.Length} is more than your field length {len}.");
-                        }
-                     }
-
+            User user;
+            if (httpContext.HttpContext != null && httpContext.HttpContext.Items.ContainsKey("TransformalizeUser")) {
+               user = httpContext.HttpContext.Items["TransformalizeUser"] as User;
+            } else {
+               var username = httpContext.HttpContext.User?.Identity?.Name ?? "Anonymous";
+               if (username != "Anonymous") {
+                  user = Task.Run(() => userService.GetUserAsync(username)).GetAwaiter().GetResult() as User;
+                  if (user != null && httpContext.HttpContext != null) {
+                     httpContext.HttpContext.Items["TransformalizeUser"] = user;
                   }
+               } else {
+                  user = null;
+               }
+            }
+
+            if (user != null) {
+               _userProperties = user.Properties.ToString();
+               if (Context.Field.Length != "max") {
+                  if (int.TryParse(Context.Field.Length, out int len)) {
+                     if (len < _userProperties.Length) {
+                        Context.Warn($"{nameof(UserPropertiesTransform)} properties length {_userProperties.Length} is more than your field length {len}.");
+                     }
+                  }
+
                }
             }
          }

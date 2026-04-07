@@ -28,11 +28,22 @@ namespace TransformalizeModule.Services.Transforms {
             Run = false;
             Context.Error($"{nameof(UserEmailTransform)} requires an instance of IHttpContextAccessor");
          } else {
-            var username = httpContext.HttpContext.User?.Identity?.Name ?? "Anonymous";
-            if(username != "Anonymous") {
-               if (Task.Run(() => userService.GetUserAsync(username)).GetAwaiter().GetResult() is User user) {
-                  _userEmail = user.Email;
+            User user;
+            if (httpContext.HttpContext != null && httpContext.HttpContext.Items.ContainsKey("TransformalizeUser")) {
+               user = httpContext.HttpContext.Items["TransformalizeUser"] as User;
+            } else {
+               var username = httpContext.HttpContext.User?.Identity?.Name ?? "Anonymous";
+               if (username != "Anonymous") {
+                  user = Task.Run(() => userService.GetUserAsync(username)).GetAwaiter().GetResult() as User;
+                  if (user != null && httpContext.HttpContext != null) {
+                     httpContext.HttpContext.Items["TransformalizeUser"] = user;
+                  }
+               } else {
+                  user = null;
                }
+            }
+            if (user != null) {
+               _userEmail = user.Email;
             }
          }
 

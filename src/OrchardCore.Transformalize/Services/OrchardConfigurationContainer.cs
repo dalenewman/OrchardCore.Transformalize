@@ -59,9 +59,18 @@ namespace TransformalizeModule.Services {
          _httpContext = httpContext;
       }
 
-      public ILifetimeScope CreateScope(string arrangement, ContentItem item, IDictionary<string, string> parameters, bool validateParameters = true) {
+      public async Task<ILifetimeScope> CreateScopeAsync(string arrangement, ContentItem item, IDictionary<string, string> parameters, bool validateParameters = true) {
 
          var combinedParameters = parameters ?? new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+
+         string modified = arrangement;
+         if (_httpContext.HttpContext.Request.Method == "GET" && item.ContentItem.Has("TransformalizeFormPart")) {
+            modified = await _loadFormModifier.ModifyAsync(arrangement, item.Id, combinedParameters);
+         }
+
+         if (validateParameters) {
+            modified = await _transformalizeParameters.ModifyAsync(arrangement, item.Id, combinedParameters);
+         }
 
          var builder = new ContainerBuilder();
          builder.RegisterModule(new ShorthandModule(_logger));
@@ -85,15 +94,6 @@ namespace TransformalizeModule.Services {
             dependancies.Add(ctx.ResolveNamed<IDependency>(TransformModule.ParametersName));
             dependancies.Add(ctx.ResolveNamed<IDependency>(ValidateModule.FieldsName));
             dependancies.Add(ctx.ResolveNamed<IDependency>(ValidateModule.ParametersName));
-
-            string modified = arrangement;
-            if (_httpContext.HttpContext.Request.Method == "GET" && item.ContentItem.Has("TransformalizeFormPart")) {
-               modified = _loadFormModifier.Modify(arrangement, item.Id, combinedParameters);               
-            }
-
-            if (validateParameters) {
-               modified = _transformalizeParameters.Modify(arrangement, item.Id, combinedParameters);
-            }
 
             var process = new Process(modified, combinedParameters, dependancies.ToArray());
 

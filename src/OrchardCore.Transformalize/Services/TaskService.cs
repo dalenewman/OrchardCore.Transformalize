@@ -1,9 +1,6 @@
 ﻿using TransformalizeModule.Models;
 using TransformalizeModule.Services.Contracts;
 using OrchardCore.ContentManagement;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Transformalize.Configuration;
 
 namespace TransformalizeModule.Services {
@@ -23,16 +20,16 @@ namespace TransformalizeModule.Services {
          _runService = runService;
       }
 
-      public Task<bool> CanAccess(ContentItem contentItem) {
-         return _arrangementService.CanAccess(contentItem);
+      public async Task<bool> CanAccess(ContentItem contentItem) {
+         return await _arrangementService.CanAccess(contentItem);
       }
 
-      public Task<ContentItem> GetByIdOrAliasAsync(string idOrAlias) {
-         return _arrangementService.GetByIdOrAliasAsync(idOrAlias);
+      public async Task<ContentItem> GetByIdOrAliasAsync(string idOrAlias) {
+         return await _arrangementService.GetByIdOrAliasAsync(idOrAlias);
       }
 
-      public Process LoadForTask(ContentItem contentItem, IDictionary<string,string> parameters = null, string format = null) {
-         return _loadService.LoadForTask(contentItem, parameters, format);
+      public async Task<Process> LoadForTaskAsync(ContentItem contentItem, IDictionary<string,string> parameters = null, string format = null) {
+         return await _loadService.LoadForTaskAsync(contentItem, parameters, format);
       }
 
       public async Task RunAsync(Process process) {
@@ -62,7 +59,7 @@ namespace TransformalizeModule.Services {
             return response;
          }
 
-         response.Process = LoadForTask(response.ContentItem, request.InternalParameters, request.Format);
+         response.Process = await LoadForTaskAsync(response.ContentItem, request.InternalParameters, request.Format);
          if (response.Process.Status != 200) {
             SetupLoadErrorResponse(request, response);
             return response;

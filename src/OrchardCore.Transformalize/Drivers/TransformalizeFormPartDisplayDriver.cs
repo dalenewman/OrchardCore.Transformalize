@@ -48,14 +48,15 @@ namespace TransformalizeModule.Drivers {
          _settings = settings;
       }
 
-      public override IDisplayResult Edit(TransformalizeFormPart part, BuildPartEditorContext context) {
+      public override async Task<IDisplayResult> EditAsync(TransformalizeFormPart part, BuildPartEditorContext context) {
 
          var commands = new AdoFormCommands();
-         var process = _configurationContainer.CreateScope(part.Arrangement.Text, part.ContentItem, new Dictionary<string, string>(), false).Resolve<Process>();
+         var initial = await _configurationContainer.CreateScopeAsync(part.Arrangement.Text, part.ContentItem, new Dictionary<string, string>(), false);
+         var process = initial.Resolve<Process>();
 
          _settings.ApplyCommonSettings(process);
 
-         using (var scope = _container.CreateScope(process, _logger, null)) {
+         await using (var scope = await _container.CreateScopeAsync(process, _logger, null)) {
             if (scope.IsRegistered<AdoFormCommandWriter>()) {
                commands = scope.Resolve<AdoFormCommandWriter>().Write();
             }
@@ -89,7 +90,8 @@ namespace TransformalizeModule.Drivers {
 
          try {
             var logger = new MemoryLogger(LogLevel.Error);
-            var process = _configurationContainer.CreateScope(model.Arrangement.Text, part.ContentItem, new Dictionary<string, string>(), false).Resolve<Process>();
+            var final = await _configurationContainer.CreateScopeAsync(model.Arrangement.Text, part.ContentItem, new Dictionary<string, string>(), false);
+            var process = final.Resolve<Process>();
             if (process.Errors().Any()) {
                foreach (var error in process.Errors()) {
                   context.Updater.ModelState.AddModelError(Prefix, S[error]);
