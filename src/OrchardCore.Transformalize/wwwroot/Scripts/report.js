@@ -1,44 +1,68 @@
 ﻿$(window).on('unload', function () {}); // disable bfcache
 
-function cellToMarkdown(td) {
-   var clone = td.cloneNode(true);
-   clone.querySelectorAll('a[href]').forEach(function(a) {
-      var text = a.textContent.trim();
-      var replacement = a.href.startsWith('javascript:')
-         ? document.createTextNode(text)
-         : document.createTextNode('[' + text + '](' + a.href + ')');
-      a.parentNode.replaceChild(replacement, a);
-   });
-   return clone.textContent.trim().replace(/\|/g, '\\|').replace(/\s+/g, ' ');
+function escapeMarkdownCell(text) {
+   return text.replace(/\|/g, '\\|').replace(/\s+/g, ' ');
+}
+
+function cellToMarkdown(td, dataType) {
+   if (dataType === 'bool') {
+      return $(td).find('[aria-label]').attr('aria-label') === 'Yes' ? '✅' : '❌';
+   }
+
+   // convert regular anchor (hyperlinks) to markdown
+   if (dataType === 'string'){
+      // clone to avoid mutating the displayed DOM; convert links to markdown syntax
+      var clone = $(td).clone();
+      clone.find('a[href]').each((i, a) => {
+         var text = $(a).text().trim();
+         var replacement = a.href.startsWith('javascript:') ? text : '[' + text + '](' + a.href + ')';
+         $(a).replaceWith(document.createTextNode(replacement));
+      });
+      return escapeMarkdownCell(clone.text().trim());
+   }
+
+   return escapeMarkdownCell($(td).text().trim());
 }
 
 function copyTableAsMarkdown(tableId) {
-   var table = document.getElementById(tableId);
-   if (!table) return;
-   var lines = [];
-   var headerRow = table.querySelector('thead tr.action-row');
-   if (!headerRow) return;
+   var $table = $('#' + tableId);
+   if (!$table.length) return;
+
+   var $headerRow = $table.find('thead tr').first();
+   if (!$headerRow.length) return;
+
+   // build header list and a parallel array of data types, using null to hold the place of checkbox columns
    var headers = [];
-   headerRow.querySelectorAll('th').forEach(function(th) {
-      if (th.querySelector('input[type="checkbox"]')) return;
-      headers.push(th.textContent.trim().replace(/\|/g, '\\|'));
-   });
-   lines.push('| ' + headers.join(' | ') + ' |');
-   lines.push('| ' + headers.map(function() { return '---'; }).join(' | ') + ' |');
-   table.querySelectorAll('tbody tr').forEach(function(tr) {
-      var cells = [];
-      tr.querySelectorAll('td').forEach(function(td) {
-         if (td.querySelector('input[type="checkbox"]')) return;
-         cells.push(cellToMarkdown(td));
-      });
-      if (cells.length > 0) {
-         lines.push('| ' + cells.join(' | ') + ' |');
+   var columnDataTypeMap = [];
+   $headerRow.find('th').each((i, th) => {
+      if ($(th).find('input[type="checkbox"]').length) {
+         columnDataTypeMap.push(null);
+         return;
       }
+      headers.push(escapeMarkdownCell($(th).text().trim()));
+      columnDataTypeMap.push($(th).attr('data-type'));
    });
+
+   var lines = [
+      '| ' + headers.join(' | ') + ' |',
+      '| ' + headers.map(() => '---').join(' | ') + ' |'
+   ];
+
+   $table.find('tbody tr').each((i, tr) => {
+      var cells = [];
+      $(tr).find('td').each((j, td) => {
+         if (!$(td).find('input[type="checkbox"]').length) {
+            cells.push(cellToMarkdown(td, columnDataTypeMap[j]));
+         }
+      });
+      if (cells.length > 0) lines.push('| ' + cells.join(' | ') + ' |');
+   });
+
    var text = lines.join('\n');
    if (navigator.clipboard && navigator.clipboard.writeText) {
       navigator.clipboard.writeText(text);
    } else {
+      // fallback for browsers without clipboard API
       var ta = document.createElement('textarea');
       ta.value = text;
       ta.style.position = 'fixed';

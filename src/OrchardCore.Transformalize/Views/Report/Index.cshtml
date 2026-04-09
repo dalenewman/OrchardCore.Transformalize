@@ -203,7 +203,7 @@
                            </th>
                         }
                         @foreach (var field in fields) {
-                           <th title="@field.Name" class="@(edit && !field.IsCalculated ? "drag" : string.Empty)" data-src="@field.Src">@field.Label</th>
+                           <th title="@field.Name" class="@(edit && !field.IsCalculated ? "drag" : string.Empty)" data-src="@field.Src" data-type="@field.Type">@field.Label</th>
                         }
                      </tr>
                      @if (isSortable) {

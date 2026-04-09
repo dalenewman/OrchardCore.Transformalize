@@ -1,3 +1,13 @@
+# 0.18.1 <small>2026-04-08</small>
+
+## 💅 Improvements
+- Remove need for Nito.Async package by switching a whole bunch of methods to async
+
+## 🐞 Bug Fixes
+- Fix bool handling in markdown to clipboard feature
+
+<!-- CHANGELOG_BOUNDARY -->
+
 # 0.17.8 <small>2026-04-06</small>
 
 ## 🐞 Bug Fixes
