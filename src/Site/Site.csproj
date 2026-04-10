@@ -1,6 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.Web">
    <PropertyGroup>
-      <TargetFramework>net8.0</TargetFramework>
+      <TargetFramework>net10.0</TargetFramework>
       <AspNetCoreHostingModel>InProcess</AspNetCoreHostingModel>
       <PreserveCompilationReferences>true</PreserveCompilationReferences>
       <UserSecretsId>385130c7-6d28-458c-8059-7afef6345940</UserSecretsId>
@@ -41,11 +41,33 @@
       <PackageReference Include="OrchardCore.Logging.Serilog" Version="2.2.1" />
       <PackageReference Include="OrchardCore.Application.Cms.Targets" Version="2.2.1" />
       <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.18.1" />
-      <PackageReference Include="Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation" Version="8.0.11" Condition="'$(RazorRuntimeCompilation)' == 'true'" />
+      <PackageReference Include="Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation" Version="10.0.5" Condition="'$(RazorRuntimeCompilation)' == 'true'" />
       <PackageReference Include="OrchardCoreContrib.ContentPermissions" Version="1.1.0" />
-	  <!-- temporary - override vulnerable transitive dependencies -->
+	  <!--
+	    PINNED OVERRIDES — revisit when upgrading OrchardCore or other major dependencies.
+
+	    HtmlSanitizer 9.0.892: pinned to pull in a non-vulnerable version transitively.
+	      Requires AngleSharp = 0.17.1, but we override AngleSharp to 1.1.2 below (NU1608 warning is expected).
+	      Revisit: check if OrchardCore ships a newer HtmlSanitizer that no longer needs this.
+
+	    AngleSharp 1.1.2: overrides the 0.17.x version pulled in by HtmlSanitizer/AngleSharp.Css to resolve
+	      a known vulnerability. NU1608 warnings are expected and acceptable here.
+	      Revisit: drop when HtmlSanitizer and AngleSharp.Css catch up to 1.x.
+
+	    Microsoft.Extensions.Http.Resilience 9.6.0: diamond dependency conflict — OpenIddict requires >= 9.6.0
+	      but OrchardCore.Application.Cms.Targets also pulls in 8.10.0, causing a downgrade error (NU1605).
+	      A 10.x version may exist; check on next dependency audit.
+	      Revisit: drop when OrchardCore aligns its own transitive resolution.
+
+	    Microsoft.AspNetCore.Authentication.OpenIdConnect 10.0.5: diamond dependency conflict — Microsoft.Identity.Web
+	      requires >= 9.0.0 but OrchardCore also pulls in 8.0.11, causing a downgrade error (NU1605).
+	      Pinned to 10.0.5 to match the rest of the ASP.NET Core packages in this project.
+	      Revisit: drop when OrchardCore aligns its own transitive resolution.
+	  -->
 	  <PackageReference Include="HtmlSanitizer" Version="9.0.892" />
 	  <PackageReference Include="AngleSharp" Version="1.1.2" />
+	  <PackageReference Include="Microsoft.Extensions.Http.Resilience" Version="9.6.0" />
+	  <PackageReference Include="Microsoft.AspNetCore.Authentication.OpenIdConnect" Version="10.0.5" />
    </ItemGroup>
 
    <ItemGroup>

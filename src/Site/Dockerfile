@@ -1,7 +1,7 @@
 #See https://aka.ms/customizecontainer to learn how to customize your debug container and how Visual Studio uses this Dockerfile to build your images for faster debugging.
 
-ARG BASE_IMAGE=mcr.microsoft.com/dotnet/aspnet:8.0
-ARG BUILD_IMAGE=mcr.microsoft.com/dotnet/sdk:8.0
+ARG BASE_IMAGE=mcr.microsoft.com/dotnet/aspnet:10.0
+ARG BUILD_IMAGE=mcr.microsoft.com/dotnet/sdk:10.0
 
 FROM ${BASE_IMAGE} AS base
 WORKDIR /app
