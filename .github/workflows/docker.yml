@@ -24,23 +24,23 @@ jobs:
           - platform: linux/amd64
             runner: ubuntu-latest
             variant: regular
-            base_image: mcr.microsoft.com/dotnet/aspnet:8.0
-            build_image: mcr.microsoft.com/dotnet/sdk:8.0
+            base_image: mcr.microsoft.com/dotnet/aspnet:10.0
+            build_image: mcr.microsoft.com/dotnet/sdk:10.0
           - platform: linux/arm64
             runner: ubuntu-24.04-arm
             variant: regular
-            base_image: mcr.microsoft.com/dotnet/aspnet:8.0
-            build_image: mcr.microsoft.com/dotnet/sdk:8.0
+            base_image: mcr.microsoft.com/dotnet/aspnet:10.0
+            build_image: mcr.microsoft.com/dotnet/sdk:10.0
           - platform: linux/amd64
             runner: ubuntu-latest
             variant: alpine
-            base_image: mcr.microsoft.com/dotnet/aspnet:8.0-alpine
-            build_image: mcr.microsoft.com/dotnet/sdk:8.0-alpine
+            base_image: mcr.microsoft.com/dotnet/aspnet:10.0-alpine
+            build_image: mcr.microsoft.com/dotnet/sdk:10.0-alpine
           - platform: linux/arm64
             runner: ubuntu-24.04-arm
             variant: alpine
-            base_image: mcr.microsoft.com/dotnet/aspnet:8.0-alpine
-            build_image: mcr.microsoft.com/dotnet/sdk:8.0-alpine
+            base_image: mcr.microsoft.com/dotnet/aspnet:10.0-alpine
+            build_image: mcr.microsoft.com/dotnet/sdk:10.0-alpine
 
     steps:
       - name: Prepare
