@@ -1,6 +1,14 @@
 # 0.18.1 <small>2026-04-08</small>
 
 ## 💅 Improvements
+- Added [AutoSetup](https://github.com/OrchardCMS/OrchardCore/blob/v2.2.1/src/docs/reference/modules/AutoSetup/README.md) for bypassing setup screen and configuring with environment variables instead (usually passed into container)
+- Added _DatabaseShells_ for similar reasons
+
+<!-- CHANGELOG_BOUNDARY -->
+
+# 0.18.1 <small>2026-04-08</small>
+
+## 💅 Improvements
 - Remove need for Nito.Async package by switching a whole bunch of methods to async
 
 ## 🐞 Bug Fixes
