@@ -7,14 +7,22 @@ builder.Host.UseSerilog((hostingContext, configBuilder) => {
    .Enrich.FromLogContext();
 });
 
-builder.Services
-    .AddOrchardCms()
+var orchardBuilder = builder.Services.AddOrchardCms();
+
+// Only use database shells if the configuration is provided
+var shellDbConfig = builder.Configuration.GetSection("OrchardCore:OrchardCore_Shells_Database");
+if (shellDbConfig.Exists() && !string.IsNullOrEmpty(shellDbConfig["ConnectionString"]))
+{
+    orchardBuilder.AddDatabaseShellsConfiguration();
+}
+
+orchardBuilder.AddSetupFeatures("OrchardCore.AutoSetup");
+
 // // Orchard Specific Pipeline
 // .ConfigureServices( services => {
 // })
 // .Configure( (app, routes, services) => {
 // })
-;
 
 var app = builder.Build();
 

@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+<Project Sdk="Microsoft.NET.Sdk.Web">
    <PropertyGroup>
       <TargetFramework>net10.0</TargetFramework>
       <AspNetCoreHostingModel>InProcess</AspNetCoreHostingModel>
@@ -7,10 +7,10 @@
       <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
       <DockerfileContext>..\..</DockerfileContext>
       <DockerfileTag>transformalize.orchard</DockerfileTag>
-      <Version>0.18.1</Version>
-      <FileVersion>0.18.1</FileVersion>
-      <AssemblyVersion>0.18.1</AssemblyVersion>
-      <ReleaseVersion>0.17.0</ReleaseVersion>      
+      <Version>0.18.2</Version>
+      <FileVersion>0.18.2</FileVersion>
+      <AssemblyVersion>0.18.2</AssemblyVersion>
+      <ReleaseVersion>0.18.2</ReleaseVersion>      
       <RazorRuntimeCompilation>true</RazorRuntimeCompilation>
       <CopyRefAssembliesToPublishDirectory>true</CopyRefAssembliesToPublishDirectory>
       <Nullable>enable</Nullable>
@@ -40,6 +40,7 @@
    <ItemGroup>
       <PackageReference Include="OrchardCore.Logging.Serilog" Version="2.2.1" />
       <PackageReference Include="OrchardCore.Application.Cms.Targets" Version="2.2.1" />
+      <PackageReference Include="OrchardCore.AutoSetup" Version="2.2.1" />
       <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.18.1" />
       <PackageReference Include="Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation" Version="10.0.5" Condition="'$(RazorRuntimeCompilation)' == 'true'" />
       <PackageReference Include="OrchardCoreContrib.ContentPermissions" Version="1.1.0" />

@@ -1,0 +1,44 @@
+services:
+  db:
+    image: postgres:16
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: orchard
+    ports:
+      - "5435:5432"
+    volumes:
+      - db-data:/var/lib/postgresql/data
+
+  site:
+    build:
+      context: .
+      dockerfile: src/Site/Dockerfile
+    ports:
+      - "8085:8080"
+    environment:
+      # Auto Setup Configuration
+      - OrchardCore__OrchardCore_AutoSetup__AutoSetupPath=/
+      - OrchardCore__OrchardCore_AutoSetup__Tenants__0__ShellName=Default
+      - OrchardCore__OrchardCore_AutoSetup__Tenants__0__SiteName=Transformalize Site
+      - OrchardCore__OrchardCore_AutoSetup__Tenants__0__SiteTimeZone=America/Detroit
+      - OrchardCore__OrchardCore_AutoSetup__Tenants__0__AdminUsername=admin
+      - OrchardCore__OrchardCore_AutoSetup__Tenants__0__AdminEmail=admin@example.com
+      - OrchardCore__OrchardCore_AutoSetup__Tenants__0__AdminPassword=Password123!
+      - OrchardCore__OrchardCore_AutoSetup__Tenants__0__DatabaseProvider=Postgres
+      - OrchardCore__OrchardCore_AutoSetup__Tenants__0__DatabaseConnectionString=Host=db;Port=5432;Database=orchard;Username=postgres;Password=password
+      - OrchardCore__OrchardCore_AutoSetup__Tenants__0__DatabaseTablePrefix=oc_
+      - OrchardCore__OrchardCore_AutoSetup__Tenants__0__RecipeName=SaaS
+      
+      # Database Shells Configuration
+      - OrchardCore__OrchardCore_Shells_Database__DatabaseProvider=Postgres
+      - OrchardCore__OrchardCore_Shells_Database__ConnectionString=Host=db;Port=5432;Database=orchard;Username=postgres;Password=password
+      - OrchardCore__OrchardCore_Shells_Database__TablePrefix=shells_
+      
+      # ASP.NET Core URL
+      - ASPNETCORE_URLS=http://+:8080
+    depends_on:
+      - db
+
+volumes:
+  db-data:
