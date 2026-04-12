@@ -4,9 +4,9 @@
       <TargetFramework>net10.0</TargetFramework>
       <AddRazorSupportForMvc>true</AddRazorSupportForMvc>
       <RootNamespace>ProxyModule</RootNamespace>
-      <Version>0.18.2</Version>
-      <FileVersion>0.18.2</FileVersion>
-      <AssemblyVersion>0.18.2</AssemblyVersion>
+      <Version>0.18.3</Version>
+      <FileVersion>0.18.3</FileVersion>
+      <AssemblyVersion>0.18.3</AssemblyVersion>
       <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
       <Authors>Dale Newman</Authors>
       <Copyright>Copyright © 2023-2026</Copyright>

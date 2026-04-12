@@ -1,3 +1,10 @@
+# 0.18.2 <small>2026-04-12</small>
+
+## 💅 Improvements
+- Updated to Transformalize 1.1.0 to get _bucketize_ transform 🪣👀.
+
+<!-- CHANGELOG_BOUNDARY -->
+
 # 0.18.1 <small>2026-04-08</small>
 
 ## 💅 Improvements

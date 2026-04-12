@@ -2,9 +2,9 @@
 
 # docker buildx create --driver=docker-container --name=container
 
-version="0.18.2"
-build="mcr.microsoft.com/dotnet/sdk:8.0"
-base="mcr.microsoft.com/dotnet/aspnet:8.0"
+version="0.18.3"
+build="mcr.microsoft.com/dotnet/sdk:10.0"
+base="mcr.microsoft.com/dotnet/aspnet:10.0"
 name="transformalize.orchard"
 
 # docker build -f "./src/Site/Dockerfile" \
@@ -35,8 +35,8 @@ docker buildx build --builder=container \
   --build-arg BUILD_IMAGE=$build \
   --push .
 
-build="mcr.microsoft.com/dotnet/sdk:8.0-alpine"
-base="mcr.microsoft.com/dotnet/aspnet:8.0-alpine"
+build="mcr.microsoft.com/dotnet/sdk:10.0-alpine"
+base="mcr.microsoft.com/dotnet/aspnet:10.0-alpine"
 
 # docker build -f "./src/Site/Dockerfile" \
 #   --force-rm \
