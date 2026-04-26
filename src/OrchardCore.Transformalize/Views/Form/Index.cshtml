@@ -12,6 +12,7 @@
    var locationEnabled = Model.Process.Parameters.Any(p => p.InputType == "location");
    var editEnabled = Model.ContentItem != null && await auth.AuthorizeAsync(Context.User, OrchardCore.Contents.Permissions.EditContent, Model.ContentItem);
    var googlePlacesAutocomplete = Model.Process.Parameters.Any(p => p.InputType == "google-places-autocomplete");
+   var mapPickerEnabled = Model.Process.Parameters.Any(p => p.InputType == "map");
    var isModal = Context.Request.Query["modal"] == "1";
 }
 
@@ -40,6 +41,17 @@
    </script>
    <script src="https://polyfill.io/v3/polyfill.min.js?features=default"></script>
    <script src="https://maps.googleapis.com/maps/api/js?key=@settings.GoogleApiKey&callback=initAutocomplete&libraries=places&v=weekly" async="async"></script>
+}
+
+@if (mapPickerEnabled) {
+   var mapSiteService = Context.RequestServices.GetService<ISiteService>();
+   var mapSiteResult = mapSiteService.GetSiteSettingsAsync().Result;
+   var mapSettings = mapSiteResult.As<TransformalizeSettings>();
+   <script asp-name="mapbox-gl" version="3.6.0" at="Head"></script>
+   <style asp-name="mapbox-gl" version="3.6.0"></style>
+   <script type="text/javascript">
+      var mapPickerToken = '@mapSettings.MapBoxToken';
+   </script>
 }
 
 <script asp-src="~/@Common.ModuleName/Scripts/form.js?v=8" at="Foot"></script>
