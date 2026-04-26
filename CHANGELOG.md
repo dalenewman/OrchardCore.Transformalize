@@ -1,3 +1,13 @@
+# 0.19.0 <small>2026-04-26</small>
+
+## 🚀 Features
+- Add map picker for forms (`input-type="map"`). Configure latitude and longitude parameters with
+  `input-type="map"` to render an interactive MapBox map inline in the form. Users can click or drag
+  a pin to set coordinates, which sync to the editable numeric inputs. Typing directly in the inputs
+  repositions the pin. Works in standard and modal form modes. See `docs/map-picker.md`.
+
+<!-- CHANGELOG_BOUNDARY -->
+
 # 0.18.2 <small>2026-04-12</small>
 
 ## 💅 Improvements
