@@ -1,3 +1,10 @@
+# 0.19.1 <small>2026-04-28</small>
+
+## 🐛 Bug Fixes
+- Remove dependency on location partial so a task using the shared form control doesn't error out when handling hidden fields.
+
+<!-- CHANGELOG_BOUNDARY -->
+
 # 0.19.0 <small>2026-04-26</small>
 
 ## 🚀 Features

@@ -99,7 +99,9 @@
 
          if (!parameter.Raw && !parameter.Input || parameter.PrimaryKey || parameter.InputType == "location" || parameter.Visible == "false") {
             <input type="hidden" name="@parameter.Name" value="@parameter.Value" id="id_@parameter.Name" />
-            Html.RenderPartial("Location", parameter);
+            @if (parameter.InputType == "location") {
+               <script>$(function () { settings.location.@parameter.InputCapture = $("@("#id_" + parameter.Name)"); });</script>
+            }
             continue;
          }
 
