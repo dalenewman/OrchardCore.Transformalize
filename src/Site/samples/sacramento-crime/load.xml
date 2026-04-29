@@ -1,7 +1,7 @@
 <cfg name="Sacramento" mode="init">
   <parameters/>
   <connections>
-    <add name="input" provider="file" file="App_Data/samples/sacramento-crime/SacramentoCrimeJanuary2006.csv" delimiter="," start="2" />
+    <add name="input" provider="file" file="samples/sacramento-crime/SacramentoCrimeJanuary2006.csv" delimiter="," start="2" />
     <add name="output" provider="sqlserver" database="Junk" />
   </connections>
   <entities>

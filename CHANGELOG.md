@@ -1,3 +1,10 @@
+# 0.19.2 <small>2026-04-29</small>
+
+## 💅 Improvements
+- Move `samples` folder to the same level as `App_Data` so sample files are not nested inside Orchard's managed data directory.
+
+<!-- CHANGELOG_BOUNDARY -->
+
 # 0.19.1 <small>2026-04-28</small>
 
 ## 🐛 Bug Fixes

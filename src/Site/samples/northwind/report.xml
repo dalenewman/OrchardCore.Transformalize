@@ -1,6 +1,6 @@
 <cfg name="NorthWind">
   <connections>
-    <!--<add name="input" provider="sqlite" file="App_Data\northwind.db" />-->
+    <!--<add name="input" provider="sqlite" file="samples/northwind.db" />-->
     <add name="input" provider="sqlserver" database="TflNorthwind" />
   </connections>
   <entities>

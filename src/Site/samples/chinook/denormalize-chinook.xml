@@ -20,8 +20,8 @@
     </add>
   </maps>
   <connections>
-    <add name="input" provider="sqlite" file="App_Data\samples\chinook-relational.db" />
-    <add name="output" provider="sqlite" file="App_Data\samples\chinook-flat.db" />
+    <add name="input" provider="sqlite" file="samples/chinook/chinook-relational.db" />
+    <add name="output" provider="sqlite" file="samples/chinook/chinook-flat.db" />
   </connections>
   <entities>
     <add name="InvoiceLine">
