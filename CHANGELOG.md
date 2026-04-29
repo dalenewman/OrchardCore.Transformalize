@@ -1,3 +1,13 @@
+# 0.19.3 <small>2026-04-29</small>
+
+## 🐛 Bug Fixes
+- Add forwarded headers middleware to `Site/Program.cs` so that links (e.g. download URLs) are
+  generated with `https://` when the app runs behind a reverse proxy such as an AWS ALB or Azure
+  Application Gateway that terminates TLS. Without this, the container sees plain HTTP and generates
+  `http://` links, which can break downloads due to auth cookies being stripped on redirect.
+
+<!-- CHANGELOG_BOUNDARY -->
+
 # 0.19.2 <small>2026-04-29</small>
 
 ## 💅 Improvements
