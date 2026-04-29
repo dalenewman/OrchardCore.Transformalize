@@ -1,3 +1,11 @@
+# 0.20.0 <small>2026-04-29</small>
+
+## 💅 Improvements
+- Updated `Transformalize.Provider.Ado.Autofac` and `Transformalize.Provider.PostgreSql.Autofac` to 1.1.0.
+- Updated sacramento-crime sample to use `specifykind(utc)` transform on the `cdatetime` field.
+
+<!-- CHANGELOG_BOUNDARY -->
+
 # 0.19.3 <small>2026-04-29</small>
 
 ## 🐛 Bug Fixes

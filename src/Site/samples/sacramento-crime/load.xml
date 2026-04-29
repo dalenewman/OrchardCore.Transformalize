@@ -8,7 +8,7 @@
     <add name="Crime">
       <fields>
         <add input="false" name="Id" type="int" t="identity(1,1)" primary-key="true" /> 
-        <add name="cdatetime" type="datetime" />
+        <add name="cdatetime" type="datetime" t="specifykind(utc)" />
         <add name="address" />
         <add name="district" length="2" />
         <add name="beat" length="11" t="trim()" default="None" default-empty="true" default-white-space="true" />
