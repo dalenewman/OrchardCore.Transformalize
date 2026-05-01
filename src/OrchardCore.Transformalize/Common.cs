@@ -15,6 +15,10 @@ namespace TransformalizeModule {
       public const string OrchardConnectionName = "orchard";
       public const string Default = "[default]";
 
+      public const char PlaceHolderMarker = '@';
+      public const char PlaceHolderOpen = '[';
+      public const char PlaceHolderClose = ']';
+
       public const string TaskReferrer = "TaskReferrer";
       public const string TaskContentItemId = "TaskContentItemId";
       public const string ReportContentItemId = "ReportContentItemId";
