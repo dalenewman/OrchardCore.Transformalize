@@ -1,3 +1,10 @@
+# 0.20.1 <small>2026-04-30</small>
+
+## 💅 Improvements
+- Parameters with an `env` attribute now automatically read their default value from the corresponding environment variable, but only when the caller has not already supplied a value for that parameter. Read more about it [here](./docs/environment-variables.md).
+
+<!-- CHANGELOG_BOUNDARY -->
+
 # 0.20.0 <small>2026-04-29</small>
 
 ## 💅 Improvements

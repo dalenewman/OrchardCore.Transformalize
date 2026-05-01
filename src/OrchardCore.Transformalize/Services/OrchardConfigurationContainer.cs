@@ -87,7 +87,7 @@ namespace TransformalizeModule.Services {
                dependancies.Add(Serializer);
             }
 
-            dependancies.Add(new ParameterModifier(new PlaceHolderReplacer('@', '[', ']')));
+            dependancies.Add(new ParameterModifier(new PlaceHolderReplacer(Common.PlaceHolderMarker, Common.PlaceHolderOpen, Common.PlaceHolderClose)));
 
             // these were registered by the ShorthandModule are are used to expand shorthand transforms and validators into "longhand".
             dependancies.Add(ctx.ResolveNamed<IDependency>(TransformModule.FieldsName));

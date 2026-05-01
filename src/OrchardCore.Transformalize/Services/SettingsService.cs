@@ -1,11 +1,7 @@
 using TransformalizeModule.Models;
 using TransformalizeModule.Services.Contracts;
-using OrchardCore.ContentManagement;
-using OrchardCore.Entities;
+using TransformalizeModule.Services.Modifiers;
 using OrchardCore.Settings;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using Transformalize.Configuration;
 using StackExchange.Profiling;
 using TransformalizeModule.Ext;
@@ -20,9 +16,14 @@ namespace TransformalizeModule.Services {
    /// </summary>
    public class SettingsService : ISettingsService {
 
+      public TransformalizeSettings Settings { get; }
+      private readonly IDbConnectionAccessor _dbConnectionAccessor;
+      private readonly IStore _store;
+      private readonly CombinedLogger<SettingsService> _logger;
+
       public Process Process { get; set; }
       public Transformalize.ConfigurationFacade.Process ProcessFacade { get; set; }
-      public TransformalizeSettings Settings { get; }
+
       public Dictionary<string, Parameter> Parameters { get; } = new Dictionary<string, Parameter>();
       private readonly Dictionary<string, Transformalize.ConfigurationFacade.Parameter> ParametersFacade = new Dictionary<string, Transformalize.ConfigurationFacade.Parameter>(StringComparer.OrdinalIgnoreCase);
 
@@ -37,10 +38,6 @@ namespace TransformalizeModule.Services {
 
       public Dictionary<string, Field> Fields { get; } = new Dictionary<string, Field>();
       private readonly Dictionary<string, Transformalize.ConfigurationFacade.Field> FieldsFacade = new Dictionary<string, Transformalize.ConfigurationFacade.Field>(StringComparer.OrdinalIgnoreCase);
-
-      private readonly IDbConnectionAccessor _dbConnectionAccessor;
-      private readonly IStore _store;
-      private readonly CombinedLogger<SettingsService> _logger;
 
       public SettingsService(
          ISiteService siteService, 
@@ -62,8 +59,9 @@ namespace TransformalizeModule.Services {
                Process = new Process();
                ProcessFacade = new Transformalize.ConfigurationFacade.Process();
             } else {
-               Process = new Process(Settings.CommonArrangement);
-               ProcessFacade = new Transformalize.ConfigurationFacade.Process(Settings.CommonArrangement);
+               var modifier = new ParameterModifier(new Cfg.Net.Environment.PlaceHolderReplacer(Common.PlaceHolderMarker, Common.PlaceHolderOpen, Common.PlaceHolderClose));
+               Process = new Process(Settings.CommonArrangement, modifier);
+               ProcessFacade = new Transformalize.ConfigurationFacade.Process(Settings.CommonArrangement, dependencies: [modifier]);
             }
 
             // parameters
@@ -343,5 +341,6 @@ namespace TransformalizeModule.Services {
          }
 
       }
+
    }
 }

@@ -17,6 +17,7 @@ namespace TransformalizeModule.Services.Modifiers {
       private const string ParameterNameAttribute = "name";
       private const string ParameterValueAttribute = "value";
       private const string ParameterInputAttribute = "input";
+      private const string ParameterEnvAttribute = "env";
 
       public ParameterModifier(
           IPlaceHolderReplacer placeHolderReplacer
@@ -64,34 +65,48 @@ namespace TransformalizeModule.Services.Modifiers {
          foreach (var parameter in nodes) {
             string name = null;
             object value = null;
+            string env = null;
             foreach (var attribute in parameter.Attributes) {
                if (attribute.Name == ParameterNameAttribute) {
                   name = attribute.Value.ToString();
                } else if (attribute.Name == ParameterValueAttribute) {
                   value = attribute.Value;
+               } else if (attribute.Name == ParameterEnvAttribute) {
+                  env = attribute.Value?.ToString();
                }
             }
-            if (name != null && value != null) {
 
+            if (name == null) continue;
 
-               if (parameters.ContainsKey(name)) {  
-                  // arrangement and external parameter match
+            if (parameters.ContainsKey(name)) {
+               // arrangement and external parameter match
 
-                  // if the arrangment parameter says input is false, we remove it as it is not permitted
-                  if (parameter.TryAttribute(ParameterInputAttribute, out var inputAttr) && inputAttr.Value.Equals("false")) {
-                     parameters.Remove(name);
-                     continue;
-                  }
+               // if the arrangement parameter says input is false, we remove it as it is not permitted
+               if (parameter.TryAttribute(ParameterInputAttribute, out var inputAttr) && inputAttr.Value.Equals("false")) {
+                  parameters.Remove(name);
+                  continue;
+               }
 
-                  // the external parameter will set the arrangement parameter's value attribute
+               // the external parameter will set the arrangement parameter's value attribute
+               if (parameter.TryAttribute(ParameterValueAttribute, out var valueAttr)) {
+                  valueAttr.Value = parameters[name];
+               } else {
+                  parameter.Attributes.Add(new Attribute("value", parameters[name]));
+               }
+
+            } else {
+               // caller hasn't provided a value — resolve from env var if value is absent/empty
+               var effectiveValue = string.IsNullOrWhiteSpace(value?.ToString()) && !string.IsNullOrEmpty(env)
+                  ? System.Environment.GetEnvironmentVariable(env)
+                  : value?.ToString();
+
+               if (effectiveValue != null) {
+                  parameters[name] = effectiveValue;
                   if (parameter.TryAttribute(ParameterValueAttribute, out var valueAttr)) {
-                     valueAttr.Value = parameters[name];
+                     valueAttr.Value = effectiveValue;
                   } else {
-                     parameter.Attributes.Add(new Attribute("value", parameters[name]));
+                     parameter.Attributes.Add(new Attribute("value", effectiveValue));
                   }
-
-               } else { // attribute value is going to set the parameter
-                  parameters[name] = value.ToString();
                }
             }
          }
