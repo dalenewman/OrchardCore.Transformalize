@@ -9,11 +9,11 @@
   </actions>
   
   <entities>
-    <add name="SacramentoCrime">
+    <add name="sacramento_crime">
       <filter>
       </filter>
       <fields>
-        <add name="Id" type="int" primary-key="true" geo="id" />
+        <add name="id" type="int" primary-key="true" geo="id" />
         <add name="address" parameter="search" />
         <add name="district" length="2" parameter="facet" />
         <add name="beat" length="11" parameter="facet" />
@@ -26,7 +26,7 @@
         <add name="dayofweek" length="12" output="false" parameter="facet" />
         <add name="hour" length="2" output="false" parameter="facet" />
         <add name="cdatetime" type="datetime" label="Date" />
-        <add name="geojson-color" output="false" parameter="facet" />
+        <add name="geojson_color" output="false" parameter="facet" />
         <add name="latitude" type="double" output="false" geo="latitude" />
         <add name="longitude" type="double" output="false" geo="longitude" />        
       </fields>
@@ -34,11 +34,11 @@
 
         <!-- bug in geojson provider?  you have to use "marker-color" field to affect dots on map -->
         <!-- also have to change map color field to marker-color -->
-        <add name="marker-color" t="copy(geojson-color)" output="false" geo="property" />
+        <add name="marker-color" t="copy(geojson_color)" output="false" geo="property" />
 
         <add name="Color" 
              raw="true" 
-             t='format(<span style="height: 15px; width: 15px; background-color: {geojson-color}; border-radius: 50%; display: inline-block; margin-bottom: -2px;"></span> {geojson-color})' />
+             t='format(<span style="height: 15px; width: 15px; background-color: {geojson_color}; border-radius: 50%; display: inline-block; margin-bottom: -2px;"></span> {geojson_color})' />
         
         <add name="FluidTest" 
              label="Fluid Test" 
@@ -58,7 +58,7 @@
              geo="property"
              t='razor(Copy that, we got a @Model.ucr_ncic_code in progress at @Model.address)' />
 
-        <add name="BatchValue" t="copy(Id)" type="int" />
+        <add name="BatchValue" t="copy(id)" type="int" />
       </calculated-fields>
     </add>
   </entities>
