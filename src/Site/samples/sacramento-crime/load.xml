@@ -1,13 +1,13 @@
-<cfg name="Sacramento" mode="init">
+<cfg name="sacramento_" mode="init" output="orchard">
   <parameters/>
   <connections>
     <add name="input" provider="file" file="samples/sacramento-crime/SacramentoCrimeJanuary2006.csv" delimiter="," start="2" />
-    <add name="output" provider="sqlserver" database="Junk" />
+    <add name="orchard" />
   </connections>
   <entities>
-    <add name="Crime">
+    <add name="crime">
       <fields>
-        <add input="false" name="Id" type="int" t="identity(1,1)" primary-key="true" /> 
+        <add input="false" name="id" type="int" t="identity(1,1)" primary-key="true" />
         <add name="cdatetime" type="datetime" t="specifykind(utc)" />
         <add name="address" />
         <add name="district" length="2" />
@@ -24,7 +24,7 @@
         <add name="day" length="10" t="copy(cdatetime).toString(yyyy-MM-dd)" />
         <add name="dayofweek" length="12" t="copy(cdatetime).datepart(dayofweek)" />
         <add name="hour" length="2" t="copy(cdatetime).toString(HH)" />           
-        <add name="geojson-color" default="#48C9B0" />
+        <add name="geojson_color" default="#48C9B0" />
       </calculated-fields>
     </add>
   </entities>

@@ -12,7 +12,8 @@
         <add from="Red" to="#FF0000" />
         <add from="Green" to="#00FF00" />
         <add from="Blue" to="#0000FF" />
-        <add from="Orange" to="##FFA500" />
+        <add from="Orange" to="#FFA500" />
+        <add from="Purple" to="#800080" />
         <add from="Default" to="#48C9B0" />
       </items>
     </add>
@@ -20,7 +21,7 @@
 
   <connections>
     <add name="input" provider="sqlite" file="App_Data/batches.db" />
-    <add name="target" provider="sqlserver" database="Junk" />
+    <add name="orchard" />
   </connections>
 
   <entities>
@@ -36,7 +37,7 @@
         <add name="Id" type="int" t="copy(BatchValue).convert()" />
         <add name="Dml">
           <transforms>
-            <add method="run" connection="target" command="UPDATE SacramentoCrime SET [geojson-color] = @Color WHERE [Id] = @Id;" /> 
+            <add method="run" connection="orchard" command="UPDATE sacramento_crime SET geojson_color = @Color WHERE &quot;id&quot; = @Id;" />
           </transforms>
         </add>
       </calculated-fields>
