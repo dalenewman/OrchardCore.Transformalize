@@ -1,7 +1,7 @@
 <cfg name="report">
   
   <connections>
-    <add name="input" provider="sqlserver" database="Junk" />
+    <add name="orchard" />
   </connections>
   
   <actions>
@@ -9,7 +9,7 @@
   </actions>
   
   <entities>
-    <add name="sacramento_crime">
+    <add name="sacramento_crime" input="orchard">
       <filter>
       </filter>
       <fields>

@@ -1,8 +1,8 @@
-<cfg name="sacramento_" mode="init">
+<cfg name="sacramento_" mode="init" output="orchard">
   <parameters/>
   <connections>
     <add name="input" provider="file" file="samples/sacramento-crime/SacramentoCrimeJanuary2006.csv" delimiter="," start="2" />
-    <add name="output" provider="sqlserver" database="Junk" />
+    <add name="orchard" />
   </connections>
   <entities>
     <add name="crime">

@@ -21,7 +21,7 @@
 
   <connections>
     <add name="input" provider="sqlite" file="App_Data/batches.db" />
-    <add name="target" provider="sqlserver" database="Junk" />
+    <add name="orchard" />
   </connections>
 
   <entities>
@@ -37,7 +37,7 @@
         <add name="Id" type="int" t="copy(BatchValue).convert()" />
         <add name="Dml">
           <transforms>
-            <add method="run" connection="target" command="UPDATE sacramento_crime SET geojson_color = @Color WHERE &quot;id&quot; = @Id;" />
+            <add method="run" connection="orchard" command="UPDATE sacramento_crime SET geojson_color = @Color WHERE &quot;id&quot; = @Id;" />
           </transforms>
         </add>
       </calculated-fields>
