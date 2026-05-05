@@ -1,3 +1,10 @@
+# 0.20.2 <small>2026-05-05</small>
+
+## 🐛 Bug Fixes
+- Change numeric input `step` from `0.0000001` to `any` to prevent spurious Parsley validation errors on decimal values.
+
+<!-- CHANGELOG_BOUNDARY -->
+
 # 0.20.1 <small>2026-04-30</small>
 
 ## 💅 Improvements
