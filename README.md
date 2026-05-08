@@ -65,7 +65,7 @@ There are recipes for MSSQL, PostgreSql, and SQLite for the above tasks. Initial
 Putting it all together, here is a GIF showing a report (with map) that has a bulk 
 action to change color associated with the record.
 
-![bogus report](src/Site/App_Data/samples/sacramento-crime/criminal-bulk-actions.gif)
+![bogus report](src/Site/samples/sacramento-crime/criminal-bulk-actions.gif)
 
 `TODO: Link to arrangement here.`
 

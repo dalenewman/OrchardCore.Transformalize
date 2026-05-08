@@ -8,6 +8,7 @@
    var auth = Context.RequestServices.GetService<IAuthorizationService>();
    var returnUrl = string.Empty;
    var target = "_self";
+   var isModal = Context.Request.Query["modal"] == "1";
    if (Model.Item != null) {
       // You might not want to re-run your task automatically
       if (Model.Item.ContentType == "TransformalizeTask") {
@@ -17,6 +18,21 @@
       }
    }
 }
+
+@if (isModal) {
+   <style>
+      nav {
+         display: none !important;
+      }
+      footer {
+         display: none !important;
+      }
+      div.table-responsive {
+         min-height: auto !important;
+      }
+   </style>
+}
+
 <style>
    .table-sm > tbody > tr > td {
       padding: 2px;
@@ -31,10 +47,14 @@
    }
 </style>
 
-@if (Model.Item != null && await auth.AuthorizeAsync(Context.User, OrchardCore.Contents.Permissions.EditContent, Model.Item)) {
+@if (!isModal && Model.Item != null && await auth.AuthorizeAsync(Context.User, OrchardCore.Contents.Permissions.EditContent, Model.Item)) {
    <button title="edit this report" type="button" class="btn btn-warning btn-sm float-end" onclick="window.open('@(Url.Content("~/Admin/Contents/ContentItems/" + Model.Item.ContentItemId + "/Edit?" + Common.ReturnUrlName + "=" + returnUrl))', '@target');">
       <span class="fas fa-edit"></span>
    </button>
 }
 
 @Html.Partial("LogDetail", Model)
+
+@if (isModal) {
+   <a href="javascript:void()" class="btn btn-secondary active" role="button" aria-pressed="true" onclick="window.parent.postMessage({ action: 'closeModal', reason: 'confirmed' }, '*');">Close</a>
+}
