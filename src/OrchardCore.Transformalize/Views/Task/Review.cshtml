@@ -11,6 +11,17 @@
    var isModal = Context.Request.Query["modal"] == "1";
 }
 
+@if (isModal) {
+   <style>
+      nav {
+         display: none !important;
+      }
+      footer {
+         display: none !important;
+      }
+   </style>
+}
+
 <script asp-name="jQuery" at="Head"></script>
 <script asp-name="jQuery-ui" at="Head"></script>
 <script asp-name="block-ui" version="2.70.0" at="Foot"></script>

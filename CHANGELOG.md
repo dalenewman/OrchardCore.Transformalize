@@ -1,3 +1,12 @@
+# 0.20.3 <small>2026-05-08</small>
+
+## 🐛 Bug Fixes
+- Fix `Task/Review` not hiding nav and footer when displayed in a modal.
+- Fix shared `Log` view not hiding nav/footer, not showing a Close button, and reserving excess vertical space when displayed in a modal.
+- Fix README gif path after `samples` folder was relocated out of `App_Data`.
+
+<!-- CHANGELOG_BOUNDARY -->
+
 # 0.20.2 <small>2026-05-05</small>
 
 ## 🐛 Bug Fixes
