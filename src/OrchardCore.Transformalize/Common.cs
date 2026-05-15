@@ -9,7 +9,7 @@ namespace TransformalizeModule {
       public const string ModuleName = "OrchardCore.Transformalize";
       public const string ReturnUrlName = "ReturnUrl";
       public const string SettingsGroupId = "Transformalize";
-      public const string CodeMirrorVersion = "5.52.2";
+      public const string CodeMirrorVersion = "6.0.0";
       public const string InvalidParametersMessage = "Parameter Validation Failed";
       public const string InvalidContentTypeMessage = "Invalid Content Type";
       public const string OrchardConnectionName = "orchard";
