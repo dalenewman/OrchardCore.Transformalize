@@ -1,3 +1,14 @@
+# 0.20.4 <small>2026-05-15</small>
+
+## 💅 Improvements
+- Upgraded the XML arrangement editor from CodeMirror 5 to CodeMirror 6.
+- The editor search is now an inline panel (Ctrl-F / ⌘F) with next/previous/replace buttons.
+- Fullscreen mode uses the native browser Fullscreen API (⛶ button, Esc to exit).
+- Save shortcut works cross-platform: Ctrl-S on Windows/Linux, ⌘S on Mac.
+- Autocomplete triggers on typing `<` in addition to Ctrl-Space.
+
+<!-- CHANGELOG_BOUNDARY -->
+
 # 0.20.3 <small>2026-05-08</small>
 
 ## 🐛 Bug Fixes
