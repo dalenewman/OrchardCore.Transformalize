@@ -10,7 +10,7 @@
    RenderTitleSegments(Model.Title, "before");
    var auth = Context.RequestServices.GetService<IAuthorizationService>();
    var locationEnabled = Model.Process.Parameters.Any(p => p.InputType == "location");
-   var editEnabled = Model.ContentItem != null && await auth.AuthorizeAsync(Context.User, OrchardCore.Contents.Permissions.EditContent, Model.ContentItem);
+   var editEnabled = Model.ContentItem != null && await auth.AuthorizeAsync(Context.User, OrchardCore.Contents.CommonPermissions.EditContent, Model.ContentItem);
    var googlePlacesAutocomplete = Model.Process.Parameters.Any(p => p.InputType == "google-places-autocomplete");
    var mapPickerEnabled = Model.Process.Parameters.Any(p => p.InputType == "map");
    var isModal = Context.Request.Query["modal"] == "1";

@@ -6,7 +6,7 @@
 @{
    RenderTitleSegments(Model.Task.Title, "before");
    var auth = Context.RequestServices.GetService<IAuthorizationService>();
-   var editEnabled = Model.Task.ContentItem != null && await auth.AuthorizeAsync(Context.User, OrchardCore.Contents.Permissions.EditContent, Model.Task.ContentItem);
+   var editEnabled = Model.Task.ContentItem != null && await auth.AuthorizeAsync(Context.User, OrchardCore.Contents.CommonPermissions.EditContent, Model.Task.ContentItem);
    var isModal = Context.Request.Query["modal"] == "1";
 }
 

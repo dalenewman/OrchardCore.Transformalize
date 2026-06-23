@@ -3,9 +3,9 @@
       <TargetFramework>net10.0</TargetFramework>
       <AddRazorSupportForMvc>true</AddRazorSupportForMvc>
       <RootNamespace>TransformalizeModule</RootNamespace>
-      <Version>0.20.4</Version>
-      <FileVersion>0.20.4</FileVersion>
-      <AssemblyVersion>0.20.4</AssemblyVersion>
+      <Version>0.21.0</Version>
+      <FileVersion>0.21.0</FileVersion>
+      <AssemblyVersion>0.21.0</AssemblyVersion>
       <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
       <Authors>Dale Newman</Authors>
       <Copyright>Copyright © 2013-2026</Copyright>
@@ -16,7 +16,7 @@
       <RepositoryType>git</RepositoryType>
       <PackageTags>etl,data,forms,reports,transformalize</PackageTags>
       <NeutralLanguage>en-US</NeutralLanguage>
-      <PackageReleaseNotes>add modal support for bulk actions</PackageReleaseNotes>
+      <PackageReleaseNotes>Upgrade to OrchardCore 3.0.0; align dependencies; pin patched SQLite (CVE-2025-6965)</PackageReleaseNotes>
       <Nullable>enable</Nullable>
       <ImplicitUsings>enable</ImplicitUsings>
    </PropertyGroup>
@@ -32,26 +32,32 @@
    <ItemGroup>
 
       <!-- orchard -->
-      <PackageReference Include="OrchardCore.Alias" Version="2.2.1" />
-      <PackageReference Include="OrchardCore.ContentFields" Version="2.2.1" />
-      <PackageReference Include="OrchardCore.ContentManagement" Version="2.2.1" />
-      <PackageReference Include="OrchardCore.Contents" Version="2.2.1" />
-      <PackageReference Include="OrchardCore.ContentTypes.Abstractions" Version="2.2.1" />
-      <PackageReference Include="OrchardCore.DisplayManagement" Version="2.2.1" />
-      <PackageReference Include="OrchardCore.Features" Version="2.2.1" />
-      <PackageReference Include="OrchardCore.FileStorage.FileSystem" Version="2.2.1" />
-      <PackageReference Include="OrchardCore.MiniProfiler" Version="2.2.1" />
-      <PackageReference Include="OrchardCore.Module.Targets" Version="2.2.1" />
-      <PackageReference Include="OrchardCore.Navigation" Version="2.2.1" />
-      <PackageReference Include="OrchardCore.Title" Version="2.2.1" />
-      <PackageReference Include="OrchardCore.Users" Version="2.2.1" />
-      <PackageReference Include="OrchardCore.Workflows" Version="2.2.1" />
+      <PackageReference Include="OrchardCore.Alias" Version="3.0.0" />
+      <PackageReference Include="OrchardCore.ContentFields" Version="3.0.0" />
+      <PackageReference Include="OrchardCore.ContentManagement" Version="3.0.0" />
+      <PackageReference Include="OrchardCore.Contents" Version="3.0.0" />
+      <PackageReference Include="OrchardCore.ContentTypes.Abstractions" Version="3.0.0" />
+      <PackageReference Include="OrchardCore.DisplayManagement" Version="3.0.0" />
+      <PackageReference Include="OrchardCore.Features" Version="3.0.0" />
+      <PackageReference Include="OrchardCore.FileStorage.FileSystem" Version="3.0.0" />
+      <PackageReference Include="OrchardCore.MiniProfiler" Version="3.0.0" />
+      <PackageReference Include="OrchardCore.Module.Targets" Version="3.0.0" />
+      <PackageReference Include="OrchardCore.Navigation" Version="3.0.0" />
+      <PackageReference Include="OrchardCore.Title" Version="3.0.0" />
+      <PackageReference Include="OrchardCore.Users" Version="3.0.0" />
+      <PackageReference Include="OrchardCore.Workflows" Version="3.0.0" />
 
       <!-- third party modules -->
 
       <!-- misc -->
       <PackageReference Include="Flurl" Version="3.0.7" />
-      <PackageReference Include="NodaTime" Version="3.2.0" />
+      <PackageReference Include="NodaTime" Version="3.3.2" />
+
+      <!-- Security pin (CVE-2025-6965): OrchardCore/YesSql + Microsoft.Data.Sqlite pull the
+           vulnerable, deprecated SQLitePCLRaw 2.1.x native bundle transitively; 3.0.3 uses the
+           patched SourceGear.sqlite3 (>= 3.50.4.5). Drop when upstream references a fixed bundle. -->
+      <PackageReference Include="SQLitePCLRaw.bundle_e_sqlite3" Version="3.0.3" />
+
       <PackageReference Include="OrchardCoreContrib.ContentPermissions" Version="1.1.0" />
 
       <!-- transformalize updated -->
@@ -60,6 +66,7 @@
       <ProjectReference Include="/Users/dalenewman/code/github/dalenewman/Transformalize/src/Transformalize/Transformalize.csproj" />
       <ProjectReference Include="/Users/dalenewman/code/github/dalenewman/Transformalize/src/Providers/Ado/Transformalize.Provider.Ado/Transformalize.Provider.Ado.csproj" />
       -->
+      
       <PackageReference Include="Transformalize.Container.Autofac" Version="1.4.2" />
       <PackageReference Include="Transformalize.Provider.Ado.Autofac" Version="1.4.2" />
       <PackageReference Include="Transformalize.Provider.Bogus.Autofac" Version="1.0.0" />
@@ -67,12 +74,12 @@
       <PackageReference Include="Transformalize.Provider.Elasticsearch.Autofac" Version="1.0.0" />
       <PackageReference Include="Transformalize.Provider.Excel" Version="1.0.0" />
       <PackageReference Include="Transformalize.Provider.File.Autofac" Version="1.0.0" />
-      <PackageReference Include="Transformalize.Provider.GeoJson.Autofac" Version="1.0.0" />
-      <PackageReference Include="Transformalize.Provider.Json.Autofac" Version="1.0.0" />
-      <PackageReference Include="Transformalize.Provider.Mail.Autofac" Version="1.1.0" />
+      <PackageReference Include="Transformalize.Provider.GeoJson.Autofac" Version="1.4.3" />
+      <PackageReference Include="Transformalize.Provider.Json.Autofac" Version="1.4.3" />
+      <PackageReference Include="Transformalize.Provider.Mail.Autofac" Version="1.4.3" />
       <PackageReference Include="Transformalize.Provider.MySql.Autofac" Version="1.4.2" />
       <PackageReference Include="Transformalize.Provider.PostgreSql.Autofac" Version="1.4.2" />
-      <PackageReference Include="Transformalize.Provider.Sqlite.Autofac" Version="1.4.2" />
+      <PackageReference Include="Transformalize.Provider.Sqlite.Autofac" Version="1.4.3" />
       <PackageReference Include="Transformalize.Provider.SqlServer.Autofac" Version="1.4.2" />
       <PackageReference Include="Transformalize.Transform.Ado.Autofac" Version="1.0.0" />
       <PackageReference Include="Transformalize.Transform.Compression" Version="1.0.0" />
@@ -81,12 +88,12 @@
       <PackageReference Include="Transformalize.Transform.Globalization" Version="1.0.0" />
       <PackageReference Include="Transformalize.Transform.GoogleMaps" Version="1.0.0" />
       <PackageReference Include="Transformalize.Transform.Humanizer.Autofac" Version="1.0.0" />
-      <PackageReference Include="Transformalize.Transform.Jint.Autofac" Version="1.0.0" />
-      <PackageReference Include="Transformalize.Transform.Json.Autofac" Version="1.0.0" />
+      <PackageReference Include="Transformalize.Transform.Jint.Autofac" Version="1.4.3" />
+      <PackageReference Include="Transformalize.Transform.Json.Autofac" Version="1.4.3" />
       <PackageReference Include="Transformalize.Transform.LambdaParser.Autofac" Version="1.0.0" />
       <PackageReference Include="Transformalize.Transform.Razor.Autofac" Version="1.0.0" />
       <PackageReference Include="Transformalize.Transform.Xml" Version="1.0.0" />
-      <PackageReference Include="Transformalize.Validate.Jint.Autofac" Version="1.0.0" />
+      <PackageReference Include="Transformalize.Validate.Jint.Autofac" Version="1.4.3" />
 
    </ItemGroup>
 

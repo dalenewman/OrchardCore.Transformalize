@@ -9,6 +9,7 @@ using OrchardCore.ContentManagement.Handlers;
 using OrchardCore.Data.Migration;
 using OrchardCore.DisplayManagement.Handlers;
 using OrchardCore.Environment.Shell;
+using OrchardCore.FileStorage.FileSystem;
 using OrchardCore.Modules;
 using OrchardCore.Navigation;
 using OrchardCore.ResourceManagement;
@@ -87,7 +88,8 @@ namespace TransformalizeModule {
             var settings = serviceProvider.GetRequiredService<ShellSettings>();
             var sitePath = PathExtensions.Combine(options.ShellsApplicationDataPath, options.ShellsContainerName, settings.Name);
             var path = PathExtensions.Combine(sitePath, "Transformalize", "Files");
-            return new CustomFileStore(path);
+            var logger = serviceProvider.GetRequiredService<Microsoft.Extensions.Logging.ILogger<FileSystemStore>>();
+            return new CustomFileStore(path, logger);
          });
       }
 
