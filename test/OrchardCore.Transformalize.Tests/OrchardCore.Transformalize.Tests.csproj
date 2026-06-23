@@ -14,10 +14,15 @@
 
   <ItemGroup>
     <PackageReference Include="coverlet.collector" Version="6.0.0" />
-    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="18.4.0" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="18.6.0" />
     <PackageReference Include="Moq" Version="4.20.72" />
     <PackageReference Include="MSTest.TestAdapter" Version="3.1.1" />
     <PackageReference Include="MSTest.TestFramework" Version="3.1.1" />
+
+    <!-- Security pin (CVE-2025-6965): the referenced module pulls the vulnerable, deprecated
+         SQLitePCLRaw 2.1.x native bundle transitively; 3.0.3 uses the patched
+         SourceGear.sqlite3 (>= 3.50.4.5). Drop when upstream references a fixed bundle. -->
+    <PackageReference Include="SQLitePCLRaw.bundle_e_sqlite3" Version="3.0.3" />
   </ItemGroup>
 
   <ItemGroup>

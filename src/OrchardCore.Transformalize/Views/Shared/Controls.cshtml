@@ -220,7 +220,7 @@
 
             @if (entity.Name != "Missing Entity") {
 
-               if (Model.Item != null && await auth.AuthorizeAsync(Context.User, OrchardCore.Contents.Permissions.EditContent, Model.Item)) {
+               if (Model.Item != null && await auth.AuthorizeAsync(Context.User, OrchardCore.Contents.CommonPermissions.EditContent, Model.Item)) {
                   if (Model.BreadCrumbs.Any()){
                      if (!string.IsNullOrEmpty(Context.Request.Query["t"].ToString())){
                         var currentUrl = Context.Request.GetEncodedUrl();

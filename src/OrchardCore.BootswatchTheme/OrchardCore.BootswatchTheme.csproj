@@ -16,14 +16,19 @@
    </ItemGroup>
 
    <ItemGroup>
-      <PackageReference Include="OrchardCore.Theme.Targets" Version="2.2.1" />
-      <PackageReference Include="OrchardCore.Themes" Version="2.2.1" />
-      <PackageReference Include="OrchardCore.Admin.Abstractions" Version="2.2.1" />
-      <PackageReference Include="OrchardCore.Users.Abstractions" Version="2.2.1" />
-      <PackageReference Include="OrchardCore.DisplayManagement" Version="2.2.1" />
-      <PackageReference Include="OrchardCore.Settings" Version="2.2.1" />
-      <PackageReference Include="OrchardCore.Menu" Version="2.2.1" />
-      <PackageReference Include="OrchardCore.ResourceManagement" Version="2.2.1" />
+      <PackageReference Include="OrchardCore.Theme.Targets" Version="3.0.0" />
+      <PackageReference Include="OrchardCore.Themes" Version="3.0.0" />
+      <PackageReference Include="OrchardCore.Admin.Abstractions" Version="3.0.0" />
+      <PackageReference Include="OrchardCore.Users.Abstractions" Version="3.0.0" />
+      <PackageReference Include="OrchardCore.DisplayManagement" Version="3.0.0" />
+      <PackageReference Include="OrchardCore.Settings" Version="3.0.0" />
+      <PackageReference Include="OrchardCore.Menu" Version="3.0.0" />
+      <PackageReference Include="OrchardCore.ResourceManagement" Version="3.0.0" />
+
+      <!-- Security pin (CVE-2025-6965): OrchardCore/YesSql pull the vulnerable, deprecated
+           SQLitePCLRaw 2.1.x native bundle transitively; 3.0.3 uses the patched
+           SourceGear.sqlite3 (>= 3.50.4.5). Drop when upstream references a fixed bundle. -->
+      <PackageReference Include="SQLitePCLRaw.bundle_e_sqlite3" Version="3.0.3" />
    </ItemGroup>
 
    <ItemGroup>
