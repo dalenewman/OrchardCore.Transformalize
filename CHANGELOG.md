@@ -1,3 +1,18 @@
+# 0.21.0 <small>2026-06-22</small>
+
+## ⬆️ Dependencies
+- Upgraded to **OrchardCore 3.0.0** (from 2.2.1). Addressed breaking changes:
+  - `OrchardCore.Contents.Permissions.EditContent` moved to `OrchardCore.Contents.CommonPermissions.EditContent` (updated across the affected views).
+  - `FileSystemStore` now requires an `ILogger<FileSystemStore>` constructor argument (`CustomFileStore` and its registration in `Startup`).
+- Removed the obsolete pinned package overrides (AngleSharp, HtmlSanitizer, Microsoft.Extensions.Http.Resilience, Microsoft.AspNetCore.Authentication.OpenIdConnect) now that OrchardCore 3.0.0 ships compatible versions.
+- Aligned shared dependencies with OrchardCore 3.0.0 (NodaTime 3.3.2, Microsoft.NET.Test.Sdk 18.6.0, Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation 10.0.8).
+- Updated Transformalize packages to 1.4.3.
+
+## 🔒 Security
+- Pinned `SQLitePCLRaw.bundle_e_sqlite3` to `3.0.3` to resolve **CVE-2025-6965** (high-severity SQLite memory-corruption). The transitive 2.1.x native bundle (`SQLitePCLRaw.lib.e_sqlite3`) is deprecated with no fixed release; 3.0.3 uses the patched `SourceGear.sqlite3` (≥ 3.50.4.5).
+
+<!-- CHANGELOG_BOUNDARY -->
+
 # 0.20.4 <small>2026-05-15</small>
 
 ## 💅 Improvements

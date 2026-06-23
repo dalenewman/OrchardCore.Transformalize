@@ -3,9 +3,9 @@
       <TargetFramework>net10.0</TargetFramework>
       <AddRazorSupportForMvc>true</AddRazorSupportForMvc>
       <RootNamespace>TransformalizeModule</RootNamespace>
-      <Version>0.20.4</Version>
-      <FileVersion>0.20.4</FileVersion>
-      <AssemblyVersion>0.20.4</AssemblyVersion>
+      <Version>0.21.0</Version>
+      <FileVersion>0.21.0</FileVersion>
+      <AssemblyVersion>0.21.0</AssemblyVersion>
       <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
       <Authors>Dale Newman</Authors>
       <Copyright>Copyright © 2013-2026</Copyright>
@@ -16,7 +16,7 @@
       <RepositoryType>git</RepositoryType>
       <PackageTags>etl,data,forms,reports,transformalize</PackageTags>
       <NeutralLanguage>en-US</NeutralLanguage>
-      <PackageReleaseNotes>add modal support for bulk actions</PackageReleaseNotes>
+      <PackageReleaseNotes>Upgrade to OrchardCore 3.0.0; align dependencies; pin patched SQLite (CVE-2025-6965)</PackageReleaseNotes>
       <Nullable>enable</Nullable>
       <ImplicitUsings>enable</ImplicitUsings>
    </PropertyGroup>
