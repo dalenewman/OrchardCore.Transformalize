@@ -2,7 +2,7 @@
 
 # docker buildx create --driver=docker-container --name=container
 
-version="0.21.0"
+version="0.21.1"
 build="mcr.microsoft.com/dotnet/sdk:10.0"
 base="mcr.microsoft.com/dotnet/aspnet:10.0"
 name="transformalize.orchard"
