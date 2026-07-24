@@ -1,3 +1,13 @@
+# 0.21.1 <small>2026-07-24</small>
+
+## ⬆️ Dependencies
+- Updated `Transformalize.Container.Autofac` (1.4.2 → 1.4.4) and `Transformalize.Transform.Geography` (1.0.0 → 1.4.4) to pick up the updated `Distance` transform from the main Transformalize and Geography libraries.
+
+## 🛠️ Maintenance
+- Cleared the nullable-reference warnings (CS8618) in `PipelineViewModel` by marking the always-initialized `Link` and `Glyphicon` properties `required` and typing the null-checked `_label`/`_title` backing fields as nullable.
+
+<!-- CHANGELOG_BOUNDARY -->
+
 # 0.21.0 <small>2026-06-22</small>
 
 ## ⬆️ Dependencies
