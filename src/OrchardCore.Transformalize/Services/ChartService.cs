@@ -39,7 +39,7 @@ public class ChartService : IChartService {
          };
       }
 
-      await _reportService.RunAsync(chart.Process, null);
+      await _reportService.RunAsync(chart.Process, null, _hca.HttpContext!.RequestAborted);
 
       if (chart.Process.Status != 200) {
          return new ChartViewModel {

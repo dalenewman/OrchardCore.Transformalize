@@ -5,6 +5,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Transformalize.Configuration;
 using Transformalize.Contracts;
+using Transformalize.Extensions;
 using IContainer = TransformalizeModule.Services.Contracts.IContainer;
 
 namespace TransformalizeModule.Services {
@@ -22,17 +23,20 @@ namespace TransformalizeModule.Services {
          _logger = logger;
       }
 
-      public async Task RunAsync(Process process) {
+      public async Task RunAsync(Process process, CancellationToken token = default) {
 
+         ILifetimeScope scope;
          IProcessController controller;
 
          using (MiniProfiler.Current.Step("Run.Prepare")) {
-            var scope = await _container.CreateScopeAsync(process, _logger, null);
+            scope = await _container.CreateScopeAsync(process, _logger, null);
             controller = scope.Resolve<IProcessController>();
          }
 
-         using (MiniProfiler.Current.Step("Run.Execute")) {
-            await controller.ExecuteAsync();
+         await using (scope) {
+            using (MiniProfiler.Current.Step("Run.Execute")) {
+               await controller.ExecuteStreamAsync(token);
+            }
          }
 
          if (process.Errors().Any() || _logger.Log.Any(l => l.LogLevel == LogLevel.Error)) {

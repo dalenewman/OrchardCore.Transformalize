@@ -85,7 +85,7 @@ namespace TransformalizeModule.Controllers {
             });
 
             try {
-               await _formService.RunAsync(form.Process);
+               await _formService.RunAsync(form.Process, HttpContext.RequestAborted);
                await _notifier.InformationAsync(insert ? H["{0} inserted", form.Process.Name] : H["{0} updated", form.Process.Name]);
                if (Request.Form["modal"] == "1") {
                   var formUrl = Url.Action("Index", "Form", new { Area = Common.ModuleName, ContentItemId = contentItemId, modal = 1, close = 1 });
@@ -93,6 +93,8 @@ namespace TransformalizeModule.Controllers {
                } else if (Request.Form[Common.ReturnUrlName] != StringValues.Empty) {
                   return Redirect(Request.Form[Common.ReturnUrlName].ToString());
                }
+            } catch (OperationCanceledException) when (HttpContext.RequestAborted.IsCancellationRequested) {
+               throw;
             } catch (Exception ex) {
                if (ex.Message.Contains("duplicate")) {
                   await _notifier.ErrorAsync(H["The {0} save failed: {1}", form.Process.Name, "The database has rejected this update due to a unique constraint violation."]);
@@ -135,7 +137,7 @@ namespace TransformalizeModule.Controllers {
             return report.ActionResult;
          }
 
-         await _formService.RunAsync(report.Process);
+         await _formService.RunAsync(report.Process, HttpContext.RequestAborted);
 
          report.Process.Connections.Clear();
 

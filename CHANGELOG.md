@@ -1,3 +1,20 @@
+# 0.22.0 <small>2026-09-16</small>
+
+## 💅 Improvements
+- Added end-to-end asynchronous streaming for report, task, form, custom transform, and log-writer pipelines, with request cancellation propagated throughout execution.
+
+## ⬆️ Dependencies
+- Updated all OrchardCore packages to 3.0.1 and Transformalize packages to 1.5.0, with `Transformalize.Provider.CsvHelper.Autofac` at 1.5.1.
+
+## 🐛 Bug Fixes
+- Fixed streamed CSV exports failing when ASP.NET Core disallows synchronous response-body I/O.
+
+## 🔒 Security
+- Removed the direct `SQLitePCLRaw.bundle_e_sqlite3` overrides now that OrchardCore 3.0.1 includes a fixed native SQLite library and Transformalize 1.5.0 carries its own compatible SQLite bundle.
+- Pinned `AngleSharp` to 1.8.1 in the site application to resolve **CVE-2026-54570** (`GHSA-pgww-w46g-26qg`), which affects the 1.4.0 version resolved by OrchardCore 3.0.1.
+
+<!-- CHANGELOG_BOUNDARY -->
+
 # 0.21.1 <small>2026-07-24</small>
 
 ## ⬆️ Dependencies

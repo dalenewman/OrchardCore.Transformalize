@@ -62,14 +62,16 @@ namespace TransformalizeModule.Services {
       public async Task<ILifetimeScope> CreateScopeAsync(string arrangement, ContentItem item, IDictionary<string, string> parameters, bool validateParameters = true) {
 
          var combinedParameters = parameters ?? new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+         var httpContext = _httpContext.HttpContext;
+         var token = httpContext?.RequestAborted ?? CancellationToken.None;
 
          string modified = arrangement;
-         if (_httpContext.HttpContext.Request.Method == "GET" && item.ContentItem.Has("TransformalizeFormPart")) {
-            modified = await _loadFormModifier.ModifyAsync(arrangement, item.Id, combinedParameters);
+         if (httpContext?.Request.Method == "GET" && item.ContentItem.Has("TransformalizeFormPart")) {
+            modified = await _loadFormModifier.ModifyAsync(arrangement, item.Id, combinedParameters, token);
          }
 
          if (validateParameters) {
-            modified = await _transformalizeParameters.ModifyAsync(arrangement, item.Id, combinedParameters);
+            modified = await _transformalizeParameters.ModifyAsync(arrangement, item.Id, combinedParameters, token);
          }
 
          var builder = new ContainerBuilder();

@@ -36,8 +36,8 @@ namespace TransformalizeModule.Services {
          return await _loadService.LoadForFormAsync(contentItem, parameters, format);
       }
 
-      public async Task RunAsync(Process process) {
-         await _runService.RunAsync(process);
+      public async Task RunAsync(Process process, CancellationToken token = default) {
+         await _runService.RunAsync(process, token);
       }
 
       public async Task<TransformalizeResponse<TransformalizeTaskPart>> ValidateParameters(TransformalizeRequest request) {

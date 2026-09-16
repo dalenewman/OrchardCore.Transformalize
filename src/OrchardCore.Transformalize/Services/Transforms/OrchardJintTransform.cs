@@ -19,7 +19,9 @@ using Cfg.Net.Contracts;
 using Jint;
 using Microsoft.Extensions.Caching.Memory;
 using OrchardCore.Environment.Cache;
+using System.Runtime.CompilerServices;
 using System.Text;
+using System.Threading;
 using Transformalize;
 using Transformalize.Configuration;
 using Transformalize.Contracts;
@@ -71,9 +73,45 @@ namespace TransformalizeModule.Services.Transforms {
          if (!Run)
             yield break;
 
+         var transform = PrepareTransform();
+         if (!Run || transform == null)
+            yield break;
+
+         foreach (var row in rows) {
+            foreach (var field in transform.Input) {
+               _jint.SetValue(field.Alias, row[field]);
+            }
+            OperateRow(row, transform);
+            yield return row;
+         }
+      }
+
+      public override async IAsyncEnumerable<IRow> OperateStreamAsync(
+         IAsyncEnumerable<IRow> rows,
+         [EnumeratorCancellation] CancellationToken token = default) {
+
+         token.ThrowIfCancellationRequested();
+         if (!Run)
+            yield break;
+
+         var transform = PrepareTransform();
+         if (!Run || transform == null)
+            yield break;
+
+         await foreach (var row in rows.WithCancellation(token).ConfigureAwait(false)) {
+            token.ThrowIfCancellationRequested();
+            foreach (var field in transform.Input) {
+               _jint.SetValue(field.Alias, row[field]);
+            }
+            OperateRow(row, transform);
+            yield return row;
+         }
+      }
+
+      private CachedJintTransform PrepareTransform() {
          var key = string.Join(':', Context.Process.Id, Context.Entity.Alias, Context.Field.Alias, Context.Operation.Method, Context.Operation.Index);
 
-         if (!_memoryCache.TryGetValue(key, out CachedJintTransform transform)) {
+         if (!_memoryCache.TryGetValue(key, out CachedJintTransform? transform) || transform == null) {
 
             transform = new CachedJintTransform();
             var scriptBuilder = new StringBuilder();
@@ -147,37 +185,31 @@ namespace TransformalizeModule.Services.Transforms {
 
          }
 
-         if (!Run)
-            yield break;
+         return transform;
+      }
 
-         foreach (var row in rows) {
-            foreach (var field in transform.Input) {
-               _jint.SetValue(field.Alias, row[field]);
-            }
-            if (TryFirst) {
-               try {
-                  TryFirst = false;
-                  var obj = _jint.Evaluate(transform.Script).ToObject();
-                  var value = obj == null ? null : Context.Field.Convert(obj);
-                  if (value == null) {
-                     Context.Error($"Jint transform in {Context.Field.Alias} returns null!");
-                  } else {
-                     row[Context.Field] = value;
-                  }
-               } catch (Jint.Runtime.JavaScriptException jse) {
-
-                  Utility.CodeToError(Context, Context.Operation.Script);
-                  Context.Error(jse, "Error Message: " + jse.Message);
-                  Context.Error("Variables:");
-                  foreach (var field in transform.Input) {
-                     Context.Error($"{field.Alias}:{row[field]}");
-                  }
+      private void OperateRow(IRow row, CachedJintTransform transform) {
+         if (TryFirst) {
+            try {
+               TryFirst = false;
+               var obj = _jint.Evaluate(transform.Script).ToObject();
+               var value = obj == null ? null : Context.Field.Convert(obj);
+               if (value == null) {
+                  Context.Error($"Jint transform in {Context.Field.Alias} returns null!");
+               } else {
+                  row[Context.Field] = value;
                }
-            } else {
-               row[Context.Field] = Context.Field.Convert(_jint.Evaluate(transform.Script).ToObject());
-            }
+            } catch (Jint.Runtime.JavaScriptException jse) {
 
-            yield return row;
+               Utility.CodeToError(Context, Context.Operation.Script);
+               Context.Error(jse, "Error Message: " + jse.Message);
+               Context.Error("Variables:");
+               foreach (var field in transform.Input) {
+                  Context.Error($"{field.Alias}:{row[field]}");
+               }
+            }
+         } else {
+            row[Context.Field] = Context.Field.Convert(_jint.Evaluate(transform.Script).ToObject());
          }
       }
 

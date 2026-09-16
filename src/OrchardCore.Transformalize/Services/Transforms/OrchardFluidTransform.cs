@@ -4,6 +4,8 @@ using OrchardCore.Environment.Cache;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
+using System.Threading;
 using Transformalize;
 using Transformalize.Contracts;
 using Transformalize.Transforms;
@@ -54,9 +56,48 @@ namespace TransformalizeModule.Services.Transforms {
          if (!Run)
             yield break;
 
+         var transform = PrepareTransform();
+         if (transform == null)
+            yield break;
+
+         var context = new TemplateContext();
+         foreach (var row in rows) {
+            foreach (var field in transform.Input) {
+               context.SetValue(field.Alias, row[field]);
+            }
+            row[Context.Field] = _convert(transform.Template.Render(context));
+            yield return row;
+         }
+
+      }
+
+      public override async IAsyncEnumerable<IRow> OperateStreamAsync(
+         IAsyncEnumerable<IRow> rows,
+         [EnumeratorCancellation] CancellationToken token = default) {
+
+         token.ThrowIfCancellationRequested();
+         if (!Run)
+            yield break;
+
+         var transform = PrepareTransform();
+         if (transform == null)
+            yield break;
+
+         var context = new TemplateContext();
+         await foreach (var row in rows.WithCancellation(token).ConfigureAwait(false)) {
+            token.ThrowIfCancellationRequested();
+            foreach (var field in transform.Input) {
+               context.SetValue(field.Alias, row[field]);
+            }
+            row[Context.Field] = _convert(transform.Template.Render(context));
+            yield return row;
+         }
+      }
+
+      private CachedFluidTransform? PrepareTransform() {
          var key = string.Join(':', Context.Process.Id, Context.Entity.Alias, Context.Field.Alias, Context.Operation.Method, Context.Operation.Index);
 
-         if (!_memoryCache.TryGetValue(key, out CachedFluidTransform transform)) {
+         if (!_memoryCache.TryGetValue(key, out CachedFluidTransform? transform) || transform == null) {
 
             transform = new CachedFluidTransform();
 
@@ -78,19 +119,11 @@ namespace TransformalizeModule.Services.Transforms {
             } else {
                Context.Error("Failed to parse fluid template.");
                Utility.CodeToError(Context, Context.Operation.Template);
-               yield break;
+               return null;
             }
          }
 
-         var context = new TemplateContext();
-         foreach (var row in rows) {
-            foreach (var field in transform.Input) {
-               context.SetValue(field.Alias, row[field]);
-            }
-            row[Context.Field] = _convert(transform.Template.Render(context));
-            yield return row;
-         }
-
+         return transform;
       }
 
       public override IEnumerable<OperationSignature> GetSignatures() {

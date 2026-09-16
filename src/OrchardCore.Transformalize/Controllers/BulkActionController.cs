@@ -96,7 +96,7 @@ namespace TransformalizeModule.Controllers {
                return create.ActionResult;
             }
 
-            await _taskService.RunAsync(create.Process);
+            await _taskService.RunAsync(create.Process, HttpContext.RequestAborted);
             if (create.Process.Status != 200) {
                _logger.Warn(() => $"User {user.UserName} received error running action {taskNames.Create}.");
                return View("Log", new LogViewModel(_logger.Log, create.Process, create.ContentItem));
@@ -144,7 +144,7 @@ namespace TransformalizeModule.Controllers {
             if (request.ActionCount == 0) {
                var batchProcess = await _reportService.LoadForBatchAsync(report.ContentItem);
 
-               await _taskService.RunAsync(batchProcess);
+               await _taskService.RunAsync(batchProcess, HttpContext.RequestAborted);
                foreach (var batchRow in batchProcess.Entities.First().Rows) {
                   var row = new Transformalize.Impl.CfgRow(new[] { batchValueField.Alias });
                   row[batchValueField.Alias] = batchRow[report.Part.BulkActionValueField.Text];
@@ -158,7 +158,7 @@ namespace TransformalizeModule.Controllers {
                }
             }
 
-            await _taskService.RunAsync(write.Process);
+            await _taskService.RunAsync(write.Process, HttpContext.RequestAborted);
             #endregion
 
             return RedirectToAction("Review", ParametersToRouteValues(writeParameters));
@@ -189,7 +189,7 @@ namespace TransformalizeModule.Controllers {
          if (batchSummary.Fails()) {
             return batchSummary.ActionResult;
          }
-         await _taskService.RunAsync(batchSummary.Process);
+         await _taskService.RunAsync(batchSummary.Process, HttpContext.RequestAborted);
 
          var bulkAction = await _formService.ValidateParameters(new TransformalizeRequest(request.TaskContentItemId));
          if (bulkAction.Fails()) {
@@ -228,7 +228,7 @@ namespace TransformalizeModule.Controllers {
          if (bulkAction.Fails()) {
             return bulkAction.ActionResult;
          }
-         await _taskService.RunAsync(bulkAction.Process);
+         await _taskService.RunAsync(bulkAction.Process, HttpContext.RequestAborted);
 
          var records = bulkAction.Process.Actions.Where(a => a.RowCount > 0).Sum(a => a.RowCount) 
                      + bulkAction.Process.Entities.Where(a => a.Hits > 0).Sum(e => e.Hits)
@@ -241,7 +241,7 @@ namespace TransformalizeModule.Controllers {
             if (batchSuccess.Fails()) {
                _logger.Warn(() => $"{bulkAction.ContentItem.DisplayText} succeeded but {taskNames.Success} failed to load.");
             } else {
-               await _taskService.RunAsync(batchSuccess.Process);
+               await _taskService.RunAsync(batchSuccess.Process, HttpContext.RequestAborted);
             }
          } else {
             var message = new StringBuilder(bulkAction.Process.Message);
@@ -254,7 +254,7 @@ namespace TransformalizeModule.Controllers {
             if (batchFail.Fails()) {
                _logger.Warn(() => $"{bulkAction.ContentItem.DisplayText} failed and {taskNames.Fail} failed to load.");
             } else {
-               await _taskService.RunAsync(batchFail.Process);
+               await _taskService.RunAsync(batchFail.Process, HttpContext.RequestAborted);
             }
          }
 
@@ -280,7 +280,7 @@ namespace TransformalizeModule.Controllers {
          if (batchSummary.Fails()) {
             return batchSummary.ActionResult;
          }
-         await _taskService.RunAsync(batchSummary.Process);
+         await _taskService.RunAsync(batchSummary.Process, HttpContext.RequestAborted);
 
          return View(TransferRequiredParameters(request, batchSummary).Process);
       }
