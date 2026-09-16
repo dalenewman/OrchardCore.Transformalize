@@ -24,6 +24,7 @@ using TransformalizeModule.Services.Modules;
 using Transformalize.Configuration;
 using Transformalize.Containers.Autofac.Modules;
 using Transformalize.Contracts;
+using Transformalize.Extensions;
 using Transformalize.Impl;
 using Process = Transformalize.Configuration.Process;
 using IContainer = TransformalizeModule.Services.Contracts.IContainer;
@@ -63,13 +64,13 @@ namespace TransformalizeModule.Services {
          H = htmlLocalizer;
       }
 
-      public async Task<string> ModifyAsync(string cfg, long id, IDictionary<string, string> parameters) {
+      public async Task<string> ModifyAsync(string cfg, long id, IDictionary<string, string> parameters, CancellationToken token = default) {
          using (MiniProfiler.Current.Step("Transformalize Parameters")) {
-            return await ModifyInternalAsync(cfg, id, parameters);
+            return await ModifyInternalAsync(cfg, id, parameters, token);
          }
       }
 
-      private async Task<string> ModifyInternalAsync(string cfg, long id, IDictionary<string, string> parameters) {
+      private async Task<string> ModifyInternalAsync(string cfg, long id, IDictionary<string, string> parameters, CancellationToken token) {
 
          // using facade (which is all string properties) so things can be 
          // transformed before types are checked or place-holders are replaced
@@ -203,7 +204,7 @@ namespace TransformalizeModule.Services {
             CfgRow output;
             _container.GetReaderAlternate = (input, rowFactory) => new ParameterRowReader(input, new DefaultRowReader(input, rowFactory));
             await using (var scope = await _container.CreateScopeAsync(process, _logger, null)) {
-               await scope.Resolve<IProcessController>().ExecuteAsync();
+               await scope.Resolve<IProcessController>().ExecuteStreamAsync(token);
                output = process.Entities[0].Rows.FirstOrDefault();
             }
 

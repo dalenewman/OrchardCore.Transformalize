@@ -22,6 +22,8 @@ using RazorEngineCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
+using System.Threading;
 using Transformalize;
 using Transformalize.Contracts;
 using Transformalize.Transforms;
@@ -70,9 +72,42 @@ namespace TransformalizeModule.Services.Transforms {
          if (!Run)
             yield break;
 
+         var transform = PrepareTransform();
+         if (transform == null)
+            yield break;
+
+         foreach (var row in rows) {
+            var output = transform.Template.Run(row.ToFriendlyExpandoObject(transform.Input));
+            row[Context.Field] = _convert(output);
+            yield return row;
+         }
+
+      }
+
+      public override async IAsyncEnumerable<IRow> OperateStreamAsync(
+         IAsyncEnumerable<IRow> rows,
+         [EnumeratorCancellation] CancellationToken token = default) {
+
+         token.ThrowIfCancellationRequested();
+         if (!Run)
+            yield break;
+
+         var transform = PrepareTransform();
+         if (transform == null)
+            yield break;
+
+         await foreach (var row in rows.WithCancellation(token).ConfigureAwait(false)) {
+            token.ThrowIfCancellationRequested();
+            var output = transform.Template.Run(row.ToFriendlyExpandoObject(transform.Input));
+            row[Context.Field] = _convert(output);
+            yield return row;
+         }
+      }
+
+      private CachedRazorTransform? PrepareTransform() {
          var key = string.Join(':', Context.Process.Id, Context.Entity.Alias, Context.Field.Alias, Context.Operation.Method, Context.Operation.Index);
 
-         if (!_memoryCache.TryGetValue(key, out CachedRazorTransform transform)) {
+         if (!_memoryCache.TryGetValue(key, out CachedRazorTransform? transform) || transform == null) {
 
             transform = new CachedRazorTransform();
 
@@ -105,17 +140,12 @@ namespace TransformalizeModule.Services.Transforms {
                }
                Context.Error(ex.Message.Replace("{", "{{").Replace("}", "}}"));
                Utility.CodeToError(Context, Context.Operation.Template);
-               yield break;
+               return null;
             }
 
          }
 
-         foreach (var row in rows) {
-            var output = transform.Template.Run(row.ToFriendlyExpandoObject(transform.Input));
-            row[Context.Field] = _convert(output);
-            yield return row;
-         }
-
+         return transform;
       }
 
       public override IEnumerable<OperationSignature> GetSignatures() {

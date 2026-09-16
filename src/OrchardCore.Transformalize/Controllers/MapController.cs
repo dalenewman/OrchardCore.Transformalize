@@ -43,7 +43,7 @@ namespace TransformalizeModule.Controllers {
             return View("Log", new LogViewModel(_logger.Log, map.Process, map.ContentItem));
          }
 
-         await _reportService.RunAsync(map.Process, null);
+         await _reportService.RunAsync(map.Process, null, HttpContext.RequestAborted);
 
          if (map.Process.Status != 200) {
             return View("Log", new LogViewModel(_logger.Log, map.Process, map.ContentItem));
@@ -67,7 +67,7 @@ namespace TransformalizeModule.Controllers {
 
          StreamWriter sw;
          await using (sw = new StreamWriter(Response.Body)) {
-            await _reportService.RunAsync(map.Process, sw);
+            await _reportService.RunAsync(map.Process, sw, HttpContext.RequestAborted);
          }
 
          return new EmptyResult();

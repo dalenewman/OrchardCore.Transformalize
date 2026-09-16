@@ -38,7 +38,7 @@ namespace TransformalizeModule.Controllers {
             return report.ActionResult;
          }
 
-         await _reportService.RunAsync(report.Process, null);
+         await _reportService.RunAsync(report.Process, null, HttpContext.RequestAborted);
          if (report.Process.Status != 200) {
             return View("Log", new LogViewModel(_logger.Log, report.Process, report.ContentItem));
          }
@@ -67,7 +67,7 @@ namespace TransformalizeModule.Controllers {
             return report.ActionResult;
          }
 
-         await _reportService.RunAsync(report.Process, null);
+         await _reportService.RunAsync(report.Process, null, HttpContext.RequestAborted);
 
          report.Process.Connections.Clear();
 
@@ -97,7 +97,7 @@ namespace TransformalizeModule.Controllers {
 
          StreamWriter sw;
          await using (sw = new StreamWriter(Response.Body)) {
-            await _reportService.RunAsync(stream.Process, sw);
+            await _reportService.RunAsync(stream.Process, sw, HttpContext.RequestAborted);
          }
 
          return new EmptyResult();
@@ -143,7 +143,7 @@ namespace TransformalizeModule.Controllers {
 
          StreamWriter sw;
          await using (sw = new StreamWriter(Response.Body)) {
-            await _reportService.RunAsync(stream.Process, sw);
+            await _reportService.RunAsync(stream.Process, sw, HttpContext.RequestAborted);
          }
 
          return new EmptyResult();
@@ -172,7 +172,7 @@ namespace TransformalizeModule.Controllers {
 
          StreamWriter sw;
          await using (sw = new StreamWriter(Response.Body)) {
-            await _reportService.RunAsync(stream.Process, sw);
+            await _reportService.RunAsync(stream.Process, sw, HttpContext.RequestAborted);
          }
 
          return new EmptyResult();

@@ -21,6 +21,7 @@ using Cfg.Net.Contracts;
 using TransformalizeModule.Services.Contracts;
 using Transformalize.Configuration;
 using Transformalize.Contracts;
+using Transformalize.Extensions;
 using Transformalize.Impl;
 using Process = Transformalize.Configuration.Process;
 using IContainer = TransformalizeModule.Services.Contracts.IContainer;
@@ -49,13 +50,13 @@ namespace TransformalizeModule.Services {
          _container = container;
       }
 
-      public async Task<string> ModifyAsync(string cfg, long id, IDictionary<string, string> parameters) {
+      public async Task<string> ModifyAsync(string cfg, long id, IDictionary<string, string> parameters, CancellationToken token = default) {
          using (MiniProfiler.Current.Step("Load Form")) {
-            return await ModifyInternalAsync(cfg, id, parameters);
+            return await ModifyInternalAsync(cfg, id, parameters, token);
          }
       }
 
-      private async Task<string> ModifyInternalAsync(string cfg, long id, IDictionary<string,string> parameters) {
+      private async Task<string> ModifyInternalAsync(string cfg, long id, IDictionary<string,string> parameters, CancellationToken token) {
 
          var process = new Process(cfg) { Id = id };
 
@@ -125,7 +126,7 @@ namespace TransformalizeModule.Services {
             // run the process which should get a single row (the form submission) into output
             CfgRow output;
             await using (var scope = await _container.CreateScopeAsync(modified, _logger, null)) {
-               await scope.Resolve<IProcessController>().ExecuteAsync();
+               await scope.Resolve<IProcessController>().ExecuteStreamAsync(token);
                output = modified.Entities[0].Rows.FirstOrDefault();
             }
 

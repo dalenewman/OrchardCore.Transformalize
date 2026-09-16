@@ -25,6 +25,9 @@ using TransformalizeModule.Models;
 using TransformalizeModule.Navigation;
 using TransformalizeModule.Services;
 using TransformalizeModule.Services.Contracts;
+// optional, verify use of ADO parameters for user input to prevent SQL injection attacks
+// using StackExchange.Profiling;
+// using StackExchange.Profiling.SqlFormatters;
 
 namespace TransformalizeModule {
    public class Startup : StartupBase {
@@ -91,6 +94,14 @@ namespace TransformalizeModule {
             var logger = serviceProvider.GetRequiredService<Microsoft.Extensions.Logging.ILogger<FileSystemStore>>();
             return new CustomFileStore(path, logger);
          });
+
+         // optional, verify use of ADO parameters for user input to prevent SQL injection attacks
+         // services.PostConfigure<MiniProfilerOptions>(options => {
+         //    options.SqlFormatter = new SqlServerFormatter();
+         //    // Optional: Hide values if you need to prevent sensitive data from logging
+         //    // options.SqlFormatter = new SqlServerFormatter { IncludeParameterValues = false };
+         // });
+
       }
 
       public override void Configure(IApplicationBuilder builder, IEndpointRouteBuilder routes, IServiceProvider serviceProvider) {

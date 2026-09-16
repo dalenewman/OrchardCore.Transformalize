@@ -34,7 +34,7 @@ namespace TransformalizeModule.Controllers {
             return calendar.ActionResult;
          }
 
-         await _reportService.RunAsync(calendar.Process, null);
+         await _reportService.RunAsync(calendar.Process, null, HttpContext.RequestAborted);
 
          if (calendar.Process.Status != 200) {
             return View("Log", new LogViewModel(_logger.Log, calendar.Process, calendar.ContentItem));
@@ -58,7 +58,7 @@ namespace TransformalizeModule.Controllers {
 
          StreamWriter sw;
          await using (sw = new StreamWriter(Response.Body)) {
-            await _reportService.RunAsync(map.Process, sw);
+            await _reportService.RunAsync(map.Process, sw, HttpContext.RequestAborted);
          }
 
          return new EmptyResult();

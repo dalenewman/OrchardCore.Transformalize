@@ -3,6 +3,6 @@ using Transformalize.Configuration;
 
 namespace TransformalizeModule.Services.Contracts {
    public interface IArrangementRunService {
-      Task RunAsync(Process process);
+      Task RunAsync(Process process, CancellationToken token = default);
    }
 }

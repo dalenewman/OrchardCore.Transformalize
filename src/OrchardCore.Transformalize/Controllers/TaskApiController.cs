@@ -53,7 +53,7 @@ namespace TransformalizeModule.Controllers {
             return task.ActionResult;
          }
 
-         await _taskService.RunAsync(task.Process);
+         await _taskService.RunAsync(task.Process, HttpContext.RequestAborted);
 
          task.Process.Log.AddRange(_logger.Log);
          task.Process.Connections.Clear();

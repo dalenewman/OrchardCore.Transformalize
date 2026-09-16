@@ -37,7 +37,7 @@ namespace TransformalizeModule.Controllers {
             return task.ActionResult;
          }
 
-         await _taskService.RunAsync(task.Process);
+         await _taskService.RunAsync(task.Process, HttpContext.RequestAborted);
 
          if (format == null) {
             return View("Log", new LogViewModel(_logger.Log, task.Process, task.ContentItem));

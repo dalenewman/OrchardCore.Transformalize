@@ -18,12 +18,14 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 using Transformalize.Configuration;
 using Transformalize.Context;
 using Transformalize.Contracts;
 
 namespace TransformalizeModule.Services.Writers {
-   public class LogWriter : IWrite {
+   public class LogWriter : IWrite, IWriteStream {
 
       private readonly IField _level;
       private readonly Field _message;
@@ -38,30 +40,42 @@ namespace TransformalizeModule.Services.Writers {
       public void Write(IEnumerable<IRow> rows) {
 
          foreach (var row in rows) {
-
-            var message = (string) row[_message] ?? string.Empty;
-            switch (row[_level].ToString().ToLower()) {
-               case "warn":
-               case "warning":
-                  _context.Warn(message);
-                  break;
-               case "error":
-                  _context.Error(message);
-                  break;
-               case "debug":
-                  _context.Debug(()=>message);
-                  break;
-               default:
-                  _context.Info(message);
-                  break;
-            }
+            WriteRow(row);
          }
       }
 
-    public Task WriteAsync(IEnumerable<IRow> rows, CancellationToken token = default)
-    {
-      Write(rows);
-      return Task.CompletedTask;
-    }
-  }
+      public Task WriteAsync(IEnumerable<IRow> rows, CancellationToken token = default) {
+         foreach (var row in rows) {
+            token.ThrowIfCancellationRequested();
+            WriteRow(row);
+         }
+         return Task.CompletedTask;
+      }
+
+      public async Task WriteStreamAsync(IAsyncEnumerable<IRow> rows, CancellationToken token = default) {
+         await foreach (var row in rows.WithCancellation(token).ConfigureAwait(false)) {
+            token.ThrowIfCancellationRequested();
+            WriteRow(row);
+         }
+      }
+
+      private void WriteRow(IRow row) {
+         var message = (string)row[_message] ?? string.Empty;
+         switch (row[_level].ToString().ToLower()) {
+            case "warn":
+            case "warning":
+               _context.Warn(message);
+               break;
+            case "error":
+               _context.Error(message);
+               break;
+            case "debug":
+               _context.Debug(() => message);
+               break;
+            default:
+               _context.Info(message);
+               break;
+         }
+      }
+   }
 }

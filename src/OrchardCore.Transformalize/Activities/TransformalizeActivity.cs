@@ -54,7 +54,7 @@ namespace TransformalizeModule.Activities {
             return Outcomes("Error");
          }
 
-         await _taskService.RunAsync(task.Process);
+         await _taskService.RunAsync(task.Process, workflowContext.CancellationToken);
 
          if (task.Process.Status != 200) {
             workflowContext.Fault(new Exception(task.Process.Message), activityContext);

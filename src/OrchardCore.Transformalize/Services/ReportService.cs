@@ -91,8 +91,8 @@ namespace TransformalizeModule.Services {
          return await _loadService.LoadForCalendarStreamAsync(contentItem);
       }
 
-      public async Task RunAsync(Process process, StreamWriter streamWriter) {
-         await _streamService.RunAsync(process, streamWriter);
+      public async Task RunAsync(Process process, StreamWriter streamWriter, CancellationToken token = default) {
+         await _streamService.RunAsync(process, streamWriter, token);
       }
 
       public async Task<TransformalizeResponse<TransformalizeReportPart>> Validate(TransformalizeRequest request) {
