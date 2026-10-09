@@ -1,0 +1,65 @@
+@model FormUploadViewModel
+@using TransformalizeModule.Ext
+@using TransformalizeModule.Services.Contracts
+@using Microsoft.Extensions.DependencyInjection
+@{
+   var parameter = Model.Parameter;
+   var value = parameter.Value ?? string.Empty;
+   var display = string.Empty;
+   string? previewUrl = null;
+   if (!Model.Scan) {
+      // GetFileParameters transfers _Old (including removal) before transforms.
+      // Render the resulting server value, which may differ from the posted ID.
+      var file = string.IsNullOrEmpty(value) ? null : await Context.RequestServices.GetRequiredService<IFileService>().GetFilePart(value);
+      display = file?.OriginalName.Text ?? string.Empty;
+      if (file?.MimeType().StartsWith("image/", StringComparison.OrdinalIgnoreCase) == true) {
+         previewUrl = Url.Action("Index", "File", new { area = "OrchardCore.Transformalize", contentItemId = value });
+      }
+   }
+}
+<div class="form-group @(Model.Valid ? "is-valid" : "is-invalid") @parameter.Class" data-controller="tfl-upload"
+     data-tfl-upload-url-value="@Url.Action(Model.Scan ? "Scan" : "Upload", "File", new { area = "OrchardCore.Transformalize" })"
+     data-tfl-upload-name-value="@parameter.Name" data-tfl-upload-scan-value="@Model.Scan.ToString().ToLowerInvariant()">
+   <label for="@(Model.Scan ? $"id_{parameter.Name}" : $"id_{parameter.Name}_choose")" class="form-label">@parameter.Label</label>
+   @if (parameter.Hint != string.Empty) {
+      <span class="text-muted float-end">@parameter.Hint</span>
+   }
+   @if (Model.Scan) {
+      <input type="text" class="form-control @(Model.Valid ? "is-valid" : "is-invalid")" id="id_@parameter.Name"
+             name="@parameter.Name" value="@value" autocomplete="@(parameter.AutoComplete ? "on" : "off")"
+             data-tfl-upload-target="value" data-tfl-post-back="@parameter.PostBack" @Html.Raw(parameter.ToValidation(true)) />
+      <small class="text-muted">Scan an image or enter the value here.</small>
+   } else {
+      <input type="text" class="form-control" id="id_@parameter.Name" value="@display" readonly tabindex="-1"
+             data-tfl-upload-target="display" data-tfl-validation-excluded hidden="@string.IsNullOrEmpty(value)" />
+      <input type="hidden" name="@(parameter.Name)_Old" value="@value" id="id_@(parameter.Name)_Old"
+             data-form-upload-value data-tfl-upload-target="value" data-tfl-post-back="@parameter.PostBack" @Html.Raw(parameter.ToValidation(true)) />
+   }
+   <div class="d-flex align-items-center gap-2 mt-1">
+      <button type="button" id="id_@(parameter.Name)_choose"
+              class="btn @(Model.Scan ? "btn-warning" : "btn-primary") btn-sm mb-0 tfl-upload-choose"
+              data-tfl-upload-target="choose" data-tfl-focus-name="@parameter.Name" data-action="tfl-upload#choose"
+              disabled="@(!Model.Scan && !string.IsNullOrEmpty(value))"
+              aria-label="@(Model.Scan ? "Scan" : "Upload") @parameter.Label">
+         <i class="fas @(Model.Scan ? "fa-barcode" : "fa-plus")"></i> @(Model.Scan ? "Scan" : "Upload")
+      </button>
+      @* Only the stored ID / decoded text belongs in validation and native save posts. *@
+      <input type="file" class="visually-hidden" tabindex="-1" id="id_@(parameter.Name)_file"
+             aria-label="@(Model.Scan ? "Scan" : "Upload") @parameter.Label"
+             accept="@(Model.Scan ? "image/*" : parameter.InputAccept)" capture="@(string.IsNullOrEmpty(parameter.InputCapture) ? null : parameter.InputCapture)"
+             data-tfl-upload-target="input" data-form-upload-input />
+      <button type="button" id="id_@(parameter.Name)_clear" class="btn btn-outline-secondary btn-sm"
+              data-tfl-focus-name="@parameter.Name" data-action="tfl-upload#clear" data-tfl-upload-target="clear" hidden="@string.IsNullOrEmpty(value)">Clear</button>
+      <button type="button" id="id_@(parameter.Name)_retry" class="btn btn-outline-danger btn-sm"
+              data-tfl-focus-name="@parameter.Name" data-action="tfl-upload#retry" data-tfl-upload-target="retry" hidden>Retry</button>
+      <progress max="100" value="0" data-tfl-upload-target="progress" hidden aria-label="Upload progress"></progress>
+   </div>
+   <img class="tfl-upload-preview mt-2" src="@previewUrl" alt="Preview of @display"
+        data-tfl-upload-target="preview" data-action="error->tfl-upload#previewFailed" hidden="@(previewUrl == null)" />
+   <p class="small mb-0" role="status" data-tfl-upload-target="status"></p>
+   <span class="help-container">
+      @if (!Model.Valid) {
+         <span class="help-block">@parameter.Message.Replace('|', ' ')</span>
+      }
+   </span>
+</div>

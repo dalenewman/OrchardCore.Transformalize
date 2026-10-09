@@ -1,0 +1,17 @@
+@model ParameterViewModel
+@{
+   var input = Context.Request.Query[Model.Parameter.Name].ToString();
+   var requestedValue = input == string.Empty ? Model.Parameter.Value : input;
+   var items = Model.Maps.First(m => m.Name == Model.Parameter.Map).Items;
+   var displayMap = Model.Field != null && Model.Field.Map != string.Empty ? Model.Maps.FirstOrDefault(m => m.Name == Model.Field.Map) : null;
+   var values = string.IsNullOrEmpty(input) ? new HashSet<string>() : new HashSet<string>(input.Split(","));
+}
+@if (!Model.Parameter.Multiple) {
+   <option value="*" selected="@(requestedValue == "*")">All</option>
+}
+@foreach (var item in items) {
+   if (item.To != null && item.From != null) {
+      Model.ModifyMapItem(displayMap, item);
+      <option value="@item.To" selected="@(Model.Parameter.Multiple ? values.Contains(item.To.ToString()) : item.To.ToString() == requestedValue)">@item.From</option>
+   }
+}

@@ -14,36 +14,14 @@
    var googlePlacesAutocomplete = Model.Process.Parameters.Any(p => p.InputType == "google-places-autocomplete");
    var mapPickerEnabled = Model.Process.Parameters.Any(p => p.InputType == "map");
    var isModal = Context.Request.Query["modal"] == "1";
+   var interactivity = ViewData["FormInteractivity"] as FormInteractivityViewModel;
+   var interactive = interactivity?.Interactive == true;
 }
 
-<script asp-name="jQuery" at="Head"></script>
-<script asp-name="jQuery-ui" at="Head"></script>
-<script asp-name="block-ui" version="2.70.0" at="Foot"></script>
-<script asp-name="pickadate-picker-date" version="3.6.4" at="Foot"></script>
-<script asp-name="parsley" version="2.9.2" at="Foot"></script>
-<script asp-name="moment" version="2.26.0" at="Foot"></script>
-@*the order of these file handling scripts matters*@
-<script asp-name="load-image-all" version="5.14.0" at="Head"></script>
-<script asp-name="canvas-to-blob" version="3.28.0" at="Head"></script>
-<script asp-name="jquery-iframe-transport" version="10.31.0" at="Head"></script>
-<script asp-name="jquery-fileupload" version="10.31.0" at="Head"></script>
-<script asp-name="jquery-fileupload-process" version="10.31.0" at="Head"></script>
-<script asp-name="jquery-fileupload-image" version="10.31.0" at="Head"></script>
-<script asp-name="bs-custom-file-input" version="1.3.4" at="Head"></script>
-<script asp-name="jquery-are-you-sure" version="1.9.0" at="Head"></script>
+@await Html.PartialAsync("_FormResources", interactivity)
 
-@if (googlePlacesAutocomplete) {
-   var siteService = Context.RequestServices.GetService<ISiteService>();
-   var result = siteService.GetSiteSettingsAsync().Result;
-   var settings = result.As<TransformalizeSettings>();
-   <script language="javascript">
-      let autocomplete;
-   </script>
-   <script src="https://polyfill.io/v3/polyfill.min.js?features=default"></script>
-   <script src="https://maps.googleapis.com/maps/api/js?key=@settings.GoogleApiKey&callback=initAutocomplete&libraries=places&v=weekly" async="async"></script>
-}
 
-@if (mapPickerEnabled) {
+@if (mapPickerEnabled && !interactive) {
    var mapSiteService = Context.RequestServices.GetService<ISiteService>();
    var mapSiteResult = mapSiteService.GetSiteSettingsAsync().Result;
    var mapSettings = mapSiteResult.As<TransformalizeSettings>();
@@ -54,58 +32,7 @@
    </script>
 }
 
-<script asp-src="~/@Common.ModuleName/Scripts/form.js?v=8" at="Foot"></script>
-<script asp-src="~/@Common.ModuleName/Scripts/file.handler.js?v=2" at="Foot"></script>
-
-<style asp-name="pickadate-themes-default" version="3.6.4"></style>
-<style asp-name="pickadate-themes-default-date" version="3.6.4"></style>
-
-<style>
-
-   /* to stop ios from zooming in on inputs */
-   body {
-      font-size: 16px;
-   }
-
-   #busy {
-      position: fixed;
-      left: 46%;
-      top: 40%;
-      display: none;
-      background: transparent url(@Url.Content($"~/{Common.ModuleName}/Styles/busy.gif"));
-      background-size: 149px 149px;
-      background-repeat: no-repeat;
-      z-index: 1020;
-      height: 150px;
-      width: 150px;
-   }
-
-   #busy-holder {
-      background: transparent;
-      width: 100%;
-      height: 100%;
-   }
-
-   .help-block {
-      color: red;
-   }
-
-   .form-control:focus {
-      border-color: #66AFE9;
-   }
-
-   input:invalid {
-      border-color: red;
-   }
-
-   label.focus {
-      border-color: #66afe9;
-      outline: 0;
-      box-shadow: inset 0 1px 1px rgba(0,0,0,.075), 0 0 8px rgba(102, 175, 233, 0.6);
-   }
-
-</style>
-
+@if (!interactive) {
 <script type="text/javascript" language="javascript">
     //<!--
    var settings = {
@@ -133,11 +60,13 @@
    }
    //-->
 </script>
+}
+
 
 <div class="container">
    <div class="row">
       <div class="col-md-12">
-         @if (locationEnabled) {
+         @if (locationEnabled && !interactive) {
             <button tabindex="-1" id="id_location_button" title="query location" type="button" class="btn btn-success btn-sm float-end">
                <span class="fas fa-location-arrow" style="padding-top:0px;"></span>
                <div class="spinner-border spinner-border-sm" role="status" style="display:none">
@@ -152,10 +81,13 @@
             </button>
          }
          <h4>@(@Model.ContentItem.DisplayText)</h4>
-         <div id="id_content">
-            @{ Html.RenderPartial("Form", Model.Process);
-            }
-         </div>
+         @if (interactive) {
+            @await Html.PartialAsync("_InteractiveForm", interactivity)
+         } else {
+            <div id="id_content">
+               @await Html.PartialAsync("Form", Model.Process)
+            </div>
+         }
       </div>
    </div>
 </div>

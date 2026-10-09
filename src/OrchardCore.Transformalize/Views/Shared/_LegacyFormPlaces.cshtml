@@ -1,0 +1,145 @@
+@model FormPlacesViewModel
+@using TransformalizeModule.Ext
+@{
+   var parameter = Model.Parameter;
+   var valid = Model.Valid;
+   var value = parameter.Value ?? string.Empty;
+   var map = Model.Process.Maps.FirstOrDefault(m => m.Name == parameter.Map);
+}
+<div class="form-group @(valid ? "is-valid" : "is-invalid") @parameter.Class">
+
+   <label for="id_@parameter.Name" class="form-label">@parameter.Label</label>
+   @if (parameter.Hint != string.Empty) {
+      <span class="text-muted float-end"> @parameter.Hint</span>
+   }
+   <input type="text"
+          class="form-control @(valid ? "is-valid" : "is-invalid")"
+          maxlength="@parameter.Length"
+          name="@parameter.Name"
+          id="id_@parameter.Name"
+          placeholder="@parameter.Label"
+          value="@value"
+          data-tfl-post-back="false"
+          @Html.Raw(parameter.ToParsley()) />
+
+   <script language="javascript">
+
+      function initAutocomplete() {
+         let address1Field = document.querySelector("#id_@parameter.Name");
+
+         // Create the autocomplete object, restricting the search predictions to
+         // addresses in the US.
+         autocomplete = new google.maps.places.Autocomplete(address1Field, {
+            componentRestrictions: { country: ["us"] },
+            fields: ["address_components", "geometry"],
+            types: ["address"],
+         });
+
+         // When the user selects an address from the drop-down, populate the
+         // address fields in the form.
+         autocomplete.addListener("place_changed", fillInAddress);
+      };
+      function fillInAddress() {
+        // Get the place details from the autocomplete object.
+        const place = autocomplete.getPlace();
+
+        // Get each component of the address from the place details,
+        // and then fill-in the corresponding field on the form.
+        // place.address_components are google.maps.GeocoderAddressComponent objects
+        // which are documented at http://goo.gle/3l5i5Mr
+        for (const component of place.address_components) {
+
+          const componentType = component.types[0];
+
+         switch (componentType) {
+            case "street_number": {
+               @if(map != null) {
+                  var match = map.Items.FirstOrDefault(item => item.From.Equals("street_number"));
+                  if(match != null) {
+                     <text>$("#id_@match.To").val(component.long_name);</text>
+                  }
+               }
+               break;
+            }
+
+            case "route": {
+               @if(map != null) {
+                  var match = map.Items.FirstOrDefault(item => item.From.Equals("route") || item.From.Equals("street"));
+                  if(match != null) {
+                     <text>$("#id_@match.To").val(component.long_name);</text>
+                  }
+               }
+               break;
+            }
+
+            case "postal_code": {
+               @if(map != null) {
+                  var match = map.Items.FirstOrDefault(item => item.From.Equals("postal_code"));
+                  if(match != null) {
+                     <text>$("#id_@match.To").val(component.long_name);</text>
+                  }
+               }
+               break;
+            }
+
+            case "postal_code_suffix": {
+               @if(map != null) {
+                  var match = map.Items.FirstOrDefault(item => item.From.Equals("postal_code_suffix"));
+                  if(match != null) {
+                     <text>$("#id_@match.To").val(component.long_name);</text>
+                  }
+               }
+               break;
+            }
+
+            case "locality": {
+               @if(map != null) {
+                  var match = map.Items.FirstOrDefault(item => item.From.Equals("locality") || item.From.Equals("city"));
+                  if(match != null) {
+                     <text>$("#id_@match.To").val(component.long_name);</text>
+                  }
+               }
+               break;
+            }
+
+            case "administrative_area_level_1": {
+               @if(map != null) {
+                  var match = map.Items.FirstOrDefault(item => item.From.Equals("administrative_area_level_1") || item.From.Equals("county"));
+                  if(match != null) {
+                     <text>$("#id_@match.To").val(component.long_name);</text>
+                  }
+               }
+               break;
+            }
+
+            case "administrative_area_level_2": {
+               @if(map != null) {
+                  var match = map.Items.FirstOrDefault(item => item.From.Equals("administrative_area_level_2") || item.From.Equals("state"));
+                  if(match != null) {
+                     <text>$("#id_@match.To").val(component.long_name);</text>
+                  }
+               }
+               break;
+            }
+
+            case "country": {
+               @if(map != null) {
+                  var match = map.Items.FirstOrDefault(item => item.From.Equals("country"));
+                  if(match != null) {
+                     <text>$("#id_@match.To").val(component.long_name);</text>
+                  }
+               }
+               break;
+            }
+          }
+         }
+      }
+   </script>
+   @* if you change location you must update parsley error container *@
+   <span class="help-container">
+      @if (!valid) {
+         <span class="help-block">@(parameter.Message.Replace('|', ' '))</span>
+      }
+   </span>
+
+</div>

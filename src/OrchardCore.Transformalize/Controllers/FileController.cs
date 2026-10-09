@@ -1,3 +1,4 @@
+using System.Text.Json;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using OrchardCore.ContentManagement;
@@ -78,7 +79,7 @@ namespace TransformalizeModule.Controllers {
       }
 
       private static ContentResult GetResult(string id, string message) {
-         var data = string.Format("{{ \"id\":\"{0}\", \"message\":\"{1}\" }}", id, message);
+         var data = JsonSerializer.Serialize(new { id, message });
          return new ContentResult {
             Content = data,
             ContentType = "text/json"

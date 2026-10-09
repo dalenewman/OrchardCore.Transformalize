@@ -1,0 +1,49 @@
+@model FormMapViewModel
+@using TransformalizeModule.Ext
+@using TransformalizeModule.Models
+@using OrchardCore.Entities
+@using OrchardCore.Settings
+@inject ISiteService SiteService
+@{
+   var parameter = Model.Parameter;
+   var valid = Model.Valid;
+}
+@if (parameter.InputCapture == "latitude") {
+   if (Model.Interactive) {
+      var settings = (await SiteService.GetSiteSettingsAsync()).GetOrCreate<TransformalizeSettings>();
+      <div data-controller="tfl-map"
+           data-tfl-map-latitude-value="@parameter.Name"
+           data-tfl-map-longitude-value="@Model.LongitudeName"
+           data-tfl-map-token-value="@settings.MapBoxToken">
+         <div class="tfl-form-map" data-tfl-map-target="canvas" aria-label="Choose a location on the map"></div>
+         <p class="alert alert-warning" role="status" data-tfl-map-target="error" hidden>
+            The map could not be loaded. You can still enter latitude and longitude below.
+         </p>
+      </div>
+   } else {
+      <div id="id_map_@parameter.Name" class="tfl-form-map"></div>
+      @await Html.PartialAsync("_LegacyFormMap", Model)
+   }
+}
+
+   <div class="form-group @(valid ? "is-valid" : "is-invalid") @parameter.Class">
+      <label for="id_@parameter.Name" class="form-label">@(parameter.Label == string.Empty ? parameter.Name : parameter.Label)</label>
+      @if (parameter.Hint != string.Empty) {
+         <span class="text-muted float-end"> @parameter.Hint</span>
+      }
+      <input type="number"
+             class="form-control @(valid ? "is-valid" : "is-invalid")"
+             name="@parameter.Name"
+             id="id_@parameter.Name"
+             placeholder="@parameter.Label"
+             value="@parameter.Value"
+             step="any"
+             data-tfl-post-back="@(parameter.PostBack)"
+             @Html.Raw(parameter.ToValidation(Model.Interactive)) />
+      @* if you change location you must update parsley error container *@
+      <span class="help-container">
+         @if (!valid) {
+            <span class="help-block">@(parameter.Message.Replace('|', ' '))</span>
+         }
+      </span>
+   </div>

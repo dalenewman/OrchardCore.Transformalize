@@ -87,11 +87,10 @@
 
     <script asp-name="font-awesome" at="Foot" version="6"></script>
     <resources type="Header" />
+    @* Keep this override after the header resource flush so it wins over Bootstrap/Bootswatch. *@
     <style>
         /* BootswatchTheme: compact navbar — removes Bootstrap's default vertical
-           padding so the header takes less vertical space on every page.
-           Must come after <resources type="Header" /> so it wins over
-           Bootstrap/Bootswatch navbar padding rules flushed at that point. */
+           padding so the header takes less vertical space on every page. */
         .navbar { padding-top: 0; padding-bottom: 0; }
     </style>
     @await RenderSectionAsync("HeadMeta", required: false)

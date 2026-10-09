@@ -6,6 +6,7 @@ using System.Dynamic;
 using System.Text;
 using Transformalize.Configuration;
 using TransformalizeModule.Models;
+using TransformalizeModule.Ext;
 using TransformalizeModule.Services;
 using TransformalizeModule.Services.Contracts;
 using TransformalizeModule.ViewModels;
@@ -196,7 +197,9 @@ namespace TransformalizeModule.Controllers {
             return bulkAction.ActionResult;
          }
 
-         return View(new BulkActionViewModel(TransferRequiredParameters(request, bulkAction), batchSummary.Process));
+         var task = TransferRequiredParameters(request, bulkAction);
+         this.SetFormInteractivity(Interactivity(task.Process));
+         return View(new BulkActionViewModel(task, batchSummary.Process));
       }
 
       public async Task<ActionResult> Form(BulkActionReviewRequest request) {
@@ -206,7 +209,7 @@ namespace TransformalizeModule.Controllers {
             return bulkAction.ActionResult;
          }
 
-         return View("Form", TransferRequiredParameters(request, bulkAction).Process);
+         return this.FormFragment(Interactivity(TransferRequiredParameters(request, bulkAction).Process));
       }
 
       /// <summary>
@@ -342,6 +345,13 @@ namespace TransformalizeModule.Controllers {
          }
          return null;
       }
+
+      private FormInteractivityViewModel Interactivity(Transformalize.Configuration.Process process) => new() {
+         Process = process,
+         ValidationUrl = Url.Action("Form", "BulkAction", new { Area = Common.ModuleName, modal = Request.Query["modal"].ToString() })!,
+         SubmitUrl = Url.Action("Review", "BulkAction", new { Area = Common.ModuleName, modal = Request.Query["modal"].ToString() })!,
+         RunUrl = Url.Action("Run", "BulkAction", new { Area = Common.ModuleName, modal = Request.Query["modal"].ToString() })!,
+      };
 
    }
 }

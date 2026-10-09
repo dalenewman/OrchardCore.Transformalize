@@ -72,6 +72,12 @@ action to change color associated with the record.
 ---
 
 ### Development
+
+See [Working with Razor, htmx, and Stimulus](docs/client-interactivity-guide.md) for
+the client architecture and jQuery-before / current-after examples. The
+[report](docs/report-interactivity.md) and [form](docs/form-interactivity.md) notes
+cover request contracts, compatibility, and verification.
+
 - Visual Studio 2022 with ASP.NET Core related workloads:
   - ASP.NET and Web Development
   - .NET Core Cross-Platform Development

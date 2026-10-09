@@ -1,0 +1,65 @@
+@model FormUploadViewModel
+@using TransformalizeModule.Ext
+@{
+ var parameter = Model.Parameter;
+ var valid = Model.Valid;
+ var value = parameter.Value ?? string.Empty;
+}
+
+@{ var hasScan = value != null && value.ToString() != string.Empty; }
+
+@* if change this markup you'll need to update filehandler jquery selectors *@
+<div class="form-group @(valid ? "is-valid" : "is-invalid") @parameter.Class">
+
+   <label for="id_@parameter.Name" class="form-label">@parameter.Label</label>
+   @if (parameter.Hint != string.Empty) {
+      <span class="text-muted float-end"> @parameter.Hint</span>
+   }
+   <div id="id_@(parameter.Name)" class="file-options">
+      <div class="has-file" style="@(hasScan ? string.Empty : "display:none")">
+         <div class="input-group">
+            <span class="input-group-text fas fa-times removeButton" style="cursor: pointer;"></span>
+            <input type="text"
+                   class="form-control @(valid ? "is-valid" : "is-invalid")"
+                   name="@parameter.Name"
+                   id="id_@parameter.Name"
+                   autocomplete="@(parameter.AutoComplete ? "on" : "off")"
+                   data-tfl-post-back="false"
+                   value="@(hasScan ? value : string.Empty)"
+                   @Html.Raw(parameter.ToParsley()) />
+         </div>
+      </div>
+      <div class="expecting-file" style="@(hasScan ? "display:none" : string.Empty)">
+         <table>
+            <tr>
+               <td style="width:auto;">
+                  <span class="btn btn-warning btn-sm fileinput-button">
+                     <i class="input-group-text fas fa-barcode"></i>
+                     <span> Scan </span>
+                     <input name="@(parameter.Name)"
+                            type="file"
+                            class="form-control @(valid ? "is-valid" : "is-invalid")"
+                            data-tfl-post-back="false"
+                            disabled="@(hasScan)"
+                            accept="image/*"
+                            @(Html.Raw(parameter.InputCapture == string.Empty ? string.Empty : "capture=\"" + parameter.InputCapture + "\"")) />
+                  </span>
+               </td>
+               <td style="width:100%;">
+                  <div class="progress">
+                     <div class="progress-bar progress-bar-striped progress-bar-success"></div>
+                  </div>
+               </td>
+            </tr>
+         </table>
+      </div>
+   </div>
+
+   <span class="help-container">
+      @if (!valid) {
+         <span class="help-block">@(parameter.Message.Replace('|', ' '))</span>
+      }
+   </span>
+   <script language="javascript">$(document).ready(function () { fileHandler('@parameter.Name',true); });</script>
+</div>
+

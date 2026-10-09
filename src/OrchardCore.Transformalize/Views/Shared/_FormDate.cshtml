@@ -1,0 +1,30 @@
+@model FormDateViewModel
+@using TransformalizeModule.Ext
+@{ var parameter = Model.Parameter; }
+<div class="form-group @(Model.Valid ? "is-valid" : "is-invalid") @parameter.Class">
+   <label for="id_@parameter.Name" class="form-label">@parameter.Label</label>
+   @if (parameter.Hint != string.Empty) {
+      <span class="text-muted float-end">@parameter.Hint</span>
+   }
+   <div class="input-group">
+      @if (Model.Interactive) {
+         <button type="button" class="input-group-text" aria-label="Choose @parameter.Label date" data-form-date-toggle><span class="fas fa-calendar"></span></button>
+      } else {
+         <span class="input-group-text fas fa-calendar" id="id_dp_@parameter.Name" style="cursor: pointer;"></span>
+      }
+      <input type="text" class="form-control @(Model.Valid ? "is-valid" : "is-invalid")"
+             name="@parameter.Name" id="id_@parameter.Name" maxlength="@parameter.Length"
+             placeholder="@parameter.Label" value="@parameter.Value"
+             autocomplete="@(parameter.AutoComplete ? "on" : "off")"
+             data-form-date="@(Model.Interactive ? "" : null)"
+             data-tfl-post-back="@parameter.PostBack" @Html.Raw(parameter.ToValidation(Model.Interactive)) />
+      @if (!Model.Interactive) {
+         @await Html.PartialAsync("_LegacyFormDate", Model)
+      }
+   </div>
+   <span class="help-container">
+      @if (!Model.Valid) {
+         <span class="help-block">@parameter.Message.Replace('|', ' ')</span>
+      }
+   </span>
+</div>

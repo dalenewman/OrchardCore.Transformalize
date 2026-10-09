@@ -3,12 +3,12 @@
    @if (Model.EnableInlineParameters) {
       foreach (var parameter in Model.Process.Parameters.Where(p => p.Prompt)) {
          if (Model.TopParameters.Contains(parameter.Name)) {
-            @Html.Partial("ParameterWithLabel", new ParameterViewModel { Maps = Model.Process.Maps, Parameter = parameter })
+            @await Html.PartialAsync("ParameterWithLabel", new ParameterViewModel { Maps = Model.Process.Maps, Parameter = parameter })
          }
       }
    } else {
       foreach (var parameter in Model.Process.Parameters.Where(p => p.Prompt)) {
-         @Html.Partial("ParameterWithLabel", new ParameterViewModel { Maps = Model.Process.Maps, Parameter = parameter })
+         @await Html.PartialAsync("ParameterWithLabel", new ParameterViewModel { Maps = Model.Process.Maps, Parameter = parameter })
       }
    }
 </div>

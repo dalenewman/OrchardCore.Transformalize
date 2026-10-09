@@ -1,4 +1,9 @@
-﻿$(window).on('unload', function () {}); // disable bfcache
+function openRandomLink(url) {
+   url = url + (url.indexOf('?') > -1 ? '&' : '?') + 'random=' + Math.random();
+   window.open(url, '_self');
+}
+
+$(window).on('unload', function () {}); // disable bfcache
 
 function escapeMarkdownCell(text) {
    return text.replace(/\|/g, '\\|').replace(/\s+/g, ' ');
@@ -383,6 +388,8 @@ function setColumnOrder() {
 }
 
 $(document).ready(function () {
+   // The pilot controller owns filtering and widget lifecycle on enhanced reports.
+   if (document.querySelector('#tfl-report[data-controller="report"]')) return;
 
    var cleared = "_Cleared";
    var lastFilter;

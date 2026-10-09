@@ -1,4 +1,6 @@
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.WebUtilities;
+using Microsoft.Extensions.Primitives;
 using OrchardCore.ContentManagement;
 using OrchardCore.Title.Models;
 using Transformalize.Configuration;
@@ -22,6 +24,26 @@ namespace TransformalizeModule.ViewModels {
       public bool CalendarEnabled { get; set; }
       public string IdOrAlias { get; set; }
       public string Title { get; set; }
+
+      // Set only by ReportController. Other report modes keep their existing behavior.
+      public string ReportPath { get; set; } = string.Empty;
+
+      public bool InteractiveReport => !string.IsNullOrEmpty(ReportPath)
+         && string.IsNullOrEmpty(QueryValue("edit"))
+         && !Process.Scripts.Any(s => s.Global && (s.Language == "js"
+            || s.Language == Transformalize.Constants.DefaultSetting
+               && s.File?.EndsWith(".js", StringComparison.OrdinalIgnoreCase) == true));
+
+      public string NavigationUrl(string name, string value, bool resetPage = false) {
+         var query = _queryCollection.ToDictionary(pair => pair.Key, pair => pair.Value);
+         if (resetPage) query.Remove("page");
+         if (name == "page" && value == "1") {
+            query.Remove(name);
+         } else {
+            query[name] = new StringValues(value);
+         }
+         return QueryHelpers.AddQueryString(ReportPath, query);
+      }
 
       public Process Process {
          get {

@@ -43,6 +43,7 @@
 
 }
 
+   @if (!Model.InteractiveReport) {
    <!-- Modal container -->
    <div class="modal fade" id="taskModal" tabindex="-1" role="dialog">
      <div class="modal-dialog modal-xl modal-dialog-centered" role="document">
@@ -59,15 +60,17 @@
      </div>
    </div>
 
+   }
+
    <div class="row">
       <div class="col-md-3">
          <div class="btn-group float-start" role="group">
             @if (entity.Name != "Missing Entity") {
-               <button id="id_submit" type="submit" title="Search / Refresh" class="btn btn-primary btn-sm">
+               <button id="id_submit" type="submit" data-report-target="search" title="Search / Refresh" class="btn btn-primary btn-sm">
                   <span class="fas fa-search"></span>
                </button>
 
-               <button id="id_clear" title="Clear the Parameters" type="button" class="btn btn-info btn-sm">Clear</button>
+               <button id="id_clear" data-action="@(Model.InteractiveReport ? "click->report#clear" : null)" title="Clear the Parameters" type="button" class="btn btn-info btn-sm">Clear</button>
 
                if (Model.Process.Mode != "chart" && (Model.Part!.BulkActions.Value || (Model.Editable && isSortable))) {
 
@@ -78,9 +81,16 @@
                      <div class="dropdown-menu" aria-labelledby="idActionDropdown">
                         @if(Model.Part.BulkActions.Value){
                            foreach (var action in Model.Process.Actions.Where(a => a.Type != "open" && !string.IsNullOrEmpty(a.Name))) {
-                              <a class="bulk-action-link dropdown-item" 
-                                 rel="@action.Description" 
-                                 href="javascript:bulkAction(1, '@action.Name', @(action.Modal.ToString().ToLower()));">@action.Description</a>
+                              if (Model.InteractiveReport) {
+                                 <button type="button" class="dropdown-item" data-selection-target="action"
+                                         data-action="selection#submit" data-selection-name-param="@action.Name"
+                                         data-selection-modal-param="@action.Modal.ToString().ToLower()" data-selection-label="@action.Description">
+                                    @action.Description <span class="badge bg-secondary" data-selection-count>0</span>
+                                 </button>
+                              } else {
+                                 <a class="bulk-action-link dropdown-item" rel="@action.Description"
+                                    href="javascript:bulkAction(1, '@action.Name', @(action.Modal.ToString().ToLower()));">@action.Description</a>
+                              }
                            }
                         }
                         @if(Model.Editable){
@@ -93,7 +103,7 @@
                               <a class="dropdown-item" rel="ellipsis" href="javascript:edit('ellipsis');">Ellipsis</a>
                               <a class="dropdown-item" rel="clear" href="javascript:edit('clear');">Clear</a>
                            } else {
-                              <a class="dropdown-item" rel="edit" href="javascript:edit('edit');">Edit</a>
+                              <a class="dropdown-item" rel="edit" href="@(Model.InteractiveReport ? Model.NavigationUrl("edit", "1", resetPage: true) : "javascript:edit('edit');")">Edit</a>
                            }
                         }
                      </div>
@@ -113,7 +123,7 @@
                   if(!modalQueryParam){
                      url.SetQueryParam("modal", "1");
                   }
-                  <a href="javascript:void()" title="@action.Description" data-url="@url" onclick="loadModal(this)" rel="nofollow" class="btn btn-sm @action.Class"><i class="fas fa-@action.Icon" aria-hidden="true">@action.Name</i></a>
+                  <a href="@(Model.InteractiveReport ? url.ToString() : "javascript:void()")" title="@action.Description" data-url="@url" data-action="@(Model.InteractiveReport ? "click->modal#open" : null)" onclick="@(Model.InteractiveReport ? null : "loadModal(this)")" rel="nofollow" class="btn btn-sm @action.Class"><i class="fas fa-@action.Icon" aria-hidden="true">@action.Name</i></a>
                } else {
                   <a href="@url" title="@action.Description" rel="nofollow" class="btn btn-sm @action.Class"><i class="fas fa-@action.Icon" aria-hidden="true">@action.Name</i></a>
                }
@@ -161,56 +171,7 @@
    } else if (entity.Page == 0 || Model.Process.Mode == "map" && !Model.Part.PageSizesExtended.Enabled() || Model.Process.Mode == "calendar" && !Model.Part.PageSizesExtended.Enabled()) {
         <h3 class="text-primary" style="margin: 2px 0px 0px 0px;">@(entity.Label == string.Empty ? entity.Alias : entity.Label)</h3>
     } else {
-         <nav aria-label="breadcrumb-and-pagination" style="--bs-breadcrumb-divider: url(&#34;data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='8' height='8'%3E%3Cpath d='M2.5 0L1 1.5 3.5 4 1 6.5 2.5 8l4-4-4-4z' fill='currentColor'/%3E%3C/svg%3E&#34;);">
-            <div class="d-flex justify-content-between align-items-center">
-                @if (Model.BreadCrumbs.Any()) {
-                    <ol class="breadcrumb mb-0">
-                        @foreach (var breadcrumb in Model.BreadCrumbs) {
-                            <li class="breadcrumb-item"><a href="@breadcrumb.Url">@breadcrumb.Title</a></li>
-                        }
-                     @if(entityTitle != "Browse" ){
-                        <li class="breadcrumb-item active" aria-current="page"><strong>@entityTitle</strong></li>
-                     }
-                    </ol>
-                }
-
-                <ul class="pagination pagination-sm mb-0">
-                    @if (entity.Pagination.HasPrevious) {
-                        <li class="page-item" title="first page"><a class="page-link" href="javascript:controls.submit(@entity.Pagination.First)"><span class="fas fa-step-backward"></span></a></li>
-                        <li class="page-item" title="previous page"><a class="page-link" href="javascript:controls.submit(@entity.Pagination.Previous)"><span class="fas fa-chevron-left"></span></a></li>
-                    } else {
-                        <li class="page-item disabled"><a href="" class="page-link"><span class="fas fa-step-backward"></span></a></li>
-                        <li class="page-item disabled"><a href="" class="page-link"><span class="fas fa-chevron-left"></span></a></li>
-                    }
-
-                    @if(Model.BreadCrumbs.Any()){
-                       <li class="page-item disabled" style="white-space:nowrap;">
-                           @if (entity.Hits > 0) {
-                               <a class="page-link" href="">@(entity.Pagination.StartRow.ToString("#,##0"))-@(entity.Pagination.EndRow.ToString("#,##0")) of @(entity.Hits.ToString("#,##0"))</a>
-                           } else {
-                               <a class="page-link" href=""> </a>
-                           }
-                       </li>
-                    } else {
-                       <li class="page-item disabled" style="white-space:nowrap;">
-                           @if (entity.Hits > 0) {
-                               <a class="page-link" href="">@(entity.Pagination.StartRow.ToString("#,##0"))-@(entity.Pagination.EndRow.ToString("#,##0")) of @(entity.Hits.ToString("#,##0")) <strong>@entityTitle</strong></a>
-                           } else {
-                               <a class="page-link" href=""><strong>@entityTitle</strong></a>
-                           }
-                       </li>
-                    }
-
-                    @if (entity.Pagination.HasNext) {
-                        <li class="page-item" title="next page"><a class="page-link" href="javascript:controls.submit(@entity.Pagination.Next)"><span class="fas fa-chevron-right"></span></a></li>
-                        <li class="page-item" title="last page"><a class="page-link" href="javascript:controls.submit(@entity.Pagination.Last)"><span class="fas fa-step-forward"></span></a></li>
-                    } else {
-                        <li class="page-item disabled"><a class="page-link" href=""><span class="fas fa-chevron-right"></span></a></li>
-                        <li class="page-item disabled"><a class="page-link" href=""><span class="fas fa-step-forward"></span></a></li>
-                    }
-                </ul>
-            </div>
-        </nav>
+         @await Html.PartialAsync("_ReportPagination", Model)
          }
    </div>
 
@@ -225,14 +186,14 @@
                      if (!string.IsNullOrEmpty(Context.Request.Query["t"].ToString())){
                         var currentUrl = Context.Request.GetEncodedUrl();
                         var saveUrl = new Flurl.Url(currentUrl).SetQueryParam("save", "true");
-                        <button title="save and edit this" type="button" class="btn btn-warning btn-sm" onclick="window.open('@saveUrl', '_self');">
+                        <a title="save and edit this" class="btn btn-warning btn-sm" href="@saveUrl">
                            <span class="fas fa-edit"></span>
-                        </button>
+                        </a>
                      }
                   } else {
-                     <button title="edit this report" type="button" class="btn btn-warning btn-sm" onclick="window.open('@(Url.Content("~/Admin/Contents/ContentItems/" + Model.Item.ContentItemId + "/Edit?" + Common.ReturnUrlName + "=" + System.Net.WebUtility.UrlEncode(Context.Request.Path + Context.Request.QueryString)))', '_self');">
+                     <a title="edit this report" class="btn btn-warning btn-sm" href="@(Url.Content("~/Admin/Contents/ContentItems/" + Model.Item.ContentItemId + "/Edit?" + Common.ReturnUrlName + "=" + System.Net.WebUtility.UrlEncode(Context.Request.Path + Context.Request.QueryString)))">
                         <span class="fas fa-edit"></span>
-                     </button>
+                     </a>
                   }
                }
 
@@ -314,9 +275,9 @@
                   var defaultView = views.First(v => v.Mode != Model.Process.Mode);
 
                   <div class="btn-group btn-group-sm" role="group">
-                     <button type="button" class="btn btn-primary btn-sm" title="@defaultView.Title" onclick="javascript:window.open('@defaultView.Link','_self');">
+                     <a class="btn btn-primary btn-sm" title="@defaultView.Title" href="@defaultView.Link">
                         <span class="fas fa-@defaultView.Glyphicon"></span>
-                     </button>
+                     </a>
                      <button type="button" class="btn btn-primary btn-sm dropdown-toggle" title="other views" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                         <span class="caret"></span>
                      </button>
@@ -330,24 +291,11 @@
                   </div>
                }
 
-               <div class="btn-group btn-group-sm">
-                  <button type="button" class="btn btn-sm btn-info" title="save to csv file" onclick="openRandomLink('@exportCsvLink');" disabled="@downloadingDisabled">
-                     <span class="fas fa-save"></span>
-                  </button>
-                  <button class="btn dropdown-toggle btn-sm btn-info" title="other formats" data-bs-toggle="dropdown" disabled="@downloadingDisabled">
-                     <span class="caret"></span>
-                  </button>
-                  <ul class="dropdown-menu" disabled="@downloadingDisabled">
-                     <li><a class="dropdown-item" href="javascript:openRandomLink('@exportCsvLink');" title="save to csv file"><span class="fas fa-download me-1"></span>CSV</a></li>
-                     <li><a class="dropdown-item" href="javascript:openRandomLink('@exportJsonLink');" title="save to json file"><span class="fas fa-download me-1"></span>JSON</a></li>
-                     @{
-                        if (hasCoordinates) {
-                           <li><a class="dropdown-item" href="javascript:openRandomLink('@exportGeoJsonLink');" title="save to geojson file"><span class="fas fa-download me-1"></span>GEOJSON</a></li>
-                        }
-                     }
-                     <li><a class="dropdown-item" href="javascript:copyTableAsMarkdown('id_table_@entity.Sequence');" title="copy table as markdown"><span class="fas fa-copy me-1"></span>MD</a></li>
-                  </ul>
-               </div>
+               @await Html.PartialAsync("_ReportExports", new ReportExportsViewModel {
+                  Interactive = Model.InteractiveReport, Disabled = downloadingDisabled,
+                  CsvUrl = exportCsvLink.ToString(), JsonUrl = exportJsonLink.ToString(), GeoJsonUrl = hasCoordinates ? exportGeoJsonLink.ToString() : null,
+                  TableId = $"id_table_{entity.Sequence}"
+               })
 
                   <div class="btn-group btn-group-sm">
                      <button class="btn btn-sm btn-outline-info" disabled="disabled">Size</button>
@@ -356,7 +304,7 @@
                      </button>
                      <div class="dropdown-menu" disabled="@pagingDisabled">
                         @foreach (var size in pageSizes) {
-                           <a class="dropdown-item @(entity.Size.Equals(size) ? "active" : string.Empty)" href="javascript:controls.setSize(@size);" disabled="@pagingDisabled">@size</a>
+                           <a class="dropdown-item @(entity.Size.Equals(size) ? "active" : string.Empty)" href="@(Model.InteractiveReport ? Model.NavigationUrl("size", size.ToString(), resetPage: true) : $"javascript:controls.setSize({size});")" data-action="@(Model.InteractiveReport ? "click->report#resize" : null)" data-report-size-param="@size" disabled="@pagingDisabled">@size</a>
                         }
                      </div>
                   </div>
@@ -365,11 +313,3 @@
          </div>
       </div>
    </div>
-   <script type="text/javascript">
-      // <!--
-      function openRandomLink(url) {
-         url = url + (url.indexOf('?') > -1 ? '&' : '?') + 'random=' + Math.random();
-         javascript:window.open(url,'_self');
-      }
-      // -->
-   </script>

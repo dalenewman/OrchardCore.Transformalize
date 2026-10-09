@@ -32,6 +32,8 @@ namespace TransformalizeModule.Controllers {
       [HttpGet]
       public async Task<ActionResult> Index(string contentItemId, bool log = false) {
 
+         Response.Headers.Append("Vary", "HX-Request, HX-Target, HX-History-Restore-Request");
+
          var report = await _reportService.Validate(new TransformalizeRequest(contentItemId));
 
          if (report.Fails()) {
@@ -43,12 +45,25 @@ namespace TransformalizeModule.Controllers {
             return View("Log", new LogViewModel(_logger.Log, report.Process, report.ContentItem));
          }
 
-         return log ?
-            View("Log", new LogViewModel(_logger.Log, report.Process, report.ContentItem)) : 
-            View(new ReportViewModel(report.Process, report.ContentItem, HttpContext.Request.Query, contentItemId) { 
-               BreadCrumbs = report.BreadCrumbs,
-               Editable = report.Editable
-            });
+         if (log) {
+            return View("Log", new LogViewModel(_logger.Log, report.Process, report.ContentItem));
+         }
+
+         var model = new ReportViewModel(report.Process, report.ContentItem, Request.Query, contentItemId) {
+            BreadCrumbs = report.BreadCrumbs,
+            Editable = report.Editable,
+            ReportPath = Request.PathBase.Add(Request.Path).Value ?? string.Empty
+         };
+
+         // History restoration and direct navigation need the complete Orchard page.
+         if (model.InteractiveReport && Request.Headers["HX-Request"] == "true"
+            && Request.Headers["HX-Target"] == "tfl-report"
+            && Request.Headers["HX-History-Restore-Request"] != "true") {
+            Response.Headers["X-Transformalize-Report"] = "true";
+            return PartialView("_Report", model);
+         }
+
+         return View(model);
 
       }
 

@@ -1,0 +1,66 @@
+@model ReportViewModel
+@using TransformalizeModule
+@{
+   var firstEntity = Model.Process.Entities.First();
+   ViewData["InteractiveReport"] = Model.InteractiveReport;
+}
+<div id="tfl-report"
+     hx-history-elt="@(Model.InteractiveReport ? "" : null)"
+     data-controller="@(Model.InteractiveReport ? "report selection modal clipboard" : null)"
+     data-report-page-value="@firstEntity.Page"
+     data-selection-url-value="@Url.Action("Create", "BulkAction", new { ContentItemId = Model.Item.ContentItemId })"
+     data-action="@(Model.InteractiveReport ? "submit->report#prepare:capture keydown->report#searchKey change->report#filterChanged report-filter:search->report#filterSearch focusin->report#focus modal:confirmed->report#refresh selection:modal->modal#submit message@window->modal#message htmx:configRequest->report#configureRequest htmx:beforeRequest->report#beforeRequest htmx:beforeSwap->report#beforeSwap htmx:afterRequest->report#afterRequest htmx:responseError->report#error htmx:sendError->report#error htmx:timeout->report#error" : null)">
+<form id="id_report" class="form-inline" role="form" method="GET"
+      action="@Model.ReportPath"
+      data-report-target="form" data-selection-target="form"
+      hx-get="@(Model.InteractiveReport ? Model.ReportPath : null)"
+      hx-target="@(Model.InteractiveReport ? "#tfl-report" : null)"
+      hx-swap="@(Model.InteractiveReport ? "outerHTML" : null)"
+      hx-push-url="@(Model.InteractiveReport ? "true" : null)"
+      hx-sync="@(Model.InteractiveReport ? "this:replace" : null)">
+
+   <input id="id_sort" type="hidden" name="sort" value="@(Model.QueryValue("sort"))" />
+   <input id="id_page" type="hidden" name="page" value="@firstEntity.Page" />
+   <input id="id_size" type="hidden" name="size" value="@(firstEntity.Size)" />
+   <input id="id_return_url" type="hidden" name="@Common.ReturnUrlName" value="@(Model.QueryValue(Common.ReturnUrlName))" />
+   <input id="id_last" type="hidden" name="last" value="@Model.QueryValue("last")" />
+   <input id="id_edit" type="hidden" name="edit" alt="editor" value="@(Model.QueryValue("edit"))" />
+
+   @* browsing/editing related *@
+   <input id="id_c" type="hidden" name="c" alt="connection" value="@(Model.QueryValue("c"))" />
+   <input id="id_t" type="hidden" name="t" alt="table" value="@(Model.QueryValue("t"))" />
+   <input id="id_h" type="hidden" name="h" alt="hidden" value="@(Model.QueryValue("h"))" />
+   <input id="id_s" type="hidden" name="s" alt="search" value="@(Model.QueryValue("s"))" />
+   <input id="id_f1" type="hidden" name="f1" alt="facet" value="@(Model.QueryValue("f1"))" />
+   <input id="id_f2" type="hidden" name="f2" alt="facets" value="@(Model.QueryValue("f2"))" />
+   <input id="id_ta" type="hidden" name="ta" alt="timeago" value="@(Model.QueryValue("ta"))" />
+   <input id="id_e" type="hidden" name="e" alt="ellipsis" value="@(Model.QueryValue("e"))" />
+   <input id="id_o" type="hidden" name="o" alt="order" value="@(Model.QueryValue("o"))" />
+
+   @foreach (var parameter in Model.Process.Parameters.Where(p => !p.Prompt && Context.Request.Query[p.Name].ToString() != null).Select(p => p.Name)) {
+      <input type="hidden" name="@parameter" value="@(Context.Request.Query[parameter].ToString())" />
+   }
+
+   <div class="container-fluid">
+
+      @await Html.PartialAsync("Parameters", Model)
+
+      @await Html.PartialAsync("Controls", Model)
+
+      @await Html.PartialAsync("_ReportTables", Model)
+
+   </div>
+
+</form>
+
+<span class="AntiForge" data-selection-target="tokenContainer">@Html.AntiForgeryToken()</span>
+
+   @if (Model.InteractiveReport) {
+      @await Html.PartialAsync("_ReportModal")
+      <p class="visually-hidden" role="status" data-report-target="status"></p>
+      <p class="visually-hidden" role="status" data-clipboard-target="status"></p>
+      <div class="alert alert-danger report-error" role="alert" data-report-target="error" hidden>
+         The report could not be refreshed. Try again or <a href="@(Context.Request.PathBase + Context.Request.Path + Context.Request.QueryString)">reload this page</a>.
+      </div>
+   }
+</div>

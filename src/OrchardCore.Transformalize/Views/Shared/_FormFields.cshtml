@@ -1,0 +1,250 @@
+@model Transformalize.Configuration.Process
+@using Microsoft.Extensions.DependencyInjection
+@using TransformalizeModule.Ext
+@using TransformalizeModule.Services.Contracts
+@using TransformalizeModule.Models
+@using Microsoft.Extensions.Primitives
+@using OrchardCore.Settings;
+@using OrchardCore.Entities;
+
+@{
+   var interactive = (ViewData["FormInteractivity"] as FormInteractivityViewModel)?.Interactive == true;
+}
+   @foreach (var parameter in Model.Parameters) {
+
+      var value = parameter.Value ?? string.Empty as object;
+
+      if (Context.Request.Method == "GET" && !interactive) {
+         parameter.Valid = true;
+         parameter.Message = string.Empty;
+      }
+
+      var valid = parameter.Valid || Context.Request.Method == "GET";
+
+      if (TransformalizeModule.Common.SystemFields.Contains(parameter.Name)) {
+         <input type="hidden" name="@parameter.Name" value="@parameter.Value" />
+         continue;
+      }
+
+      if (parameter.Readonly()) {
+
+         if (!parameter.Raw && !parameter.Input || parameter.PrimaryKey || parameter.InputType == "location" || parameter.Visible == "false") {
+            <input type="hidden" name="@parameter.Name" value="@parameter.Value" id="id_@parameter.Name"
+                   data-tfl-location-coordinate="@(interactive && parameter.InputType == "location" ? parameter.InputCapture : null)" />
+            @if (parameter.InputType == "location" && !interactive) {
+               <script>$(function () { settings.location.@parameter.InputCapture = $("@("#id_" + parameter.Name)"); });</script>
+            }
+            continue;
+         }
+
+         <div class="form-group @(valid ? "is-valid" : "is-invalid") @parameter.Class"
+              data-tfl-raw-output="@(interactive && parameter.Raw ? parameter.Name : null)">
+            @if (parameter.Raw) {
+               @Html.Raw(value)
+            } else {
+
+               <label for="id_@parameter.Name" class="form-label">@(parameter.Label == string.Empty ? parameter.Name : parameter.Label)</label>
+               @if (parameter.Hint != string.Empty) {
+                  <span class="text-muted float-end"> @parameter.Hint</span>
+               }
+
+               <input type="text"
+                      readonly="readonly"
+                      class="form-control @(valid ? "is-valid" : "is-invalid")"
+                      name="@parameter.Name"
+                      id="id_@parameter.Name"
+                      placeholder="@parameter.Label"
+                      value="@value"
+                      autocomplete="@(parameter.AutoComplete ? "on" : "off")"
+                      data-tfl-post-back="false" />
+
+               @* Keep validation feedback in the field group *@
+               <span class="help-container">
+                  @if (!valid) {
+                     <span class="help-block">@(parameter.Message.Replace('|', ' '))</span>
+                  }
+               </span>
+            }
+         </div>
+         continue;
+      }
+
+      var map = Model.Maps.FirstOrDefault(m => m.Name == parameter.Map);
+      var type = parameter.InputType == "defer" ? parameter.Type : parameter.InputType;
+      if (map != null && type != "google-places-autocomplete") {
+
+         <div class="form-group @(valid ? "is-valid" : "is-invalid") @parameter.Class">
+            <label for="id_@parameter.Name" class="form-label">@parameter.Label</label>
+            @if (parameter.Hint != string.Empty) {
+               <span class="text-muted float-end"> @parameter.Hint</span>
+            }
+            @if (map.Items.Any() && map.Items.All(i => !i.To.Equals(value))) {
+               value = map.Items.First().To;
+            }
+            @if (map.Items.Count > 3) {
+               <select class="form-control @(valid ? "is-valid" : "is-invalid")"
+                       style="background-image:none;"
+                       name="@parameter.Name"
+                       id="id_@parameter.Name"
+                       data-tfl-post-back="@parameter.PostBack">
+                  @foreach (var item in map.Items) {
+                     <option value="@item.To" selected="@(value.Equals(item.To))">@item.From</option>
+                  }
+               </select>
+            } else {
+               <br />
+               var optionIndex = 0;
+               foreach (var item in map.Items) {
+                  var optionId = $"id_{parameter.Name}_{optionIndex++}";
+                  <div class="form-check form-check-inline">
+                     <input id="@optionId" type="radio" name="@parameter.Name" class="form-check-input" value="@item.To" checked="@(value.Equals(item.To))" data-tfl-post-back="@(parameter.PostBack)" />
+                     <label for="@optionId" class="form-check-label form-label">@item.From</label>
+                  </div>
+               }
+            }
+            @* Keep validation feedback in the field group *@
+            <span class="help-container">
+               @if (!valid) {
+                  <span class="help-block">@(parameter.Message.Replace('|', ' '))</span>
+               }
+            </span>
+         </div>
+
+      } else {
+         
+         switch (type) {
+            case "bool":
+            case "boolean":
+               value = Transformalize.Constants.ObjectConversionMap["bool"](value.Equals(string.Empty) ? "false" : value);
+               <div class="form-group @(valid ? "is-valid" : "is-invalid") @parameter.Class">
+                  <div class="checkbox">
+                     <label for="id_@parameter.Name" class="form-label">
+                        <input name="@parameter.Name"
+                               id="id_@parameter.Name"
+                               class="@(valid ? "is-valid" : "is-invalid")"
+                               type="checkbox"
+                               checked="@((bool)value)"
+                               data-tfl-post-back="@(parameter.PostBack)" /> @parameter.Label
+                           </label>
+                        </div>
+                        @* Keep validation feedback in the field group *@
+                        <span class="help-container">
+                           @if (!valid) {
+                              <span class="help-block">@(parameter.Message.Replace('|', ' '))</span>
+                           }
+                        </span>
+                     </div>
+                     break;
+                  case "date":
+                     @await Html.PartialAsync("_FormDate", new FormDateViewModel { Parameter = parameter, Valid = valid, Interactive = interactive })
+                     break;
+                  case "time":
+                     <div class="form-group @(valid ? "is-valid" : "is-invalid") @parameter.Class">
+                        <label for="id_@parameter.Name" class="form-label">@parameter.Label</label>
+                        @if (parameter.Hint != string.Empty) {
+                           <span class="text-muted float-end"> @parameter.Hint</span>
+                        }
+                        <div class="input-group">
+                           <span class="input-group-text fas fa-clock" id="id_dp_@parameter.Name" style="cursor: pointer;"></span>
+                           <input type="time"
+                                  class="form-control @(valid ? "is-valid" : "is-invalid")"
+                                  maxlength="@parameter.Length"
+                                  name="@parameter.Name"
+                                  id="id_@parameter.Name"
+                                  placeholder="@parameter.Label"
+                                  value="@value"
+                                  data-form-date="@(interactive && type == "date" ? "" : null)"
+                                  data-tfl-post-back="@(parameter.PostBack)"
+                                  @Html.Raw(parameter.ToValidation(interactive)) />
+                           @if (!interactive) {
+                           <script language="javascript">
+                              $(document).ready(function () {
+                                 // plugin code goes here
+                              });
+                           </script>
+                           }
+                        </div>
+                        @* Keep validation feedback in the field group *@
+                        <span class="help-container">
+                           @if (!valid) {
+                              <span class="help-block">@(parameter.Message.Replace('|', ' '))</span>
+                           }
+                        </span>
+
+                     </div>
+                     break;
+                  case "file":
+                     @await Html.PartialAsync(interactive ? "_FormUpload" : "_LegacyFormFile", new FormUploadViewModel { Parameter = parameter, Valid = valid })
+                     break;
+                  case "scan":
+                     @await Html.PartialAsync(interactive ? "_FormUpload" : "_LegacyFormScan", new FormUploadViewModel { Parameter = parameter, Valid = valid })
+                     break;
+                  case "google-places-autocomplete":
+                     @await Html.PartialAsync(interactive ? "_FormPlaces" : "_LegacyFormPlaces", new FormPlacesViewModel {
+                        Process = Model, Parameter = parameter, Valid = valid
+                     })
+                     break;
+
+                  case "map":
+                     @await Html.PartialAsync("_FormMap", new FormMapViewModel {
+                        Process = Model, Parameter = parameter, Interactive = interactive, Valid = valid
+                     })
+                     break;
+
+                  default:
+                     int length;
+                     <div class="form-group @(valid ? "is-valid" : "is-invalid") @parameter.Class">
+                        <label for="id_@parameter.Name" class="form-label">@parameter.Label</label>
+                        @if (parameter.Hint != string.Empty) {
+                           <span class="text-muted float-end"> @parameter.Hint</span>
+                        }
+                        @if (parameter.UseTextArea(out length)) {
+                           <textarea class="form-control @(valid ? "is-valid" : "is-invalid")"
+                                     name="@parameter.Name"
+                                     id="id_@parameter.Name"
+                                     rows="3"
+                                     placeholder="@parameter.Label"
+                                     maxlength="@length"
+                                     data-tfl-post-back="@(parameter.PostBack)"
+                                     @Html.Raw(parameter.ToValidation(interactive))>@value.ToString().Trim()</textarea>
+                        } else {
+                           @switch (type) {
+                              case "number":
+                                 <input type="number"
+                                        class="form-control @(valid ? "is-valid" : "is-invalid")"
+                                        maxlength="@parameter.Length"
+                                        name="@parameter.Name"
+                                        id="id_@parameter.Name"
+                                        placeholder="@parameter.Label"
+                                        value="@value"
+                                        data-tfl-post-back="@(parameter.PostBack)"
+                                        @(Html.Raw(parameter.IsDecimalType() ? string.Format("step=\"{0}\"", ".".PadRight(parameter.Scale - 1, '0') + "1") : string.Empty))
+                                        @Html.Raw(parameter.ToValidation(interactive)) />
+                                 break;
+                              default:
+                                 <input type="text"
+                                        class="form-control @(valid ? "is-valid" : "is-invalid")"
+                                        maxlength="@parameter.Length"
+                                        name="@parameter.Name"
+                                        id="id_@parameter.Name"
+                                        placeholder="@parameter.Label"
+                                        autocomplete="@(parameter.AutoComplete ? "on" : "off")"
+                                        value="@value"
+                                        data-tfl-post-back="@(parameter.PostBack)"
+                                        @Html.Raw(parameter.ToValidation(interactive)) />
+                                 break;
+                           }
+
+                        }
+                        @* Keep validation feedback in the field group *@
+                        <span class="help-container">
+                           @if (!valid) {
+                              <span class="help-block">@(parameter.Message.Replace('|', ' '))</span>
+                           }
+                        </span>
+
+                     </div>
+                     break;
+               }
+            }
+         }

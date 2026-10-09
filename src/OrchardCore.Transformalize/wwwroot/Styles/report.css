@@ -1,0 +1,141 @@
+/* Scope this rule so the theme's later .btn rule cannot replace the sort background. */
+#tfl-report .btn-sort {
+     background-color: #dbdbdb;
+     border-color: #d2d1d1;
+     color: #727272;
+   }
+
+   td.sorter .btn-sm {
+     font-size: 7px !important;
+   }
+
+   td.sorter {
+     padding: 0 3px 3px 4px !important;
+   }
+
+   thead > tr > td > input.form-control {
+     padding-left: 4px;
+     padding-right: 4px;
+     height: 30px;
+   }
+
+   #busy {
+     position: fixed;
+     left: 46%;
+     top: 40%;
+     display: none;
+     background: transparent url(busy.gif);
+     background-size: 149px 149px;
+     background-repeat: no-repeat;
+     z-index: 1020;
+     height: 150px;
+     width: 150px;
+   }
+
+   #busy-holder {
+     background: transparent;
+     width: 100%;
+     height: 100%;
+   }
+
+   .table-sm > tbody > tr > td {
+     padding: 2px;
+   }
+
+   tr.action-row {
+     font-size: smaller;
+     font-weight: bolder;
+   }
+
+   div.table-responsive {
+   min-height: 600px;
+   }
+
+   main.container {
+     max-width: 98%;
+   }
+   .navbar {
+     padding: 0px;
+   }
+
+   div.comment {
+     padding: 0;
+   }
+
+   td > div > input[type="checkbox"] {
+     margin-top: 7px !important;
+   }
+
+   .small-badge {
+     font-size: 0.75em;
+     padding: 0.2em 0.4em;
+     line-height: 1;
+   }
+
+   th.drag {
+     cursor: grab
+   }
+
+   th.drag:active {
+     cursor: grabbing
+   }
+
+   /* trying to make parameters with labels look better */
+   .input-group {
+       border: 1px solid #ccc; /* Visible border around the group */
+       border-radius: 4px; /* Ensures consistent rounding */
+       display: flex;
+       align-items: center;
+   }
+
+   .input-group .bootstrap-select {
+       flex-grow: 1;
+   }
+
+   .input-group-text {
+       border-right: none; /* Prevents a double border next to the dropdown */
+       border-radius: 4px 0 0 4px; /* Matches left-side rounding */
+   }
+
+   .input-group-text + .bootstrap-select > .btn {
+       border-radius: 0 4px 4px 0; /* Removes left-side rounding only when next to input-group-text */
+       border: 1px solid #ccc; /* Ensures consistent border appearance */
+   }
+
+   .bootstrap-select .dropdown-toggle {
+       border: inherit; /* Ensures dropdown inherits the input group border */
+   }
+
+   .modal-content {
+       padding: 10px;
+   }
+
+#tfl-report[aria-busy="true"] { opacity: .65; }
+#tfl-report .report-error { margin-top: .75rem; }
+
+.report-modal-loading {
+   position: absolute;
+   inset: 0;
+   display: flex;
+   align-items: center;
+   justify-content: center;
+   background: var(--bs-body-bg, white);
+   z-index: 1;
+}
+.report-modal-loading[hidden] { display: none; }
+
+/* Named native selects remain the form values; these controls only enhance them. */
+#tfl-report .tfl-report-filter { display: inline-block; min-width: 5rem; max-width: 24rem; }
+#tfl-report .input-group .tfl-report-filter { flex: 1; }
+#tfl-report .tfl-report-filter [hidden] { display: none !important; }
+#tfl-report .tfl-filter-toggle { display: flex; align-items: center; justify-content: space-between; width: 100%; border: 1px solid #ccc; }
+#tfl-report .tfl-filter-toggle > span:first-child { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+#tfl-report .input-group-text + .tfl-report-filter .tfl-filter-toggle { border-radius: 0 4px 4px 0; }
+#tfl-report .tfl-filter-panel { position: fixed; z-index: 1050; width: 22rem; max-width: calc(100vw - 16px); max-height: calc(100vh - 16px); overflow: auto; padding: .5rem; border: 1px solid var(--bs-border-color, #ccc); border-radius: .25rem; background: var(--bs-body-bg, white); color: var(--bs-body-color, #212529); box-shadow: 0 .3rem .8rem #0003; }
+#tfl-report .tfl-filter-actions { display: flex; gap: .25rem; margin-top: .25rem; }
+#tfl-report .tfl-filter-options { max-height: 16rem; overflow: auto; margin: .25rem 0; }
+#tfl-report .tfl-filter-option { display: block; width: 100%; text-align: left; border: 0; border-radius: .2rem; padding: .25rem .5rem; background: transparent; color: inherit; }
+#tfl-report .tfl-filter-option[aria-selected="true"] { background: var(--bs-primary, #007bff); color: white; }
+#tfl-report .tfl-filter-option[aria-selected="true"]::before { content: '✓ '; }
+#tfl-report .tfl-filter-option:focus-visible { outline: 2px solid var(--bs-primary, #007bff); outline-offset: -2px; }
+#tfl-report .tfl-filter-option:disabled { opacity: .5; }

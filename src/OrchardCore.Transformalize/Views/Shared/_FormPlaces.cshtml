@@ -1,0 +1,33 @@
+@model FormPlacesViewModel
+@using System.Text.Json
+@using TransformalizeModule.Ext
+@using TransformalizeModule.Models
+@using OrchardCore.Entities
+@using OrchardCore.Settings
+@inject ISiteService SiteService
+@{
+   var parameter = Model.Parameter;
+   var settings = (await SiteService.GetSiteSettingsAsync()).GetOrCreate<TransformalizeSettings>();
+}
+<div class="form-group @(Model.Valid ? "is-valid" : "is-invalid") @parameter.Class" data-controller="tfl-places"
+     data-tfl-places-key-value="@settings.GoogleApiKey"
+     data-tfl-places-components-value="@JsonSerializer.Serialize(Model.ComponentTargets)"
+     data-tfl-places-post-back-value="@parameter.PostBack"
+     data-action="keydown->tfl-places#key">
+   <label for="id_@parameter.Name" class="form-label">@parameter.Label</label>
+   @if (parameter.Hint != string.Empty) {
+      <span class="text-muted float-end">@parameter.Hint</span>
+   }
+   <input type="text" class="form-control @(Model.Valid ? "is-valid" : "is-invalid")"
+          name="@parameter.Name" id="id_@parameter.Name" maxlength="@parameter.Length"
+          placeholder="@parameter.Label" value="@parameter.Value" data-tfl-places-target="input"
+          data-tfl-post-back="false" @Html.Raw(parameter.ToValidation(true)) />
+   <p class="small text-muted mb-0" role="status" data-tfl-places-target="status"></p>
+   <button type="button" class="btn btn-outline-secondary btn-sm mt-1" data-tfl-places-target="retry"
+           data-action="tfl-places#retry" hidden>Retry address suggestions</button>
+   <span class="help-container">
+      @if (!Model.Valid) {
+         <span class="help-block">@parameter.Message.Replace('|', ' ')</span>
+      }
+   </span>
+</div>

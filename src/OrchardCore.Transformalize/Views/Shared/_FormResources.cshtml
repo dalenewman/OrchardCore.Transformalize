@@ -1,0 +1,66 @@
+@model FormInteractivityViewModel
+@using TransformalizeModule
+@using TransformalizeModule.Models
+@using OrchardCore.Entities
+@using OrchardCore.Settings
+@inject ISiteService SiteService
+@{
+   var interactive = Model?.Interactive == true;
+}
+@if (!interactive) {
+<script asp-name="jQuery" at="Head"></script>
+<script asp-name="parsley" version="2.9.2" at="Foot"></script>
+<script asp-name="moment" version="2.26.0" at="Foot"></script>
+<script asp-name="pickadate-picker-date" version="3.6.4" at="Foot"></script>
+<style asp-name="pickadate-themes-default" version="3.6.4"></style>
+<style asp-name="pickadate-themes-default-date" version="3.6.4"></style>
+} else {
+   <style asp-name="tfl-flatpickr"></style>
+}
+<style asp-name="tfl-form"></style>
+@if (interactive && Model?.HasMap == true) {
+   <script asp-name="mapbox-gl" version="3.6.0" at="Head"></script>
+   <style asp-name="mapbox-gl" version="3.6.0"></style>
+}
+@if (interactive && Model?.HasUploads == true) {
+   @* Preserve the established image-processing pipeline behind a scoped adapter. *@
+   <script asp-name="jQuery" at="Head"></script>
+   <script asp-name="jQuery-ui" at="Head"></script>
+   <script asp-name="load-image-all" version="5.14.0" at="Head"></script>
+   <script asp-name="canvas-to-blob" version="3.28.0" at="Head"></script>
+   <script asp-name="jquery-fileupload" version="10.31.0" at="Head"></script>
+   <script asp-name="jquery-fileupload-process" version="10.31.0" at="Head"></script>
+   <script asp-name="jquery-fileupload-image" version="10.31.0" at="Head"></script>
+   <script asp-name="tfl-form-upload-widgets" at="Foot"></script>
+}
+@if (Model?.HasPlaces == true && !interactive) {
+   var settings = (await SiteService.GetSiteSettingsAsync()).GetOrCreate<TransformalizeSettings>();
+   <script>let autocomplete;</script>
+   <script asp-src="@("https://maps.googleapis.com/maps/api/js?key=" + Uri.EscapeDataString(settings.GoogleApiKey ?? string.Empty) + "&callback=initAutocomplete&libraries=places&v=weekly&loading=async")" at="Foot" async="async"></script>
+}
+@if (interactive) {
+   <script asp-name="tfl-form-interactivity" at="Foot"></script>
+} else {
+   <script asp-name="jQuery-ui" at="Head"></script>
+   <script asp-name="block-ui" version="2.70.0" at="Foot"></script>
+   @* The order of these file handling scripts matters. *@
+   <script asp-name="load-image-all" version="5.14.0" at="Head"></script>
+   <script asp-name="canvas-to-blob" version="3.28.0" at="Head"></script>
+   <script asp-name="jquery-iframe-transport" version="10.31.0" at="Head"></script>
+   <script asp-name="jquery-fileupload" version="10.31.0" at="Head"></script>
+   <script asp-name="jquery-fileupload-process" version="10.31.0" at="Head"></script>
+   <script asp-name="jquery-fileupload-image" version="10.31.0" at="Head"></script>
+   <script asp-name="bs-custom-file-input" version="1.3.4" at="Head"></script>
+   <script asp-name="jquery-are-you-sure" version="1.9.0" at="Head"></script>
+   <script asp-src="~/@Common.ModuleName/Scripts/form.js?v=10" at="Foot"></script>
+   <script asp-src="~/@Common.ModuleName/Scripts/file.handler.js?v=2" at="Foot"></script>
+   <style>
+      #busy {
+         position: fixed;
+         left: 46%; top: 40%; display: none;
+         background: transparent url(@Url.Content($"~/{Common.ModuleName}/Styles/busy.gif")) no-repeat;
+         background-size: 149px 149px;
+         z-index: 1020; height: 150px; width: 150px;
+      }
+   </style>
+}

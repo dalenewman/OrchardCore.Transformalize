@@ -1,0 +1,32 @@
+@model Transformalize.Configuration.Process
+@using TransformalizeModule.Ext
+@{
+   const string ORCHARD_SUBMIT = "Orchard.Submit";
+   var submit = Model.Parameters.Any(p => p.VisiblePrompt());
+   var isModal = Context.Request.Query["modal"] == "1";
+   var interactive = (ViewData["FormInteractivity"] as FormInteractivityViewModel)?.Interactive == true;
+}
+   @if (Model.Mode == "form") {
+
+      if (submit) {
+         <input name="@ORCHARD_SUBMIT" id="id_submit" data-tfl-form-target="submit" type="submit" value="Submit" class="btn btn-success btn-block" style="margin-top: 5px;" />
+      }
+
+      if (isModal){
+         <button type="button" class="btn btn-secondary" style="margin-top: 5px;" data-action="@(interactive ? "tfl-form#cancel" : null)" onclick="@(interactive ? null : "formCancel()")">Cancel</button>
+      }
+
+   } else {  // tasks
+
+      if (Model.Parameters.All(p => p.Valid)) {
+         <input name="@ORCHARD_SUBMIT" id="id_submit" data-tfl-form-target="submit" type="submit" value="Run" class="btn btn-success btn-block" style="margin-top: 5px;"/>
+      } else {
+         <input name="@ORCHARD_SUBMIT" id="id_submit" data-tfl-form-target="submit" type="submit" value="Update" class="btn btn-primary btn-block" style="margin-top: 5px;"/>
+      }
+
+      if (isModal){
+         <button type="button" class="btn btn-secondary" style="margin-top: 5px;" data-action="@(interactive ? "tfl-form#cancel" : null)" onclick="@(interactive ? null : "formCancel()")">Cancel</button>
+      }
+
+   }
+

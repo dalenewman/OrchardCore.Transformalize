@@ -1,4 +1,5 @@
 @model ParameterViewModel
+@{ var interactive = ViewData["InteractiveReport"] as bool? == true; }
 @{ 
    var input = Context.Request.Query[Model.Parameter.Name].ToString();
 }
@@ -34,11 +35,14 @@
       <input class="form-control form-control-sm date"
              autocomplete="off"
              required="@Model.Parameter.Required"
-             type="datetime"
+             type="text"
              name="@Model.Parameter.Name"
              placeholder="@Model.Parameter.Label"
              value="@requestedDate"
              @(Html.Raw(Model.Parameter.Width > 0 ? "style=\"width:" + Model.Parameter.Width + "px\"" : string.Empty)) />
+      @if (interactive) {
+         <button type="button" class="input-group-text" aria-label="Choose @Model.Parameter.Label date" data-report-date-toggle><span class="fas fa-calendar"></span></button>
+      }
       break;
    default:
       var requestedValue = input == string.Empty ? Model.Parameter.Value : input;
@@ -53,37 +57,13 @@
                 data-1p-ignore
                 data-lpignore="true"
                 @(Html.Raw(Model.Parameter.Width > 0 ? "style=\"width:" + Model.Parameter.Width + "px\"" : string.Empty)) />
+      } else if (interactive) {
+         @await Html.PartialAsync("_ReportFilter", Model)
       } else {
-         <select size="1"
-                 title="All"
-                 data-actions-box="true"
-                 data-width="fit"
-                 multiple="@(Model.Parameter.Multiple)"
-                 name="@Model.Parameter.Name"
+         <select size="1" title="All" data-actions-box="true" data-width="fit"
+                 multiple="@Model.Parameter.Multiple" name="@Model.Parameter.Name"
                  style="visibility:hidden;@(Model.Parameter.Width > 0 ? $"width:{Model.Parameter.Width}px;" : string.Empty)">
-            @{
-               var items = Model.Maps.First(m => m.Name == Model.Parameter.Map).Items;
-               var split = input.Split(",");
-               var displayMap = Model.Field != null && Model.Field.Map != string.Empty ? Model.Maps.FirstOrDefault(m => m.Name == Model.Field.Map) : null;
-
-               if (Model.Parameter.Multiple) {
-                  var values = string.IsNullOrEmpty(Context.Request.Query[Model.Parameter.Name].ToString()) ? new HashSet<string>() : new HashSet<string>(split);
-                  foreach (var item in items) {
-                     if (item.To != null && item.From != null) {
-                        Model.ModifyMapItem(displayMap, item);
-                        <option value="@item.To" selected="@(values.Contains(item.To.ToString()))">@item.From</option>
-                     }
-                  }
-               } else {
-                  <option value="*" selected="@(requestedValue == "*")">All</option>
-                  foreach (var item in items) {
-                     if (item.To != null && item.From != null) {
-                        Model.ModifyMapItem(displayMap, item);
-                        <option value="@item.To" selected="@(item.To.ToString() == requestedValue)">@item.From</option>
-                     }
-                  }
-               }
-            }
+            @await Html.PartialAsync("_ReportFilterOptions", Model)
          </select>
       }
       break;

@@ -12,11 +12,21 @@ namespace TransformalizeModule.Ext {
          return p.Prompt && p.Visible != "false";
       }
 
-      public static string ToParsley(this Parameter f) {
-         if (f.V == string.Empty)
-            return string.Empty;
+      public static string ToParsley(this Parameter f) => string.Join(" ", ValidationAttributes(f)
+         .Select(i => $"{i.Key}=\"{System.Text.Encodings.Web.HtmlEncoder.Default.Encode(i.Value)}\""));
 
+      public static string ToValidation(this Parameter f, bool interactive) {
+         if (!interactive) return f.ToParsley();
+         var rules = ValidationAttributes(f).ToDictionary(i => i.Key["data-parsley-".Length..], i => i.Value);
+         if (rules.Count == 0) return string.Empty;
+         var json = System.Text.Json.JsonSerializer.Serialize(rules);
+         return $"data-tfl-validation=\"{System.Text.Encodings.Web.HtmlEncoder.Default.Encode(json)}\"";
+      }
+
+      private static Dictionary<string, string> ValidationAttributes(Parameter f) {
          var attributes = new Dictionary<string, string>();
+         if (f.V == string.Empty)
+            return attributes;
 
          var expressions = new Cfg.Net.Shorthand.Expressions(f.V);
          foreach (var expression in expressions) {
@@ -75,7 +85,7 @@ namespace TransformalizeModule.Ext {
          }
 
 
-         return string.Join(" ", attributes.Select(i => string.Format("{0}=\"{1}\"", i.Key, i.Value)));
+         return attributes;
       }
 
       public static bool UseTextArea(this Parameter parameter, out int length) {

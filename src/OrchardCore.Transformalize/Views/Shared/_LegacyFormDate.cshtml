@@ -1,0 +1,13 @@
+@model FormDateViewModel
+@{ var parameter = Model.Parameter; }
+<script>
+   $(document).ready(function () {
+      var picker = $('#id_@parameter.Name').pickadate({ editable: true, format: 'yyyy-mm-dd' }).pickadate('picker');
+      picker.off('open');
+      $('#id_dp_@parameter.Name').click(function (event) {
+         event.stopPropagation();
+         event.preventDefault();
+         picker.get('open') ? picker.close() : picker.open();
+      });
+   });
+</script>

@@ -150,16 +150,24 @@
       return params.get("close") === "1";
    }
 
+   window.addEventListener("tfl-form:focus", function () {
+      if (document.activeElement.form !== document.getElementById("id_form")) setFocus();
+   });
+
    function setFocus() {
 
       var name = $('#id_focus').val();
       console.log('setting focus to ' + name);
-      var $target = $('#id_' + name);
+      var $fields = $('#id_form').find('input, select, textarea').filter(':visible').filter(function () {
+         return !this.disabled && !this.readOnly && this.type !== 'hidden';
+      });
+      var $target = $fields.filter('[autofocus]').first();
+      if (!$target.length) $target = $fields.filter(function () { return this.name === name; });
+      if ($target.is(':radio')) $target = $target.filter(':checked').length ? $target.filter(':checked') : $target.first();
+      if (!$target.length) $target = $fields.not('[type="button"], [type="submit"], [type="reset"]').first();
 
       if ($target.length > 0) {
          $target.focus().select();
-      } else {
-         $("input[name='" + name + "']:checked").focus();
       }
 
       // ios doesn't refresh dropdowns when ajax re-populates

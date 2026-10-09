@@ -1,0 +1,186 @@
+@model ReportViewModel
+@using Microsoft.Extensions.DependencyInjection
+@using Transformalize.Configuration
+@using TransformalizeModule.Services
+@using TransformalizeModule.Services.Contracts
+@{
+   var firstEntity = Model.Process.Entities.First();
+   var sortService = Context.RequestServices.GetRequiredService<ISortService>();
+   var edit = Model.QueryValue("edit") != string.Empty;
+}
+
+@foreach (var entity in Model.Process.Entities) {
+
+   Field[] fields;
+   Field bulkActionValueField = null;
+   if (Model.Part.BulkActions.Value && entity.TryGetField(Model.Part.BulkActionValueField.Text, out bulkActionValueField)) {
+      fields = firstEntity.GetAllOutputFields().Where(f => !f.System && f.Alias != bulkActionValueField.Alias).ToArray();
+   } else {
+      fields = firstEntity.GetAllOutputFields().Where(f => !f.System).ToArray();
+   }
+   var isSortable = fields.Any(f => f.Sortable == "true");
+
+   <div class="row" style="padding-top: 2px;">
+      <div class="col-sm-12 table-responsive">
+         <table id="id_table_@entity.Sequence" class="table table-sm table-hover table-striped tablesorter">
+            <thead>
+               <tr class="action-row">
+                  @if (Model.Part.BulkActions.Value) {
+                     <th>
+                        <div class="checkbox form-check">
+                           <input title="Select the entire search result" id="@(Model.InteractiveReport ? $"select-all-{entity.Sequence}" : "select-all")" data-selection-target="all" data-action="@(Model.InteractiveReport ? "click->selection#toggle" : null)" type="checkbox" class="bulk-action form-check-input" name="select-all" placeholder="Select the entire search result">
+                        </div>
+                     </th>
+                  }
+                  @foreach (var field in fields) {
+                     <th title="@field.Name" class="@(edit && !field.IsCalculated ? "drag" : string.Empty)" data-src="@field.Src" data-type="@field.Type">@field.Label</th>
+                  }
+               </tr>
+               @if (isSortable) {
+                  var expression = Context.Request.Query["sort"].ToString() ?? string.Empty;
+                  <tr class="tablesorter-ignoreRow">
+                     @if (Model.Part.BulkActions.Value) {
+                        <td class="sorter">&nbsp;</td>
+                     }
+                     @foreach (var field in fields) {
+                        if (field.Sortable == "true") {
+                           <td class="sorter" data-src="@field.Src" data-field-name="@field.Name">
+                              <div class="btn-group btn-group-sm">
+                                 <a href="@(Model.InteractiveReport ? "#" : "javascript:void()")" title="Sort Ascending by @field.Label" class="btn btn-sm sortable @(sortService.Sort(field.Src, expression) == Direction.Asc ? "btn-primary" : "btn-sort")" data-action="@(Model.InteractiveReport ? "click->report#sort" : null)" data-report-direction-param="a">
+                                    <span class="fas fa-chevron-up"></span>
+                                 </a>
+                                 @if(Model.Editable && edit){
+                                    <a href="javascript:void()" title="@field.Name @field.Type @field.Length" class="btn btn-sm btn-sort editor" >
+                                       <input type="checkbox" class="field-check shift-select" data-src="@field.Src" />
+                                    </a>
+                                 }
+                                 <a href="@(Model.InteractiveReport ? "#" : "javascript:void()")" title="Sort Descending by @field.Label" class="btn btn-sm sortable @(sortService.Sort(field.Src, expression) == Direction.Desc ? "btn-primary" : "btn-sort")" data-action="@(Model.InteractiveReport ? "click->report#sort" : null)" data-report-direction-param="d">
+                                    <span class="fas fa-chevron-down"></span>
+                                 </a>
+                              </div>
+                           </td>
+                        } else {
+                           <td style="padding: 0 3px 3px 1px;">&nbsp;</td>
+                        }
+                     }
+                  </tr>
+               }
+               @if (Model.InlineParameters.Any()) {
+                  <tr class="tablesorter-ignoreRow">
+                     @if (Model.Part.BulkActions.Value) {
+                        <td class="sorter">&nbsp;</td>
+                     }
+                     @foreach (var field in fields) {
+                        <td style="padding-left: 3px;">
+                           @if (Model.InlineParameters.ContainsKey(field.Alias)) {
+                              var parameter = Model.InlineParameters[field.Alias];
+                              @await Html.PartialAsync("Parameter", new ParameterViewModel { Maps = Model.Process.Maps, Parameter = parameter, Field = field })
+                           }
+                        </td>
+                     }
+                  </tr>
+               }
+            </thead>
+            <tbody>
+               @foreach (var row in entity.Rows) {
+                  <tr>
+                     @if (Model.Part.BulkActions.Value) {
+                        if (bulkActionValueField != null) {
+                           <td>
+                              <div class="checkbox form-check">
+                                 <input title="Select this row"
+                                        type="checkbox"
+                                        class="bulk-action shift-select form-check-input"
+                                        name="Records"
+                                        data-selection-target="record"
+                                        data-action="@(Model.InteractiveReport ? "click->selection#toggle" : null)"
+                                        value="@row[bulkActionValueField.Alias]"
+                                        placeholder="Select Record">
+                              </div>
+                           </td>
+                        } else {
+                           <td>
+                              <div class="checkbox form-check">
+                                 <input type="checkbox" class="form-check-input" name="Records" disabled="disabled">
+                              </div>
+                           </td>
+                        }
+                     }
+
+                     @foreach (var field in fields) {
+                        <td>
+                           @switch (field.Type) {
+                              case "bool":
+                              case "boolean":
+                                 if ((bool)row[field.Alias]) {
+                                    <span class="badge text-bg-success small-badge" aria-label="Yes">
+                                       <span class="fas fa-check" aria-hidden="true"></span>
+                                    </span>
+                                 } else {
+                                    <span class="badge text-bg-danger small-badge" aria-label="No">
+                                       <span class="fas fa-times" aria-hidden="true"></span>
+                                    </span>
+                                 }
+                                 break;
+                              case "date":
+                              case "datetime":
+                                 if (field.Format == string.Empty) {
+                                    @(row[field.Alias])
+                                 } else {
+                                    if (row[field.Alias] is DateTime) {
+                                       @(((DateTime)row[field.Alias]).ToString(field.Format))
+                                    } else {
+                                       @((Convert.ToDateTime(row[field.Alias])).ToString(field.Format))
+                                    }
+                                 }
+                                 break;
+                              case "byte[]":
+                                 @Transformalize.Utility.BytesToHexString(row[field.Alias] as byte[])
+                                 break;
+                              case "single":
+                              case "double":
+                              case "decimal":
+                              case "float":
+                                 if (field.Format == string.Empty) {
+                                    @(row[field.Alias])
+                                 } else {
+                                    switch (field.Type) {
+                                       case "single":
+                                       case "float":
+                                          @(row[field.Alias] is float ? ((float)row[field.Alias]).ToString(field.Format) : Convert.ToSingle(row[field.Alias]).ToString(field.Format))
+                                          break;
+                                       case "decimal":
+                                          @(row[field.Alias] is decimal ? ((decimal)row[field.Alias]).ToString(field.Format) : Convert.ToDecimal(row[field.Alias]).ToString(field.Format))
+                                          break;
+                                       case "double":
+                                          @(row[field.Alias] is double ? ((double)row[field.Alias]).ToString(field.Format) : Convert.ToDouble(row[field.Alias]).ToString(field.Format))
+                                          break;
+                                       default:
+                                          @(row[field.Alias])
+                                          break;
+                                    }
+
+                                 }
+                                 break;
+                              default:
+                                 if (field.Raw) {
+                                    @Html.Raw(row[field.Alias])
+                                 } else {
+                                    @row[field.Alias]
+                                 }
+
+                                 break;
+                           }
+                        </td>
+                     }
+                  </tr>
+               }
+            </tbody>
+         </table>
+
+
+
+      </div>
+   </div>
+}
+

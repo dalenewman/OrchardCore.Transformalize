@@ -6,6 +6,8 @@ using Microsoft.AspNetCore.Mvc.Localization;
 using Microsoft.Extensions.Primitives;
 using OrchardCore.DisplayManagement.Notify;
 using TransformalizeModule.Models;
+using TransformalizeModule.Ext;
+using TransformalizeModule.ViewModels;
 using TransformalizeModule.Services;
 using TransformalizeModule.Services.Contracts;
 using IContainer = TransformalizeModule.Services.Contracts.IContainer;
@@ -49,6 +51,8 @@ namespace TransformalizeModule.Controllers {
          if (form.Fails()) {
             return form.ActionResult;
          }
+
+         this.SetFormInteractivity(Interactivity(form, contentItemId));
 
          if (Request.Method == "POST" && _httpContext.HttpContext.Request.HasFormContentType) {
 
@@ -118,10 +122,10 @@ namespace TransformalizeModule.Controllers {
          );
 
          if (form.Fails()) {
-            return form.ActionResult;
+            return this.FormFailure(form.Process, form.ActionResult);
          }
 
-         return View("Form", form.Process);
+         return this.FormFragment(Interactivity(form, contentItemId));
       }
 
       [HttpGet]
@@ -143,6 +147,15 @@ namespace TransformalizeModule.Controllers {
 
          return new ContentResult() { Content = report.Process.Serialize(), ContentType = request.ContentType };
       }
+
+      private FormInteractivityViewModel Interactivity(TransformalizeResponse<TransformalizeFormPart> form, string contentItemId) => new() {
+         Process = form.Process,
+         LocationEnableHighAccuracy = form.Part?.LocationEnableHighAccuracy.Value ?? false,
+         LocationMaximumAge = Decimal.ToInt32(form.Part?.LocationMaximumAge.Value ?? 0),
+         LocationTimeout = Decimal.ToInt32(form.Part?.LocationTimeout.Value ?? -1),
+         ValidationUrl = Url.Action("Form", "Form", new { Area = Common.ModuleName, ContentItemId = contentItemId, modal = Request.Query["modal"].ToString() })!,
+         SubmitUrl = Url.Action("Index", "Form", new { Area = Common.ModuleName, ContentItemId = contentItemId, modal = Request.Query["modal"].ToString() })!,
+      };
 
    }
 }

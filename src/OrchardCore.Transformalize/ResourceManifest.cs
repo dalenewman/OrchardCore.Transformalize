@@ -10,6 +10,98 @@ namespace TransformalizeModule {
       static ResourceManagementOptionsConfiguration() {
          _manifest = new ResourceManifest();
 
+         _manifest.DefineScript("tfl-htmx")
+            .SetUrl($"~/{Common.ModuleName}/Scripts/htmx.js")
+            .SetVersion("2.0.11");
+         _manifest.DefineScript("tfl-stimulus")
+            .SetUrl($"~/{Common.ModuleName}/Scripts/stimulus.umd.js")
+            .SetVersion("3.2.2");
+         _manifest.DefineScript("tfl-report-widgets")
+            .SetUrl($"~/{Common.ModuleName}/Scripts/report-widgets.js")
+            .ShouldAppendVersion(true)
+            .SetVersion("1.0.0")
+            .SetDependencies("tfl-date-widgets");
+         _manifest.DefineScript("tfl-report-filter")
+            .SetUrl($"~/{Common.ModuleName}/Scripts/report-filter-controller.js")
+            .ShouldAppendVersion(true)
+            .SetVersion("1.0.0")
+            .SetDependencies("tfl-stimulus");
+         _manifest.DefineScript("tfl-report-controller")
+            .SetUrl($"~/{Common.ModuleName}/Scripts/report-controller.js")
+            .ShouldAppendVersion(true)
+            .SetVersion("1.1.0")
+            .SetDependencies("tfl-stimulus", "tfl-report-widgets");
+         foreach (var controller in new[] { "selection", "modal", "clipboard" }) {
+            _manifest.DefineScript($"tfl-report-{controller}")
+               .SetUrl($"~/{Common.ModuleName}/Scripts/report-{controller}-controller.js")
+               .ShouldAppendVersion(true)
+               .SetVersion("1.0.0")
+               .SetDependencies("tfl-report-controller");
+         }
+         _manifest.DefineScript("tfl-report-interactivity")
+            .SetUrl($"~/{Common.ModuleName}/Scripts/report-interactivity.js")
+            .ShouldAppendVersion(true)
+            .SetVersion("1.1.0")
+            .SetDependencies("tfl-htmx", "tfl-report-filter", "tfl-report-selection", "tfl-report-modal", "tfl-report-clipboard");
+         _manifest.DefineStyle("tfl-report")
+            .SetUrl($"~/{Common.ModuleName}/Styles/report.css")
+            .ShouldAppendVersion(true)
+            .SetVersion("1.0.0");
+
+         _manifest.DefineScript("tfl-flatpickr")
+            .SetUrl($"~/{Common.ModuleName}/Scripts/flatpickr.js")
+            .SetVersion("4.6.13");
+         _manifest.DefineStyle("tfl-flatpickr")
+            .SetUrl($"~/{Common.ModuleName}/Styles/flatpickr.css")
+            .SetVersion("4.6.13");
+         _manifest.DefineScript("tfl-date-widgets")
+            .SetUrl($"~/{Common.ModuleName}/Scripts/date-widgets.js")
+            .ShouldAppendVersion(true)
+            .SetVersion("1.0.0")
+            .SetDependencies("tfl-flatpickr");
+         _manifest.DefineScript("tfl-form-widgets")
+            .SetUrl($"~/{Common.ModuleName}/Scripts/form-widgets.js")
+            .ShouldAppendVersion(true)
+            .SetVersion("1.0.0")
+            .SetDependencies("tfl-date-widgets");
+         _manifest.DefineScript("tfl-form-controller")
+            .SetUrl($"~/{Common.ModuleName}/Scripts/form-controller.js")
+            .ShouldAppendVersion(true)
+            .SetVersion("1.0.0")
+            .SetDependencies("tfl-stimulus", "tfl-form-widgets");
+         foreach (var widget in new[] { "map", "location", "places" }) {
+            _manifest.DefineScript($"tfl-form-{widget}")
+               .SetUrl($"~/{Common.ModuleName}/Scripts/form-{widget}-controller.js")
+               .ShouldAppendVersion(true)
+               .SetVersion("1.0.0")
+               .SetDependencies(widget == "places" ? new[] { "tfl-stimulus", "tfl-form-places-widgets" } : new[] { "tfl-stimulus" });
+         }
+         _manifest.DefineScript("tfl-form-upload-widgets")
+            .SetUrl($"~/{Common.ModuleName}/Scripts/form-upload-widgets.js")
+            .ShouldAppendVersion(true)
+            .SetVersion("1.0.0")
+            // An unversioned core dependency resolves Orchard's newer registration
+            // and reloads the widget after its processing/image extensions.
+            .SetDependencies("jquery-fileupload-image:10.31.0");
+         _manifest.DefineScript("tfl-form-upload")
+            .SetUrl($"~/{Common.ModuleName}/Scripts/form-upload-controller.js")
+            .ShouldAppendVersion(true)
+            .SetVersion("1.0.0")
+            .SetDependencies("tfl-stimulus");
+         _manifest.DefineScript("tfl-form-places-widgets")
+            .SetUrl($"~/{Common.ModuleName}/Scripts/form-places-widgets.js")
+            .ShouldAppendVersion(true)
+            .SetVersion("1.0.0");
+         _manifest.DefineScript("tfl-form-interactivity")
+            .SetUrl($"~/{Common.ModuleName}/Scripts/form-interactivity.js")
+            .ShouldAppendVersion(true)
+            .SetVersion("1.0.0")
+            .SetDependencies("tfl-htmx", "tfl-form-controller", "tfl-form-map", "tfl-form-location", "tfl-form-upload", "tfl-form-places");
+         _manifest.DefineStyle("tfl-form")
+            .SetUrl($"~/{Common.ModuleName}/Styles/form.css")
+            .ShouldAppendVersion(true)
+            .SetVersion("1.0.0");
+
          /* CodeMirror 6 — pre-built IIFE bundle (see cm6-build/ for source) */
          _manifest
              .DefineScript("codemirror6")
@@ -188,6 +280,7 @@ namespace TransformalizeModule {
 
          _manifest
             .DefineScript("jquery-fileupload")
+            .SetDependencies("jQuery-ui")
             .SetUrl($"~/{Common.ModuleName}/Scripts/jquery.fileupload.js", $"~/{Common.ModuleName}/Scripts/jquery.fileupload.min.js")
             .SetCdn("https://cdnjs.cloudflare.com/ajax/libs/blueimp-file-upload/10.31.0/js/jquery.fileupload.min.js", "https://cdnjs.cloudflare.com/ajax/libs/blueimp-file-upload/10.31.0/js/jquery.fileupload.js")
             .SetCdnIntegrity("sha512-qPkNWpUqYz8bhO5bGNPBvlCB9hPZBil2ez5Mo8yVmpCKI315UDDPQeg/TE7KwZ+U/wdSO8JguwVxYY/Ha7U+vQ==", "sha512-mPBKSUQd9V0RWuHe31Q2nvLSUSBOh4yjW21MBFIYdR8PPZL1mDU9clClGv9SwVSJC9m44+wcfljUPSqWTv91Xg==")
@@ -195,6 +288,7 @@ namespace TransformalizeModule {
 
          _manifest
             .DefineScript("jquery-fileupload-process")
+            .SetDependencies("jquery-fileupload:10.31.0")
             .SetUrl($"~/{Common.ModuleName}/Scripts/jquery.fileupload-process.js", $"~/{Common.ModuleName}/Scripts/jquery.fileupload-process.min.js")
             .SetCdn("https://cdnjs.cloudflare.com/ajax/libs/blueimp-file-upload/10.31.0/js/jquery.fileupload-process.min.js", "https://cdnjs.cloudflare.com/ajax/libs/blueimp-file-upload/10.31.0/js/jquery.fileupload-process.js")
             .SetCdnIntegrity("sha512-/PpB/cqFe0WgMQRLimSpDJtdyl3sRyo0bxwtiapDaYhs3AkEeNnDUBKtdLKpEEE2X/Xr2YzfCZTdLIOSC2JHVA==", "sha512-nSNTn7MSa1e/I0wf7fi4vbSAQVgO1x3Tum/spzI00lOV+Yd9uJWH18jjYiwx4WHVj3p7UR6tF2de7U094x5rCw==")
@@ -202,6 +296,7 @@ namespace TransformalizeModule {
 
          _manifest
             .DefineScript("jquery-fileupload-image")
+            .SetDependencies("jquery-fileupload-process:10.31.0", "load-image-all:5.14.0", "canvas-to-blob:3.28.0")
             .SetUrl($"~/{Common.ModuleName}/Scripts/jquery.fileupload-image.js", $"~/{Common.ModuleName}/Scripts/jquery.fileupload-image.min.js")
             .SetCdn("https://cdnjs.cloudflare.com/ajax/libs/blueimp-file-upload/10.31.0/js/jquery.fileupload-image.min.js", "https://cdnjs.cloudflare.com/ajax/libs/blueimp-file-upload/10.31.0/js/jquery.fileupload-image.js")
             .SetCdnIntegrity("sha512-/zXq+I7ihnFX2Jw9+7lNZX9/oZ323b3rOMtwtowHN2VS3xoeLY1srC11oiQidw1YDTxrHVLWp9dehlZqqLKqhg==", "sha512-e0MZer7eLu4GULyhtYxafD0hyDK9anMSL27EqC4H/c1paOzw0xT4d7nuat2KG+Np65HQzz9fmO1HeW1bt6P9MQ==")

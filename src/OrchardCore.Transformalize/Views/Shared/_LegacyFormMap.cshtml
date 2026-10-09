@@ -1,0 +1,62 @@
+@model FormMapViewModel
+<script language="javascript">
+   (function () {
+      $(document).ready(function () {
+         mapboxgl.accessToken = mapPickerToken;
+
+         var latEl = document.getElementById('id_@Model.Parameter.Name');
+         var lngEl = document.getElementById('id_@Model.LongitudeName');
+
+         var lat = parseFloat(latEl ? latEl.value : '') || 0;
+         var lng = parseFloat(lngEl ? lngEl.value : '') || 0;
+         var hasCoords = lat !== 0 || lng !== 0;
+
+         var map = new mapboxgl.Map({
+            container: 'id_map_@Model.Parameter.Name',
+            style: 'mapbox://styles/mapbox/streets-v11',
+            center: [hasCoords ? lng : 0, hasCoords ? lat : 0],
+            zoom: hasCoords ? 14 : 2
+         });
+
+         map.addControl(new mapboxgl.NavigationControl());
+         map.addControl(new mapboxgl.GeolocateControl({ positionOptions: { enableHighAccuracy: true } }));
+
+         var marker = new mapboxgl.Marker({ draggable: true, color: '#e74c3c' })
+            .setLngLat([hasCoords ? lng : 0, hasCoords ? lat : 0])
+            .addTo(map);
+
+         var syncing = false;
+
+         function setLocation(lngLat) {
+            syncing = true;
+            marker.setLngLat(lngLat);
+            if (latEl) { latEl.value = lngLat.lat.toFixed(7); $(latEl).trigger('change'); }
+            if (lngEl) { lngEl.value = lngLat.lng.toFixed(7); $(lngEl).trigger('change'); }
+            syncing = false;
+         }
+
+         marker.on('dragend', function () {
+            setLocation(marker.getLngLat());
+         });
+
+         map.on('click', function (e) {
+            setLocation(e.lngLat);
+         });
+
+         function syncMarker() {
+            if (syncing) return;
+            var la = parseFloat(latEl ? latEl.value : NaN);
+            var ln = parseFloat(lngEl ? lngEl.value : NaN);
+            if (!isNaN(la) && !isNaN(ln)) {
+               marker.setLngLat([ln, la]);
+               map.flyTo({ center: [ln, la] });
+            }
+         }
+
+         if (latEl) $(latEl).on('change blur', syncMarker);
+         if (lngEl) $(lngEl).on('change blur', syncMarker);
+
+         map.on('load', function () { map.resize(); });
+      });
+   })();
+</script>
