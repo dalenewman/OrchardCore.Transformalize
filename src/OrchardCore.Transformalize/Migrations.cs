@@ -298,7 +298,7 @@ namespace TransformalizeModule {
              .WithPosition("33")
              .WithSettings(new TextFieldSettings {
                 Required = false,
-                Hint = "Specify the field that contains a title for each calendar item."
+                Hint = "Specify the field that contains a url for each calendar item."
              }
              )
            ).WithField("CalendarClassField", field => field

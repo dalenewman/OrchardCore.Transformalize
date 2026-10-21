@@ -60,6 +60,7 @@
          var renderCalendar = function () {
             dataUrl = dataUrl + (dataUrl.indexOf('?') > -1 ? '&' : '?') + 'random=' + Math.random();
             $.getJSON( dataUrl, function(data) {
+               data = TransformalizeReportWidgets.calendarEvents(data);
                var options = {
                   format12: true,
                   events_source: function () { return data; },
@@ -82,6 +83,7 @@
                   }
                };
                var calendar = $('#id_calendar').calendar(options);
+               TransformalizeReportWidgets.connectCalendar(document.getElementById('id_calendar'));
 
                $('.calendar-views button[data-calendar-view]').each(function () {
                   var $this = $(this);
@@ -99,6 +101,8 @@
                   });
                });
 
+            }).fail(function () {
+               $('#id_calendar_alert').text('The calendar could not be loaded. Check the report configuration, then reload this page.').show();
             });
          }
 

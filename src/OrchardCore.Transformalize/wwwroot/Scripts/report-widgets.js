@@ -1,6 +1,28 @@
-// Calendars are the only report widgets outside the Stimulus filter controllers.
+// Shared date filters and adapters for the calendar display plugin.
 (function () {
    window.TransformalizeReportWidgets = {
+      calendarEvents(rows) {
+         // Streams preserve arrangement alias casing (e.g. Id for Model.Id in
+         // Razor). The calendar plugin requires lowercase property names.
+         return rows.map(row => {
+            const event = { ...row };
+            const keys = Object.keys(row);
+            for (const name of ['id', 'title', 'url', 'class', 'start', 'end']) {
+               if (Object.hasOwn(event, name)) continue;
+               const key = keys.find(key => key.toLowerCase() === name);
+               if (key !== undefined) event[name] = row[key];
+            }
+            return event;
+         });
+      },
+      connectCalendar(root) {
+         // Capture runs before the plugin's day handler stops propagation.
+         // A marker opens that day's list; title links in the list navigate.
+         root.addEventListener('click', event => {
+            const marker = event.target.closest?.('a.event');
+            if (marker && root.contains(marker)) event.preventDefault();
+         }, true);
+      },
       connect(root) {
          const dates = [...root.querySelectorAll('.form-control.date')].map(input =>
             TransformalizeDateWidgets.connect(input, input.parentElement.querySelector('[data-report-date-toggle]')));

@@ -6,6 +6,7 @@
 - Replaced legacy date and report selection widgets with Flatpickr calendars and searchable, keyboard-accessible selection menus; removed unused JavaScript and CSS assets.
 
 ## 🐛 Bug Fixes
+- Updated the Bootswatch theme to Font Awesome 7 to match OrchardCore's login markup and fix the animated missing-icon placeholder beside Log in.
 - Preserve typed values and show inline feedback when parameter conversion or validation fails, and prevent stale validation responses from overwriting newer edits or selected uploads.
 - Keep page-size preferences and repeated filters consistent across reports, charts, maps, calendars, and exports, while removing empty filters, wildcards, and default page sizes from generated URLs.
 - Serialize upload responses safely so quotes and special characters produce valid JSON.
