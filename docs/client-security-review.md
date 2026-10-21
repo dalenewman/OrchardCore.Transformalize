@@ -7,9 +7,11 @@ Recheck these decisions when updating the bundles or their configuration.
 
 ## Application changes
 
-- All workflow actions use full commit SHAs, resolved from their existing version
-  tags on 2026-10-21. Comments retain the version family for updates. For CodeQL's
-  annotated tag, the pin is the underlying commit rather than the tag object.
+- All workflow actions use full commit SHAs, verified against official releases
+  on 2026-10-21. Deprecated Node.js 20 actions move to Node.js 24 releases; their
+  existing inputs are supported. Comments retain release versions for updates.
+  For CodeQL's annotated tag, the pin is the underlying commit rather than the
+  tag object.
 - Custom form patterns run through the existing server validation on refresh and
   save/run. `form-widgets.js` no longer constructs arbitrary regexes on the main
   thread. Required, type, length, range, date, and native input checks remain local.
@@ -19,6 +21,9 @@ Recheck these decisions when updating the bundles or their configuration.
   starting controllers. Keep event logic in controllers; htmx expression filters,
   `hx-on`, `js:` values, and `htmx._()` evaluation are unavailable. This setting
   governs htmx expression evaluation, not script tags or arrangement HTML.
+- Proxy module build annotations are fixed using accurate nullable contracts,
+  flow-aware header lookups, and Orchard's supported `TryGet<TPart>()` API. A missing
+  alias part falls back to the content ID when generating proxy display links.
 
 ## Reviewed library findings
 
@@ -85,3 +90,16 @@ regexes (including a catastrophic-backtracking example), server errors still
 appear inline, and both entry points disable expression evaluation before
 controller startup. Review any remaining scan findings separately; these changes
 do not dismiss unrelated historical alerts in GitHub.
+
+Verified on 2026-10-21:
+
+- 134 client tests and 132 .NET tests passed.
+- The full solution build passed. The proxy compiler annotations are gone;
+  existing compiler and NuGet dependency advisories remain elsewhere.
+- The full Semgrep scan has 11 active historical findings in other vendor files
+  and the Dockerfile, plus seven explicitly suppressed reviewed library findings.
+  The PR's action-pin, form-regex, and console-format findings are gone.
+- A focused scan of the updated workflows and proxy files has zero findings.
+- All 23 workflow action references use full SHAs. Updated action manifests
+  declare Node.js 24 and support every input used by these workflows. GitHub CI
+  must still exercise those action upgrades on its hosted runners.

@@ -20,7 +20,8 @@ namespace ProxyModule.Handlers {
                      metadata.DisplayRouteValues.Remove("Action");
                      metadata.DisplayRouteValues.Add("Action", "Index");
                      metadata.DisplayRouteValues.Remove("ContentItemId");
-                     metadata.DisplayRouteValues.Add("ContentItemId", context.ContentItem.As<AliasPart>().Alias);
+                     var alias = context.ContentItem.TryGet<AliasPart>(out var aliasPart) ? aliasPart.Alias : null;
+                     metadata.DisplayRouteValues.Add("ContentItemId", alias ?? context.ContentItem.ContentItemId);
                   }
                   return Task.CompletedTask;
                });
