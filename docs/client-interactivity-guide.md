@@ -1,5 +1,8 @@
 # Working with Razor, htmx, and Stimulus
 
+See [the PR #75 security review](client-security-review.md) for custom-pattern
+validation, htmx expression restrictions, and reviewed vendor audit findings.
+
 This guide explains the client interactivity changes in `OrchardCore.Transformalize`.
 It uses examples from this migration to show where code now belongs and how to
 extend it. The snippets are abbreviated from the implementation; surrounding

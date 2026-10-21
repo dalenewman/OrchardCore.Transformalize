@@ -112,7 +112,8 @@ one application upload implementation.
 
 `ToValidation` emits an HTML-encoded JSON attribute for the client rules previously
 sent to Parsley: required, exact length, numeric/integer/digits/alphanumeric types,
-email, URL, pattern, min/max, and date/datetime. Client validation skips ordinary hidden parameters, file choosers,
+email, URL, pattern, min/max, and date/datetime. Custom patterns are metadata for
+server validation; the browser does not compile them. Client validation skips ordinary hidden parameters, file choosers,
 unnamed helpers, excluded display controls, and disabled controls. Canonical
 hidden upload IDs remain eligible for required validation. Server-only rules,
 such as map membership, remain on the server.
@@ -143,9 +144,10 @@ Email and URL syntax checks use browser input validation; scheme-less URLs are
 still accepted by the client without altering the posted value. Date validation
 checks calendar ranges for ISO and US numeric dates and uses the browser date
 parser for other date/time text. Browser parsing may differ from server culture;
-the server is authoritative. JavaScript-compatible patterns keep the previous
-whole-value behavior; unsupported .NET-only or invalid patterns defer to server
-validation. This client check does not replace server validation.
+the server is authoritative. All custom patterns defer to server validation on
+refresh and save/run. This avoids executing arbitrary backtracking regexes on
+the browser's main thread, where JavaScript has no regex timeout. Pattern errors
+therefore appear after a server response rather than immediately on blur.
 
 Flatpickr 4.6.13 is vendored with its MIT license. Both form and report calendars
 use its [documented lifecycle](https://flatpickr.js.org/instance-methods-properties-elements/).

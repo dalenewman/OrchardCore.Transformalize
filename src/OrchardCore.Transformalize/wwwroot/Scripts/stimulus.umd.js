@@ -2044,7 +2044,7 @@ Copyright © 2023 Basecamp, LLC
                 this.scopeObserver.elementMatchedValue(scope.element, scope);
             }
             else {
-                console.error(`Couldn't find or create scope for identifier: "${identifier}" and element:`, element);
+                console.error('Couldn\'t find or create scope for identifier: "%s" and element:', identifier, element);
             }
         }
         handleError(error, message, detail) {
@@ -2248,7 +2248,7 @@ Copyright © 2023 Basecamp, LLC
                             const outletController = getControllerAndEnsureConnectedScope(this, outletElement, name);
                             if (outletController)
                                 return outletController;
-                            console.warn(`The provided outlet element is missing an outlet controller "${name}" instance for host controller "${this.identifier}"`, outletElement);
+                            console.warn('The provided outlet element is missing an outlet controller "%s" instance for host controller "%s"', name, this.identifier, outletElement);
                         })
                             .filter((controller) => controller);
                     }

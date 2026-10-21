@@ -14,9 +14,9 @@ function node() {
       remove() { this.removed = true; }
    };
 }
-function setup() {
+function setup(globals = {}) {
    const listeners = new Map(), boundaryListeners = new Map(), nodes = [];
-   const context = { window: {}, document: { createElement() {
+   const context = { ...globals, window: {}, document: { createElement() {
       const n = node(); nodes.push(n);
       Object.defineProperty(n, 'validity', { get: () => ({ typeMismatch: n.type === 'email' ? !/^[^\s@]+@[^\s@]+$/.test(n.value) : !/^(https?|ftp):\/\/[^\s/]+(?:\/.*)?$/.test(n.value) }) });
       return n;
@@ -63,7 +63,7 @@ test('required and optional fields, radio groups, stored upload IDs, and disable
    b.checked = true; assert.equal(s.widgets.validateField(a), true);
 });
 
-test('parameter types, ranges, length, patterns and native bad input/step errors', () => {
+test('parameter types, ranges, length and native bad input/step errors', () => {
    const s = setup();
    const cases = [
       ['1.5', { type: 'integer' }, false], ['-12', { type: 'integer' }, true],
@@ -72,9 +72,6 @@ test('parameter types, ranges, length, patterns and native bad input/step errors
       ['012', { type: 'digits' }, true], ['-12', { type: 'digits' }, false],
       ['2', { min: '3' }, false], ['9', { max: '9' }, true], ['ten', { max: '9' }, false],
       ['abcd', { length: '[4,4]' }, true], ['abc', { length: '[4,4]' }, false],
-      ['ab', { pattern: '[a-z]{2}' }, true], ['xabx', { pattern: '[a-z]{2}' }, false],
-      ['AB', { pattern: '/ab/i' }, true], ['text', { pattern: '\\Atext\\z' }, true],
-      ['text', { pattern: '[' }, true],
       ['a@example.com', { type: 'email' }, true], ['broken email', { type: 'email' }, false],
       ['example.com/path', { type: 'url' }, true], ['bad url', { type: 'url' }, false]
    ];
@@ -85,6 +82,24 @@ test('parameter types, ranges, length, patterns and native bad input/step errors
    assert.equal(s.widgets.validateField(step), false);
 });
 
+test('custom patterns defer to server feedback without constructing browser regexes', () => {
+   let constructed = 0;
+   const s = setup({ RegExp: function () { constructed++; throw new Error('A custom regex ran on the main thread'); } });
+   const cases = [
+      ['xabx', '[a-z]{2}'], ['AB', '/ab/i'], ['text', '\\Atext\\z'],
+      ['text', '['], ['a'.repeat(100) + '!', '^(a+)+$']
+   ];
+   for (const [value, pattern] of cases) {
+      const f = s.field(value, { pattern });
+      f.setAttribute('pattern', pattern);
+      assert.equal(s.widgets.validateField(f), true);
+      s.widgets.showErrors([{ name: f.name, message: 'Server pattern validation failed.' }]);
+      assert.equal(s.widgets.validateField(f), false);
+      assert.equal(f.container.children[0].textContent, 'Server pattern validation failed.');
+   }
+   assert.equal(constructed, 0);
+});
+
 test('fields with several failing rules retain the first error as earlier rules are corrected', () => {
    const s = setup();
    const f = s.field('', { required: 'true', type: 'integer', pattern: '\\d{2}', length: '[3,3]', min: '200' });
@@ -92,7 +107,7 @@ test('fields with several failing rules retain the first error as earlier rules 
    const cases = [
       ['', 'This value is required.'],
       ['abc', 'This value should be a valid integer.'],
-      ['1', 'This value seems to be invalid.'],
+      ['1', 'This value should have 3 characters.'],
       ['12', 'This value should have 3 characters.']
    ];
    for (const [value, expected] of cases) {

@@ -1,4 +1,6 @@
 (function () {
+   // Controllers handle events; htmx never needs to evaluate JavaScript strings.
+   htmx.config.allowEval = false;
    const application = Stimulus.Application.start();
    application.register('tfl-form', window.TransformalizeFormController);
    application.register('tfl-map', window.TransformalizeFormMapController);

@@ -12,16 +12,6 @@
       return Number.isFinite(Date.parse(value));
    }
 
-   function matches(value, pattern) {
-      // .NET-only syntax stays with server validation rather than blocking input.
-      if (/\\[AZz]|\(\?>|\(\?[imsx-]+[:)]/.test(pattern)) return true;
-      try {
-         const literal = /^\/(.*)\/([gimsuy]*)$/.exec(pattern);
-         const expression = literal ? new RegExp(literal[1], literal[2].replace(/[gy]/g, '')) : new RegExp('^(?:' + pattern + ')$');
-         return expression.test(value);
-      } catch { return true; }
-   }
-
    function fieldValue(field, form) {
       if (field.type === 'radio' || field.type === 'checkbox') {
          return [...form.elements]
@@ -50,8 +40,8 @@
 
    function formatMessage(field, value, rules) {
       if (rules.date === 'true' && !validDate(value)) return 'This value should be a date.';
-      if (rules.pattern && !matches(value, rules.pattern)) return 'This value seems to be invalid.';
-      if (field.getAttribute('pattern') && !matches(value, field.getAttribute('pattern'))) return 'This value seems to be invalid.';
+      // Custom patterns run during server validation. JavaScript's backtracking
+      // regex engine has no timeout and can freeze the UI even on short input.
       return '';
    }
 

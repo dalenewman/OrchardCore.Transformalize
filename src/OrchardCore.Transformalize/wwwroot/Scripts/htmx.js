@@ -862,6 +862,8 @@ var htmx = (function() {
    */
   function internalEval(str) {
     return maybeEval(getDocument().body, function() {
+      // Guarded by allowEval, disabled in both Transformalize entry points.
+      // nosemgrep: javascript.browser.security.eval-detected.eval-detected
       return eval(str)
     })
   }
@@ -4794,6 +4796,8 @@ var htmx = (function() {
    * @return {boolean}
    */
   function codeMatches(responseHandlingConfig, status) {
+    // Patterns come from htmx configuration; the subject is a 3-digit HTTP status.
+    // nosemgrep: javascript.lang.security.audit.detect-non-literal-regexp.detect-non-literal-regexp
     var regExp = new RegExp(responseHandlingConfig.code)
     return regExp.test(status.toString(10))
   }
