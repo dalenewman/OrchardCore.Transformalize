@@ -1,0 +1,108 @@
+@using Transformalize.Configuration
+@using Transformalize.Contracts
+@using Microsoft.Extensions.DependencyInjection
+@using TransformalizeModule.Services.Contracts
+@using TransformalizeModule
+@using TransformalizeModule.Ext
+
+@model ReportViewModel
+
+@{
+   var linkService = Context.RequestServices.GetService<ILinkService>();
+}
+
+<div id="id_calendar_alert" style="display: none;" class="alert alert-info" role="alert"><span class="fas fa-info-circle"> </span></div>
+
+   <div class="row" style="padding-top: 2px; padding-bottom: 2px;">
+
+      <div class="col-md-3">
+         <h3 id="page-header" class="text-warning" style="margin: 2px 0px 0px 0px;"></h3>
+      </div>
+      <div class="col-md-6">
+         <div class="btn-group calendar-navs" role="group">
+            <button class="btn btn-primary btn-sm" data-calendar-nav="prev"><span class="fas fa-chevron-left"></span> </button>
+            <button class="btn btn-info btn-sm" data-calendar-nav="today">
+               <span>Today</span>
+            </button>
+            <button class="btn btn-primary btn-sm" data-calendar-nav="next"> <span class="fas fa-chevron-right"></span></button>
+         </div>
+      </div>
+      <div class="col-md-3">
+         <div class="btn-group calendar-views float-end" role="group">
+            <button class="btn btn-warning btn-sm" data-calendar-view="year">
+               <span>Year</span>
+            </button>
+            <button class="btn btn-warning active btn-sm" data-calendar-view="month">
+               <span>Month</span>
+            </button>
+            <button class="btn btn-warning btn-sm" data-calendar-view="week">
+               <span>Week</span>
+            </button>
+            <button class="btn btn-warning btn-sm" data-calendar-view="day">
+               <span>Day</span>
+            </button>
+         </div>
+      </div>
+   </div>
+
+   <div id="id_calendar" style="height: 655px; width: 100%; padding-top: 2px;"></div>
+   <script>
+      /* using calendar from here: https://github.com/Serhioromano/bootstrap-calendar */
+      //<!--
+      var dataUrl = '@(linkService.Create(Model.Item.ContentItemId, Url.Action("Stream", "Calendar", new { ContentItemId = Model.IdOrAlias }), !Model.Part.PageSizesExtended.Enabled(), Model.Paging))';
+
+      var templatePath = '@Url.Content($"~/{Common.ModuleName}/Scripts/tmpls/")';
+
+      $(document).ready(function() {
+
+         $('#id_calendar').height(Math.round($(window).height() * .71));
+
+         var renderCalendar = function () {
+            dataUrl = dataUrl + (dataUrl.indexOf('?') > -1 ? '&' : '?') + 'random=' + Math.random();
+            $.getJSON( dataUrl, function(data) {
+               var options = {
+                  format12: true,
+                  events_source: function () { return data; },
+                  view: 'month',
+                  tmpl_path: templatePath,
+                  tmpl_cache: false,
+                  day: 'now',
+                  onAfterEventsLoad: function (events) {
+                     console.log("events loaded");
+                  },
+                  onAfterViewLoad: function (view) {
+                     $('#page-header').text(this.getTitle());
+                     $('button',$('.calendar-views')).removeClass('active');
+                     $('button[data-calendar-view="' + view + '"]').addClass('active');
+                  },
+                  classes: {
+                     months: {
+                        general: 'label'
+                     }
+                  }
+               };
+               var calendar = $('#id_calendar').calendar(options);
+
+               $('.calendar-views button[data-calendar-view]').each(function () {
+                  var $this = $(this);
+                  $this.click(function (e) {
+                     e.preventDefault();
+                     calendar.view($this.data('calendar-view'));
+                  });
+               });
+
+               $('.calendar-navs button[data-calendar-nav]').each(function () {
+                  var $this = $(this);
+                  $this.click(function (e) {
+                     e.preventDefault(e);
+                     calendar.navigate($this.data('calendar-nav'));
+                  });
+               });
+
+            });
+         }
+
+         renderCalendar();
+      });
+      //-->
+   </script>

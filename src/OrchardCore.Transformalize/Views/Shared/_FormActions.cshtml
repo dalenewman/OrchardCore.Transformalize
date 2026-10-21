@@ -4,7 +4,6 @@
    const string ORCHARD_SUBMIT = "Orchard.Submit";
    var submit = Model.Parameters.Any(p => p.VisiblePrompt());
    var isModal = Context.Request.Query["modal"] == "1";
-   var interactive = (ViewData["FormInteractivity"] as FormInteractivityViewModel)?.Interactive == true;
 }
    @if (Model.Mode == "form") {
 
@@ -13,7 +12,7 @@
       }
 
       if (isModal){
-         <button type="button" class="btn btn-secondary" style="margin-top: 5px;" data-action="@(interactive ? "tfl-form#cancel" : null)" onclick="@(interactive ? null : "formCancel()")">Cancel</button>
+         <button type="button" class="btn btn-secondary" style="margin-top: 5px;" data-action="tfl-form#cancel">Cancel</button>
       }
 
    } else {  // tasks
@@ -25,7 +24,7 @@
       }
 
       if (isModal){
-         <button type="button" class="btn btn-secondary" style="margin-top: 5px;" data-action="@(interactive ? "tfl-form#cancel" : null)" onclick="@(interactive ? null : "formCancel()")">Cancel</button>
+         <button type="button" class="btn btn-secondary" style="margin-top: 5px;" data-action="tfl-form#cancel">Cancel</button>
       }
 
    }

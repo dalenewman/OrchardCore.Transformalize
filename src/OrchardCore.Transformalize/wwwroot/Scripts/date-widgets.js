@@ -11,6 +11,24 @@
    window.TransformalizeDateWidgets = {
       isoDate,
       connect(input, toggle) {
+         const initialValue = input.value;
+         const initialDate = input.getAttribute('data-tfl-calendar-date');
+         const initialTime = input.getAttribute('data-tfl-calendar-time');
+         function calendarValue() {
+            if (isoDate(input.value)) return { date: input.value, time: '' };
+            // Form selections retain a non-midnight time. Read it again on each
+            // selection so repeated picks and edits never restore a stale time.
+            if (initialTime !== null) {
+               const parts = /^(\d{4}-\d{2}-\d{2})T((\d{2}):(\d{2}):(\d{2})(?:\.\d{1,7})?)$/.exec(input.value);
+               if (parts && isoDate(parts[1]) && +parts[3] < 24 && +parts[4] < 60 && +parts[5] < 60) {
+                  return { date: parts[1], time: /[1-9]/.test(parts[2]) ? parts[2] : '' };
+               }
+            }
+            // Razor parses server date text using the server culture. Never use
+            // these hints after the user has edited or cleared the field.
+            if (input.value === initialValue && isoDate(initialDate)) return { date: initialDate, time: initialTime || '' };
+            return { date: [], time: '' };
+         }
          let active = true;
          let busy = false;
          const helper = document.createElement('input');
@@ -22,7 +40,8 @@
             positionElement: input,
             onChange(dates, value) {
                if (!active || busy || input.disabled || input.readOnly) return;
-               input.value = value;
+               const { time } = calendarValue();
+               input.value = value && time ? value + 'T' + time : value;
                input.dispatchEvent(new Event('change', { bubbles: true }));
             },
             onOpen() {
@@ -49,7 +68,8 @@
             if (!active || busy || input.disabled || input.readOnly) return;
             if (picker.isOpen) { picker.close(); return; }
             // Opening or cancelling never normalizes/discards the user's text.
-            picker.setDate(isoDate(input.value) ? input.value : [], false, 'Y-m-d');
+            const { date } = calendarValue();
+            picker.setDate(date, false, 'Y-m-d');
             picker.open();
          };
          toggle.addEventListener('click', click);

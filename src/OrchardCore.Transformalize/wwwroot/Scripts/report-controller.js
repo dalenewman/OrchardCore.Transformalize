@@ -2,10 +2,9 @@
 (function () {
    class ReportController extends Stimulus.Controller {
       static targets = ['form', 'search', 'status', 'error'];
-      static values = { page: Number };
+      static values = { page: Number, defaultSize: Number, pageSizes: Array };
 
       connect() {
-         this.lastFilter = null;
          this.clearing = false;
          this.widgets = TransformalizeReportWidgets.connect(this.formTarget);
          this.setBusy(false);
@@ -23,6 +22,11 @@
       prepare(event) {
          if (event.target !== this.formTarget || this.formTarget.method.toLowerCase() !== 'get') return;
          if (event.submitter === this.searchTarget) this.field('page').value = this.firstPage;
+         // Maps, charts and calendars share the controls but render a full page.
+         if (!this.formTarget.hasAttribute('hx-get')) {
+            event.preventDefault();
+            this.navigate(this.parameters());
+         }
       }
 
       get firstPage() {
@@ -38,7 +42,6 @@
       searchKey(event) {
          if (event.key !== 'Enter' || !event.target.matches('.field-search, .form-control.date')) return;
          event.preventDefault();
-         this.lastFilter = event.target.name;
          this.search(event.target.name);
       }
 
@@ -46,14 +49,12 @@
          const input = event.target;
          if (!input.matches('select, .field-search, .form-control.date')) return;
          if (input.matches('select')) { this.selectChanged(input); return; }
-         this.lastFilter = input.name;
          this.field('page').value = this.firstPage;
          if (input.matches('select, .form-control.date')) this.search(input.name);
       }
 
       selectChanged(select) {
          if (this.clearing) return;
-         this.lastFilter = select.name;
          this.field('page').value = this.firstPage;
          if (!select.multiple || select.selectedOptions.length === 0) this.search(select.name);
       }
@@ -65,7 +66,6 @@
          this.widgets.clear();
          this.formTarget.querySelectorAll('.field-search, .form-control.date').forEach(input => { input.value = ''; });
          this.clearing = false;
-         this.lastFilter = '_Cleared';
          this.field('last').value = '';
          this.search();
       }
@@ -110,24 +110,61 @@
 
       configureRequest(event) {
          if (event.detail.elt !== this.formTarget) return;
+         event.detail.parameters = this.parameters();
+      }
+
+      parameters() {
          const parameters = new FormData(this.formTarget);
          for (const name of [...new Set(parameters.keys())]) {
-            const input = this.field(name);
             if (name === 'Records' || name === 'select-all') {
                parameters.delete(name);
                continue;
             }
             const values = parameters.getAll(name).map(value => typeof value === 'string' ? value.trim() : value);
-            const select = input instanceof HTMLSelectElement;
-            const keepAll = select && (this.lastFilter === name || this.lastFilter === '_Cleared');
-            const kept = values.filter(value => value !== '' && (value !== '*' || keepAll));
+            const kept = values.filter(value => value !== '' && value !== '*');
             parameters.delete(name);
+            if (name === 'size') {
+               const size = Number(kept[0]);
+               const sizes = this.pageSizesValue;
+               const normalized = sizes.includes(size) ? size : size > Math.max(...sizes) ? Math.max(...sizes) : this.defaultSizeValue;
+               if (sizes.length && normalized !== this.defaultSizeValue) parameters.append(name, String(normalized));
+               continue;
+            }
             if (name === 'page' && kept[0] === '1') continue;
             kept.forEach(value => parameters.append(name, value));
          }
          // Rebuild request data, rather than disabling live controls to clean up a URL.
-         event.detail.parameters = parameters;
+         return parameters;
       }
+
+      navigate(parameters) {
+         const url = new URL(this.formTarget.action, window.location.href);
+         url.search = new URLSearchParams(parameters).toString();
+         window.location.assign(url.href);
+      }
+
+      chartFilter(event) {
+         const parameters = this.parameters();
+         parameters.delete('page');
+         if (event.detail.value === '*') parameters.delete(event.detail.name);
+         else parameters.set(event.detail.name, event.detail.value);
+         this.navigate(parameters);
+      }
+
+      chartType(event) {
+         if (this.modifiedClick(event)) return;
+         event.preventDefault();
+         this.field('chart-type').value = event.params.type;
+         this.search();
+      }
+
+      chartToggle(event) {
+         const field = this.field(event.params.field);
+         field.value = field.value === 'true' ? 'false' : 'true';
+         this.search();
+      }
+
+      editorSearch() { this.search(); }
 
       refresh() {
          this.formTarget.requestSubmit();
@@ -136,7 +173,7 @@
       download(event) {
          if (this.modifiedClick(event)) return;
          event.preventDefault();
-         const url = new URL(event.currentTarget.href);
+         const url = new URL(event.params?.url || event.currentTarget.href, window.location.href);
          url.searchParams.set('random', Math.random());
          window.location.assign(url.href);
       }

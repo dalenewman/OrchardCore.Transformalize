@@ -18,17 +18,18 @@ function controllerFor(entries, selects = []) {
    const navigations = [];
    const context = {
       Stimulus: { Controller: class {}, Application: { start: () => ({ register: (_, type) => { Controller = type; } }) } },
-      FormData: ReportFormData,
+      FormData: ReportFormData, URL, URLSearchParams,
       CustomEvent: class { constructor(type, init) { this.type = type; this.detail = init.detail; } },
       HTMLSelectElement: Select,
-      window: { location: { href: '/report', assign: url => navigations.push(url) } },
+      window: { location: { href: 'http://localhost/report', assign: url => navigations.push(url) } },
       document: { getElementById: () => null }
    };
    vm.runInNewContext(fs.readFileSync(path.join(__dirname, '../../src/OrchardCore.Transformalize/wwwroot/Scripts/report-controller.js'), 'utf8'), context);
    const controller = new context.window.TransformalizeReportControllers.report();
    const inputs = Object.fromEntries(entries.map(([name]) => [name, selects.includes(name) ? new Select() : { disabled: false }]));
+   controller.pageSizesValue = [20, 25, 50, 100];
+   controller.defaultSizeValue = 20;
    controller.formTarget = { entries, elements: { namedItem: name => inputs[name] } };
-   controller.lastFilter = null;
    controller.element = { setAttribute() {}, dispatchEvent() {} };
    controller.searchTarget = { disabled: true };
    controller.statusTarget = { textContent: '' };
@@ -58,19 +59,38 @@ test('queries trim text, omit defaults, and preserve repeated facet values', () 
    assert.equal(query(controller).toString(), result.toString(), 'repeated requests must not mutate or disable the form');
 });
 
-test('an explicitly changed All facet remains in the request', () => {
-   const { controller } = controllerFor([['Category', '*'], ['Other', '*']], ['Category', 'Other']);
-   controller.lastFilter = 'Category';
-   assert.equal(query(controller).get('Category'), '*');
-   assert.equal(query(controller).has('Other'), false);
+test('choosing All omits every wildcard and keeps focus metadata', () => {
+   const { controller } = controllerFor([['Category', '*'], ['Other', '*'], ['last', 'Category'], ['page', '1']], ['Category', 'Other']);
+   controller.pageValue = 1;
+   controller.formTarget.requestSubmit = () => {};
+   controller.selectChanged({ name: 'Category', multiple: false, selectedOptions: ['*'] });
+   const result = query(controller);
+   assert.equal(result.has('Category'), false);
+   assert.equal(result.has('Other'), false);
+   assert.equal(result.get('last'), 'Category');
 });
 
-test('clearing preserves explicit All choices and unpaged reports retain page zero', () => {
-   const { controller } = controllerFor([['Category', '*'], ['Other', '*'], ['page', '0']], ['Category', 'Other']);
-   controller.lastFilter = '_Cleared';
+test('Clear removes wildcard facets, preserves sort and size, and leaves form controls enabled', () => {
+   const facets = ['day', 'dayofweek', 'hour', 'district', 'beat', 'grid', 'ucr_ncic_code', 'geojson-color'];
+   const { controller, inputs } = controllerFor([
+      ['sort', 'Id.d'], ['size', '25'], ...facets.map(name => [name, '*']), ['last', ''], ['page', '1']
+   ], facets);
+   controller.widgets = { clear() {} };
+   controller.formTarget.querySelectorAll = () => [];
+   controller.pageValue = 1;
+   controller.formTarget.requestSubmit = () => {};
+   controller.clear();
+   assert.equal(query(controller).toString(), 'sort=Id.d&size=25');
+   assert.equal(controller.field('last').value, '');
+   for (const input of Object.values(inputs)) assert.equal(!!input.disabled, false);
+});
+
+test('wildcards are omitted individually without dropping concrete repeated choices or page zero', () => {
+   const { controller } = controllerFor([['Category', 'A'], ['Category', '*'], ['Category', 'B'], ['Other', ' * '], ['Name', 'Ada*'], ['page', '0']], ['Category', 'Other']);
    const result = query(controller);
-   assert.equal(result.get('Category'), '*');
-   assert.equal(result.get('Other'), '*');
+   assert.deepEqual(result.getAll('Category'), ['A', 'B']);
+   assert.equal(result.has('Other'), false);
+   assert.equal(result.get('Name'), 'Ada*', 'only the whole-value wildcard is noise');
    assert.equal(result.get('page'), '0');
 });
 
@@ -108,4 +128,111 @@ test('native multiple choices stage until Search, with immediate refresh for sin
    controller.clearing = true;
    controller.selectChanged({ name: 'Category', multiple: true, selectedOptions: [] });
    assert.equal(submitted.length, 3, 'Clear resets all selects before one coordinated request');
+});
+
+test('full-page display modes use the same cleaned query contract as table fragments', () => {
+   const { controller, navigations, inputs } = controllerFor([
+      ['Name', '  Ada & Bob  '], ['Category', 'A'], ['Category', 'B'],
+      ['page', '1'], ['Wildcard', '*'], ['sort', '0d'], ['chart-type', 'bar'], ['chart-legend', 'false'], ['Records', '42']
+   ]);
+   controller.pageValue = 1;
+   controller.formTarget.method = 'get';
+   controller.formTarget.action = 'https://example.test/tenant/t/report/chart/demo';
+   controller.formTarget.hasAttribute = () => false;
+   let prevented = 0;
+   controller.prepare({ target: controller.formTarget, submitter: controller.searchTarget, preventDefault() { prevented++; } });
+   const url = new URL(navigations[0]);
+   assert.equal(prevented, 1);
+   assert.equal(url.pathname, '/tenant/t/report/chart/demo');
+   assert.equal(url.searchParams.get('Name'), 'Ada & Bob');
+   assert.deepEqual(url.searchParams.getAll('Category'), ['A', 'B']);
+   assert.equal(url.searchParams.get('chart-type'), 'bar');
+   assert.equal(url.searchParams.get('chart-legend'), 'false');
+   assert.equal(url.searchParams.get('sort'), '0d');
+   assert.equal(url.searchParams.has('Wildcard'), false);
+   assert.equal(url.searchParams.has('Records'), false);
+   assert.equal(url.searchParams.has('page'), false);
+   assert.equal(inputs.Name.disabled, false);
+});
+
+test('table submissions remain owned by htmx and native POSTs are never intercepted', () => {
+   const { controller, navigations } = controllerFor([['page', '2']]);
+   let prevented = 0;
+   controller.formTarget.method = 'get';
+   controller.formTarget.hasAttribute = () => true;
+   controller.prepare({ target: controller.formTarget, preventDefault() { prevented++; } });
+   controller.formTarget.method = 'post';
+   controller.formTarget.hasAttribute = () => false;
+   controller.prepare({ target: controller.formTarget, preventDefault() { prevented++; } });
+   assert.equal(prevented, 0);
+   assert.deepEqual(navigations, []);
+});
+
+test('chart controls retain the other display options and use one report submission', () => {
+   const { controller } = controllerFor([['chart-type', 'doughnut'], ['chart-legend', 'true'], ['chart-pct', 'false'], ['page', '3']]);
+   for (const [name, value] of controller.formTarget.entries) controller.field(name).value = value;
+   let submissions = 0;
+   controller.formTarget.requestSubmit = () => submissions++;
+   controller.chartType({ params: { type: 'hbar' }, preventDefault() {} });
+   assert.equal(controller.field('chart-type').value, 'hbar');
+   controller.chartToggle({ params: { field: 'chart-legend' } });
+   assert.equal(controller.field('chart-legend').value, 'false');
+   controller.chartToggle({ params: { field: 'chart-pct' } });
+   assert.equal(controller.field('chart-pct').value, 'true');
+   assert.equal(controller.field('chart-type').value, 'hbar');
+   assert.equal(controller.field('page').value, 1);
+   assert.equal(submissions, 3);
+});
+
+test('chart point filtering shares cleanup and preserves repeated real filters', () => {
+   const { controller, navigations } = controllerFor([
+      ['district', '*'], ['day', '*'], ['Category', 'A'], ['Category', 'B'], ['size', '25'], ['page', '3']
+   ], ['district', 'day', 'Category']);
+   controller.formTarget.action = 'http://localhost/tenant/t/report/chart/crime';
+   controller.chartFilter({ detail: { name: 'district', value: '7' } });
+   const url = new URL(navigations[0]);
+   assert.equal(url.pathname, '/tenant/t/report/chart/crime');
+   assert.equal(url.searchParams.has('day'), false);
+   assert.equal(url.searchParams.has('page'), false);
+   assert.equal(url.searchParams.get('district'), '7');
+   assert.deepEqual(url.searchParams.getAll('Category'), ['A', 'B']);
+});
+
+test('chart clicks dispatch filtering to the shared controller', async () => {
+   let chart;
+   const events = [];
+   const canvas = { style: {}, dataset: { labels: '["7","8"]', values: '[1,2]', parameterName: 'district', chartTitle: 'District' }, dispatchEvent: event => events.push(event) };
+   const context = {
+      document: { querySelectorAll: () => [canvas] },
+      Chart: class { constructor(element, config) { this.config = config; this.data = config.data; chart = this; } },
+      CustomEvent: class { constructor(type, init) { this.type = type; Object.assign(this, init); } },
+      requestAnimationFrame() {}
+   };
+   await vm.runInNewContext(fs.readFileSync(path.join(__dirname, '../../src/OrchardCore.Transformalize/wwwroot/Scripts/chart/charts-loader.js'), 'utf8'), context);
+   chart.config.options.onClick({}, []);
+   assert.equal(events.length, 0);
+   chart.config.options.onClick({}, [{ index: 0 }]);
+   assert.equal(events[0].type, 'report-chart:filter');
+   assert.equal(events[0].bubbles, true);
+   assert.equal(events[0].detail.name, 'district');
+   assert.equal(events[0].detail.value, '7');
+});
+
+test('configured default sizes are omitted and only genuine nondefault choices remain', () => {
+   for (const [chosen, expected] of [['25', null], ['50', '50'], ['1', null], ['75', null], ['bad', null], ['10000', '100']]) {
+      const { controller } = controllerFor([['size', chosen], ['sort', 'Id.d']]);
+      controller.pageSizesValue = [25, 50, 100];
+      controller.defaultSizeValue = 25;
+      assert.equal(query(controller).get('size'), expected, chosen);
+      assert.equal(query(controller).get('sort'), 'Id.d');
+   }
+});
+
+test('chart filtering never serializes its one-row fetch size as the report preference', () => {
+   const { controller, navigations } = controllerFor([['size', '25'], ['district', '*'], ['page', '1']]);
+   controller.pageSizesValue = [25, 50, 100];
+   controller.defaultSizeValue = 25;
+   controller.formTarget.action = 'http://localhost/t/report/chart/crime';
+   controller.chartFilter({ detail: { name: 'district', value: '7' } });
+   assert.equal(new URL(navigations[0]).search, '?district=7');
 });

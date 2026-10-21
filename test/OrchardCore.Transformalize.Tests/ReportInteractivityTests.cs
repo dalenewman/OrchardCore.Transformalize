@@ -53,18 +53,69 @@ public class ReportInteractivityTests {
       Assert.IsTrue(context.Response.Headers.Vary.ToString().Contains("HX-History-Restore-Request"));
    }
 
+   [TestMethod]
+   public async Task EditorWithGlobalJavaScriptStillReturnsReportFragments() {
+      var report = CreateReport();
+      report.Process.Scripts.Add(new Script { Global = true, Language = "js", Content = "function lightbox() {}" });
+      var service = new Mock<IReportService>();
+      service.Setup(s => s.Validate(It.IsAny<TransformalizeRequest>())).ReturnsAsync(report);
+      var context = new DefaultHttpContext();
+      context.Request.Path = "/t/report/demo";
+      context.Request.QueryString = new QueryString("?edit=1");
+      context.Request.Headers["HX-Request"] = "true";
+      context.Request.Headers["HX-Target"] = "tfl-report";
+
+      var result = await CreateController(service, context).Index("demo");
+
+      Assert.IsInstanceOfType<PartialViewResult>(result);
+      Assert.AreEqual("1", ((ReportViewModel)((PartialViewResult)result).Model!).QueryValue("edit"));
+      Assert.AreEqual("true", context.Response.Headers["X-Transformalize-Report"].ToString());
+   }
+
    [DataTestMethod]
-   [DataRow("?edit=1", false)]
-   [DataRow("", true)]
-   public void EditingUsesLegacyBehavior(string query, bool interactive) {
-      Assert.AreEqual(interactive, CreateModel(query).InteractiveReport);
+   [DataRow("map")]
+   [DataRow("calendar")]
+   public async Task DisplayModesRetainTenantPathsAndCanonicalFilters(string mode) {
+      var report = CreateReport();
+      report.Process.Mode = mode;
+      var service = new Mock<IReportService>();
+      service.Setup(s => s.Validate(It.IsAny<TransformalizeRequest>())).ReturnsAsync(report);
+      var settings = new Mock<ISettingsService>();
+      settings.SetupGet(s => s.Settings).Returns(new TransformalizeSettings { MapBoxToken = "fixture-token" });
+      var logger = new CombinedLogger<ReportController>(NullLogger<ReportController>.Instance, new MemoryLogger(global::Transformalize.Contracts.LogLevel.Debug));
+      var context = new DefaultHttpContext();
+      context.Request.PathBase = "/tenant";
+      context.Request.Path = $"/t/report/{mode}/demo";
+      context.Request.QueryString = new QueryString("?Category=A&Category=B");
+      Controller controller = mode == "map" ? new MapController(service.Object, settings.Object, logger)
+         : new CalendarController(service.Object, settings.Object, logger);
+      controller.ControllerContext = new ControllerContext { HttpContext = context };
+
+      var result = mode == "map" ? await ((MapController)controller).Index("demo") : await ((CalendarController)controller).Index("demo");
+      var model = (ReportViewModel)((ViewResult)result).Model!;
+
+      Assert.AreEqual($"/tenant/t/report/{mode}/demo", model.ReportPath);
+      var query = QueryHelpers.ParseQuery(model.NavigationUrl("page", "2").Split('?')[1]);
+      CollectionAssert.AreEqual(new[] { "A", "B" }, query["Category"].ToArray());
+      service.Verify(s => s.RunAsync(report.Process, null, context.RequestAborted), Times.Once);
    }
 
    [TestMethod]
-   public void ArrangementJavaScriptUsesLegacyBehavior() {
-      var model = CreateModel("");
-      model.Process.Scripts.Add(new Script { Global = true, Language = "js", Content = "custom()" });
-      Assert.IsFalse(model.InteractiveReport);
+   public async Task ChartsUseTheSameReportNavigationModel() {
+      var model = CreateModel("?Category=A&Category=B");
+      model.Process.Mode = "chart";
+      var service = new Mock<IChartService>();
+      service.Setup(s => s.GetReportViewModelAsync("demo")).ReturnsAsync(new ChartViewModel { ReportViewModel = model });
+      var context = new DefaultHttpContext();
+      context.Request.PathBase = "/tenant";
+      context.Request.Path = "/t/report/chart/demo";
+      var controller = new ChartController(service.Object) { ControllerContext = new ControllerContext { HttpContext = context } };
+
+      var result = (ViewResult)await controller.Index("demo");
+
+      Assert.AreSame(model, result.Model);
+      Assert.AreEqual("/tenant/t/report/chart/demo", model.ReportPath);
+      Assert.IsTrue(model.NavigationUrl("chart-type", "bar").Contains("Category=A&Category=B"));
    }
 
    [TestMethod]
@@ -82,6 +133,22 @@ public class ReportInteractivityTests {
    }
 
    [TestMethod]
+   public void NavigationDropsWildcardValuesFromExistingUrlsAndRetainsRealFilters() {
+      var model = CreateModel("?sort=Id.d&size=25&day=*&dayofweek=%2A&hour=*&district=*&beat=*&grid=*&ucr_ncic_code=*&geojson-color=*&Category=A&Category=*&Category=B&Name=Ada%2A&Empty=");
+      var query = QueryHelpers.ParseQuery(model.NavigationUrl("page", "2").Split('?')[1]);
+
+      foreach (var name in new[] { "day", "dayofweek", "hour", "district", "beat", "grid", "ucr_ncic_code", "geojson-color", "Empty" }) {
+         Assert.IsFalse(query.ContainsKey(name), name);
+      }
+      CollectionAssert.AreEqual(new[] { "A", "B" }, query["Category"].ToArray());
+      Assert.AreEqual("Ada*", query["Name"].ToString());
+      Assert.AreEqual("Id.d", query["sort"].ToString());
+      Assert.AreEqual("25", query["size"].ToString());
+      Assert.AreEqual("2", query["page"].ToString());
+      Assert.IsFalse(QueryHelpers.ParseQuery(model.NavigationUrl("district", "*").Split('?')[1]).ContainsKey("district"));
+   }
+
+   [TestMethod]
    public async Task FailedValidationKeepsItsOriginalActionResult() {
       var report = CreateReport();
       report.Valid = false;
@@ -96,14 +163,14 @@ public class ReportInteractivityTests {
    }
 
    private static ReportController CreateController(Mock<IReportService> service, HttpContext context) =>
-      new(service.Object, Mock.Of<ISlugService>(), new CombinedLogger<ReportController>(NullLogger<ReportController>.Instance, new MemoryLogger(global::Transformalize.Contracts.LogLevel.Debug))) {
+      new(service.Object, Mock.Of<ISlugService>(), new CombinedLogger<ReportController>(NullLogger<ReportController>.Instance, new MemoryLogger(global::Transformalize.Contracts.LogLevel.Debug)), Mock.Of<ISettingsService>(s => s.Settings == new TransformalizeSettings())) {
          ControllerContext = new ControllerContext { HttpContext = context }
       };
 
    private static ReportViewModel CreateModel(string query) {
       var report = CreateReport();
       var parameters = new QueryCollection(QueryHelpers.ParseQuery(query).ToDictionary(p => p.Key, p => p.Value));
-      return new ReportViewModel(report.Process, report.ContentItem, parameters, "demo") { ReportPath = "/tenant/t/report/demo" };
+      return new ReportViewModel(report.Process, report.ContentItem, parameters, "demo") { ReportPath = "/tenant/t/report/demo", Settings = new TransformalizeSettings { DefaultPageSizes = "20,25,50,100" } };
    }
 
    private static TransformalizeResponse<TransformalizeReportPart> CreateReport() {

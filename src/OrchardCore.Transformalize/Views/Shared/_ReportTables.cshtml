@@ -28,12 +28,16 @@
                   @if (Model.Part.BulkActions.Value) {
                      <th>
                         <div class="checkbox form-check">
-                           <input title="Select the entire search result" id="@(Model.InteractiveReport ? $"select-all-{entity.Sequence}" : "select-all")" data-selection-target="all" data-action="@(Model.InteractiveReport ? "click->selection#toggle" : null)" type="checkbox" class="bulk-action form-check-input" name="select-all" placeholder="Select the entire search result">
+                           <input title="Select the entire search result" id="select-all-@entity.Sequence" data-selection-target="all" data-action="click->selection#toggle" type="checkbox" class="bulk-action form-check-input" name="select-all" placeholder="Select the entire search result">
                         </div>
                      </th>
                   }
                   @foreach (var field in fields) {
-                     <th title="@field.Name" class="@(edit && !field.IsCalculated ? "drag" : string.Empty)" data-src="@field.Src" data-type="@field.Type">@field.Label</th>
+                     <th title="@field.Name" class="@(Model.Editable && edit && !field.IsCalculated ? "drag" : string.Empty)"
+                         draggable="@(Model.Editable && edit && !field.IsCalculated ? "true" : null)"
+                         tabindex="@(Model.Editable && edit && !field.IsCalculated ? "0" : null)"
+                         aria-label="@(Model.Editable && edit && !field.IsCalculated ? $"{field.Label}: drag or use Alt+Left/Right to reorder" : null)"
+                         data-action="@(Model.Editable && edit && !field.IsCalculated ? "dragstart->report-editor#dragStart dragover->report-editor#dragOver drop->report-editor#drop dragend->report-editor#dragEnd keydown->report-editor#moveKey" : null)" data-src="@field.Src" data-type="@field.Type">@field.Label</th>
                   }
                </tr>
                @if (isSortable) {
@@ -46,15 +50,15 @@
                         if (field.Sortable == "true") {
                            <td class="sorter" data-src="@field.Src" data-field-name="@field.Name">
                               <div class="btn-group btn-group-sm">
-                                 <a href="@(Model.InteractiveReport ? "#" : "javascript:void()")" title="Sort Ascending by @field.Label" class="btn btn-sm sortable @(sortService.Sort(field.Src, expression) == Direction.Asc ? "btn-primary" : "btn-sort")" data-action="@(Model.InteractiveReport ? "click->report#sort" : null)" data-report-direction-param="a">
+                                 <a href="#" title="Sort Ascending by @field.Label" class="btn btn-sm sortable @(sortService.Sort(field.Src, expression) == Direction.Asc ? "btn-primary" : "btn-sort")" data-action="click->report#sort" data-report-direction-param="a">
                                     <span class="fas fa-chevron-up"></span>
                                  </a>
                                  @if(Model.Editable && edit){
-                                    <a href="javascript:void()" title="@field.Name @field.Type @field.Length" class="btn btn-sm btn-sort editor" >
-                                       <input type="checkbox" class="field-check shift-select" data-src="@field.Src" />
-                                    </a>
+                                    <label title="@field.Name @field.Type @field.Length" class="btn btn-sm btn-sort editor">
+                                       <input type="checkbox" class="field-check" data-src="@field.Src" aria-label="Select @field.Label for editing" data-action="click->report-editor#toggle" />
+                                    </label>
                                  }
-                                 <a href="@(Model.InteractiveReport ? "#" : "javascript:void()")" title="Sort Descending by @field.Label" class="btn btn-sm sortable @(sortService.Sort(field.Src, expression) == Direction.Desc ? "btn-primary" : "btn-sort")" data-action="@(Model.InteractiveReport ? "click->report#sort" : null)" data-report-direction-param="d">
+                                 <a href="#" title="Sort Descending by @field.Label" class="btn btn-sm sortable @(sortService.Sort(field.Src, expression) == Direction.Desc ? "btn-primary" : "btn-sort")" data-action="click->report#sort" data-report-direction-param="d">
                                     <span class="fas fa-chevron-down"></span>
                                  </a>
                               </div>
@@ -93,7 +97,7 @@
                                         class="bulk-action shift-select form-check-input"
                                         name="Records"
                                         data-selection-target="record"
-                                        data-action="@(Model.InteractiveReport ? "click->selection#toggle" : null)"
+                                        data-action="click->selection#toggle"
                                         value="@row[bulkActionValueField.Alias]"
                                         placeholder="Select Record">
                               </div>

@@ -21,7 +21,7 @@
    <input type="text" class="form-control @(Model.Valid ? "is-valid" : "is-invalid")"
           name="@parameter.Name" id="id_@parameter.Name" maxlength="@parameter.Length"
           placeholder="@parameter.Label" value="@parameter.Value" data-tfl-places-target="input"
-          data-tfl-post-back="false" @Html.Raw(parameter.ToValidation(true)) />
+          data-tfl-post-back="false" @Html.Raw(parameter.ToValidation()) />
    <p class="small text-muted mb-0" role="status" data-tfl-places-target="status"></p>
    <button type="button" class="btn btn-outline-secondary btn-sm mt-1" data-tfl-places-target="retry"
            data-action="tfl-places#retry" hidden>Retry address suggestions</button>

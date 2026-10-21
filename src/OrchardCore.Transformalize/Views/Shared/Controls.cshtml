@@ -14,26 +14,15 @@
     var hasParameters = Model.Process.Parameters.Any(p => p.Prompt);
     var entity = Model.Process.Entities.FirstOrDefault() ?? new Entity { Name = "Missing Entity" };
     var entityTitle = entity.Label == string.Empty ? entity.Alias : entity.Label;
-    var settings = Context.RequestServices.GetService<ISettingsService>();
-    var pageSizes = new List<int>();
-    if (Model.Part != null) {
-        pageSizes.AddRange(settings.GetPageSizes(Model.Part));
-        if(Model.Process.Mode == "map" || Model.Process.Mode == "calendar" || Model.Process.Mode == "chart") {
-            if (Model.Part.PageSizesExtended.Enabled()) {
-                pageSizes.AddRange(settings.GetPageSizesExtended(Model.Part));
-            } else {
-                pageSizes.Clear();
-            }
-        }
-    }
-    var pagingDisabled = pageSizes.Count < 2 || Model.Process.Mode != "report";
+    var pageSizes = Model.Paging.Sizes;
+    var pagingDisabled = pageSizes.Length < 2 || Model.Process.Mode != "report";
     var allFields = entity.GetAllFields().Where(f => !f.System).ToArray();
     var hasCoordinates = allFields.Any(f => f.Alias.StartsWith("lat", StringComparison.OrdinalIgnoreCase)) && allFields.Any(f => f.Alias.StartsWith("lon", StringComparison.OrdinalIgnoreCase));
 
     var linkService = Context.RequestServices.GetService<ILinkService>();
-    var exportCsvLink = linkService.Create(Model.Item.ContentItemId, Url.Action("StreamCsv", new { ContentItemId = Model.IdOrAlias }), true);
-    var exportJsonLink = linkService.Create(Model.Item.ContentItemId, Url.Action("StreamJson", new { ContentItemId = Model.IdOrAlias }), true);
-    var exportGeoJsonLink = linkService.Create(Model.Item.ContentItemId, Url.Action("StreamGeoJson", new { ContentItemId = Model.IdOrAlias }), true);
+    var exportCsvLink = linkService.Create(Model.Item.ContentItemId, Url.Action("StreamCsv", new { ContentItemId = Model.IdOrAlias }), true, Model.Paging);
+    var exportJsonLink = linkService.Create(Model.Item.ContentItemId, Url.Action("StreamJson", new { ContentItemId = Model.IdOrAlias }), true, Model.Paging);
+    var exportGeoJsonLink = linkService.Create(Model.Item.ContentItemId, Url.Action("StreamGeoJson", new { ContentItemId = Model.IdOrAlias }), true, Model.Paging);
     var downloadingDisabled = Model.Process.Mode != "report";
     var views = new List<PipelineViewModel>();
 
@@ -43,25 +32,6 @@
 
 }
 
-   @if (!Model.InteractiveReport) {
-   <!-- Modal container -->
-   <div class="modal fade" id="taskModal" tabindex="-1" role="dialog">
-     <div class="modal-dialog modal-xl modal-dialog-centered" role="document">
-       <div class="modal-content">
-         <div class="modal-body p-0">
-           <iframe id="taskModalIframe"
-                   name="taskModalIframe"
-                   src=""
-                   width="100%" height="700px"
-                   frameborder="0"
-                   style="border: none; display: block;"></iframe>
-         </div>
-       </div>
-     </div>
-   </div>
-
-   }
-
    <div class="row">
       <div class="col-md-3">
          <div class="btn-group float-start" role="group">
@@ -70,7 +40,7 @@
                   <span class="fas fa-search"></span>
                </button>
 
-               <button id="id_clear" data-action="@(Model.InteractiveReport ? "click->report#clear" : null)" title="Clear the Parameters" type="button" class="btn btn-info btn-sm">Clear</button>
+               <button id="id_clear" data-action="click->report#clear" title="Clear the Parameters" type="button" class="btn btn-info btn-sm">Clear</button>
 
                if (Model.Process.Mode != "chart" && (Model.Part!.BulkActions.Value || (Model.Editable && isSortable))) {
 
@@ -81,29 +51,20 @@
                      <div class="dropdown-menu" aria-labelledby="idActionDropdown">
                         @if(Model.Part.BulkActions.Value){
                            foreach (var action in Model.Process.Actions.Where(a => a.Type != "open" && !string.IsNullOrEmpty(a.Name))) {
-                              if (Model.InteractiveReport) {
-                                 <button type="button" class="dropdown-item" data-selection-target="action"
-                                         data-action="selection#submit" data-selection-name-param="@action.Name"
-                                         data-selection-modal-param="@action.Modal.ToString().ToLower()" data-selection-label="@action.Description">
-                                    @action.Description <span class="badge bg-secondary" data-selection-count>0</span>
-                                 </button>
-                              } else {
-                                 <a class="bulk-action-link dropdown-item" rel="@action.Description"
-                                    href="javascript:bulkAction(1, '@action.Name', @(action.Modal.ToString().ToLower()));">@action.Description</a>
-                              }
+                              <button type="button" class="dropdown-item" data-selection-target="action"
+                                      data-action="selection#submit" data-selection-name-param="@action.Name"
+                                      data-selection-modal-param="@action.Modal.ToString().ToLower()" data-selection-label="@action.Description">
+                                 @action.Description <span class="badge bg-secondary" data-selection-count>0</span>
+                              </button>
                            }
                         }
                         @if(Model.Editable){
                            if(edit){
-                              <a class="dropdown-item" rel="hide" href="javascript:edit('hide');">Hide</a>
-                              <a class="dropdown-item" rel="search" href="javascript:edit('search');">Search</a>
-                              <a class="dropdown-item" rel="facet" href="javascript:edit('facet');">Facet</a>
-                              <a class="dropdown-item" rel="facets" href="javascript:edit('facets');">Facets</a>
-                              <a class="dropdown-item" rel="timeago" href="javascript:edit('timeago');">Time Ago</a>
-                              <a class="dropdown-item" rel="ellipsis" href="javascript:edit('ellipsis');">Ellipsis</a>
-                              <a class="dropdown-item" rel="clear" href="javascript:edit('clear');">Clear</a>
+                              @foreach (var command in new[] { ("hide", "Hide"), ("search", "Search"), ("facet", "Facet"), ("facets", "Facets"), ("timeago", "Time Ago"), ("ellipsis", "Ellipsis"), ("clear", "Clear") }) {
+                                 <button type="button" class="dropdown-item" data-action="report-editor#apply" data-report-editor-command-param="@command.Item1">@command.Item2</button>
+                              }
                            } else {
-                              <a class="dropdown-item" rel="edit" href="@(Model.InteractiveReport ? Model.NavigationUrl("edit", "1", resetPage: true) : "javascript:edit('edit');")">Edit</a>
+                              <a class="dropdown-item" rel="edit" href="@Model.NavigationUrl("edit", "1", resetPage: true)">Edit</a>
                            }
                         }
                      </div>
@@ -123,7 +84,7 @@
                   if(!modalQueryParam){
                      url.SetQueryParam("modal", "1");
                   }
-                  <a href="@(Model.InteractiveReport ? url.ToString() : "javascript:void()")" title="@action.Description" data-url="@url" data-action="@(Model.InteractiveReport ? "click->modal#open" : null)" onclick="@(Model.InteractiveReport ? null : "loadModal(this)")" rel="nofollow" class="btn btn-sm @action.Class"><i class="fas fa-@action.Icon" aria-hidden="true">@action.Name</i></a>
+                  <a href="@url" title="@action.Description" data-url="@url" data-action="click->modal#open" rel="nofollow" class="btn btn-sm @action.Class"><i class="fas fa-@action.Icon" aria-hidden="true">@action.Name</i></a>
                } else {
                   <a href="@url" title="@action.Description" rel="nofollow" class="btn btn-sm @action.Class"><i class="fas fa-@action.Icon" aria-hidden="true">@action.Name</i></a>
                }
@@ -157,15 +118,15 @@
             <div class="dropdown-menu">
                @foreach (var kv in chartTypeLabels) {
                   <a class="dropdown-item @(kv.Key == chartType ? "active" : string.Empty)"
-                     href="javascript:setChartType('@kv.Key');">@kv.Value</a>
+                     href="@Model.NavigationUrl("chart-type", kv.Key, resetPage: true)" data-action="report#chartType" data-report-type-param="@kv.Key">@kv.Value</a>
                }
             </div>
          </div>
          <button class="btn btn-sm @(chartLegend ? "btn-secondary" : "btn-outline-secondary")"
-                 onclick="toggleChartLegend();" title="Toggle legend">Legend</button>
+                 type="button" data-action="report#chartToggle" data-report-field-param="chart-legend" title="Toggle legend">Legend</button>
          @if (isPieLike) {
             <button class="btn btn-sm @(chartPct ? "btn-secondary" : "btn-outline-secondary")"
-                    onclick="toggleChartPct();" title="Show percentages">%</button>
+                    type="button" data-action="report#chartToggle" data-report-field-param="chart-pct" title="Show percentages">%</button>
          }
       </div>
    } else if (entity.Page == 0 || Model.Process.Mode == "map" && !Model.Part.PageSizesExtended.Enabled() || Model.Process.Mode == "calendar" && !Model.Part.PageSizesExtended.Enabled()) {
@@ -233,7 +194,7 @@
                   views.Add(new PipelineViewModel("report") {
                      Active = Model.Process.Mode == "report",
                      Glyphicon = "list",
-                     Link = linkService.Create(Model.IdOrAlias, reportUrl, !Model.Part.PageSizes.Enabled())
+                     Link = new Microsoft.AspNetCore.Html.HtmlString(Model.ViewUrl(reportUrl, "report"))
                   });
 
                   if (Model.Part.Map.Value && hasCoordinates) {
@@ -245,7 +206,7 @@
                      views.Add(new PipelineViewModel("map") {
                         Active = Model.Process.Mode == "map",
                         Glyphicon = "map-marker",
-                        Link = linkService.Create(Model.IdOrAlias, mapUrl, !Model.Part.PageSizesExtended.Enabled())
+                        Link = new Microsoft.AspNetCore.Html.HtmlString(Model.ViewUrl(mapUrl, "map"))
                      });
                   }
 
@@ -258,7 +219,7 @@
                      views.Add(new PipelineViewModel("calendar") {
                         Active = Model.Process.Mode == "calendar",
                         Glyphicon = "calendar",
-                        Link = linkService.Create(Model.IdOrAlias, calendarUrl, !Model.Part.PageSizesExtended.Enabled())
+                        Link = new Microsoft.AspNetCore.Html.HtmlString(Model.ViewUrl(calendarUrl, "calendar"))
                      });
                   }
 
@@ -268,7 +229,7 @@
                      views.Add(new PipelineViewModel("chart") {
                         Active = Model.Process.Mode == "chart",
                         Glyphicon = "poll",
-                        Link = linkService.Create(Model.IdOrAlias, chartUrl, true)
+                        Link = new Microsoft.AspNetCore.Html.HtmlString(Model.ViewUrl(chartUrl, "chart"))
                      });
                   }
 
@@ -292,7 +253,7 @@
                }
 
                @await Html.PartialAsync("_ReportExports", new ReportExportsViewModel {
-                  Interactive = Model.InteractiveReport, Disabled = downloadingDisabled,
+                  Disabled = downloadingDisabled,
                   CsvUrl = exportCsvLink.ToString(), JsonUrl = exportJsonLink.ToString(), GeoJsonUrl = hasCoordinates ? exportGeoJsonLink.ToString() : null,
                   TableId = $"id_table_{entity.Sequence}"
                })
@@ -304,7 +265,7 @@
                      </button>
                      <div class="dropdown-menu" disabled="@pagingDisabled">
                         @foreach (var size in pageSizes) {
-                           <a class="dropdown-item @(entity.Size.Equals(size) ? "active" : string.Empty)" href="@(Model.InteractiveReport ? Model.NavigationUrl("size", size.ToString(), resetPage: true) : $"javascript:controls.setSize({size});")" data-action="@(Model.InteractiveReport ? "click->report#resize" : null)" data-report-size-param="@size" disabled="@pagingDisabled">@size</a>
+                           <a class="dropdown-item @(Model.PageSize == size ? "active" : string.Empty)" href="@Model.NavigationUrl("size", size.ToString(), resetPage: true)" data-action="click->report#resize" data-report-size-param="@size" disabled="@pagingDisabled">@size</a>
                         }
                      </div>
                   </div>

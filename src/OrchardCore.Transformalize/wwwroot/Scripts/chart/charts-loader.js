@@ -1,18 +1,3 @@
-function setChartType(type) {
-    document.getElementById('id_chart_type').value = type;
-    document.getElementById('id_report').submit();
-}
-function toggleChartLegend() {
-    const el = document.getElementById('id_chart_legend');
-    el.value = el.value === 'true' ? 'false' : 'true';
-    document.getElementById('id_report').submit();
-}
-function toggleChartPct() {
-    const el = document.getElementById('id_chart_pct');
-    el.value = el.value === 'true' ? 'false' : 'true';
-    document.getElementById('id_report').submit();
-}
-
 (async () => {
     const charts = document.querySelectorAll("[id^='chart_']");
 
@@ -47,10 +32,9 @@ function toggleChartPct() {
                 if (!isFilterable || !elements.length) return;
                 const clickedLabel = labels[elements[0].index];
                 if (!clickedLabel) return;
-                const url = new URL(window.location.href);
-                url.searchParams.set(parameterName, clickedLabel);
-                url.searchParams.delete('page');
-                window.location.href = url.toString();
+                chartElement.dispatchEvent(new CustomEvent('report-chart:filter', {
+                    bubbles: true, detail: { name: parameterName, value: clickedLabel }
+                }));
             },
             plugins: {
                 title: {

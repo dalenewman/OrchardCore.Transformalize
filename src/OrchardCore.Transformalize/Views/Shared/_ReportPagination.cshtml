@@ -18,8 +18,8 @@
 
         <ul class="pagination pagination-sm mb-0">
             @if (entity.Pagination.HasPrevious) {
-                <li class="page-item" title="first page"><a aria-label="First page" class="page-link" href="@(Model.InteractiveReport ? Model.NavigationUrl("page", entity.Pagination.First.ToString()) : $"javascript:controls.submit({entity.Pagination.First})")" data-action="@(Model.InteractiveReport ? "click->report#paginate" : null)" data-report-page-param="@entity.Pagination.First"><span class="fas fa-step-backward"></span></a></li>
-                <li class="page-item" title="previous page"><a aria-label="Previous page" class="page-link" href="@(Model.InteractiveReport ? Model.NavigationUrl("page", entity.Pagination.Previous.ToString()) : $"javascript:controls.submit({entity.Pagination.Previous})")" data-action="@(Model.InteractiveReport ? "click->report#paginate" : null)" data-report-page-param="@entity.Pagination.Previous"><span class="fas fa-chevron-left"></span></a></li>
+                <li class="page-item" title="first page"><a aria-label="First page" class="page-link" href="@Model.NavigationUrl("page", entity.Pagination.First.ToString())" data-action="click->report#paginate" data-report-page-param="@entity.Pagination.First"><span class="fas fa-step-backward"></span></a></li>
+                <li class="page-item" title="previous page"><a aria-label="Previous page" class="page-link" href="@Model.NavigationUrl("page", entity.Pagination.Previous.ToString())" data-action="click->report#paginate" data-report-page-param="@entity.Pagination.Previous"><span class="fas fa-chevron-left"></span></a></li>
             } else {
                 <li class="page-item disabled"><a href="" class="page-link"><span class="fas fa-step-backward"></span></a></li>
                 <li class="page-item disabled"><a href="" class="page-link"><span class="fas fa-chevron-left"></span></a></li>
@@ -44,8 +44,8 @@
             }
 
             @if (entity.Pagination.HasNext) {
-                <li class="page-item" title="next page"><a aria-label="Next page" class="page-link" href="@(Model.InteractiveReport ? Model.NavigationUrl("page", entity.Pagination.Next.ToString()) : $"javascript:controls.submit({entity.Pagination.Next})")" data-action="@(Model.InteractiveReport ? "click->report#paginate" : null)" data-report-page-param="@entity.Pagination.Next"><span class="fas fa-chevron-right"></span></a></li>
-                <li class="page-item" title="last page"><a aria-label="Last page" class="page-link" href="@(Model.InteractiveReport ? Model.NavigationUrl("page", entity.Pagination.Last.ToString()) : $"javascript:controls.submit({entity.Pagination.Last})")" data-action="@(Model.InteractiveReport ? "click->report#paginate" : null)" data-report-page-param="@entity.Pagination.Last"><span class="fas fa-step-forward"></span></a></li>
+                <li class="page-item" title="next page"><a aria-label="Next page" class="page-link" href="@Model.NavigationUrl("page", entity.Pagination.Next.ToString())" data-action="click->report#paginate" data-report-page-param="@entity.Pagination.Next"><span class="fas fa-chevron-right"></span></a></li>
+                <li class="page-item" title="last page"><a aria-label="Last page" class="page-link" href="@Model.NavigationUrl("page", entity.Pagination.Last.ToString())" data-action="click->report#paginate" data-report-page-param="@entity.Pagination.Last"><span class="fas fa-step-forward"></span></a></li>
             } else {
                 <li class="page-item disabled"><a class="page-link" href=""><span class="fas fa-chevron-right"></span></a></li>
                 <li class="page-item disabled"><a class="page-link" href=""><span class="fas fa-step-forward"></span></a></li>

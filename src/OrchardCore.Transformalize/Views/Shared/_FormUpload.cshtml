@@ -27,13 +27,13 @@
    @if (Model.Scan) {
       <input type="text" class="form-control @(Model.Valid ? "is-valid" : "is-invalid")" id="id_@parameter.Name"
              name="@parameter.Name" value="@value" autocomplete="@(parameter.AutoComplete ? "on" : "off")"
-             data-tfl-upload-target="value" data-tfl-post-back="@parameter.PostBack" @Html.Raw(parameter.ToValidation(true)) />
+             data-tfl-upload-target="value" data-tfl-post-back="@parameter.PostBack" @Html.Raw(parameter.ToValidation()) />
       <small class="text-muted">Scan an image or enter the value here.</small>
    } else {
       <input type="text" class="form-control" id="id_@parameter.Name" value="@display" readonly tabindex="-1"
              data-tfl-upload-target="display" data-tfl-validation-excluded hidden="@string.IsNullOrEmpty(value)" />
       <input type="hidden" name="@(parameter.Name)_Old" value="@value" id="id_@(parameter.Name)_Old"
-             data-form-upload-value data-tfl-upload-target="value" data-tfl-post-back="@parameter.PostBack" @Html.Raw(parameter.ToValidation(true)) />
+             data-form-upload-value data-tfl-upload-target="value" data-tfl-post-back="@parameter.PostBack" @Html.Raw(parameter.ToValidation()) />
    }
    <div class="d-flex align-items-center gap-2 mt-1">
       <button type="button" id="id_@(parameter.Name)_choose"

@@ -32,7 +32,7 @@
      width: 150px;
    }
 
-   #busy-holder {
+   #busy_holder {
      background: transparent;
      width: 100%;
      height: 100%;
@@ -88,24 +88,6 @@
        align-items: center;
    }
 
-   .input-group .bootstrap-select {
-       flex-grow: 1;
-   }
-
-   .input-group-text {
-       border-right: none; /* Prevents a double border next to the dropdown */
-       border-radius: 4px 0 0 4px; /* Matches left-side rounding */
-   }
-
-   .input-group-text + .bootstrap-select > .btn {
-       border-radius: 0 4px 4px 0; /* Removes left-side rounding only when next to input-group-text */
-       border: 1px solid #ccc; /* Ensures consistent border appearance */
-   }
-
-   .bootstrap-select .dropdown-toggle {
-       border: inherit; /* Ensures dropdown inherits the input group border */
-   }
-
    .modal-content {
        padding: 10px;
    }
@@ -139,3 +121,10 @@
 #tfl-report .tfl-filter-option[aria-selected="true"]::before { content: '✓ '; }
 #tfl-report .tfl-filter-option:focus-visible { outline: 2px solid var(--bs-primary, #007bff); outline-offset: -2px; }
 #tfl-report .tfl-filter-option:disabled { opacity: .5; }
+
+/* Used by the map/calendar display plugins inside the shared report shell. */
+#tfl-report .btn-xs, #tfl-report .btn-group-xs > .btn {
+   border-radius: 3px;
+   font-size: 9px;
+   line-height: 1.5;
+}

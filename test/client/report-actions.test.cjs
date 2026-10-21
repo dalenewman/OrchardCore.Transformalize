@@ -8,6 +8,7 @@ function controller(name, extra = {}) {
    const context = {
       Stimulus: { Controller: class {} },
       window: { TransformalizeReportControllers: {}, location: { href: 'http://localhost/report?Category=A&Category=B', origin: 'http://localhost' } },
+      MutationObserver: class { observe() {} disconnect() {} },
       FormData, URL, CustomEvent: class { constructor(type) { this.type = type; } }, ...extra
    };
    vm.runInNewContext(fs.readFileSync(path.join(__dirname, `../../src/OrchardCore.Transformalize/wwwroot/Scripts/report-${name}-controller.js`), 'utf8'), context);
@@ -222,4 +223,38 @@ test('native bulk POST is outside the GET report form and modal submits use its 
    assert.equal(dispatched.event, 'modal');
    assert.equal(dispatched.options.detail.form.action, 'http://localhost/t/bulk/create?modal=1');
    assert.equal(submitted.length, 1, 'modal controller owns iframe submission');
+});
+
+test('map drawing uses the same record targets, counts and bulk POST data as table rows', () => {
+   const result = selection();
+   result.recordTargets = [{ checked: true, value: 'map-1', hidden: true }, { checked: true, value: 'map-2', hidden: true }];
+   result.recordTargetConnected();
+   assert.equal(result.count.textContent, '2');
+   assert.deepEqual(result.parameters('Archive').getAll('Records'), ['map-1', 'map-2']);
+   assert.equal(result.parameters('Archive').get('ActionCount'), '2');
+   result.recordTargets = [];
+   result.recordTargetDisconnected();
+   assert.equal(result.count.textContent, '0');
+   assert.equal(result.actionTargets[0].disabled, true);
+});
+
+test('modal actions inserted later by map popups are adapted and observer ownership ends on disconnect', () => {
+   let changed, disconnected = false;
+   const attrs = { onclick: 'loadModal(this)', 'data-url': '/t/form/edit?modal=1', href: 'javascript:void()' };
+   const link = { nodeType: 1, tagName: 'A', matches: () => true, querySelectorAll: () => [],
+      getAttribute: name => attrs[name] ?? null, setAttribute: (name, value) => attrs[name] = value,
+      removeAttribute: name => delete attrs[name] };
+   const result = controller('modal', {
+      MutationObserver: class { constructor(callback) { changed = callback; } observe() {} disconnect() { disconnected = true; } },
+      bootstrap: { Modal: class { hide() {} dispose() {} } }
+   });
+   result.element = { querySelectorAll: () => [] };
+   result.dialogTarget = { classList: { remove() {} } };
+   result.connect();
+   changed([{ addedNodes: [link] }]);
+   assert.equal(attrs.onclick, undefined);
+   assert.equal(attrs.href, '/t/form/edit?modal=1');
+   assert.equal(attrs['data-action'], 'click->modal#open');
+   result.disconnect();
+   assert.equal(disconnected, true);
 });

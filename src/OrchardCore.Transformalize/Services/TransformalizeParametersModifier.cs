@@ -231,8 +231,15 @@ namespace TransformalizeModule.Services {
                foreach (var parameter in facade.Parameters) {
                   var field = fields.First(f => f.Name == parameter.Name);
 
-                  // set the transformed value
-                  parameter.Value = output[field.Name].ToString();
+                  // A failed typed conversion leaves a default in the working
+                  // row. Keep the entered text so the user can correct it.
+                  var preserveInput = parameter.Validators.Any()
+                     && !(bool)output[field.ValidField]
+                     && parameter.Value != null
+                     && !Transformalize.Constants.CanConvert()[parameter.Type ?? "string"](parameter.Value);
+                  if (!preserveInput) {
+                     parameter.Value = output[field.Name].ToString();
+                  }
                   parameter.PostBack = field.PostBack;  // auto is changed to true|false in transformalize
 
                   // set the validation results
@@ -266,8 +273,13 @@ namespace TransformalizeModule.Services {
                   // remove this stuff because all the transforming and validating is done at this point
                   parameter.T = null;
                   parameter.Transforms.Clear();
-                  parameter.V = null;
-                  parameter.Validators.Clear();
+                  // Retain validation metadata for unconvertible input: the
+                  // final configuration loader then treats it as a field error,
+                  // rather than rejecting the entire arrangement's typed value.
+                  if (!preserveInput) {
+                     parameter.V = null;
+                     parameter.Validators.Clear();
+                  }
                }
             }
 

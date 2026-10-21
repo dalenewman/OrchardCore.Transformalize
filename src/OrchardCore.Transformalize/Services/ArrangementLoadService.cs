@@ -89,10 +89,9 @@ namespace TransformalizeModule.Services {
          process.ReadOnly = true;
 
 
-         if (part.PageSizes.Enabled()) {
-            var pageSizes = _settings.GetPageSizes(part);
-
-            EnforcePageSize(process, _parameters, pageSizes.Min(), _parameters.GetIntegerOrDefault("size", ()=>pageSizes.Min()) , pageSizes.Max());
+         var paging = ReportPaging.For(part, _settings.Settings, "report");
+         if (paging.FetchPaged) {
+            EnforcePageSize(process, _parameters, paging);
 
             // modify connections to buffer (load page completely before processing)
             foreach (var connection in process.Connections) {
@@ -133,14 +132,8 @@ namespace TransformalizeModule.Services {
          process.ReadOnly = true;
 
          // TODO: Paging and Sorting may be handled differently for map view
-         if (part.PageSizesExtended.Enabled()) {
-            var pageSizes = new List<int>();
-
-            pageSizes.AddRange(_settings.GetPageSizes(part));
-            pageSizes.AddRange(_settings.GetPageSizesExtended(part));
-
-            EnforcePageSize(process, _parameters, pageSizes.Min(), _parameters.GetIntegerOrDefault("size", () => pageSizes.Min()), pageSizes.Max());
-         }
+         var paging = ReportPaging.For(part, _settings.Settings, "map");
+         if (paging.FetchPaged) EnforcePageSize(process, _parameters, paging);
 
          AddSrc(process);
 
@@ -203,14 +196,8 @@ namespace TransformalizeModule.Services {
          process.ReadOnly = true;
 
          // TODO: Paging and Sorting may be handled differently for calendar view
-         if (part.PageSizesExtended.Enabled()) {
-            var pageSizes = new List<int>();
-
-            pageSizes.AddRange(_settings.GetPageSizes(part));
-            pageSizes.AddRange(_settings.GetPageSizesExtended(part));
-
-            EnforcePageSize(process, _parameters, pageSizes.Min(), _parameters.GetIntegerOrDefault("size", () => pageSizes.Min()), pageSizes.Max());
-         }
+         var paging = ReportPaging.For(part, _settings.Settings, "calendar");
+         if (paging.FetchPaged) EnforcePageSize(process, _parameters, paging);
 
          AddSrc(process);
 
@@ -272,14 +259,8 @@ namespace TransformalizeModule.Services {
          process.ReadOnly = true;
 
          // TODO: Paging and Sorting may be handled differently for map view
-         if (part.PageSizesExtended.Enabled()) {
-            var pageSizes = new List<int>();
-
-            pageSizes.AddRange(_settings.GetPageSizes(part));
-            pageSizes.AddRange(_settings.GetPageSizesExtended(part));
-
-            EnforcePageSize(process, _parameters, pageSizes.Min(), _parameters.GetIntegerOrDefault("size", () => pageSizes.Min()), pageSizes.Max());
-         }
+         var paging = ReportPaging.For(part, _settings.Settings, "map");
+         if (paging.FetchPaged) EnforcePageSize(process, _parameters, paging);
 
          var o = process.GetOutputConnection();
          o.Stream = true;
@@ -347,14 +328,8 @@ namespace TransformalizeModule.Services {
          process.ReadOnly = true;
 
          // TODO: Paging and Sorting may be handled differently for calendar view
-         if (part.PageSizesExtended.Enabled()) {
-            var pageSizes = new List<int>();
-
-            pageSizes.AddRange(_settings.GetPageSizes(part));
-            pageSizes.AddRange(_settings.GetPageSizesExtended(part));
-
-            EnforcePageSize(process, _parameters, pageSizes.Min(), _parameters.GetIntegerOrDefault("size", () => pageSizes.Min()), pageSizes.Max());
-         }
+         var paging = ReportPaging.For(part, _settings.Settings, "calendar");
+         if (paging.FetchPaged) EnforcePageSize(process, _parameters, paging);
 
          AddSrc(process);
 
@@ -554,36 +529,14 @@ namespace TransformalizeModule.Services {
       /// </summary>
       /// <param name="process">the transformalize report process</param>
       /// <param name="parameters">incoming parameters</param>
-      /// <param name="min">the minimum allowed page size</param>
-      /// <param name="chosen">the page size selected by the user</param>
-      /// <param name="max">the maximum allowed page size</param>
-      internal static void EnforcePageSize(Process process, IDictionary<string, string> parameters, int min, int chosen, int max) {
-
+      internal static void EnforcePageSize(Process process, IDictionary<string, string> parameters, ReportPaging paging) {
+         var page = parameters.TryGetValue("page", out var rawPage) && int.TryParse(rawPage, out var parsedPage)
+            && parsedPage > 0 ? parsedPage : 1;
+         var size = paging.NormalizeSize(parameters.TryGetValue("size", out var rawSize) ? rawSize : null);
          foreach (var entity in process.Entities) {
-            // parse out a page number
-            int page;
-            if (parameters.ContainsKey("page")) {
-               if (!int.TryParse(parameters["page"], out page)) {
-                  page = 1;
-               }
-            } else {
-               page = 1;
-            }
-
-            entity.Page = page == 0 ? 1 : page;
-
-            var size = chosen;
-            if (parameters.ContainsKey("size")) {
-               int.TryParse(parameters["size"], out size);
-            }
-
-            if (size == 0 && min > 0) {
-               size = min;
-            }
-            entity.Size = max > 0 && size > max ? max : size;
-
+            entity.Page = page;
+            entity.Size = size;
          }
-
       }
 
       /// <summary>

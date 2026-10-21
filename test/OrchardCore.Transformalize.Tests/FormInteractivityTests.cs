@@ -40,40 +40,23 @@ public class FormInteractivityTests {
    }
 
    [DataTestMethod]
-   [DataRow("text", true)]
-   [DataRow("date", true)]
-   [DataRow("time", true)]
-   [DataRow("file", true)]
-   [DataRow("scan", true)]
-   [DataRow("location", true)]
-   [DataRow("map", true)]
-   [DataRow("google-places-autocomplete", true)]
-   public void WidgetEligibility(string inputType, bool supported) {
+   [DataRow("", "", "<script>custom()</script>")]
+   [DataRow("", "", "<button onclick='custom()'>Preview</button>")]
+   [DataRow("", "", "<a href='javascript:custom()'>Preview</a>")]
+   [DataRow("js", "", "")]
+   [DataRow("js", "custom.js", "")]
+   [DataRow("default", "custom.JS", "")]
+   public void CustomScriptsAndRawMarkupUseTheSameValidationFragment(string language, string file, string raw) {
       var process = new Process();
-      process.Parameters.Add(new Parameter { Name = "Value", InputType = inputType, Prompt = true });
-      Assert.AreEqual(supported, FormInteractivityViewModel.Supports(process));
-   }
-
-   [TestMethod]
-   public void RawMarkupAndGlobalScriptsUseLegacyFlow() {
-      var process = new Process();
-      process.Parameters.Add(new Parameter { Name = "Value", Raw = true, Value = "<script>custom()</script>" });
-      Assert.IsFalse(FormInteractivityViewModel.Supports(process));
-      process.Parameters.Clear();
-      process.Scripts.Add(new Script { Global = true, Language = "js", Content = "custom()" });
-      Assert.IsFalse(FormInteractivityViewModel.Supports(process));
-      process.Scripts.Clear();
-      process.Scripts.Add(new Script { Global = true, Language = "default", File = "custom.js" });
-      Assert.IsFalse(FormInteractivityViewModel.Supports(process));
-   }
-
-   [TestMethod]
-   public void DecorativeRawMarkupCanRefreshWithTheForm() {
-      var process = new Process();
-      process.Parameters.Add(new Parameter { Name = "Preview", Raw = true, Value = "<span class='badge'>Preview</span>" });
-      Assert.IsTrue(FormInteractivityViewModel.Supports(process));
-      process.Parameters[0].Value = "<button onclick='custom()'>Preview</button>";
-      Assert.IsFalse(FormInteractivityViewModel.Supports(process));
+      if (raw.Length > 0) process.Parameters.Add(new Parameter { Name = "Preview", Raw = true, Value = raw });
+      if (language.Length > 0) process.Scripts.Add(new Script { Global = true, Language = language, File = file, Content = "custom()" });
+      var controller = Setup(new TaskController(null!, null!, null!));
+      controller.Request.Headers["HX-Request"] = "true";
+      controller.Request.Headers["HX-Target"] = "tfl-form";
+      var result = controller.FormFragment(Model(process));
+      Assert.IsInstanceOfType<PartialViewResult>(result);
+      Assert.AreEqual("_InteractiveForm", ((PartialViewResult)result).ViewName);
+      Assert.AreEqual("true", controller.Response.Headers["X-Transformalize-Form"].ToString());
    }
 
    [TestMethod]
@@ -108,20 +91,9 @@ public class FormInteractivityTests {
          Assert.AreEqual("true", controller.Response.Headers["X-Transformalize-Form"].ToString());
       } else {
          Assert.IsInstanceOfType<ViewResult>(result);
-         Assert.AreEqual("Form", ((ViewResult)result).ViewName);
+         Assert.AreEqual("_InteractiveForm", ((ViewResult)result).ViewName);
       }
       Assert.IsTrue(controller.Response.Headers.Vary.ToString().Contains("HX-Target"));
-   }
-
-   [TestMethod]
-   public void UnsupportedFragmentRequestsUseTheLegacyView() {
-      var process = new Process();
-      process.Parameters.Add(new Parameter { Name = "Custom", Raw = true, Value = "<script>custom()</script>" });
-      var controller = Setup(new TaskController(null!, null!, null!));
-      controller.Request.Headers["HX-Request"] = "true";
-      controller.Request.Headers["HX-Target"] = "tfl-form";
-      Assert.IsInstanceOfType<ViewResult>(controller.FormFragment(Model(process)));
-      Assert.IsFalse(controller.Response.Headers.ContainsKey("X-Transformalize-Form"));
    }
 
    [TestMethod]

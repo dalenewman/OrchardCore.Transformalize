@@ -36,7 +36,7 @@ npm build, SPA router, or client model duplicating the server's process.
 
 ## 1. A field that refreshes dependent fields
 
-The old [form.js](../src/OrchardCore.Transformalize/wwwroot/Scripts/form.js)
+The former `form.js` (now removed)
 bound change handlers repeatedly and let Parsley decide whether to call the server:
 
 ```js
@@ -138,7 +138,7 @@ such as login, use full navigation.
 
 ## 3. Report dropdowns without Bootstrap-select
 
-The old [report.js](../src/OrchardCore.Transformalize/wwwroot/Scripts/report.js)
+The former `report.js` (now removed)
 initialized Bootstrap-select, listened to plugin events, and inserted a Search
 button into the plugin's generated menu:
 
@@ -251,7 +251,10 @@ The owning widget collection connects the shared
 [date-widgets.js](../src/OrchardCore.Transformalize/wwwroot/Scripts/date-widgets.js)
 adapter and calls `disconnect()` on replacement. Flatpickr owns an unnamed helper;
 the Razor input owns the submitted value. Opening or cancelling preserves typed
-text. Selecting a date writes `yyyy-MM-dd` and emits one change. Both reports and
+text. Selecting a date writes `yyyy-MM-dd` and emits one change. Forms preserve
+an existing non-midnight time as `yyyy-MM-ddTHH:mm:ss`, including fractional
+seconds when present, using the server's calendar/time hints or the current ISO
+datetime text. Midnight remains date-only. Both reports and
 forms use this adapter; its popup is destroyed with the old fragment.
 
 ## 6. Maps and addresses update groups together
@@ -374,14 +377,14 @@ All paths below are under `src/OrchardCore.Transformalize`:
 
 | Concern | Start here |
 | --- | --- |
-| Report refresh and browser state | `Views/Report/_Report.cshtml`, `wwwroot/Scripts/report-controller.js` |
+| Report refresh and browser state | `Views/Shared/_Report.cshtml`, `wwwroot/Scripts/report-controller.js` |
 | Report option labels/counts and selection | `Views/Shared/_ReportFilterOptions.cshtml`, `_ReportFilter.cshtml`, `wwwroot/Scripts/report-filter-controller.js` |
 | Form field rendering | `Views/Shared/_FormFields.cshtml` and `_Form*` partials |
 | Validation versus native action | `ViewModels/FormInteractivityViewModel.cs`, `Controllers/FormController.cs`, `TaskController.cs` |
 | Fragment marker/selection | `Ext/FormInteractivityExtensions.cs`, `Controllers/ReportController.cs` |
 | Field messages and calendars | `wwwroot/Scripts/form-widgets.js`, `date-widgets.js` |
 | Modal close/refresh protocol | `wwwroot/Scripts/report-modal-controller.js`, `form-controller.js` |
-| Resource order and legacy branching | `ResourceManifest.cs`, `Views/Shared/_FormResources.cshtml`, `Views/Report/Index.cshtml` |
+| Resource order and shared shells | `ResourceManifest.cs`, `Views/Shared/_FormResources.cshtml`, `Views/Shared/Report.cshtml`, `_ArrangementResources.cshtml` |
 
 Use the browser Network panel to distinguish validation POSTs from native saves.
 A successful fragment should have its `X-Transformalize-Form` or
@@ -390,10 +393,14 @@ returned HTML to understand a changed value, message, or choice. Inspect the nat
 named inputs to understand what will be submitted. If a widget stops working after
 a swap, check lifecycle cleanup and resource order before adding another initializer.
 
-Reports in editor mode or with global arrangement JavaScript retain the legacy
-path. Forms with global scripts or active raw HTML also retain it. Charts and other
-report display modes keep their existing client behavior. Passive raw previews can
-use modern forms. This compatibility decision does not sanitize arbitrary HTML.
+All forms and report modes use one set of shared controls. Global arrangement
+scripts load once outside the replacement boundary; see
+[custom arrangement scripts](report-interactivity.md#custom-arrangement-scripts).
+Raw HTML no longer selects another renderer. Table reports and form validation
+use htmx fragments; map, chart, and calendar filters use full GET navigation with
+the same controller and query cleanup. Raw arrangement HTML is not sanitized.
+The former `report.js`, `form.js`, `file.handler.js`, and legacy widget partials
+have been removed along with their unused resource dependencies.
 
 Run the established checks:
 

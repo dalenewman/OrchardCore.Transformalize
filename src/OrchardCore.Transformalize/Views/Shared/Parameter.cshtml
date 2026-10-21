@@ -1,5 +1,4 @@
 @model ParameterViewModel
-@{ var interactive = ViewData["InteractiveReport"] as bool? == true; }
 @{ 
    var input = Context.Request.Query[Model.Parameter.Name].ToString();
 }
@@ -40,9 +39,7 @@
              placeholder="@Model.Parameter.Label"
              value="@requestedDate"
              @(Html.Raw(Model.Parameter.Width > 0 ? "style=\"width:" + Model.Parameter.Width + "px\"" : string.Empty)) />
-      @if (interactive) {
-         <button type="button" class="input-group-text" aria-label="Choose @Model.Parameter.Label date" data-report-date-toggle><span class="fas fa-calendar"></span></button>
-      }
+      <button type="button" class="input-group-text" aria-label="Choose @Model.Parameter.Label date" data-report-date-toggle><span class="fas fa-calendar"></span></button>
       break;
    default:
       var requestedValue = input == string.Empty ? Model.Parameter.Value : input;
@@ -57,14 +54,9 @@
                 data-1p-ignore
                 data-lpignore="true"
                 @(Html.Raw(Model.Parameter.Width > 0 ? "style=\"width:" + Model.Parameter.Width + "px\"" : string.Empty)) />
-      } else if (interactive) {
-         @await Html.PartialAsync("_ReportFilter", Model)
       } else {
-         <select size="1" title="All" data-actions-box="true" data-width="fit"
-                 multiple="@Model.Parameter.Multiple" name="@Model.Parameter.Name"
-                 style="visibility:hidden;@(Model.Parameter.Width > 0 ? $"width:{Model.Parameter.Width}px;" : string.Empty)">
-            @await Html.PartialAsync("_ReportFilterOptions", Model)
-         </select>
+         @await Html.PartialAsync("_ReportFilter", Model)
       }
+
       break;
 }

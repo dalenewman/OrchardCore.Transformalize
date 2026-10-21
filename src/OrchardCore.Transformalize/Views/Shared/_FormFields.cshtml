@@ -7,17 +7,9 @@
 @using OrchardCore.Settings;
 @using OrchardCore.Entities;
 
-@{
-   var interactive = (ViewData["FormInteractivity"] as FormInteractivityViewModel)?.Interactive == true;
-}
    @foreach (var parameter in Model.Parameters) {
 
       var value = parameter.Value ?? string.Empty as object;
-
-      if (Context.Request.Method == "GET" && !interactive) {
-         parameter.Valid = true;
-         parameter.Message = string.Empty;
-      }
 
       var valid = parameter.Valid || Context.Request.Method == "GET";
 
@@ -30,15 +22,12 @@
 
          if (!parameter.Raw && !parameter.Input || parameter.PrimaryKey || parameter.InputType == "location" || parameter.Visible == "false") {
             <input type="hidden" name="@parameter.Name" value="@parameter.Value" id="id_@parameter.Name"
-                   data-tfl-location-coordinate="@(interactive && parameter.InputType == "location" ? parameter.InputCapture : null)" />
-            @if (parameter.InputType == "location" && !interactive) {
-               <script>$(function () { settings.location.@parameter.InputCapture = $("@("#id_" + parameter.Name)"); });</script>
-            }
+                   data-tfl-location-coordinate="@(parameter.InputType == "location" ? parameter.InputCapture : null)" />
             continue;
          }
 
          <div class="form-group @(valid ? "is-valid" : "is-invalid") @parameter.Class"
-              data-tfl-raw-output="@(interactive && parameter.Raw ? parameter.Name : null)">
+              data-tfl-raw-output="@(parameter.Raw ? parameter.Name : null)">
             @if (parameter.Raw) {
                @Html.Raw(value)
             } else {
@@ -136,7 +125,7 @@
                      </div>
                      break;
                   case "date":
-                     @await Html.PartialAsync("_FormDate", new FormDateViewModel { Parameter = parameter, Valid = valid, Interactive = interactive })
+                     @await Html.PartialAsync("_FormDate", new FormDateViewModel { Parameter = parameter, Valid = valid })
                      break;
                   case "time":
                      <div class="form-group @(valid ? "is-valid" : "is-invalid") @parameter.Class">
@@ -153,16 +142,8 @@
                                   id="id_@parameter.Name"
                                   placeholder="@parameter.Label"
                                   value="@value"
-                                  data-form-date="@(interactive && type == "date" ? "" : null)"
                                   data-tfl-post-back="@(parameter.PostBack)"
-                                  @Html.Raw(parameter.ToValidation(interactive)) />
-                           @if (!interactive) {
-                           <script language="javascript">
-                              $(document).ready(function () {
-                                 // plugin code goes here
-                              });
-                           </script>
-                           }
+                                  @Html.Raw(parameter.ToValidation()) />
                         </div>
                         @* Keep validation feedback in the field group *@
                         <span class="help-container">
@@ -174,20 +155,20 @@
                      </div>
                      break;
                   case "file":
-                     @await Html.PartialAsync(interactive ? "_FormUpload" : "_LegacyFormFile", new FormUploadViewModel { Parameter = parameter, Valid = valid })
+                     @await Html.PartialAsync("_FormUpload", new FormUploadViewModel { Parameter = parameter, Valid = valid })
                      break;
                   case "scan":
-                     @await Html.PartialAsync(interactive ? "_FormUpload" : "_LegacyFormScan", new FormUploadViewModel { Parameter = parameter, Valid = valid })
+                     @await Html.PartialAsync("_FormUpload", new FormUploadViewModel { Parameter = parameter, Valid = valid })
                      break;
                   case "google-places-autocomplete":
-                     @await Html.PartialAsync(interactive ? "_FormPlaces" : "_LegacyFormPlaces", new FormPlacesViewModel {
+                     @await Html.PartialAsync("_FormPlaces", new FormPlacesViewModel {
                         Process = Model, Parameter = parameter, Valid = valid
                      })
                      break;
 
                   case "map":
                      @await Html.PartialAsync("_FormMap", new FormMapViewModel {
-                        Process = Model, Parameter = parameter, Interactive = interactive, Valid = valid
+                        Process = Model, Parameter = parameter, Valid = valid
                      })
                      break;
 
@@ -206,7 +187,7 @@
                                      placeholder="@parameter.Label"
                                      maxlength="@length"
                                      data-tfl-post-back="@(parameter.PostBack)"
-                                     @Html.Raw(parameter.ToValidation(interactive))>@value.ToString().Trim()</textarea>
+                                     @Html.Raw(parameter.ToValidation())>@value.ToString().Trim()</textarea>
                         } else {
                            @switch (type) {
                               case "number":
@@ -219,7 +200,7 @@
                                         value="@value"
                                         data-tfl-post-back="@(parameter.PostBack)"
                                         @(Html.Raw(parameter.IsDecimalType() ? string.Format("step=\"{0}\"", ".".PadRight(parameter.Scale - 1, '0') + "1") : string.Empty))
-                                        @Html.Raw(parameter.ToValidation(interactive)) />
+                                        @Html.Raw(parameter.ToValidation()) />
                                  break;
                               default:
                                  <input type="text"
@@ -231,7 +212,7 @@
                                         autocomplete="@(parameter.AutoComplete ? "on" : "off")"
                                         value="@value"
                                         data-tfl-post-back="@(parameter.PostBack)"
-                                        @Html.Raw(parameter.ToValidation(interactive)) />
+                                        @Html.Raw(parameter.ToValidation()) />
                                  break;
                            }
 

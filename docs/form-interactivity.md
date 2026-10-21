@@ -17,9 +17,10 @@ field. Hidden values, readonly displays, and button helpers are skipped.
    `data-tfl-post-back` value is `true`, htmx posts the form to the existing Form
    validation endpoint even when a browser check fails. The server transforms and
    validates all posted parameters; other field changes stay local.
-2. The endpoint returns `_InteractiveForm` only for supported arrangements and
-   htmx requests targeting `tfl-form`. History restoration and ordinary requests
-   retain the existing Form view. The fragment response sets
+2. Every arrangement uses `_InteractiveForm`, including global JavaScript and raw
+   HTML. Validation htmx requests targeting `tfl-form` receive the fragment marker;
+   ordinary requests and history restoration use the same markup without that
+   marker. The fragment response sets
    `X-Transformalize-Form: true` and varies by the htmx request headers.
 3. htmx replaces the form with fresh Razor markup. Stimulus disconnects the old
    widgets and connects the new ones. If the user has tabbed ahead or continued
@@ -56,25 +57,25 @@ cancel/confirmation messages use the parent's same-origin protocol.
 
 | File | Responsibility |
 | --- | --- |
-| `ViewModels/FormInteractivityViewModel.cs` | Compatibility decision and validation/submit/run URLs |
+| `ViewModels/FormInteractivityViewModel.cs` | Validation/submit/run URLs and widget resource requirements |
 | `Ext/FormInteractivityExtensions.cs` | Shared controller setup and fragment response selection |
 | `Views/Shared/_InteractiveForm.cshtml` | Refreshable boundary, controller actions, progress and retry feedback |
 | `Views/Shared/Form.cshtml` | Form shell, antiforgery, hidden parameters and focus computation |
 | `Views/Shared/_FormFields.cshtml` | Shared parameter rendering |
 | `Views/Shared/_FormActions.cshtml` | Submit/Update/Run and Cancel controls |
-| `Views/Shared/_FormDate.cshtml` | Editable date field and calendar button; separate legacy initializer |
-| `Ext/ParameterExtensions.cs` | Encoded client validation rules, with Parsley attributes for legacy forms |
+| `Views/Shared/_FormDate.cshtml` | Editable date field and calendar button |
+| `Ext/ParameterExtensions.cs` | Encoded JSON client validation rules |
 | `wwwroot/Scripts/date-widgets.js` | Shared form/report calendar lifecycle and canonical date selection |
-| `Views/Shared/_FormMap.cshtml` | Map and coordinate markup, including a separate legacy initializer |
+| `Views/Shared/_FormMap.cshtml` | Map and coordinate markup |
 | `Views/Shared/_FormLocation.cshtml` | Device-location control and feedback |
-| `Views/Shared/_FormUpload.cshtml` | Upload/scan markup and canonical stored values; separate legacy partials |
-| `Views/Shared/_FormPlaces.cshtml` | Address search and mapped component configuration; separate legacy partial |
+| `Views/Shared/_FormUpload.cshtml` | Upload/scan markup and canonical stored values |
+| `Views/Shared/_FormPlaces.cshtml` | Address search and mapped component configuration |
 | `ViewModels/FormPlacesViewModel.cs` | Existing address component aliases and target field names |
 | `wwwroot/Scripts/form-places-controller.js` | Address selection, grouped changes, busy state, and failure feedback |
 | `wwwroot/Scripts/form-places-widgets.js` | Shared legacy Google SDK loader and per-input autocomplete adapter |
 | `wwwroot/Scripts/form-upload-controller.js` | Progress, Retry/Clear, scan text and upload state events |
 | `wwwroot/Scripts/form-upload-widgets.js` | Scoped Blueimp image-processing/upload adapter with abort and teardown |
-| `Views/Shared/_FormResources.cshtml` | Shared resources, with modern and legacy branches |
+| `Views/Shared/_FormResources.cshtml` | Shared resources and conditional widget dependencies |
 | `wwwroot/Scripts/form-controller.js` | Refresh, validation, focus, submission and dirty-state behavior |
 | `wwwroot/Scripts/form-widgets.js` | Scoped browser validation, inline messages, and calendar ownership |
 | `wwwroot/Scripts/form-map-controller.js` | Map/marker lifecycle and paired coordinate changes |
@@ -82,28 +83,36 @@ cancel/confirmation messages use the parent's same-origin protocol.
 | `wwwroot/Scripts/form-interactivity.js` | Stimulus registration |
 | `wwwroot/Styles/form.css` | Shared appearance and busy state |
 
-## Compatibility and remaining work
+## One form implementation
 
-Arrangements with global JavaScript or raw parameter HTML containing scripts,
-inline handlers, or JavaScript URLs also use the legacy path. Passive raw HTML,
-such as the Color task's preview, can refresh with the form. This compatibility
-check is not an HTML sanitizer.
+All forms, task reviews, and bulk-action reviews use the same boundary, widgets,
+and request handlers. There is no script/HTML eligibility check or alternate form
+renderer. Raw HTML remains arrangement-authored content; this does not sanitize it.
 
-Forms with Google Places, uploads/scanning, maps, and device location can now use fragments,
-including the local Got Up arrangements. They no longer load `form.js`,
-`file.handler.js`, BlockUI, jquery-are-you-sure, Parsley, Moment, or pickadate.
-jQuery remains behind the Blueimp upload adapter; jQuery UI and the image/upload
-bundle load only when uploads/scanning are present. Report selection menus now
-use scoped Stimulus controls and native selects. Replacing the Blueimp image
-pipeline and adding a lifecycle contract for custom global arrangement scripts
-are separate future phases; the current compatibility paths preserve them.
+Global inline JavaScript, JavaScript files, and CSS are registered by
+`Views/Shared/_ArrangementResources.cshtml` in the page shell, outside `#tfl-form`.
+They load once per full navigation. Raw form controls can call those functions
+after validation replaces the form. Use `htmx:load` to initialize newly rendered
+widgets and `htmx:beforeCleanupElement` to dispose them, or provide a custom
+Stimulus controller. See [custom arrangement scripts](report-interactivity.md#custom-arrangement-scripts).
+
+Scripts that used `settings`, `formCancel`, `fileHandler`, or other removed page
+globals need adapting. Custom scripts must explicitly provide their library
+dependencies. Global scripts are not executed again on each validation request.
+Inline scripts inside raw parameter HTML are part of that replaced HTML; move
+page initialization into global scripts or scoped controllers to avoid replaying it.
+
+`form.js`, `file.handler.js`, their bundles, the `_LegacyForm*` partials, and the
+Parsley/Pickadate/dirty-form resource branches have been removed. jQuery and jQuery
+UI remain behind the Blueimp image/upload adapter and load only for file/scan
+controls. Replacing that third-party image pipeline is separate work; there is
+one application upload implementation.
 
 ## Validation and calendars
 
 `ToValidation` emits an HTML-encoded JSON attribute for the client rules previously
 sent to Parsley: required, exact length, numeric/integer/digits/alphanumeric types,
-email, URL, pattern, min/max, and date/datetime. Legacy forms retain encoded Parsley
-attributes. Client validation skips ordinary hidden parameters, file choosers,
+email, URL, pattern, min/max, and date/datetime. Client validation skips ordinary hidden parameters, file choosers,
 unnamed helpers, excluded display controls, and disabled controls. Canonical
 hidden upload IDs remain eligible for required validation. Server-only rules,
 such as map membership, remain on the server.
@@ -142,10 +151,26 @@ Flatpickr 4.6.13 is vendored with its MIT license. Both form and report calendar
 use its [documented lifecycle](https://flatpickr.js.org/instance-methods-properties-elements/).
 The named Razor field remains editable text; an unnamed hidden helper owns the
 picker. Opening or cancelling the calendar never clears or normalizes typed text.
-A selection writes `yyyy-MM-dd` and emits one change event. Keyboard selection
+Form date fields also supply a `data-tfl-calendar-date` hint in `yyyy-MM-dd`,
+parsed on the server using its current culture. This preselects the correct day
+for loaded SQL datetimes without changing the named field's text or time.
+The hint is ignored once the field's text differs from its rendered value;
+newly typed ISO dates can still set the calendar day directly.
+Failed typed parameter conversions preserve the entered text alongside the
+server's validation message, rather than displaying the processing row's default
+(such as the year 9999 for a datetime). The invalid field receives no calendar
+date/time hint until corrected. Successful conversions and transformations still
+return their computed values; invalid parameters continue to prevent saving.
+A form's `data-tfl-calendar-time` hint preserves a non-midnight time when picking
+a new day: `1/31/2006 11:50:00 PM` becomes `2006-02-01T23:50:00` when February 1
+is selected. Midnight and date-only values stay `yyyy-MM-dd`. Repeated selections
+retain the time, including fractional seconds present in the field. A user-edited
+ISO datetime supplies its current time; clearing or replacing the field never
+restores the old time hint. Report calendar selections remain date-only.
+A selection emits one change event. Keyboard selection
 works, busy requests close/disable the picker, and replacement destroys its
 popup, helper, listeners, and ARIA links. Modern reports no longer load jQuery UI
-for date filters; legacy reports and forms keep their previous calendars.
+for date filters in every display mode.
 
 ## Google Places lifecycle
 
@@ -335,10 +360,9 @@ inside the style element and could expose CSS/comment text as page content.
 
 The scoped migration for standard reports, forms, and reviews is implemented,
 including searchable report filters and the requested developer guide. The
-Blueimp image pipeline remains behind its scoped adapter. Custom global
-arrangement scripts retain their deliberate compatibility path; barcode decoding,
-replacing that image pipeline, and a lifecycle contract for global custom scripts
-remain separate future work. Google Places preserves the existing legacy API.
+Blueimp image pipeline remains behind its scoped adapter. Global scripts now use
+the common page-resource lifecycle. Barcode decoding and replacing the image
+pipeline remain separate work. Google Places preserves the existing legacy API.
 
 Explicit browser checks on the current build covered these display modes:
 
@@ -380,3 +404,10 @@ Tab and Shift+Tab remain native during validation. Movement to an earlier field,
 including returning to the field where a request began, retains the current
 field and caret across replacement instead of following an older server focus
 hint. Regression tests cover both forward and backward navigation.
+
+Following removal of the fallback, an isolated browser fixture verified that a
+form with a global script and raw button still validates through HTML replacement,
+then calls the same global function from the new markup. The script loaded once;
+`htmx:load` initialization ran again. Native submission preserved the field and
+`Orchard.Submit` value. This fixture uses the production controllers with mock
+endpoints; it does not replace the authenticated save/provider checks above.

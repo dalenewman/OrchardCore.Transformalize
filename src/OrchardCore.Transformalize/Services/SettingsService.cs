@@ -118,15 +118,7 @@ namespace TransformalizeModule.Services {
       /// <param name="part">the report part being displayed</param>
       /// <returns>a list of available page sizes</returns>
       public IEnumerable<int> GetPageSizes(TransformalizeReportPart part) {
-         if (part.PageSizes.Enabled()) {
-            if (part.PageSizes.OverrideDefaults()) {
-               return part.PageSizes.SplitIntegers(',');
-            } else {
-               return Settings.DefaultPageSizesAsEnumerable();
-            }
-         } else {
-            return Enumerable.Empty<int>();
-         }
+         return ReportPaging.ReportSizes(part, Settings);
       }
 
       /// <summary>
@@ -135,15 +127,7 @@ namespace TransformalizeModule.Services {
       /// <param name="part">the report part being displayed</param>
       /// <returns>a list of available page sizes</returns>
       public IEnumerable<int> GetPageSizesExtended(TransformalizeReportPart part) {
-         if (part.PageSizesExtended.Enabled()) {
-            if (part.PageSizesExtended.OverrideDefaults()) {
-               return part.PageSizesExtended.SplitIntegers(',');
-            } else {
-               return Settings.DefaultPageSizesExtendedAsEnumerable();
-            }
-         } else {
-            return Enumerable.Empty<int>();
-         }
+         return ReportPaging.ExtendedSizes(part, Settings);
       }
 
       /// <summary>

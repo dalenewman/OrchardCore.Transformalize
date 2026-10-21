@@ -18,15 +18,18 @@ namespace TransformalizeModule.Controllers {
       private readonly IReportService _reportService;
       private readonly ISlugService _slugService;
       private readonly CombinedLogger<ReportController> _logger;
+      private readonly ISettingsService _settings;
 
       public ReportController(
          IReportService reportService,
          ISlugService slugService,
-         CombinedLogger<ReportController> logger
+         CombinedLogger<ReportController> logger,
+         ISettingsService settings
       ) {
          _reportService = reportService;
          _slugService = slugService;
          _logger = logger;
+         _settings = settings;
       }
 
       [HttpGet]
@@ -50,13 +53,14 @@ namespace TransformalizeModule.Controllers {
          }
 
          var model = new ReportViewModel(report.Process, report.ContentItem, Request.Query, contentItemId) {
+            Settings = _settings.Settings,
             BreadCrumbs = report.BreadCrumbs,
             Editable = report.Editable,
             ReportPath = Request.PathBase.Add(Request.Path).Value ?? string.Empty
          };
 
          // History restoration and direct navigation need the complete Orchard page.
-         if (model.InteractiveReport && Request.Headers["HX-Request"] == "true"
+         if (Request.Headers["HX-Request"] == "true"
             && Request.Headers["HX-Target"] == "tfl-report"
             && Request.Headers["HX-History-Restore-Request"] != "true") {
             Response.Headers["X-Transformalize-Report"] = "true";

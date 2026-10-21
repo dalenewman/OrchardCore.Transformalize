@@ -16,7 +16,6 @@
    const string RETURN_URL = TransformalizeModule.Common.ReturnUrlName;
 
    var interactivity = ViewData["FormInteractivity"] as FormInteractivityViewModel;
-   var interactive = interactivity?.Interactive == true;
    var focus = string.Empty;
    var submit = Model.Parameters.Any(p => p.VisiblePrompt());
    var antiForgery = Model.Mode == "form" && submit || Model.Mode != "form";
@@ -70,14 +69,14 @@
 </style>
 
 <form id="id_form" method="post" role="form" enctype="multipart/form-data" asp-antiforgery="@antiForgery"
-      action="@(interactive ? interactivity!.ActionUrl : null)" data-tfl-form-target="form"
-      hx-post="@(interactive ? interactivity!.ValidationUrl : null)"
-      hx-trigger="@(interactive ? "tfl:validate" : null)"
-      hx-target="@(interactive ? "#tfl-form" : null)"
-      hx-swap="@(interactive ? "outerHTML" : null)"
-      hx-sync="@(interactive ? "this:replace" : null)"
-      hx-encoding="@(interactive ? "multipart/form-data" : null)"
-      novalidate="@interactive">
+      action="@interactivity!.ActionUrl" data-tfl-form-target="form"
+      hx-post="@interactivity!.ValidationUrl"
+      hx-trigger="tfl:validate"
+      hx-target="#tfl-form"
+      hx-swap="outerHTML"
+      hx-sync="this:replace"
+      hx-encoding="multipart/form-data"
+      novalidate>
 
    <input type="hidden" id="id_focus" name="@ORCHARD_FOCUS" value="@(focus)" />
    <input type="hidden" id="id_method" name="@ORCHARD_METHOD" value="@Context.Request.Method" />

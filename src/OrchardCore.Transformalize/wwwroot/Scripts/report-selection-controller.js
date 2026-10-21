@@ -9,6 +9,10 @@
          this.update();
       }
 
+      // Map drawing adds/removes canonical record targets using the same selection contract.
+      recordTargetConnected() { this.update(); }
+      recordTargetDisconnected() { this.update(); }
+
       get token() { return this.tokenContainerTarget.querySelector('input'); }
       get records() { return this.recordTargets.filter(box => !box.disabled); }
       get selected() { return this.records.filter(box => box.checked); }

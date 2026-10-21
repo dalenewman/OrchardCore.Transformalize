@@ -30,12 +30,6 @@
     ]
   },
   {
-    "outputFileName": "wwwroot/Scripts/jquery.iframe-transport.min.js",
-    "inputFiles": [
-      "wwwroot/Scripts/jquery.iframe-transport.js"
-    ]
-  },
-  {
     "outputFileName": "wwwroot/Scripts/jquery.fileupload.min.js",
     "inputFiles": [
       "wwwroot/Scripts/jquery.fileupload.js"
@@ -54,75 +48,9 @@
     ]
   },
   {
-    "outputFileName": "wwwroot/Styles/pickadate/themes/default.min.css",
-    "inputFiles": [
-      "wwwroot/Styles/pickadate/themes/default.css"
-    ]
-  },
-  {
-    "outputFileName": "wwwroot/Styles/pickadate/themes/default.date.min.css",
-    "inputFiles": [
-      "wwwroot/Styles/pickadate/themes/default.date.css"
-    ]
-  },
-  {
-    "outputFileName": "wwwroot/Scripts/file.handler.min.js",
-    "inputFiles": [
-      "wwwroot/Scripts/file.handler.js"
-    ]
-  },
-  {
-    "outputFileName": "wwwroot/Scripts/bs-custom-file-input.min.js",
-    "inputFiles": [
-      "wwwroot/Scripts/bs-custom-file-input.js"
-    ]
-  },
-  {
-    "outputFileName": "wwwroot/Scripts/jquery.are-you-sure.min.js",
-    "inputFiles": [
-      "wwwroot/Scripts/jquery.are-you-sure.js"
-    ]
-  },
-  {
-    "outputFileName": "wwwroot/Scripts/bootstrap-select.min.js",
-    "inputFiles": [
-      "wwwroot/Scripts/bootstrap-select.js"
-    ]
-  },
-  {
-    "outputFileName": "wwwroot/Styles/bootstrap-select.min.css",
-    "inputFiles": [
-      "wwwroot/Styles/bootstrap-select.css"
-    ]
-  },
-  {
     "outputFileName": "wwwroot/Scripts/load-image.all.min.js",
     "inputFiles": [
       "wwwroot/Scripts/load-image.all.js"
-    ]
-  },
-  {
-    "outputFileName": "wwwroot/Scripts/report.min.js",
-    "inputFiles": [
-      "wwwroot/Scripts/report.js"
-    ]
-  },
-  {
-    "outputFileName": "wwwroot/Scripts/form.min.js",
-    "inputFiles": [
-      "wwwroot/Scripts/form.js"
-    ]
-  },
-  {
-    "outputFileName": "wwwroot/Scripts/pickadate/legacy.min.js",
-    "inputFiles": [
-      "wwwroot/Scripts/pickadate/legacy.js"
-    ]
-  },
-  {
-    "outputFileName": "wwwroot/Scripts/pickadate/picker.min.js",
-    "inputFiles": [
-      "wwwroot/Scripts/pickadate/picker.js"
     ]
   },
   {
@@ -168,27 +96,9 @@
     ]
   },
   {
-    "outputFileName": "wwwroot/Scripts/jquery.blockUI.min.js",
-    "inputFiles": [
-      "wwwroot/Scripts/jquery.blockUI.js"
-    ]
-  },
-  {
     "outputFileName": "wwwroot/Scripts/mapbox-gl-draw.min.js",
     "inputFiles": [
       "wwwroot/Scripts/mapbox-gl-draw.js"
-    ]
-  },
-  {
-    "outputFileName": "wwwroot/Scripts/moment.min.js",
-    "inputFiles": [
-      "wwwroot/Scripts/moment.js"
-    ]
-  },
-  {
-    "outputFileName": "wwwroot/Scripts/parsley.min.js",
-    "inputFiles": [
-      "wwwroot/Scripts/parsley.js"
     ]
   },
   {
@@ -213,18 +123,6 @@
     "outputFileName": "wwwroot/Styles/mapbox-gl-draw.min.css",
     "inputFiles": [
       "wwwroot/Styles/mapbox-gl-draw.css"
-    ]
-  },
-  {
-    "outputFileName": "wwwroot/Scripts/jquery.dragtable.min.js",
-    "inputFiles": [
-      "wwwroot/Scripts/jquery.dragtable.js"
-    ]
-  },
-  {
-    "outputFileName": "wwwroot/Styles/dragtable.min.css",
-    "inputFiles": [
-      "wwwroot/Styles/dragtable.css"
     ]
   }
 ]

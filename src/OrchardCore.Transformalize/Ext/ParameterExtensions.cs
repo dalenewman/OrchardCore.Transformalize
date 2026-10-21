@@ -12,12 +12,8 @@ namespace TransformalizeModule.Ext {
          return p.Prompt && p.Visible != "false";
       }
 
-      public static string ToParsley(this Parameter f) => string.Join(" ", ValidationAttributes(f)
-         .Select(i => $"{i.Key}=\"{System.Text.Encodings.Web.HtmlEncoder.Default.Encode(i.Value)}\""));
-
-      public static string ToValidation(this Parameter f, bool interactive) {
-         if (!interactive) return f.ToParsley();
-         var rules = ValidationAttributes(f).ToDictionary(i => i.Key["data-parsley-".Length..], i => i.Value);
+      public static string ToValidation(this Parameter f) {
+         var rules = ValidationAttributes(f);
          if (rules.Count == 0) return string.Empty;
          var json = System.Text.Json.JsonSerializer.Serialize(rules);
          return $"data-tfl-validation=\"{System.Text.Encodings.Web.HtmlEncoder.Default.Encode(json)}\"";
@@ -32,54 +28,54 @@ namespace TransformalizeModule.Ext {
          foreach (var expression in expressions) {
             switch (expression.Method) {
                case "required":
-                  attributes["data-parsley-required"] = "true";
+                  attributes["required"] = "true";
                   switch (f.InputType) {
                      case "file":
                      case "scan":
-                        attributes["data-parsley-required-message"] = "a " + f.InputType + " is required";
+                        attributes["required-message"] = "a " + f.InputType + " is required";
                         break;
                      default:
                         break;
                   }
                   break;
                case "length":
-                  attributes["data-parsley-length"] = string.Format("[{0}, {1}]", expression.SingleParameter, expression.SingleParameter);
+                  attributes["length"] = string.Format("[{0}, {1}]", expression.SingleParameter, expression.SingleParameter);
                   break;
                case "numeric":
-                  attributes["data-parsley-type"] = "number";
+                  attributes["type"] = "number";
                   break;
                case "matches":
-                  attributes["data-parsley-pattern"] = expression.SingleParameter;
+                  attributes["pattern"] = expression.SingleParameter;
                   break;
                case "min":
-                  attributes["data-parsley-min"] = expression.SingleParameter;
+                  attributes["min"] = expression.SingleParameter;
                   break;
                case "max":
-                  attributes["data-parsley-max"] = expression.SingleParameter;
+                  attributes["max"] = expression.SingleParameter;
                   break;
                case "is":
                   switch (expression.SingleParameter) {
                      case "int":
                      case "int32":
-                        attributes["data-parsley-type"] = "integer";
+                        attributes["type"] = "integer";
                         break;
                      case "date":
                      case "datetime":
-                        attributes["data-parsley-date"] = "true";
+                        attributes["date"] = "true";
                         break;
                   }
                   break;
                case "alphanum":
-                  attributes["data-parsley-type"] = "alphanum";
+                  attributes["type"] = "alphanum";
                   break;
                case "digits":
-                  attributes["data-parsley-type"] = "digits";
+                  attributes["type"] = "digits";
                   break;
                case "email":
-                  attributes["data-parsley-type"] = "email";
+                  attributes["type"] = "email";
                   break;
                case "url":
-                  attributes["data-parsley-type"] = "url";
+                  attributes["type"] = "url";
                   break;
             }
          }

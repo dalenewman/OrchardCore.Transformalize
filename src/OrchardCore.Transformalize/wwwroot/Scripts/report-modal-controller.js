@@ -3,9 +3,23 @@
       static targets = ['dialog', 'frame', 'loading', 'title'];
 
       connect() {
+         this.adaptLinks(this.element);
+         // Map popups and custom widgets insert action links after initial connection.
+         this.linkObserver = new MutationObserver(records => records.forEach(record => {
+            record.addedNodes.forEach(node => { if (node.nodeType === 1) this.adaptLinks(node); });
+         }));
+         this.linkObserver.observe(this.element, { childList: true, subtree: true });
+         this.instance = new bootstrap.Modal(this.dialogTarget, { backdrop: 'static', keyboard: false });
+         this.active = false;
+      }
+
+      adaptLinks(root) {
          // Existing arrangements emit these raw HTML links. Adapt that exact
          // legacy contract without loading report.js or exposing a page global.
-         this.element.querySelectorAll('a[data-url][onclick], button[data-url][onclick]').forEach(link => {
+         const selector = 'a[data-url][onclick], button[data-url][onclick]';
+         const links = [...root.querySelectorAll(selector)];
+         if (root.matches?.(selector)) links.unshift(root);
+         links.forEach(link => {
             if (!/^\s*(?:return\s+)?loadModal\s*\(\s*this\s*\)\s*;?\s*$/.test(link.getAttribute('onclick'))) return;
             link.removeAttribute('onclick');
             if (link.tagName === 'A') link.setAttribute('href', link.getAttribute('data-url'));
@@ -13,11 +27,10 @@
             actions.add('click->modal#open');
             link.setAttribute('data-action', [...actions].join(' '));
          });
-         this.instance = new bootstrap.Modal(this.dialogTarget, { backdrop: 'static', keyboard: false });
-         this.active = false;
       }
 
       disconnect() {
+         this.linkObserver.disconnect();
          // End transitions synchronously when htmx removes the owning report.
          this.dialogTarget.classList.remove('fade');
          this.instance.hide();

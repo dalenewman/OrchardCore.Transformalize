@@ -32,13 +32,13 @@ namespace TransformalizeModule.Ext {
       public static ActionResult FormFragment(this Controller controller, FormInteractivityViewModel model) {
          controller.SetFormInteractivity(model);
          controller.Response.Headers.Append("Vary", "HX-Request, HX-Target, HX-History-Restore-Request");
-         if (model.Interactive && controller.Request.Headers["HX-Request"] == "true"
+         if (controller.Request.Headers["HX-Request"] == "true"
             && controller.Request.Headers["HX-Target"] == "tfl-form"
             && controller.Request.Headers["HX-History-Restore-Request"] != "true") {
             controller.Response.Headers["X-Transformalize-Form"] = "true";
             return controller.PartialView("_InteractiveForm", model);
          }
-         return controller.View("Form", model.Process);
+         return controller.View("_InteractiveForm", model);
       }
    }
 }
