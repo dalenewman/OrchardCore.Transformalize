@@ -1,4 +1,6 @@
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.WebUtilities;
+using Microsoft.Extensions.Primitives;
 using OrchardCore.ContentManagement;
 using OrchardCore.Title.Models;
 using Transformalize.Configuration;
@@ -13,7 +15,9 @@ namespace TransformalizeModule.ViewModels {
       private HashSet<string> _topParameters;
       private readonly IQueryCollection _queryCollection;
 
-      public TransformalizeSettings Settings { get; set; }
+      public TransformalizeSettings Settings { get; set; } = new();
+      public ReportPaging Paging => ReportPaging.For(Part, Settings, Process.Mode);
+      public int PageSize => Paging.NormalizeSize(QueryValue("size"));
 
       // temps
       public bool EnableInlineParameters { get; set; } = true;
@@ -22,6 +26,40 @@ namespace TransformalizeModule.ViewModels {
       public bool CalendarEnabled { get; set; }
       public string IdOrAlias { get; set; }
       public string Title { get; set; }
+
+      public string ReportPath { get; set; } = string.Empty;
+
+      public string NavigationUrl(string name, string value, bool resetPage = false) {
+         var query = _queryCollection.ToDictionary(pair => pair.Key, pair => pair.Value);
+         if (resetPage) query.Remove("page");
+         if (name == "page" && value == "1") {
+            query.Remove(name);
+         } else {
+            query[name] = new StringValues(value);
+         }
+         return CleanUrl(ReportPath, query, Process.Mode);
+      }
+
+      public string ViewUrl(string path, string mode) {
+         var query = _queryCollection.ToDictionary(pair => pair.Key, pair => pair.Value);
+         if (mode != Process.Mode) query.Remove("page");
+         if (mode != "chart") {
+            foreach (var name in new[] { "chart-type", "chart-legend", "chart-pct" }) query.Remove(name);
+         }
+         if (mode != "chart" && !ReportPaging.For(Part, Settings, mode).FetchPaged) query["page"] = "0";
+         return CleanUrl(path, query, mode);
+      }
+
+      private string CleanUrl(string path, Dictionary<string, StringValues> query, string mode) {
+         var size = ReportPaging.For(Part, Settings, mode).SizeParameter(query.GetValueOrDefault("size").ToString());
+         if (size.Length == 0) query.Remove("size");
+         else query["size"] = size;
+         if (mode == "chart" || query.GetValueOrDefault("page") == "1") query.Remove("page");
+         // Wildcards mean no filtering, including when copied from an older URL.
+         var cleaned = query.ToDictionary(pair => pair.Key,
+            pair => new StringValues(pair.Value.Where(v => !string.IsNullOrWhiteSpace(v) && v.Trim() != "*").ToArray()));
+         return QueryHelpers.AddQueryString(path, cleaned.Where(pair => pair.Value.Count > 0));
+      }
 
       public Process Process {
          get {

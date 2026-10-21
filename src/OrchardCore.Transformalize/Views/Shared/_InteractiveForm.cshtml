@@ -1,0 +1,22 @@
+@model FormInteractivityViewModel
+@{
+   ViewData["FormInteractivity"] = Model;
+}
+<div id="tfl-form" data-controller="@(Model.HasLocation ? "tfl-form tfl-location" : "tfl-form")"
+     data-tfl-location-automatic-value="@((Model.HasLocation && Context.Request.Method == "GET" && Context.Request.Query["close"] != "1").ToString().ToLowerInvariant())"
+     data-tfl-location-high-accuracy-value="@Model.LocationEnableHighAccuracy.ToString().ToLowerInvariant()"
+     data-tfl-location-maximum-age-value="@Model.LocationMaximumAge"
+     data-tfl-location-timeout-value="@Model.LocationTimeout"
+     data-tfl-form-dirty-value="@((Context.Request.Method == "POST").ToString().ToLowerInvariant())"
+     data-tfl-form-close-value="@((Context.Request.Query["close"] == "1").ToString().ToLowerInvariant())"
+     data-action="tfl-form:focus@window->tfl-form#modalFocus tfl-upload:state->tfl-form#uploadState input->tfl-form#edited change->tfl-form#changed tfl-map:changed->tfl-form#groupChanged tfl-places:changed->tfl-form#groupChanged tfl-location:changed->tfl-form#edited focusin->tfl-form#focus keydown->tfl-form#advance submit->tfl-form#submit:capture beforeunload@window->tfl-form#leaving htmx:beforeRequest->tfl-form#beforeRequest htmx:beforeSwap->tfl-form#beforeSwap htmx:afterRequest->tfl-form#afterRequest htmx:responseError->tfl-form#error htmx:sendError->tfl-form#error htmx:timeout->tfl-form#error">
+   @if (Model.HasLocation) {
+      @await Html.PartialAsync("_FormLocation")
+   }
+   @await Html.PartialAsync("Form", Model.Process)
+   <p class="visually-hidden" role="status" data-tfl-form-target="status"></p>
+   <div class="alert alert-danger mt-2" role="alert" data-tfl-form-target="error" hidden>
+      <span data-tfl-form-target="errorMessage">The form could not be refreshed. Your entries are still here.</span>
+      <button type="button" class="btn btn-sm btn-outline-danger" data-action="tfl-form#validate">Try again</button>
+   </div>
+</div>

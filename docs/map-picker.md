@@ -92,6 +92,23 @@ directly.
 The map picker works in modal forms without any extra configuration. `map.resize()` is called
 on map load to handle layout reflow inside the modal iframe.
 
+## Form refreshes
+
+Forms eligible for the shared htmx flow render `_FormMap.cshtml` and attach
+`form-map-controller.js`. Each map owns its resources and removes its marker,
+listeners, and Mapbox instance when its form is replaced. A click or drag updates
+both coordinate fields before requesting one validation refresh. Typed values
+still use the normal form change behavior. Map failures leave those inputs usable.
+
+The controller supplies the token through the map instance's `accessToken`
+option and disposes the instance with `remove()`; these are documented in the
+[Mapbox Map API](https://docs.mapbox.com/mapbox-gl-js/api/map/).
+
+Uploads, scanning, and Google Places can refresh alongside maps. Forms containing
+custom JavaScript keep the compatibility flow, with its initializer isolated in
+`_LegacyFormMap.cshtml`. See [form-interactivity.md](form-interactivity.md) for
+eligibility and the migration sequence.
+
 ## Validation
 
 The Transformalize configuration parser validates `input-type="map"` parameters at load time:

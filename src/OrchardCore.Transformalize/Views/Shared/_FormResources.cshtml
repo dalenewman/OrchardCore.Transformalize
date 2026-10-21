@@ -1,0 +1,20 @@
+@model FormInteractivityViewModel
+<style asp-name="tfl-flatpickr"></style>
+<style asp-name="tfl-form"></style>
+@if (Model.HasMap) {
+   <script asp-name="mapbox-gl" version="3.6.0" at="Head"></script>
+   <style asp-name="mapbox-gl" version="3.6.0"></style>
+}
+@if (Model.HasUploads) {
+   @* The image pipeline is shared by all upload/scan controls. *@
+   <script asp-name="jQuery" at="Head"></script>
+   <script asp-name="jQuery-ui" at="Head"></script>
+   <script asp-name="load-image-all" version="5.14.0" at="Head"></script>
+   <script asp-name="canvas-to-blob" version="3.28.0" at="Head"></script>
+   <script asp-name="jquery-fileupload" version="10.31.0" at="Head"></script>
+   <script asp-name="jquery-fileupload-process" version="10.31.0" at="Head"></script>
+   <script asp-name="jquery-fileupload-image" version="10.31.0" at="Head"></script>
+   <script asp-name="tfl-form-upload-widgets" at="Foot"></script>
+}
+<script asp-name="tfl-form-interactivity" at="Foot"></script>
+@await Html.PartialAsync("_ArrangementResources", Model.Process)

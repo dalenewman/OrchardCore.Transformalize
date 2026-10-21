@@ -1,0 +1,22 @@
+@model ReportExportsViewModel
+<div class="btn-group btn-group-sm">
+   <button type="button" class="btn btn-sm btn-info" title="save to csv file" disabled="@Model.Disabled"
+           data-action="report#download" data-report-url-param="@Model.CsvUrl">
+      <span class="fas fa-save"></span>
+   </button>
+   <button type="button" class="btn dropdown-toggle btn-sm btn-info" title="other formats" data-bs-toggle="dropdown" disabled="@Model.Disabled">
+      <span class="caret"></span>
+   </button>
+   <ul class="dropdown-menu">
+      @foreach (var format in new[] { ("CSV", Model.CsvUrl), ("JSON", Model.JsonUrl), ("GEOJSON", Model.GeoJsonUrl) }) {
+         if (format.Item2 != null) {
+            <li><a class="dropdown-item" href="@format.Item2" data-action="report#download" title="save to @format.Item1.ToLowerInvariant() file">
+               <span class="fas fa-download me-1"></span>@format.Item1
+            </a></li>
+         }
+      }
+      <li><button type="button" class="dropdown-item" data-action="clipboard#copy" data-clipboard-table-param="@Model.TableId" title="copy table as markdown">
+         <span class="fas fa-copy me-1"></span>MD
+      </button></li>
+   </ul>
+</div>

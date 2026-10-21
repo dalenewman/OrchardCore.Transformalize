@@ -298,7 +298,7 @@ namespace TransformalizeModule {
              .WithPosition("33")
              .WithSettings(new TextFieldSettings {
                 Required = false,
-                Hint = "Specify the field that contains a title for each calendar item."
+                Hint = "Specify the field that contains a url for each calendar item."
              }
              )
            ).WithField("CalendarClassField", field => field
@@ -316,7 +316,7 @@ namespace TransformalizeModule {
              .WithPosition("35")
              .WithSettings(new TextFieldSettings {
                 Required = false,
-                Hint = "Specify the field that contains the starting time for each calendar item.  Current implementation expects a UTC date/time converted to unix time (a long integer indicatng milliseconds since 1970-01-01)."
+                Hint = "Specify the field that contains the starting time for each calendar item.  Current implementation expects a UTC date/time converted to unix time (a long integer indicating milliseconds since 1970-01-01)."
              }
              )
            ).WithField("CalendarEndField", field => field
@@ -325,7 +325,7 @@ namespace TransformalizeModule {
              .WithPosition("36")
              .WithSettings(new TextFieldSettings {
                 Required = false,
-                Hint = "Specify the field that contains the ending time for each calendar item.  Current implementation expects a UTC date/time converted to unix time (a long integer indicatng milliseconds since 1970-01-01)."
+                Hint = "Specify the field that contains the ending time for each calendar item.  Current implementation expects a UTC date/time converted to unix time (a long integer indicating milliseconds since 1970-01-01)."
              }
              )
            )

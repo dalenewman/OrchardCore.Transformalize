@@ -1,0 +1,17 @@
+<div class="modal fade" id="taskModal" tabindex="-1" aria-labelledby="report-modal-title"
+     data-modal-target="dialog" data-action="shown.bs.modal->modal#shown hidden.bs.modal->modal#hidden">
+   <div class="modal-dialog modal-xl modal-dialog-centered">
+      <div class="modal-content">
+         <span class="visually-hidden" id="report-modal-title" data-modal-target="title">Report action</span>
+         <div class="modal-body p-0 position-relative">
+            <div class="report-modal-loading" role="status" data-modal-target="loading" hidden>
+               <span class="spinner-border text-primary" aria-hidden="true"></span>
+               <span class="visually-hidden">Loading action…</span>
+            </div>
+            <iframe id="taskModalIframe" name="taskModalIframe" title="Report action"
+                    src="about:blank" width="100%" height="700" style="border: none; display: block;"
+                    data-modal-target="frame" data-action="load->modal#loaded"></iframe>
+         </div>
+      </div>
+   </div>
+</div>

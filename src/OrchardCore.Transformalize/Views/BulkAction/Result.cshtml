@@ -45,7 +45,7 @@
          <h4> </h4>
 
          @if (isModal) {
-            <a href="javascript:void()" class="btn btn-primary active" role="button" aria-pressed="true" onClick="window.parent.postMessage({ action: 'closeModal', reason: 'confirmed' }, '*');" >Close</a>
+            <button type="button" class="btn btn-primary" onclick="window.parent.postMessage({ action: 'closeModal', reason: 'confirmed' }, window.location.origin);">Close</button>
          } else if (referrer != null) {
             <a href="@Html.Raw(referrer.Value)" class="btn btn-primary active" role="button" aria-pressed="true">Back</a>
          }

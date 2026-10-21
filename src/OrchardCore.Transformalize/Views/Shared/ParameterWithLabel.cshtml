@@ -6,7 +6,7 @@
    <label class="sr-only form-label" for="@Model.Parameter.Name">@Model.Parameter.Label</label>
    <div class="input-group input-group-sm">
       <span class="input-group-text">@Model.Parameter.Label</span>
-      @Html.Partial("Parameter", Model)
+      @await Html.PartialAsync("Parameter", Model)
    </div>
 </div>
 

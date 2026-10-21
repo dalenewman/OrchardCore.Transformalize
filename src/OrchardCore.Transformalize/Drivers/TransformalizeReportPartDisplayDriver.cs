@@ -148,6 +148,9 @@ namespace TransformalizeModule.Drivers {
                   await _notifier.WarningAsync(H[warning]);
                }
             }
+            if (part.Calendar.Value && !CalendarConfiguration.TryCreateFieldMap(part, process, out _, out var calendarErrors)) {
+               foreach (var error in calendarErrors) context.Updater.ModelState.AddModelError(Prefix, S[error]);
+            }
             if (process.Entities.Any()) {
 
                var fields = process.Entities[0].GetAllFields().ToArray();
@@ -157,27 +160,6 @@ namespace TransformalizeModule.Drivers {
                      if (fields.All(f => f.Alias != part.BulkActionValueField.Text)) {
                         context.Updater.ModelState.AddModelError(Prefix, S["The field {0} does not exist.", part.BulkActionValueField.Text]);
                      }
-                  }
-               }
-
-               if (part.Calendar.Value) {
-                  if (fields.All(f => f.Alias != part.CalendarIdField.Text)) {
-                     context.Updater.ModelState.AddModelError(Prefix, S["The field {0} used for calendar id does not exist.", part.CalendarIdField.Text]);
-                  }
-                  if (fields.All(f => f.Alias != part.CalendarUrlField.Text)) {
-                     context.Updater.ModelState.AddModelError(Prefix, S["The field {0} used for calendar URL does not exist.", part.CalendarUrlField.Text]);
-                  }
-                  if (fields.All(f => f.Alias != part.CalendarTitleField.Text)) {
-                     context.Updater.ModelState.AddModelError(Prefix, S["The field {0} used for calendar title does not exist.", part.CalendarTitleField.Text]);
-                  }
-                  if (fields.All(f => f.Alias != part.CalendarClassField.Text)) {
-                     context.Updater.ModelState.AddModelError(Prefix, S["The field {0} used for calendar class does not exist.", part.CalendarClassField.Text]);
-                  }
-                  if (fields.All(f => f.Alias != part.CalendarStartField.Text)) {
-                     context.Updater.ModelState.AddModelError(Prefix, S["The field {0} used for calendar start does not exist.", part.CalendarStartField.Text]);
-                  }
-                  if (fields.All(f => f.Alias != part.CalendarEndField.Text)) {
-                     context.Updater.ModelState.AddModelError(Prefix, S["The field {0} used for calendar end does not exist.", part.CalendarEndField.Text]);
                   }
                }
 

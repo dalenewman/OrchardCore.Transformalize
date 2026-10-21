@@ -1,0 +1,25 @@
+@model FormDateViewModel
+@using TransformalizeModule.Ext
+@{ var parameter = Model.Parameter; }
+<div class="form-group @(Model.Valid ? "is-valid" : "is-invalid") @parameter.Class">
+   <label for="id_@parameter.Name" class="form-label">@parameter.Label</label>
+   @if (parameter.Hint != string.Empty) {
+      <span class="text-muted float-end">@parameter.Hint</span>
+   }
+   <div class="input-group">
+      <button type="button" class="input-group-text" aria-label="Choose @parameter.Label date" data-form-date-toggle><span class="fas fa-calendar"></span></button>
+      <input type="text" class="form-control @(Model.Valid ? "is-valid" : "is-invalid")"
+             name="@parameter.Name" id="id_@parameter.Name" maxlength="@parameter.Length"
+             placeholder="@parameter.Label" value="@parameter.Value"
+             autocomplete="@(parameter.AutoComplete ? "on" : "off")"
+             data-form-date
+             data-tfl-calendar-date="@Model.CalendarDate"
+             data-tfl-calendar-time="@Model.CalendarTime"
+             data-tfl-post-back="@parameter.PostBack" @Html.Raw(parameter.ToValidation()) />
+   </div>
+   <span class="help-container">
+      @if (!Model.Valid) {
+         <span class="help-block">@parameter.Message.Replace('|', ' ')</span>
+      }
+   </span>
+</div>

@@ -1,0 +1,40 @@
+@model ReportViewModel
+@using TransformalizeModule
+@using System.Linq
+
+@{
+   RenderTitleSegments(Model.Title, "before");
+}
+
+<script asp-name="popper" at="Foot"></script>
+<script asp-name="prism" version="1.20.0" at="Foot"></script>
+<script asp-name="prism-markup" version="1.20.0" at="Foot"></script>
+<style asp-name="prism" version="1.20.0"></style>
+
+<style asp-name="tfl-report"></style>
+<style asp-name="tfl-flatpickr"></style>
+<meta name="htmx-config" content='{"historyCacheSize":0,"refreshOnHistoryMiss":true,"historyRestoreAsHxRequest":false,"reportValidityOfForms":true}' />
+<script asp-name="tfl-report-interactivity" at="Foot"></script>
+@if (Model.Process.Mode == "map") {
+   <script asp-name="jQuery" at="Head"></script>
+   <script asp-name="mapbox-gl" version="3.6.0" at="Head"></script>
+   <style asp-name="mapbox-gl" version="3.6.0"></style>
+   <script asp-name="mapbox-gl-draw" version="1.4.3" at="Foot"></script>
+   <style asp-name="mapbox-gl-draw" version="1.4.3"></style>
+   <script asp-name="turf" version="6.5.0" at="Foot"></script>
+} else if (Model.Process.Mode == "calendar") {
+   <script asp-name="jQuery" at="Head"></script>
+   <script asp-name="underscore" at="Foot"></script>
+   <script asp-name="bootstrap-calendar" version="0.2.5" at="Foot"></script>
+   <style asp-name="bootstrap-calendar" version="0.2.5"></style>
+} else if (Model.Process.Mode == "chart") {
+   <script asp-name="charts-loader" at="Foot"></script>
+}
+@await Html.PartialAsync("_ArrangementResources", Model.Process)
+
+@await Html.PartialAsync("_Report", Model)
+
+<div id="busy_holder">
+   <div id="busy"></div>
+</div>
+

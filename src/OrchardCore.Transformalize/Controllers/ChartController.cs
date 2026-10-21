@@ -25,6 +25,7 @@ namespace TransformalizeModule.Controllers {
             return View("Log", viewModel.LogViewModel);
          }
 
+         viewModel.ReportViewModel!.ReportPath = Request.PathBase.Add(Request.Path).Value ?? string.Empty;
          return View(viewModel.ReportViewModel);
       }
    }

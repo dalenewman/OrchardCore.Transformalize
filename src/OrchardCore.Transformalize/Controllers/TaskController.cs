@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using TransformalizeModule.Models;
+using TransformalizeModule.Ext;
 using TransformalizeModule.Services;
 using TransformalizeModule.Services.Contracts;
 using TransformalizeModule.ViewModels;
@@ -53,10 +54,10 @@ namespace TransformalizeModule.Controllers {
          var bulkAction = await _formService.ValidateParameters(new TransformalizeRequest(contentItemId));
 
          if (bulkAction.Fails()) {
-            return bulkAction.ActionResult;
+            return this.FormFailure(bulkAction.Process, bulkAction.ActionResult);
          }
 
-         return View("Form", bulkAction.Process);
+         return this.FormFragment(Interactivity(bulkAction.Process, contentItemId));
       }
 
       public async Task<ActionResult> Review(string contentItemId) {
@@ -67,8 +68,16 @@ namespace TransformalizeModule.Controllers {
             return task.ActionResult;
          }
 
+         this.SetFormInteractivity(Interactivity(task.Process, contentItemId));
          return View(task);
       }
+
+      private FormInteractivityViewModel Interactivity(Transformalize.Configuration.Process process, string contentItemId) => new() {
+         Process = process,
+         ValidationUrl = Url.Action("Form", "Task", new { Area = Common.ModuleName, ContentItemId = contentItemId, modal = Request.Query["modal"].ToString() })!,
+         SubmitUrl = Url.Action("Review", "Task", new { Area = Common.ModuleName, ContentItemId = contentItemId, modal = Request.Query["modal"].ToString() })!,
+         RunUrl = Url.Action("Run", "Task", new { Area = Common.ModuleName, ContentItemId = contentItemId, modal = Request.Query["modal"].ToString() })!,
+      };
 
    }
 }

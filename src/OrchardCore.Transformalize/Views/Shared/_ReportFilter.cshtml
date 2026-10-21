@@ -1,0 +1,30 @@
+@model ParameterViewModel
+@{ var label = string.IsNullOrEmpty(Model.Parameter.Label) ? Model.Parameter.Name : Model.Parameter.Label; }
+<div class="tfl-report-filter" data-controller="report-filter"
+     style="@(Model.Parameter.Width > 0 ? $"width:{Model.Parameter.Width}px;" : null)"
+     data-action="keydown->report-filter#key focusout->report-filter#focusLeft click@window->report-filter#outside change->report-filter#changed resize@window->report-filter#position scroll@window->report-filter#scrolled:capture">
+   <select name="@Model.Parameter.Name" multiple="@Model.Parameter.Multiple" aria-label="@label"
+           data-report-filter-target="select" style="@(Model.Parameter.Width > 0 ? $"width:{Model.Parameter.Width}px;" : null)">
+      @await Html.PartialAsync("_ReportFilterOptions", Model)
+   </select>
+   <button type="button" class="btn btn-sm btn-light tfl-filter-toggle" data-report-filter-target="trigger"
+           data-action="report-filter#toggle" aria-label="Filter @label" aria-haspopup="listbox" aria-expanded="false" hidden>
+      <span data-report-filter-target="summary">All</span><span aria-hidden="true"> ▾</span>
+   </button>
+   <div class="tfl-filter-panel" data-report-filter-target="panel" hidden>
+      <input type="search" class="form-control form-control-sm" aria-label="Search @label options" autocomplete="off"
+             data-report-filter-target="query" data-action="input->report-filter#filter" />
+      @if (Model.Parameter.Multiple) {
+         <div class="tfl-filter-actions">
+            <button type="button" class="btn btn-sm btn-light" aria-label="Select all matching @label options" data-action="report-filter#all">On</button>
+            <button type="button" class="btn btn-sm btn-light" aria-label="Clear matching @label options" data-action="report-filter#none">Off</button>
+         </div>
+      }
+      <div class="tfl-filter-options" role="listbox" aria-label="@label options" aria-multiselectable="@Model.Parameter.Multiple.ToString().ToLowerInvariant()"
+           data-report-filter-target="list"></div>
+      <p class="small text-muted mb-0" role="status" data-report-filter-target="status"></p>
+      @if (Model.Parameter.Multiple) {
+         <button type="button" class="btn btn-sm btn-primary w-100 mt-1" data-action="report-filter#search">Search</button>
+      }
+   </div>
+</div>

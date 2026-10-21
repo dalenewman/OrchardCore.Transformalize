@@ -1,0 +1,22 @@
+@model Transformalize.Configuration.Process
+@* Page resources stay outside refresh boundaries and load once per navigation. *@
+@foreach (var script in Model.Scripts.Where(s => s.Global)) {
+   var language = script.Language;
+   if (language == Transformalize.Constants.DefaultSetting && !string.IsNullOrEmpty(script.File)) {
+      language = script.File.EndsWith(".js", StringComparison.OrdinalIgnoreCase) ? "js"
+         : script.File.EndsWith(".css", StringComparison.OrdinalIgnoreCase) ? "css" : language;
+   }
+   if (language == "js") {
+      if (!string.IsNullOrEmpty(script.File)) {
+         <script at="Foot" src="@script.File"></script>
+      } else {
+         <script at="Foot">@Html.Raw(script.Content)</script>
+      }
+   } else if (language == "css") {
+      if (!string.IsNullOrEmpty(script.File)) {
+         <style src="@script.File"></style>
+      } else {
+         <style>@Html.Raw(script.Content)</style>
+      }
+   }
+}

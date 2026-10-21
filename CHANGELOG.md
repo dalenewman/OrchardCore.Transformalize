@@ -1,3 +1,22 @@
+# 0.23.0 <small>2026-10-21</small>
+
+## 💅 Improvements
+- Replaced legacy jQuery report and form scripts with htmx, Stimulus controllers, and shared Razor partials. Report filtering, sorting, and paging now refresh the report without reloading the page; form validation refreshes fields while Submit and Run use regular browser form submissions.
+- Unified form, task-review, and bulk-action interactivity, including focus handling, unsaved-change prompts, uploads, maps, device location, and address selection.
+- Replaced legacy date and report selection widgets with Flatpickr calendars and searchable, keyboard-accessible selection menus; removed unused JavaScript and CSS assets.
+
+## 🐛 Bug Fixes
+- Updated the Bootswatch theme to Font Awesome 7 to match OrchardCore's login markup and fix the animated missing-icon placeholder beside Log in.
+- Preserve typed values and show inline feedback when parameter conversion or validation fails, and prevent stale validation responses from overwriting newer edits or selected uploads.
+- Keep page-size preferences and repeated filters consistent across reports, charts, maps, calendars, and exports, while removing empty filters, wildcards, and default page sizes from generated URLs.
+- Serialize upload responses safely so quotes and special characters produce valid JSON.
+
+## 🛠️ Maintenance
+- Added client and server regression coverage and a [client interactivity guide](docs/client-interactivity-guide.md).
+- Simplified feature-branch Docker CI to build natively with Docker's bundled BuildKit, avoiding a separate builder-image pull.
+
+<!-- CHANGELOG_BOUNDARY -->
+
 # 0.22.0 <small>2026-09-16</small>
 
 ## 💅 Improvements

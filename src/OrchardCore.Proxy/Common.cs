@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Http;
+using System.Diagnostics.CodeAnalysis;
 using ProxyModule.Models;
 
 namespace ProxyModule {
@@ -763,7 +764,7 @@ namespace ProxyModule {
         /// <param name="mimeType">The variable to store the MIME type.</param>
         /// <returns>The MIME type.</returns>
         /// <exception cref="ArgumentNullException" />
-        public static bool TryGetMimeType(string str, out string mimeType) {
+        public static bool TryGetMimeType(string str, [NotNullWhen(true)] out string? mimeType) {
             if (str == null) {
                 throw new ArgumentNullException(nameof(str));
             }
@@ -813,7 +814,7 @@ namespace ProxyModule {
                 throw new ArgumentException("Requested mime type is not valid: " + mimeType);
             }
 
-            if (_mappings.Value.TryGetValue(mimeType, out string extension)) {
+            if (_mappings.Value.TryGetValue(mimeType, out var extension)) {
                 return extension;
             }
 

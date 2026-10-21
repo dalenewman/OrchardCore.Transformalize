@@ -64,8 +64,7 @@ namespace ProxyModule.Controllers {
             return new StatusCodeResult(401);
          }
 
-         var part = contentItem?.As<ProxyPart>();
-         if (part == null) {
+         if (!contentItem.TryGet<ProxyPart>(out var part)) {
             return new StatusCodeResult(500);
          }
 
@@ -131,17 +130,15 @@ namespace ProxyModule.Controllers {
          }
 
          //get and push output
-         HttpResponseMessage resourceResponse = null;
+         HttpResponseMessage? resourceResponse = null;
          try {
             using (resourceResponse = await client.SendAsync(message)) {
 
-               IEnumerable<string> responseTags;
-               if (resourceResponse.Headers.TryGetValues("ETag", out responseTags)) {
+               if (resourceResponse.Headers.TryGetValues("ETag", out var responseTags)) {
                   response.Headers["Cache-Control"] = "private, must-revalidate";
                   response.Headers["ETag"] = responseTags.First();
 
-                  IEnumerable<string> requestTags;
-                  if(message.Headers.TryGetValues("If-None-Match", out requestTags) && requestTags.First() == response.Headers["ETag"]) {
+                  if(message.Headers.TryGetValues("If-None-Match", out var requestTags) && requestTags.First() == response.Headers["ETag"]) {
                      response.StatusCode = 304;  // Not Modified
                      return new EmptyResult();
                   }
@@ -171,12 +168,12 @@ namespace ProxyModule.Controllers {
          return new EmptyResult();
       }
 
-      public async Task<ContentItem> GetByIdOrAliasAsync(string idOrAlias) {
+      public async Task<ContentItem?> GetByIdOrAliasAsync(string idOrAlias) {
          if (string.IsNullOrEmpty(idOrAlias)) {
             return null;
          }
 
-         ContentItem contentItem = null;
+         ContentItem? contentItem = null;
          if (idOrAlias.Length == Common.IdLength) {
             contentItem = await _contentManager.GetAsync(idOrAlias);
          }

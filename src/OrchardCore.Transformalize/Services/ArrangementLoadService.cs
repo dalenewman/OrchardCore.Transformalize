@@ -10,6 +10,9 @@ using Cfg.Net.Serializers;
 using Transformalize.Logging;
 using Transformalize.Impl;
 using TransformalizeModule.Ext;
+using System.Text.RegularExpressions;
+using Microsoft.Extensions.Caching.Memory;
+using OrchardCore.Environment.Cache;
 
 namespace TransformalizeModule.Services {
    public class ArrangementLoadService : IArrangementLoadService {
@@ -21,6 +24,8 @@ namespace TransformalizeModule.Services {
       private readonly CombinedLogger<ArrangementLoadService> _logger;
       private readonly IFileService _fileService;
       private readonly ICustomFileStore _formFileStore;
+      private readonly IMemoryCache _memoryCache;
+      private readonly ISignal _signal;
       private static readonly HashSet<string> _fileBasedProviders = new HashSet<string>() { "file", "excel" };
 
       public ArrangementLoadService(
@@ -30,7 +35,9 @@ namespace TransformalizeModule.Services {
          ISettingsService settings,
          IConfigurationContainer configurationContainer,
          IFileService fileService,
-         CombinedLogger<ArrangementLoadService> logger
+         CombinedLogger<ArrangementLoadService> logger,
+         IMemoryCache memoryCache,
+         ISignal signal
       ) {
          _formFileStore = formFileStore;
          _parameters = parameterService.GetParameters();
@@ -39,6 +46,8 @@ namespace TransformalizeModule.Services {
          _logger = logger;
          _fileService = fileService;
          _configurationContainer = configurationContainer;
+         _memoryCache = memoryCache;
+         _signal = signal;
       }
 
       public async Task<Process> LoadForStreamAsync(ContentItem contentItem) {
@@ -89,10 +98,9 @@ namespace TransformalizeModule.Services {
          process.ReadOnly = true;
 
 
-         if (part.PageSizes.Enabled()) {
-            var pageSizes = _settings.GetPageSizes(part);
-
-            EnforcePageSize(process, _parameters, pageSizes.Min(), _parameters.GetIntegerOrDefault("size", ()=>pageSizes.Min()) , pageSizes.Max());
+         var paging = ReportPaging.For(part, _settings.Settings, "report");
+         if (paging.FetchPaged) {
+            EnforcePageSize(process, _parameters, paging);
 
             // modify connections to buffer (load page completely before processing)
             foreach (var connection in process.Connections) {
@@ -133,14 +141,8 @@ namespace TransformalizeModule.Services {
          process.ReadOnly = true;
 
          // TODO: Paging and Sorting may be handled differently for map view
-         if (part.PageSizesExtended.Enabled()) {
-            var pageSizes = new List<int>();
-
-            pageSizes.AddRange(_settings.GetPageSizes(part));
-            pageSizes.AddRange(_settings.GetPageSizesExtended(part));
-
-            EnforcePageSize(process, _parameters, pageSizes.Min(), _parameters.GetIntegerOrDefault("size", () => pageSizes.Min()), pageSizes.Max());
-         }
+         var paging = ReportPaging.For(part, _settings.Settings, "map");
+         if (paging.FetchPaged) EnforcePageSize(process, _parameters, paging);
 
          AddSrc(process);
 
@@ -198,19 +200,14 @@ namespace TransformalizeModule.Services {
          }
 
          var process = await LoadInternalAsync(part, null);
+         if (process.Status != 200 || !ValidateCalendar(part, process, out _)) return process;
 
          process.Mode = "calendar";
          process.ReadOnly = true;
 
          // TODO: Paging and Sorting may be handled differently for calendar view
-         if (part.PageSizesExtended.Enabled()) {
-            var pageSizes = new List<int>();
-
-            pageSizes.AddRange(_settings.GetPageSizes(part));
-            pageSizes.AddRange(_settings.GetPageSizesExtended(part));
-
-            EnforcePageSize(process, _parameters, pageSizes.Min(), _parameters.GetIntegerOrDefault("size", () => pageSizes.Min()), pageSizes.Max());
-         }
+         var paging = ReportPaging.For(part, _settings.Settings, "calendar");
+         if (paging.FetchPaged) EnforcePageSize(process, _parameters, paging);
 
          AddSrc(process);
 
@@ -255,7 +252,7 @@ namespace TransformalizeModule.Services {
          var requiredFields = new Dictionary<string, string>() {
             { part.BulkActionValueField.Text, part.BulkActionValueField.Text }
          };
-         ConfineData(process, requiredFields);
+         ConfineDataWithCachedMatcher(process, requiredFields);
 
          return process;
       }
@@ -272,14 +269,8 @@ namespace TransformalizeModule.Services {
          process.ReadOnly = true;
 
          // TODO: Paging and Sorting may be handled differently for map view
-         if (part.PageSizesExtended.Enabled()) {
-            var pageSizes = new List<int>();
-
-            pageSizes.AddRange(_settings.GetPageSizes(part));
-            pageSizes.AddRange(_settings.GetPageSizesExtended(part));
-
-            EnforcePageSize(process, _parameters, pageSizes.Min(), _parameters.GetIntegerOrDefault("size", () => pageSizes.Min()), pageSizes.Max());
-         }
+         var paging = ReportPaging.For(part, _settings.Settings, "map");
+         if (paging.FetchPaged) EnforcePageSize(process, _parameters, paging);
 
          var o = process.GetOutputConnection();
          o.Stream = true;
@@ -324,7 +315,7 @@ namespace TransformalizeModule.Services {
          }
 
          // restrict fields to only what is needed for map
-         ConfineData(process, mapFields);
+         ConfineDataWithCachedMatcher(process, mapFields);
 
          // disable actions
          foreach (var action in process.Actions) {
@@ -338,23 +329,18 @@ namespace TransformalizeModule.Services {
       public async Task<Process> LoadForCalendarStreamAsync(ContentItem contentItem) {
 
          if (!TryGetReportPart(contentItem, out var part)) {
-            return new Process { Status = 500, Message = "Error", Log = new List<LogEntry>() { new LogEntry(LogLevel.Error, null, $"LoadForBatch can't load {contentItem.ContentType}.") } };
+            return new Process { Status = 500, Message = "Error", Log = new List<LogEntry>() { new LogEntry(LogLevel.Error, null, $"LoadForCalendarStream can't load {contentItem.ContentType}.") } };
          }
 
          var process = await LoadInternalAsync(part);
+         if (process.Status != 200 || !ValidateCalendar(part, process, out var calendarFields)) return process;
 
          process.Mode = "stream-calendar";
          process.ReadOnly = true;
 
          // TODO: Paging and Sorting may be handled differently for calendar view
-         if (part.PageSizesExtended.Enabled()) {
-            var pageSizes = new List<int>();
-
-            pageSizes.AddRange(_settings.GetPageSizes(part));
-            pageSizes.AddRange(_settings.GetPageSizesExtended(part));
-
-            EnforcePageSize(process, _parameters, pageSizes.Min(), _parameters.GetIntegerOrDefault("size", () => pageSizes.Min()), pageSizes.Max());
-         }
+         var paging = ReportPaging.For(part, _settings.Settings, "calendar");
+         if (paging.FetchPaged) EnforcePageSize(process, _parameters, paging);
 
          AddSrc(process);
 
@@ -366,21 +352,12 @@ namespace TransformalizeModule.Services {
          o.Stream = true;
          o.Provider = "json";
 
-         var calendarFields = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase) {
-            { part.CalendarIdField.Text, "id" },
-            { part.CalendarTitleField.Text, "title" },
-            { part.CalendarUrlField.Text, "url" },
-            { part.CalendarClassField.Text, "class" },
-            { part.CalendarStartField.Text, "start" },
-            { part.CalendarEndField.Text, "end" }
-         };
-
          // for batch operations - currently hard-coded to batchvalue
          if (!string.IsNullOrEmpty(part.BulkActionValueField.Text)) {
             calendarFields[part.BulkActionValueField.Text] = "batchvalue";
          }
 
-         ConfineData(process, calendarFields);
+         ConfineDataWithCachedMatcher(process, calendarFields);
 
          // disable actions
          foreach (var action in process.Actions) {
@@ -389,6 +366,14 @@ namespace TransformalizeModule.Services {
          }
 
          return process;
+      }
+
+      private bool ValidateCalendar(TransformalizeReportPart part, Process process, out Dictionary<string, string> fields) {
+         if (CalendarConfiguration.TryCreateFieldMap(part, process, out fields, out var errors)) return true;
+         process.Status = 500;
+         process.Message = "Calendar configuration has errors.";
+         foreach (var error in errors) _logger.Error(() => error);
+         return false;
       }
 
       public async Task<Process> LoadForTaskAsync(ContentItem contentItem, IDictionary<string, string> parameters = null, string format = null) {
@@ -554,36 +539,30 @@ namespace TransformalizeModule.Services {
       /// </summary>
       /// <param name="process">the transformalize report process</param>
       /// <param name="parameters">incoming parameters</param>
-      /// <param name="min">the minimum allowed page size</param>
-      /// <param name="chosen">the page size selected by the user</param>
-      /// <param name="max">the maximum allowed page size</param>
-      internal static void EnforcePageSize(Process process, IDictionary<string, string> parameters, int min, int chosen, int max) {
-
+      internal static void EnforcePageSize(Process process, IDictionary<string, string> parameters, ReportPaging paging) {
+         var page = parameters.TryGetValue("page", out var rawPage) && int.TryParse(rawPage, out var parsedPage)
+            && parsedPage > 0 ? parsedPage : 1;
+         var size = paging.NormalizeSize(parameters.TryGetValue("size", out var rawSize) ? rawSize : null);
          foreach (var entity in process.Entities) {
-            // parse out a page number
-            int page;
-            if (parameters.ContainsKey("page")) {
-               if (!int.TryParse(parameters["page"], out page)) {
-                  page = 1;
-               }
-            } else {
-               page = 1;
-            }
-
-            entity.Page = page == 0 ? 1 : page;
-
-            var size = chosen;
-            if (parameters.ContainsKey("size")) {
-               int.TryParse(parameters["size"], out size);
-            }
-
-            if (size == 0 && min > 0) {
-               size = min;
-            }
-            entity.Size = max > 0 && size > max ? max : size;
-
+            entity.Page = page;
+            entity.Size = size;
          }
+      }
 
+      private void ConfineDataWithCachedMatcher(Process process, IDictionary<string, string> required) {
+         ConfineData(process, required, pattern => GetFieldMatcher(process.Id, pattern));
+      }
+
+      internal Regex GetFieldMatcher(long processId, string pattern) {
+         // Cache immutable matchers only, never request-owned Field instances.
+         // Include the complete pattern because parameters can change the schema
+         // even before the report's save signal invalidates its entries.
+         var key = (typeof(ArrangementLoadService), processId, pattern);
+         return _memoryCache.GetOrCreate(key, entry => {
+            entry.AddExpirationToken(_signal.GetToken(Common.GetCacheKey(processId)));
+            entry.SetSlidingExpiration(TimeSpan.FromMinutes(30));
+            return new Regex(pattern, RegexOptions.CultureInvariant);
+         })!;
       }
 
       /// <summary>
@@ -591,33 +570,69 @@ namespace TransformalizeModule.Services {
       /// </summary>
       /// <param name="process"></param>
       /// <param name="required"></param>
-      internal static void ConfineData(Process process, IDictionary<string, string> required) {
+      internal static void ConfineData(Process process, IDictionary<string, string> required, Func<string, Regex>? matcherFactory = null) {
 
          foreach (var entity in process.Entities) {
             var all = entity.GetAllFields().ToArray();
-            var dependencies = new HashSet<Field>();
+            // Field equality/hash codes use Alias, which is changed below. Track
+            // field instances and resolve the complete graph before renaming any.
+            var dependencies = new HashSet<Field>(ReferenceEqualityComparer.Instance);
+            var outputs = new Dictionary<Field, string>(ReferenceEqualityComparer.Instance);
             foreach (var field in all) {
-               if (required.ContainsKey(field.Alias)) {
+               if (required.TryGetValue(field.Alias, out var alias)) {
                   dependencies.Add(field);
-                  field.Output = true;
-                  if (!required[field.Alias].Equals(field.Alias, StringComparison.OrdinalIgnoreCase)) {
-                     field.Alias = required[field.Alias];
-                  }
+                  outputs.Add(field, alias);
                } else if (field.Property) {
                   dependencies.Add(field);
-                  field.Output = true;
+                  outputs.Add(field, field.Alias);
                }
             }
             // optimize download if it's not a manually written query
             if (entity.Query == string.Empty) {
-               foreach (var field in entity.FindRequiredFields(dependencies, process.Maps)) {
-                  dependencies.Add(field);
+               // GetFieldMatches caches Field instances globally by entity key,
+               // field count and text. Those may belong to an earlier request.
+               // Match names and resolve them against this request's entity.
+               var pattern = @"\b(?:" + string.Join("|", all.Where(field => !field.System)
+                  .OrderByDescending(field => field.Alias.Length).Select(field => Regex.Escape(field.Alias))) + @")\b";
+               var fieldMatcher = matcherFactory?.Invoke(pattern) ?? new Regex(pattern, RegexOptions.CultureInvariant);
+               // The upstream recursive finder starts a new visited set on each
+               // call, so a cycle (including references in template text) can
+               // overflow the stack. Visit each field once without recursion.
+               var pending = new Stack<Field>(dependencies);
+               while (pending.TryPop(out var field)) {
+                  foreach (var dependency in DirectDependencies(entity, field, process.Maps, fieldMatcher)) {
+                     if (dependencies.Add(dependency)) pending.Push(dependency);
+                  }
                }
-               foreach (var unnecessary in all.Except(dependencies)) {
+               foreach (var unnecessary in all.Where(field => !dependencies.Contains(field))) {
                   unnecessary.Input = false;
                   unnecessary.Output = false;
                   unnecessary.Transforms.Clear();
                }
+            }
+            foreach (var (field, alias) in outputs) {
+               field.Output = true;
+               if (!alias.Equals(field.Alias, StringComparison.OrdinalIgnoreCase)) field.Alias = alias;
+            }
+         }
+      }
+
+      private static IEnumerable<Field> DirectDependencies(Entity entity, Field field, IEnumerable<Map> maps, Regex fieldMatcher) {
+         foreach (var parameter in field.Transforms.SelectMany(t => t.Parameters)) {
+            if (!parameter.HasValue() && parameter.IsField(entity)) yield return parameter.AsField(entity);
+         }
+
+         foreach (var transform in field.Transforms) {
+            if (transform.Method == "map") {
+               foreach (var item in maps.First(m => m.Name == transform.Map).Items.Where(i => i.Parameter != string.Empty)) {
+                  var parameter = item.AsParameter();
+                  if (parameter.IsField(entity)) yield return parameter.AsField(entity);
+               }
+            }
+            var text = string.Join(" ", transform.Value, transform.OldValue, transform.NewValue,
+               transform.Format, transform.Script, transform.Expression, transform.Template);
+            foreach (Match match in fieldMatcher.Matches(text)) {
+               if (entity.TryGetField(match.Value, out var dependency)) yield return dependency;
             }
          }
       }
