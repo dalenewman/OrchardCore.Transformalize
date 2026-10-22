@@ -29,7 +29,7 @@
          return {
             setBusy(busy) { dates.forEach(date => date.setBusy(busy)); },
             clear() {
-               root.querySelectorAll('select').forEach(select => {
+               root.querySelectorAll('select[name]').forEach(select => {
                   if (select.multiple) [...select.options].forEach(option => { option.selected = false; });
                   else select.value = '*';
                   select.dispatchEvent(new Event('change', { bubbles: true }));

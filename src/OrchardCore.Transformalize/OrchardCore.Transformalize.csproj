@@ -3,9 +3,9 @@
       <TargetFramework>net10.0</TargetFramework>
       <AddRazorSupportForMvc>true</AddRazorSupportForMvc>
       <RootNamespace>TransformalizeModule</RootNamespace>
-      <Version>0.23.0</Version>
-      <FileVersion>0.23.0</FileVersion>
-      <AssemblyVersion>0.23.0</AssemblyVersion>
+      <Version>0.23.1</Version>
+      <FileVersion>0.23.1</FileVersion>
+      <AssemblyVersion>0.23.1</AssemblyVersion>
       <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
       <Authors>Dale Newman</Authors>
       <Copyright>Copyright © 2013-2026</Copyright>
@@ -16,7 +16,7 @@
       <RepositoryType>git</RepositoryType>
       <PackageTags>etl,data,forms,reports,transformalize</PackageTags>
       <NeutralLanguage>en-US</NeutralLanguage>
-      <PackageReleaseNotes>Modernize report and form interactivity with htmx, Stimulus, and shared Razor partials; improve validation, paging, and widget lifecycles; see CHANGELOG.md for custom-script migration notes</PackageReleaseNotes>
+      <PackageReleaseNotes>Add report map style selection including satellite imagery; match facet dropdown carets to Bootstrap; preserve map overlays and prevent duplicate popups during refreshes and style changes</PackageReleaseNotes>
       <Nullable>enable</Nullable>
       <ImplicitUsings>enable</ImplicitUsings>
    </PropertyGroup>

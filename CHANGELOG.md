@@ -1,3 +1,15 @@
+# 0.23.1 <small>2026-10-22</small>
+
+## 💅 Improvements
+- Added a Map style selector to report maps with Streets, Satellite + streets, Satellite, Outdoors, Light, and Dark. Switching styles preserves the current zoom and location and restores report points without fetching the report again.
+
+## 🐛 Bug Fixes
+- Matched report facet dropdown indicators to the Action button's Bootstrap caret and prevented the indicators from shrinking in narrow columns.
+- Prevented duplicate map popup handlers after refreshes and kept report points visible when data arrives during a map style change.
+- Kept the map style selector separate from report filtering and Clear actions.
+
+<!-- CHANGELOG_BOUNDARY -->
+
 # 0.23.0 <small>2026-10-21</small>
 
 ## 💅 Improvements
