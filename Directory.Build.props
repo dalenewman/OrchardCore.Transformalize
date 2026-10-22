@@ -1,0 +1,6 @@
+<Project>
+   <ItemGroup>
+      <!-- Security pin for transitive dependencies: https://github.com/advisories/GHSA-846f-f764-76mx -->
+      <PackageReference Include="System.Security.Cryptography.Pkcs" Version="10.0.13" />
+   </ItemGroup>
+</Project>

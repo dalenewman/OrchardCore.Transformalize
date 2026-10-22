@@ -62,8 +62,8 @@
       <ProjectReference Include="/Users/dalenewman/code/github/dalenewman/Transformalize/src/Providers/Ado/Transformalize.Provider.Ado/Transformalize.Provider.Ado.csproj" />
       -->
       
-      <PackageReference Include="Transformalize.Container.Autofac" Version="1.5.0" />
-      <PackageReference Include="Transformalize.Provider.Ado.Autofac" Version="1.5.0" />
+      <PackageReference Include="Transformalize.Container.Autofac" Version="1.5.3" />
+      <PackageReference Include="Transformalize.Provider.Ado.Autofac" Version="1.5.4" />
       <PackageReference Include="Transformalize.Provider.Bogus.Autofac" Version="1.5.0" />
       <PackageReference Include="Transformalize.Provider.CsvHelper.Autofac" Version="1.5.1" />
       <PackageReference Include="Transformalize.Provider.Elasticsearch.Autofac" Version="1.5.0" />
@@ -72,10 +72,10 @@
       <PackageReference Include="Transformalize.Provider.GeoJson.Autofac" Version="1.5.0" />
       <PackageReference Include="Transformalize.Provider.Json.Autofac" Version="1.5.0" />
       <PackageReference Include="Transformalize.Provider.Mail.Autofac" Version="1.5.0" />
-      <PackageReference Include="Transformalize.Provider.MySql.Autofac" Version="1.5.0" />
-      <PackageReference Include="Transformalize.Provider.PostgreSql.Autofac" Version="1.5.0" />
-      <PackageReference Include="Transformalize.Provider.Sqlite.Autofac" Version="1.5.0" />
-      <PackageReference Include="Transformalize.Provider.SqlServer.Autofac" Version="1.5.0" />
+      <PackageReference Include="Transformalize.Provider.MySql.Autofac" Version="1.5.4" />
+      <PackageReference Include="Transformalize.Provider.PostgreSql.Autofac" Version="1.5.4" />
+      <PackageReference Include="Transformalize.Provider.Sqlite.Autofac" Version="1.5.4" />
+      <PackageReference Include="Transformalize.Provider.SqlServer.Autofac" Version="1.5.4" />
       <PackageReference Include="Transformalize.Transform.Ado.Autofac" Version="1.5.0" />
       <PackageReference Include="Transformalize.Transform.Compression" Version="1.5.0" />
       <PackageReference Include="Transformalize.Transform.Fluid.Autofac" Version="1.5.0" />
