@@ -22,9 +22,9 @@ public class FormFailureTests {
    }
 
    [TestMethod]
-   public void ARejectedApostropheGetsAFieldErrorInsteadOfDiagnosticHtml() {
+   public void AnExplicitlyRejectedApostropheGetsAFieldErrorInsteadOfDiagnosticHtml() {
       var process = new Process();
-      process.Parameters.Add(new Parameter { Name = "OtherReason", Label = "Other Reason", Value = "I don't want to say" });
+      process.Parameters.Add(new Parameter { Name = "OtherReason", Label = "Other Reason", Value = "I don't want to say", InvalidCharacters = ";'`" });
       var controller = Controller();
       var result = (JsonResult)controller.FormFailure(process, new BadRequestResult());
       var json = JsonSerializer.SerializeToElement(result.Value);
@@ -33,6 +33,18 @@ public class FormFailureTests {
       StringAssert.Contains(json.GetProperty("fields")[0].GetProperty("message").GetString(), "“'”");
       Assert.AreEqual("true", controller.Response.Headers["X-Transformalize-Form-Error"].ToString());
       Assert.AreEqual(";'`", process.Parameters[0].InvalidCharacters, "Keep the arrangement's restriction.");
+   }
+
+   [TestMethod]
+   public void DefaultCharacterRestrictionsAllowApostrophes() {
+      var process = new Process();
+      var parameter = new Parameter { Name = "OtherReason", Value = "I don't want to say" };
+      process.Parameters.Add(parameter);
+      var controller = Controller();
+      var fallback = new BadRequestResult();
+      Assert.AreEqual(string.Empty, parameter.InvalidCharacters);
+      Assert.AreSame(fallback, controller.FormFailure(process, fallback));
+      Assert.IsFalse(controller.Response.Headers.ContainsKey("X-Transformalize-Form-Error"));
    }
 
    [TestMethod]
