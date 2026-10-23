@@ -48,14 +48,14 @@ test('calendar markers open the day list without navigating, while event title l
    assert.equal(prevented, 1, 'Leave event-item title links alone.');
 });
 
-test('report calendars disconnect and clear resets native selections with one change per select', () => {
+test('report calendars disconnect and clear resets named native selections with one change per select', () => {
    const adapters = [], changes = [];
    const selects = [
       { multiple: true, options: [{ selected: true }, { selected: true }] },
       { multiple: false, value: 'A' }
    ];
    selects.forEach(select => { select.dispatchEvent = event => changes.push([select, event]); });
-   const root = { querySelectorAll: selector => selector === 'select' ? selects :
+   const root = { querySelectorAll: selector => selector === 'select[name]' ? selects :
       [1, 2].map(id => ({ id, parentElement: { querySelector: () => 'toggle' + id } })) };
    const context = { window: {}, Event, TransformalizeDateWidgets: { connect(input, toggle) {
       const adapter = { input, toggle, setBusy(busy) { this.busy = busy; }, disconnect() { this.disconnected = true; } };

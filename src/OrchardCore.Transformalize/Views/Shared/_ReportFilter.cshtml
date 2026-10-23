@@ -7,9 +7,9 @@
            data-report-filter-target="select" style="@(Model.Parameter.Width > 0 ? $"width:{Model.Parameter.Width}px;" : null)">
       @await Html.PartialAsync("_ReportFilterOptions", Model)
    </select>
-   <button type="button" class="btn btn-sm btn-light tfl-filter-toggle" data-report-filter-target="trigger"
+   <button type="button" class="btn btn-sm btn-light dropdown-toggle tfl-filter-toggle" data-report-filter-target="trigger"
            data-action="report-filter#toggle" aria-label="Filter @label" aria-haspopup="listbox" aria-expanded="false" hidden>
-      <span data-report-filter-target="summary">All</span><span aria-hidden="true"> ▾</span>
+      <span data-report-filter-target="summary">All</span>
    </button>
    <div class="tfl-filter-panel" data-report-filter-target="panel" hidden>
       <input type="search" class="form-control form-control-sm" aria-label="Search @label options" autocomplete="off"

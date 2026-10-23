@@ -74,14 +74,10 @@
             zoom: 6
          });
 
-         function addDataLayer(layerId, fitBounds) {
-            // using layerId as layer id and data source name
-            map.addSource(layerId, { type: "geojson", data: window.data });
-
-            map.addLayer({
-               id: layerId,
+         var reportMap = TransformalizeReportMap.connect(map, {
+               id: "circle-layer",
                type: "circle",
-               source: layerId,
+               source: "circle-layer",
                paint: {
                   "circle-color": @if (colorIsField) {
                      <text>{ "type": "identity", "property": "@Model.Part.MapColorField.Text" }</text>
@@ -102,58 +98,7 @@
                   "circle-stroke-color": '#000000',
                   "circle-stroke-opacity": 0.9
                }
-            });
-
-            console.log('fitting bounds');
-            if (fitBounds) {
-               if (window.data.features.length > 0) {
-                  var bounds = new mapboxgl.LngLatBounds();
-                  window.data.features.forEach(function(feature) {
-                     bounds.extend(feature.geometry.coordinates);
-                  });
-                  map.fitBounds(bounds, { padding: 100 });
-               }
-            }
-
-            console.log('setting up popups');
-            map.on('click', layerId, function (e) {
-               var coordinates = e.features[0].geometry.coordinates.slice();
-               while (Math.abs(e.lngLat.lng - coordinates[0]) > 180) {
-                  coordinates[0] += e.lngLat.lng > coordinates[0] ? 360 : -360;
-               }
-               new mapboxgl.Popup().setLngLat(coordinates).setHTML(e.features[0].properties.description).addTo(map);
-            });
-
-            map.on('mouseenter', layerId, function () {
-               map.getCanvas().style.cursor = 'pointer';
-            });
-            map.on('mouseleave', layerId, function () {
-               map.getCanvas().style.cursor = '';
-            });
-
-         }
-
-         // map style switcher
-         /*
-            var layerList = document.getElementById('mapStyles');
-            var inputs = layerList.getElementsByTagName('a');
-
-         function switchLayer(layer) {
-            console.log('switching style to ' + layer.target.id);
-               map.setStyle(layer.target.id);
-            }
-
-            for (var i = 0; i < inputs.length; i++) {
-               inputs[i].onclick = switchLayer;
-            }
-
-            map.on('style.load', function () {
-               // Triggered when `setStyle` is called.
-               if (window.data) {
-                  addDataLayer("circle-layer", false);
-               }
-            });
-            */
+         });
 
          var loadData = function (fitBounds) {
             $('#busy').show();
@@ -178,7 +123,7 @@
                }
 
                window.data = data;
-               addDataLayer("circle-layer", fitBounds);
+               reportMap.setData(data, fitBounds);
 
                $('#busy').hide();
             });
@@ -187,8 +132,6 @@
          var refreshButton = document.getElementById('mapRefresh');
          if (refreshButton) {
             refreshButton.onclick = function () {
-               map.removeLayer("circle-layer");
-               map.removeSource("circle-layer");
                loadData(false);
             }
          }

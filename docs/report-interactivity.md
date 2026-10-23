@@ -10,6 +10,11 @@ widget lifecycles. Maps, charts, and calendars retain only their display-specifi
 rendering code. For before-and-after examples, see the
 [developer guide](client-interactivity-guide.md).
 
+Report maps include a Map style control with Streets (the default), Satellite +
+streets, Satellite, Outdoors, Light, and Dark. Switching styles keeps the camera
+and restores the current report points without fetching the report again. The
+choice lasts for the current page; form location maps use their existing style.
+
 ## Try it
 
 Run the Site project, sign in, and open `/t/report/northwind?size=25` (if the sample

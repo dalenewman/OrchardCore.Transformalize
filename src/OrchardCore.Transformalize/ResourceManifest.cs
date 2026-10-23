@@ -21,6 +21,11 @@ namespace TransformalizeModule {
             .ShouldAppendVersion(true)
             .SetVersion("1.0.0")
             .SetDependencies("tfl-date-widgets");
+         _manifest.DefineScript("tfl-report-map")
+            .SetUrl($"~/{Common.ModuleName}/Scripts/report-map.js")
+            .ShouldAppendVersion(true)
+            .SetVersion("1.0.0")
+            .SetDependencies("mapbox-gl:3.6.0");
          _manifest.DefineScript("tfl-report-filter")
             .SetUrl($"~/{Common.ModuleName}/Scripts/report-filter-controller.js")
             .ShouldAppendVersion(true)
