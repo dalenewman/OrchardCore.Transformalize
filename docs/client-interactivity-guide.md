@@ -203,7 +203,28 @@ Existing arrangements emitted links like this:
    onclick="loadModal(this)">Edit</a>
 ```
 
-New links should have a real navigation destination and a named action:
+For field output, set `modal="true"` and emit an ordinary link:
+
+```xml
+<add name="edit" label="Edit" length="128" raw="true" modal="true"
+     t='copy(Id).razor(
+        <a href="/t/form/crime-edit?Id=@Model.Id" title="Edit">📝</a>
+     )' />
+```
+
+The field delegates clicks on its links to the report modal controller. Only
+same-origin links to this tenant's full form (`/t/form/{id}`) or task review
+(`/t/task/{id}`) pages open in the modal. The controller adds `modal=1` to the
+iframe URL, preserving the link's original `href`, other query parameters and
+fragment. External URLs, other pages, downloads, validation/run/API routes and
+modified clicks retain their normal behavior. `modal` defaults to `false`.
+The setting is presentation metadata; field values and exports are unchanged.
+
+In map views, set `modal="true"` on the mapped description field to enable its
+popup links. In calendar views, set it on the mapped URL or title field; event
+links use the same checks, while date markers still open the day's event list.
+
+Custom HTML can also request a modal directly using a named action:
 
 ```html
 <a href="/t/form/got-up-edit?modal=1&amp;GotUpId=1"

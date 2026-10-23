@@ -141,6 +141,109 @@ test('modal links load their configured form URL and preserve modified-click nav
    assert.equal(prevents, 1);
 });
 
+function fieldLink(href, attributes = {}) {
+   const attrs = { href, ...attributes };
+   return {
+      href: new URL(href, 'http://localhost/tenant/t/report/demo').href,
+      title: 'Edit record',
+      getAttribute: name => attrs[name] ?? null,
+      hasAttribute: name => Object.hasOwn(attrs, name),
+      attrs
+   };
+}
+
+function fieldModal() {
+   const result = controller('modal');
+   result.formPathValue = '/tenant/t/form/';
+   result.taskPathValue = '/tenant/t/task/';
+   result.frameTarget = {};
+   result.opened = [];
+   result.show = (title, opener) => result.opened.push({ title, opener });
+   return result;
+}
+
+function fieldClick(link, extra = {}) {
+   return {
+      // A nested icon can be the target; the wrapper delegates to its anchor.
+      target: { closest: selector => selector === 'a[href]' ? link : null },
+      currentTarget: { contains: element => element === link },
+      defaultPrevented: false,
+      preventDefault() { this.defaultPrevented = true; },
+      ...extra
+   };
+}
+
+test('modal fields open internal form/task pages and add modal mode only to the iframe URL', () => {
+   for (const href of [
+      '/tenant/t/form/crime-edit?Id=123&Category=A&Category=B#details',
+      'http://localhost/tenant/t/task/review?Id=123&modal=0&modal=0',
+      '//localhost/tenant/T/FORM/edit/?Id=123',
+      '../form/edit?Id=123'
+   ]) {
+      const result = fieldModal();
+      const link = fieldLink(href);
+      const event = fieldClick(link);
+      result.openField(event);
+      assert.equal(event.defaultPrevented, true, href);
+      assert.equal(result.opened.length, 1, href);
+      assert.equal(result.opened[0].opener, link);
+      assert.equal(result.opened[0].title, 'Edit record');
+      const url = new URL(result.frameTarget.src);
+      assert.deepEqual(url.searchParams.getAll('modal'), ['1']);
+      assert.equal(url.searchParams.get('Id'), '123');
+      if (href.includes('Category=')) {
+         assert.deepEqual(url.searchParams.getAll('Category'), ['A', 'B']);
+         assert.equal(url.hash, '#details');
+      }
+      assert.equal(link.attrs.href, href, 'Keep normal/new-tab navigation unchanged.');
+   }
+});
+
+test('modal fields leave external, other-tenant, non-page, fragment and download links alone', () => {
+   for (const href of [
+      'https://example.test/tenant/t/form/edit',
+      'http://localhost:8080/tenant/t/task/edit',
+      'https://localhost/tenant/t/form/edit',
+      '/other/t/form/edit', '/t/form/edit', '/tenant/t/report/demo',
+      '/tenant/t/form/', '/tenant/t/task/',
+      '/tenant/t/form/content/edit', '/tenant/t/form/json/edit',
+      '/tenant/t/task/form/edit', '/tenant/t/task/run/edit', '/tenant/t/task/run/json/edit',
+      '/tenant/t/form/edit/extra', '/tenant/t/forms/edit',
+      'javascript:void(0)', 'mailto:someone@example.test', 'data:text/html,hello',
+      '#details', ''
+   ]) {
+      const result = fieldModal();
+      const event = fieldClick(fieldLink(href));
+      result.openField(event);
+      assert.equal(event.defaultPrevented, false, href);
+      assert.equal(result.opened.length, 0, href);
+   }
+   const result = fieldModal();
+   result.openField(fieldClick(fieldLink('/tenant/t/form/edit', { download: '' })));
+   result.openField(fieldClick(null));
+   result.openField(fieldClick(fieldLink('/tenant/t/form/edit'), { currentTarget: { contains: () => false } }));
+   const malformed = fieldLink('/tenant/t/form/edit');
+   malformed.href = 'http://[';
+   result.openField(fieldClick(malformed));
+   assert.equal(result.opened.length, 0);
+});
+
+test('modal fields preserve modified clicks and do not reopen clicks handled by explicit modal actions', () => {
+   const result = fieldModal();
+   const link = fieldLink('/tenant/t/form/edit?Id=123');
+   for (const modifier of [{ ctrlKey: true }, { metaKey: true }, { shiftKey: true }, { altKey: true }, { button: 1 }]) {
+      const event = fieldClick(link, modifier);
+      result.openField(event);
+      assert.equal(event.defaultPrevented, false);
+   }
+   result.openField(fieldClick(link, { defaultPrevented: true }));
+   assert.equal(result.opened.length, 0);
+   const event = fieldClick(link);
+   result.openField(event);
+   result.openField(event);
+   assert.equal(result.opened.length, 1, 'Nested field wrappers must open just once.');
+});
+
 test('modal asks the now-visible form to restore focus after both loading and the opening transition, in either order', () => {
    for (const order of [['loaded', 'shown'], ['shown', 'loaded']]) {
       const result = controller('modal');

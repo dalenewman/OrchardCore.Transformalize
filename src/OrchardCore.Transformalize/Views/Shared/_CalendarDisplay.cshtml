@@ -9,6 +9,9 @@
 
 @{
    var linkService = Context.RequestServices.GetService<ILinkService>();
+   var modalLinks = Model.Process.GetAllFields().Any(f => f.Modal &&
+      (string.Equals(f.Alias, Model.Part.CalendarUrlField.Text, StringComparison.OrdinalIgnoreCase) ||
+       string.Equals(f.Alias, Model.Part.CalendarTitleField.Text, StringComparison.OrdinalIgnoreCase)));
 }
 
 <div id="id_calendar_alert" style="display: none;" class="alert alert-info" role="alert"><span class="fas fa-info-circle"> </span></div>
@@ -45,7 +48,8 @@
       </div>
    </div>
 
-   <div id="id_calendar" style="height: 655px; width: 100%; padding-top: 2px;"></div>
+   <div id="id_calendar" style="height: 655px; width: 100%; padding-top: 2px;"
+        data-action="@(modalLinks ? "click->modal#openField" : null)"></div>
    <script>
       /* using calendar from here: https://github.com/Serhioromano/bootstrap-calendar */
       //<!--

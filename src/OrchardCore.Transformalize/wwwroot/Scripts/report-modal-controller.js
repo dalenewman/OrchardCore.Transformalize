@@ -1,6 +1,7 @@
 (function () {
    class ModalController extends Stimulus.Controller {
       static targets = ['dialog', 'frame', 'loading', 'title'];
+      static values = { formPath: String, taskPath: String };
 
       connect() {
          this.adaptLinks(this.element);
@@ -50,11 +51,40 @@
          this.instance.show();
       }
 
-      open(event) {
+      openField(event) {
+         // Delegate from the field wrapper so links inserted later work too.
+         // Explicit modal actions and other handlers may already own the click.
+         if (event.defaultPrevented) return;
+         const link = event.target.closest?.('a[href]');
+         if (!link || !event.currentTarget.contains(link) || link.hasAttribute('download')) return;
+         const url = this.fieldUrl(link);
+         if (url) this.open(event, link, url.href);
+      }
+
+      fieldUrl(link) {
+         const href = link.getAttribute('href');
+         if (!href || href.trim().startsWith('#')) return null;
+         let url;
+         try { url = new URL(link.href, window.location.href); } catch { return null; }
+         if (!/^https?:$/.test(url.protocol) || url.origin !== window.location.origin) return null;
+         // Only full form/task pages in this tenant. Fragment, run and API routes
+         // have additional path segments and retain their normal navigation.
+         const path = url.pathname.toLowerCase();
+         const page = [this.formPathValue, this.taskPathValue].some(prefix => {
+            if (!prefix || !path.startsWith(prefix.toLowerCase())) return false;
+            const id = path.slice(prefix.length).replace(/\/$/, '');
+            return id.length > 0 && !id.includes('/');
+         });
+         if (!page) return null;
+         url.searchParams.set('modal', '1');
+         return url;
+      }
+
+      open(event, link = event.currentTarget, url = link.getAttribute('data-url') || link.href) {
          if (event.ctrlKey || event.metaKey || event.shiftKey || event.altKey || event.button > 0) return;
          event.preventDefault();
-         this.show(event.currentTarget.title, event.currentTarget);
-         this.frameTarget.src = event.currentTarget.getAttribute('data-url') || event.currentTarget.href;
+         this.show(link.title, link);
+         this.frameTarget.src = url;
       }
 
       submit(event) {
