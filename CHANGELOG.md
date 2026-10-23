@@ -1,3 +1,10 @@
+# 0.23.2 <small>2026-10-22</small>
+
+## 🐛 Bug Fixes
+- Kept the Bootswatch theme footer below report data so it cannot cover table rows. The footer stays at the bottom of short pages and expands to fit wrapped or multi-line content, including when using the default Bootstrap style.
+
+<!-- CHANGELOG_BOUNDARY -->
+
 # 0.23.1 <small>2026-10-22</small>
 
 ## 💅 Improvements

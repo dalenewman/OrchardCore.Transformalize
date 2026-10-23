@@ -52,18 +52,9 @@
     {
         <style asp-name="bootswatch-@bsTheme" at="Head"></style>
         <style>
-            /* Restore layout rules that TheTheme's theme.css normally provides.
-               These are intentionally kept in sync with TheTheme/Assets/scss/main/_layout.scss. */
+            /* Restore layout and colour rules from TheTheme's theme.css.
+               Footer positioning is shared by both theme paths below. */
             #togglePassword { width: 44px; padding: 0; }
-            html { position: relative; min-height: 100%; }
-            body { margin-bottom: 60px; }
-            body > footer {
-                position: absolute;
-                bottom: 0;
-                width: 100%;
-                height: 60px;
-                line-height: 60px;
-            }
             html[data-bs-theme="light"] body > footer { background-color: #f5f5f5; }
             html[data-bs-theme="dark"]  body > footer { background-color: #343a40; }
             /* With the compact navbar (padding: 0) the navbar is ~32 px tall; 50 px
@@ -89,6 +80,24 @@
     <resources type="Header" />
     @* Keep this override after the header resource flush so it wins over Bootstrap/Bootswatch. *@
     <style>
+        /* Keep the footer in normal flow so it cannot cover report rows.
+           Override TheTheme's absolute footer and reserved body margin too. */
+        html body {
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            margin-bottom: 0;
+        }
+        body > main.container { flex: 1 0 auto; }
+        html body > footer {
+            position: static;
+            flex: 0 0 auto;
+            width: 100%;
+            height: auto;
+            min-height: 60px;
+            line-height: normal;
+            padding: 1rem 0;
+        }
         /* BootswatchTheme: compact navbar — removes Bootstrap's default vertical
            padding so the header takes less vertical space on every page. */
         .navbar { padding-top: 0; padding-bottom: 0; }

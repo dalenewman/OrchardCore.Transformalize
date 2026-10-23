@@ -77,14 +77,19 @@ compiled from these SCSS sources in TheTheme:
 
 | Source file | Rules we restore inline |
 |-------------|--------------------------|
-| `Assets/scss/main/_layout.scss` | sticky footer, `body > .container` top-padding, `#togglePassword` width |
+| `Assets/scss/main/_layout.scss` | `body > .container` top-padding, `#togglePassword` width |
 | `Assets/scss/themes/light/_index.scss` | `footer` background for light mode |
 | `Assets/scss/themes/dark/_index.scss`  | `footer` background for dark mode |
 
-The one intentional difference: `body > .container` uses **80 px** of top-padding
-instead of TheTheme's 60 px, because several Bootswatch themes render a taller navbar
-(observed ~72 px).  If a future Bootswatch update changes navbar height significantly,
-adjust this value in `Layout.cshtml`.
+`body > .container` uses **50 px** of top-padding to clear the compact navbar.
+If a future Bootswatch update changes navbar height significantly, adjust this value
+in `Layout.cshtml`.
+
+The shared layout block applies to both Bootswatch and the default Bootstrap style.
+It replaces TheTheme's absolute footer and 60 px body margin with a flex column:
+the main content grows to fill short pages, and the footer follows it in normal flow.
+Long reports therefore push the footer below the table. Footer height is automatic
+so wrapped or multi-line widgets also reserve their full height.
 
 ---
 
@@ -124,9 +129,9 @@ Things to watch for:
 | New `<using>` or `@inject` in Layout | Copy into our Layout.cshtml |
 | New resource (`<style>` or `<script>` tag) | Add matching tag in both the Bootswatch and non-Bootswatch branches |
 | Change to navbar HTML structure | Mirror in our Layout.cshtml |
-| New rule added to `_layout.scss` | Add the same rule to the inline `<style>` block inside the `useBootswatch` branch |
+| New rule added to `_layout.scss` | Check whether it belongs in the Bootswatch restore block or shared layout block; preserve the footer's normal flow |
 | New light/dark theme CSS variables | Add matching declarations to the inline `<style>` block |
-| `$navbar-padding-y` or navbar height changes in Bootstrap | Adjust the `80px` value in `body > .container { padding: 80px 15px 0; }` |
+| `$navbar-padding-y` or navbar height changes in Bootstrap | Adjust the `50px` value in `body > .container { padding: 50px 15px 0; }` |
 
 ### Quick diff command
 
@@ -187,7 +192,7 @@ https://cdn.jsdelivr.net/npm/bootswatch@5/dist/@bsTheme/bootstrap.min.css
 
 | Symptom | Likely cause | Fix |
 |---------|-------------|-----|
-| Content hidden behind navbar | Inline `body > .container` padding too small | Increase the `80px` value |
+| Content hidden behind navbar | Inline `body > .container` padding too small | Increase the `50px` value |
 | User menu appears on the left | `ms-md-auto` missing or `<menu>` renders no DOM node | Verify the `<div class="ms-md-auto">` wrapper exists |
 | Menu items invisible | Navbar text colour wrong for the selected Bootswatch theme | Adjust `navbar-dark`/`navbar-light` class on `<nav>` (line 87) |
 | Bootstrap loaded twice | `ResourceManager.NotRequired("stylesheet","TheTheme")` not called | Ensure the suppression call is inside the `useBootswatch` block |
