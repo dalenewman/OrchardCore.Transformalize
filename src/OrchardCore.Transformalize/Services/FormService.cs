@@ -52,7 +52,7 @@ namespace TransformalizeModule.Services {
          }
 
          var authorized = await CanAccess(response.ContentItem);
-         if (request.Secure && !authorized) {
+         if (!authorized) {
             SetupPermissionsResponse(request, response);
             return response;
          }
@@ -79,7 +79,7 @@ namespace TransformalizeModule.Services {
          }
 
          var authorized = await CanAccess(response.ContentItem);
-         if (request.Secure && !authorized) {
+         if (!authorized) {
             SetupPermissionsResponse(request, response);
             return response;
          }
