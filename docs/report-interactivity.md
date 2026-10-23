@@ -105,8 +105,16 @@ Existing arrangement-generated anchors/buttons with `data-url` and the exact
 `onclick="loadModal(this)"` handler are adapted when the modal controller connects,
 including after report refreshes. Their inline handler is removed and replaced
 with `click->modal#open`; anchors receive the real URL as their href. New
-arrangements should emit a real `href` and `data-action="click->modal#open"`
-directly. Unrelated custom handlers are left intact.
+arrangement fields can set `modal="true"` and emit an ordinary anchor. The field
+wrapper delegates clicks with `click->modal#openField`, which only opens
+same-origin full form/task pages under the current tenant's route prefixes.
+Only the iframe URL receives `modal=1`; the original href remains available for
+modified clicks and normal navigation. Downloads, other destinations and clicks
+already handled by another action are left alone. Map description fields and
+calendar URL/title fields also carry this metadata into their display wrappers,
+including links inserted later. Values and exports are unchanged. Custom HTML
+can still use `data-action="click->modal#open"` directly. Unrelated custom
+handlers are left intact.
 
 Unexpected successful HTML, such as a login redirect or a diagnostic view, causes
 full navigation instead of being inserted into the report. Failed requests leave

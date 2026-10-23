@@ -112,7 +112,7 @@
                      }
 
                      @foreach (var field in fields) {
-                        <td>
+                        <td data-action="@(field.Modal ? "click->modal#openField" : null)">
                            @switch (field.Type) {
                               case "bool":
                               case "boolean":

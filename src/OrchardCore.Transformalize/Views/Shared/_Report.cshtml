@@ -9,6 +9,8 @@
 <div id="tfl-report"
      hx-history-elt
      data-controller="report selection modal clipboard @(editing ? "report-editor" : null)"
+     data-modal-form-path-value="@Url.Content("~/t/form/")"
+     data-modal-task-path-value="@Url.Content("~/t/task/")"
      data-report-page-value="@firstEntity.Page"
      data-report-default-size-value="@Model.Paging.DefaultSize"
      data-report-page-sizes-value="@JsonSerializer.Serialize(Model.Paging.Sizes)"
