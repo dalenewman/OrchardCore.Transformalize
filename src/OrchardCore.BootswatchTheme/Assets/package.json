@@ -1,0 +1,12 @@
+{
+  "name": "orchardcore-bootswatch-codex",
+  "private": true,
+  "scripts": {
+    "build": "node build.mjs"
+  },
+  "devDependencies": {
+    "bootstrap": "5.3.8",
+    "rtlcss": "4.3.0",
+    "sass": "1.93.2"
+  }
+}

@@ -27,18 +27,20 @@
         return site.As<BootswatchSettings>()?.Theme ?? "default";
     }) ?? "default";
     var useBootswatch = bsTheme != "default";
+    var isCodex = bsTheme == Constants.CodexTheme;
+    var stylesheet = isCodex && Orchard.IsRightToLeft() ? "bootswatch-codex-rtl" : $"bootswatch-{bsTheme}";
 
     if (useBootswatch)
     {
         // Suppress TheTheme's bundled stylesheet (which includes Bootstrap) so
-        // the Bootswatch CDN version of Bootstrap takes precedence without doubling.
+        // the selected Bootstrap stylesheet takes precedence without doubling.
         // Layout styles normally provided by theme.css are restored via an inline
         // <style> block below.
         ResourceManager.NotRequired("stylesheet", "TheTheme");
     }
 }
 <!DOCTYPE html>
-<html lang="@Orchard.CultureName()" dir="@Orchard.CultureDir()" data-bs-theme="@await ThemeTogglerService.CurrentTheme()" data-tenant="@ThemeTogglerService.CurrentTenant">
+<html lang="@Orchard.CultureName()" dir="@Orchard.CultureDir()" data-bs-theme="@await ThemeTogglerService.CurrentTheme()" data-tenant="@ThemeTogglerService.CurrentTenant" data-bootswatch="@bsTheme">
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -50,7 +52,7 @@
 
     @if (useBootswatch)
     {
-        <style asp-name="bootswatch-@bsTheme" at="Head"></style>
+        <style asp-name="@stylesheet" at="Head"></style>
         <style>
             /* Restore layout and colour rules from TheTheme's theme.css.
                Footer positioning is shared by both theme paths below. */
@@ -105,7 +107,7 @@
     @await RenderSectionAsync("HeadMeta", required: false)
 </head>
 <body>
-    <nav class="navbar navbar-expand-md fixed-top @(useBootswatch ? "bg-primary navbar-dark" : "")">
+    <nav class="navbar navbar-expand-md fixed-top @(isCodex ? "codex-navbar" : useBootswatch ? "bg-primary navbar-dark" : "")">
         <div class="container">
             <shape type="Branding" />
             <button type="button" class="navbar-toggler" data-bs-toggle="collapse" data-bs-target="#navbar" aria-expanded="false" aria-controls="navbar" aria-label="Toggle navigation">

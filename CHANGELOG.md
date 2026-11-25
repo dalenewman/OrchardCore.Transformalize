@@ -1,3 +1,17 @@
+# 0.24.0 <small>2026-11-25</small>
+
+## 💅 Improvements
+- Added **Codex** to the admin Bootswatch theme selector: a custom Bootstrap 5.3.8 style with warm neutral surfaces, teal accents, system fonts, and coordinated light and dark modes.
+- Styled forms, report tables, menus, and dialogs with clear keyboard focus and validation states. Included responsive layouts, RTL stylesheets, and print styling. Codex assets are bundled locally, including when CDN delivery is enabled.
+
+## 🛠️ Maintenance
+- Added pinned Sass and RTL build tooling, a component preview using the existing report/form styles, and [Codex theming documentation](src/OrchardCore.BootswatchTheme/THEMING.md). Generated CSS is included so deployment does not require Node.js.
+
+## 🐛 Bug Fixes
+- Exposed Orchard's Light, Dark, and Auto appearance selector in the Bootswatch frontend navbar; the inherited selector was only rendered for TheTheme itself.
+
+<!-- CHANGELOG_BOUNDARY -->
+
 # 0.23.2 <small>2026-10-22</small>
 
 ## 🐛 Bug Fixes
