@@ -6,17 +6,71 @@
 theme).  When no Bootswatch style is selected in admin settings it behaves exactly like
 TheTheme.  When a Bootswatch style *is* selected the theme:
 
-1. Loads the Bootswatch variant of Bootstrap from the jsDelivr CDN instead of the
-   locally-bundled Bootstrap copy.
+1. Loads the selected variant of Bootstrap, using jsDelivr or the bundled copy
+   according to the site's CDN setting. The custom **Codex** style is always local.
 2. Suppresses TheTheme's compiled stylesheet (`theme.min.css`) so Bootstrap is not
    loaded twice.
 3. Restores the handful of layout rules that `theme.min.css` would have provided via
    an inline `<style>` block (see the section "Inline layout CSS" below).
-4. Colours the navbar with `bg-primary navbar-dark` so the brand bar picks up the
-   Bootswatch theme's primary colour with white navigation text.
+4. Colours the navbar with `bg-primary navbar-dark` for the published Bootswatch
+   styles. Codex uses a neutral navbar that follows the light/dark palette.
 
 The companion module `OrchardCore.BootswatchTheme.Settings` provides the admin UI
 that lets site owners pick a Bootswatch theme (or revert to the Bootstrap default).
+
+## Codex
+
+Select **Design → Bootswatch → Codex** in the admin site, then save. This changes
+the site's frontend theme; Orchard's admin theme is independent.
+
+Codex is a custom Bootstrap **5.3.8** build, matching the existing bundled Bootswatch
+styles. It uses warm neutral surfaces, teal actions, system fonts, restrained
+borders and shadows, and tabular numerals in data tables. Every Bootstrap component
+is included. No remote fonts or CSS imports are needed.
+
+Use the appearance dropdown (sun, moon, or half-circle icon) at the right of the
+frontend navbar to choose **Light**, **Dark**, or **Auto**. On small screens, open
+the navigation menu first. Auto follows the operating system's appearance, and
+Orchard remembers the choice in this browser for the current tenant.
+
+`Drivers/ToggleThemeNavbarDisplayDriver.cs` exposes Orchard's inherited toggle view
+for BootswatchTheme; TheTheme's own driver only renders for TheTheme itself.
+Orchard's scripts control the palette through `data-bs-theme`. Dark mode has its
+own button, utility, and semantic table colours.
+The layout's `data-bootswatch="codex"` attribute scopes the navbar, footer, and
+Transformalize-specific adjustments. Report tables retain their compact density and
+horizontal scrolling. Forms preserve validation states and visible keyboard focus.
+Bootstrap's reduced-motion support is retained, and print styles clear the fixed
+navbar and render data tables on white.
+
+The Codex resources deliberately have **no CDN URL**: both values of **Use CDN**
+serve the local files. RTL cultures use the generated `bootstrap.rtl` files;
+other cultures use the regular files. Existing Bootswatch styles keep their
+current resource paths and behaviour.
+
+### Rebuilding Codex
+
+```bash
+cd src/OrchardCore.BootswatchTheme/Assets
+npm ci
+npm run build
+```
+
+Edit `Assets/codex.scss`, then rebuild and commit all four generated files under
+`wwwroot/styles/codex/`. `Assets/package-lock.json` pins the build dependencies.
+The .NET build and deployed site do not require Node.js. `download-bootswatch.sh`
+refreshes only the published styles and never overwrites Codex.
+
+To preview components with the real report/form CSS, serve `src` from the repo root:
+
+```bash
+python3 -m http.server 5099 --bind 127.0.0.1 --directory src
+```
+
+Open `http://localhost:5099/OrchardCore.BootswatchTheme/Assets/preview.html`.
+Its controls switch light/dark and LTR/RTL. Check keyboard focus, validation,
+dropdowns, dialogs, accordion, and a narrow viewport. Bootstrap's JavaScript for this
+development preview comes from `Assets/node_modules`, so run `npm ci` first.
 
 ---
 
@@ -27,6 +81,10 @@ OrchardCore.BootswatchTheme/
 ├── Views/
 │   ├── Layout.cshtml          ← only file that differs from TheTheme
 │   └── _ViewImports.cshtml
+├── Assets/                    ← Codex Sass source, pinned build and preview
+├── Drivers/                   ← frontend light/dark/auto appearance selector
+├── wwwroot/styles/codex/      ← generated CSS, including RTL, and Bootstrap license
+├── ResourceManifest.cs        ← local/CDN resource registrations
 └── THEMING.md                 ← this file
 
 OrchardCore.BootswatchTheme.Settings/
@@ -155,6 +213,8 @@ URL (jsDelivr) and a local path under `wwwroot/styles/<theme>/`.  OrchardCore's
 | On (default) | `https://cdn.jsdelivr.net/npm/bootswatch@5/dist/<theme>/bootstrap.min.css` |
 | Off | `~/BootswatchTheme/styles/<theme>/bootstrap.min.css` |
 
+Codex is the exception: it is always served from `~/BootswatchTheme/styles/codex/`.
+
 **To populate the local files**, run the download script from the project directory:
 
 ```bash
@@ -180,11 +240,8 @@ Bootswatch publishes new themes occasionally.  To add one:
    `OrchardCore.BootswatchTheme.Settings/Constants.cs`.
 3. Rebuild the Settings project.
 
-No CSS changes are needed — the CDN URL in `Layout.cshtml` uses the theme name
-directly:
-```html
-https://cdn.jsdelivr.net/npm/bootswatch@5/dist/@bsTheme/bootstrap.min.css
-```
+Also add the published theme to `download-bootswatch.sh` and download its local
+CSS. `ResourceManifest.cs` constructs its local and CDN paths from the theme name.
 
 ---
 

@@ -1,0 +1,102 @@
+<!doctype html>
+<html lang="en" data-bs-theme="light" data-bootswatch="codex">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Codex · Theme preview</title>
+  <link rel="icon" href="data:,">
+  <link id="theme-css" rel="stylesheet" href="../wwwroot/styles/codex/bootstrap.css">
+  <!-- Load the real module styles too, to exercise their interaction with Codex. -->
+  <link rel="stylesheet" href="../../OrchardCore.Transformalize/wwwroot/Styles/report.css">
+  <link rel="stylesheet" href="../../OrchardCore.Transformalize/wwwroot/Styles/form.css">
+  <style>
+    body { display: flex; flex-direction: column; min-height: 100vh; }
+    body > main.container { flex: 1 0 auto; }
+    body > footer { padding-block: 1rem; }
+  </style>
+</head>
+<body>
+  <nav class="navbar navbar-expand-md fixed-top codex-navbar" aria-label="Main navigation">
+    <div class="container">
+      <a class="navbar-brand me-4" href="#">Codex<span class="text-primary">.</span></a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-expanded="false" aria-controls="navbar" aria-label="Toggle navigation"><span class="navbar-toggler-icon"></span></button>
+      <div class="collapse navbar-collapse" id="navbar">
+        <ul class="navbar-nav gap-1">
+          <li class="nav-item"><a class="nav-link active" aria-current="page" href="#">Workspace</a></li>
+          <li class="nav-item"><a class="nav-link" href="#components">Components</a></li>
+          <li class="nav-item"><a class="nav-link" href="#form-preview">Forms</a></li>
+        </ul>
+        <div class="ms-md-auto d-flex gap-2 py-1">
+          <button id="direction" type="button" class="btn btn-sm btn-outline-secondary" aria-pressed="false">RTL</button>
+          <button id="appearance" type="button" class="btn btn-sm btn-outline-primary" aria-pressed="false">Dark mode</button>
+        </div>
+      </div>
+    </div>
+  </nav>
+  <main class="container">
+    <div class="mx-auto" style="max-width: 1120px">
+      <nav aria-label="Breadcrumb"><ol class="breadcrumb mb-4"><li class="breadcrumb-item"><a href="#">Workspace</a></li><li class="breadcrumb-item active" aria-current="page">Overview</li></ol></nav>
+      <div class="d-flex justify-content-between align-items-start gap-3 mb-4 flex-wrap">
+        <div><p class="text-primary small fw-semibold mb-2">A CLEARER PLACE TO WORK</p><h1 class="mb-2">Good work starts here.</h1><p class="text-body-secondary mb-0">A considered palette. A little breathing room. Everything in focus.</p></div>
+        <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#preview-modal">Create a report <span aria-hidden="true">↗</span></button>
+      </div>
+      <div class="row g-3 mb-4">
+        <div class="col-md-4"><div class="card h-100"><div class="card-body"><p class="small text-body-secondary mb-2">Records processed</p><div class="h2 mb-2">128,640</div><span class="badge text-bg-success">All systems healthy</span></div></div></div>
+        <div class="col-md-4"><div class="card h-100"><div class="card-body"><p class="small text-body-secondary mb-2">Average duration</p><div class="h2 mb-2">1.24 <span class="h5 text-body-secondary">seconds</span></div><span class="small text-body-secondary">Across the last 24 hours</span></div></div></div>
+        <div class="col-md-4"><div class="card h-100"><div class="card-body"><p class="small text-body-secondary mb-2">Completion rate</p><div class="h2 mb-2">99.8<span class="h5 text-body-secondary">%</span></div><div class="progress mt-3" role="progressbar" aria-label="Completion rate" aria-valuenow="99.8" aria-valuemin="0" aria-valuemax="100" style="height:6px"><div class="progress-bar" style="width:99.8%"></div></div></div></div></div>
+      </div>
+      <div class="card mb-4" id="tfl-report">
+        <div class="card-header d-flex justify-content-between align-items-center flex-wrap gap-2"><span>Recent activity</span><div class="dropdown"><button class="btn btn-sm btn-outline-secondary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">Export</button><ul class="dropdown-menu dropdown-menu-end"><li><button class="dropdown-item">Download CSV</button></li><li><button class="dropdown-item">Copy as Markdown</button></li><li><hr class="dropdown-divider"></li><li><button class="dropdown-item" disabled>Download PDF</button></li></ul></div></div>
+        <div class="card-body pb-0"><div class="row g-2 mb-3"><div class="col-md-6"><label for="search" class="visually-hidden">Search reports</label><input type="search" class="form-control form-control-sm" id="search" placeholder="Search reports…"></div><div class="col-md-3"><label for="status" class="visually-hidden">Status</label><select id="status" class="form-select form-select-sm"><option>All statuses</option><option>Complete</option><option>Needs review</option></select></div><div class="col-md-3"><button class="btn btn-sm btn-outline-primary w-100" type="button">Apply filters</button></div></div></div>
+        <div class="table-responsive" style="min-height:0"><table class="table table-sm table-hover table-striped mb-0"><caption class="visually-hidden">Recent processing reports</caption><thead><tr><th scope="col" class="ps-3">Report <button class="btn btn-sort btn-sm" aria-label="Sort by report">↓</button></th><th scope="col">Status</th><th scope="col" class="text-end">Records</th><th scope="col" class="text-end">Duration</th><th scope="col" class="pe-3">Updated</th></tr></thead><tbody>
+          <tr><td class="ps-3"><a href="#">Customer directory</a></td><td><span class="badge text-bg-success">Complete</span></td><td class="text-end">48,210</td><td class="text-end">0.82 s</td><td class="text-body-secondary pe-3">2 minutes ago</td></tr>
+          <tr><td class="ps-3"><a href="#">Order reconciliation</a></td><td><span class="badge text-bg-success">Complete</span></td><td class="text-end">36,480</td><td class="text-end">1.46 s</td><td class="text-body-secondary pe-3">8 minutes ago</td></tr>
+          <tr><td class="ps-3"><a href="#">Inventory snapshot</a></td><td><span class="badge text-bg-warning">Needs review</span></td><td class="text-end">12,604</td><td class="text-end">0.65 s</td><td class="text-body-secondary pe-3">15 minutes ago</td></tr>
+          <tr><td class="ps-3"><a href="#">Monthly revenue</a></td><td><span class="badge text-bg-info">Running</span></td><td class="text-end">31,346</td><td class="text-end">—</td><td class="text-body-secondary pe-3">Just now</td></tr>
+        </tbody></table></div>
+        <div class="card-footer bg-transparent d-flex justify-content-between align-items-center"><span class="small text-body-secondary">Showing 4 of 24 reports</span><nav aria-label="Report pages"><ul class="pagination pagination-sm mb-0"><li class="page-item disabled"><span class="page-link">Previous</span></li><li class="page-item active" aria-current="page"><span class="page-link">1</span></li><li class="page-item"><a class="page-link" href="#">2</a></li><li class="page-item"><a class="page-link" href="#">Next</a></li></ul></nav></div>
+      </div>
+      <div class="row g-4 mb-4" id="components">
+        <section class="col-lg-7" id="form-preview"><div class="card h-100" id="tfl-form"><div class="card-header">Details, without the distractions</div><form class="card-body" onsubmit="event.preventDefault()">
+          <div class="mb-3"><label class="form-label" for="report-name">Report name</label><input class="form-control" id="report-name" value="Customer directory"><div class="form-text">Choose a name your team will recognize.</div></div>
+          <div class="row g-3 mb-3"><div class="col-sm-6"><label class="form-label" for="connection">Connection</label><select class="form-select" id="connection"><option>Production · Read only</option><option>Development</option></select></div><div class="col-sm-6"><label class="form-label" for="frequency">Schedule</label><input id="frequency" class="form-control" disabled value="Every day at 09:00"></div></div>
+          <div class="mb-3"><label class="form-label" for="email">Notification email</label><input type="email" id="email" class="form-control is-invalid" value="alex@" aria-invalid="true" aria-describedby="email-error"><div class="invalid-feedback" id="email-error">Enter a complete email address.</div></div>
+          <div class="form-check form-switch mb-4"><input class="form-check-input" type="checkbox" role="switch" id="notifications" checked><label class="form-check-label" for="notifications">Notify me when the report is ready</label></div>
+          <div class="d-flex flex-wrap gap-2"><button class="btn btn-primary" type="submit">Save changes</button><button class="btn btn-outline-secondary" type="reset">Reset</button><button class="btn btn-primary ms-auto" type="button" disabled>Saving…</button></div>
+        </form></div></section>
+        <section class="col-lg-5"><div class="card h-100"><div class="card-header">Small details, thoughtfully handled</div><div class="card-body">
+          <div class="alert alert-primary" role="status"><strong>Ready when you are.</strong> Your workspace is up to date.</div>
+          <div class="alert alert-warning"><strong>A quick check.</strong> One report needs your attention.</div>
+          <p class="small text-body-secondary">Clear actions. Familiar Bootstrap components.</p>
+          <div class="d-flex flex-wrap gap-2 mb-3"><button class="btn btn-sm btn-success">Success</button><button class="btn btn-sm btn-info">Info</button><button class="btn btn-sm btn-warning">Warning</button><button class="btn btn-sm btn-danger">Danger</button></div>
+          <div class="d-flex flex-wrap gap-2 mb-4"><button class="btn btn-sm btn-outline-success">Success</button><button class="btn btn-sm btn-outline-info">Info</button><button class="btn btn-sm btn-outline-warning">Warning</button><button class="btn btn-sm btn-outline-danger">Danger</button></div>
+          <div class="accordion" id="accordion"><div class="accordion-item"><h2 class="accordion-header"><button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#accordion-panel" aria-expanded="false" aria-controls="accordion-panel">Built for the way you work</button></h2><div class="accordion-collapse collapse" id="accordion-panel" data-bs-parent="#accordion"><div class="accordion-body small">Local fonts and assets, keyboard focus, light and dark palettes, and full Bootstrap 5 components. <code>codex</code> stays out of your way.</div></div></div></div>
+        </div></div></section>
+      </div>
+    </div>
+  </main>
+  <footer><div class="container d-flex justify-content-between flex-wrap gap-2 small"><span>Codex · A theme for thoughtful work</span><span>Bootstrap 5.3.8 · Light & dark · LTR & RTL</span></div></footer>
+  <div class="modal fade" id="preview-modal" tabindex="-1" aria-labelledby="modal-title" aria-hidden="true"><div class="modal-dialog modal-dialog-centered"><div class="modal-content"><div class="modal-header"><h2 class="modal-title fs-5" id="modal-title">A fresh perspective</h2><button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button></div><div class="modal-body"><label for="modal-name" class="form-label">Report name</label><input class="form-control" id="modal-name" placeholder="Give your next idea a name"><p class="form-text mb-0">This dialog previews the theme. No report will be created.</p></div><div class="modal-footer"><button class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button><button class="btn btn-primary" data-bs-dismiss="modal">Done</button></div></div></div></div>
+  <script src="node_modules/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+  <script>
+    document.querySelector('#preview-modal').addEventListener('hide.bs.modal', function () {
+      if (this.contains(document.activeElement)) {
+        document.querySelector('[data-bs-target="#preview-modal"]').focus();
+      }
+    });
+    document.querySelector('#appearance').addEventListener('click', function () {
+      const dark = document.documentElement.dataset.bsTheme !== 'dark';
+      document.documentElement.dataset.bsTheme = dark ? 'dark' : 'light';
+      this.textContent = dark ? 'Light mode' : 'Dark mode';
+      this.setAttribute('aria-pressed', String(dark));
+    });
+    document.querySelector('#direction').addEventListener('click', function () {
+      const rtl = document.documentElement.dir !== 'rtl';
+      document.documentElement.dir = rtl ? 'rtl' : 'ltr';
+      document.querySelector('#theme-css').href = `../wwwroot/styles/codex/bootstrap${rtl ? '.rtl' : ''}.css`;
+      this.textContent = rtl ? 'LTR' : 'RTL';
+      this.setAttribute('aria-pressed', String(rtl));
+    });
+  </script>
+</body>
+</html>

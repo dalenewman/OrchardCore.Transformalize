@@ -5,14 +5,15 @@
       <AddRazorSupportForMvc>true</AddRazorSupportForMvc>
       <Nullable>enable</Nullable>
       <ImplicitUsings>enable</ImplicitUsings>
-      <Version>0.23.2</Version>
+      <Version>0.24.0</Version>
       <AssemblyName>BootswatchTheme</AssemblyName>
-      <FileVersion>0.23.2</FileVersion>
-      <AssemblyVersion>0.23.2</AssemblyVersion>
+      <FileVersion>0.24.0</FileVersion>
+      <AssemblyVersion>0.24.0</AssemblyVersion>
    </PropertyGroup>
 
    <ItemGroup>
       <FrameworkReference Include="Microsoft.AspNetCore.App" />
+      <None Remove="Assets\node_modules\**" />
    </ItemGroup>
 
    <ItemGroup>
@@ -31,7 +32,7 @@
    </ItemGroup>
 
    <ItemGroup>
-      <OrchardCoreThemes Include="BootswatchTheme" Name="Bootswatch Theme" Base="TheTheme" Description="Bootstrap-based theme with selectable Bootswatch styles" Author="Dale Newman" Version="0.17.0" Dependencies="OrchardCore.BootswatchTheme.Settings" DefaultTenant="false" AlwaysEnabled="false" EnabledByDependencyOnly="false" />
+      <OrchardCoreThemes Include="BootswatchTheme" Name="Bootswatch Theme" Base="TheTheme" Description="Bootstrap-based theme with selectable Bootswatch styles" Author="Dale Newman" Version="0.24.0" Dependencies="OrchardCore.BootswatchTheme.Settings" DefaultTenant="false" AlwaysEnabled="false" EnabledByDependencyOnly="false" />
    </ItemGroup>
 
 </Project>

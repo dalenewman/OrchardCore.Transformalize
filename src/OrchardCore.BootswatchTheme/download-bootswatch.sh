@@ -17,6 +17,7 @@ VERSION="5"   # resolves to latest bootswatch 5.x on npm/jsdelivr
 BASE_URL="https://cdn.jsdelivr.net/npm/bootswatch@${VERSION}/dist"
 WWWROOT="$(cd "$(dirname "$0")" && pwd)/wwwroot/styles"
 
+# Codex is built from Assets/codex.scss, not downloaded from Bootswatch.
 THEMES=(
   cerulean cosmo cyborg darkly flatly journal litera lumen lux materia
   minty morph pulse quartz sandstone simplex sketchy slate solar spacelab
